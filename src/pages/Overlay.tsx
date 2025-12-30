@@ -21,7 +21,6 @@ await getCurrentWindow().setIgnoreCursorEvents(true);
 function Overlay() {
 	const [textFound, setTextFound] = useState<boolean>(false);
 	const [isScanning, setIsScanning] = useState(false);
-	const [tesseractInstalled, setTesseractInstalled] = useState<boolean | null>(null);
 	const [scanRegion, setScanRegion] = useState<ScanRegion | null>(null);
 	const [showScanRegion, setShowScanRegion] = useState(false);
 	const [statsData, setStatsData] = useState<StatsData | null>(null);
@@ -58,13 +57,6 @@ function Overlay() {
 			})
 			.catch(console.error);
 
-		// Check if Tesseract is installed
-		invoke<boolean>("check_tesseract_installed")
-			.then((installed) => {
-				setTesseractInstalled(installed);
-			})
-			.catch(console.error);
-
 		// Load scan region
 		invoke<ScanRegion | null>("get_scan_region")
 			.then((region) => {
@@ -81,7 +73,7 @@ function Overlay() {
 
 		// Set up interval for continuous scanning
 		const scanInterval = setInterval(async () => {
-			if (!isScanning && tesseractInstalled) {
+			if (!isScanning) {
 				setIsScanning(true);
 				try {
 					await invoke("scan_for_text");
@@ -99,7 +91,7 @@ function Overlay() {
 			unlistenShowRegion.then((fn) => fn());
 			clearInterval(scanInterval);
 		};
-	}, [isScanning, tesseractInstalled]);
+	}, [isScanning]);
 
 	return (
 		<div
@@ -130,33 +122,7 @@ function Overlay() {
 				/>
 			)}
 
-			{tesseractInstalled === false ? (
-				<div
-					style={{
-						background: "rgba(239, 68, 68, 0.95)",
-						padding: "20px 40px",
-						borderRadius: "12px",
-						color: "white",
-						fontSize: "20px",
-						fontWeight: "bold",
-						boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
-						pointerEvents: "auto",
-						border: "3px solid rgba(239, 68, 68, 1)",
-						maxWidth: "600px",
-					}}
-				>
-					<div style={{ fontSize: "40px", marginBottom: "12px" }}>⚠️</div>
-					<div style={{ fontSize: "24px", marginBottom: "8px" }}>
-						Tesseract OCR Not Installed
-					</div>
-					<div style={{ fontSize: "14px", opacity: 0.9, lineHeight: "1.5" }}>
-						Please install Tesseract OCR to use text detection features.
-						<br />
-						Open Settings window for installation instructions.
-					</div>
-				</div>
-			) : (
-				<div
+			<div
 					style={{
 						display: "flex",
 						flexDirection: "column",
@@ -274,7 +240,6 @@ function Overlay() {
 						</div>
 					)}
 				</div>
-			)}
 		</div>
 	);
 }

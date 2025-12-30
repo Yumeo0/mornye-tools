@@ -5,7 +5,6 @@ use imageproc::contrast::{threshold, ThresholdType};
 use kreuzberg_tesseract::TesseractAPI;
 use serde::{Deserialize, Serialize};
 use std::sync::Mutex;
-use std::process::Command;
 use std::path::PathBuf;
 use std::collections::HashMap;
 use tauri::{AppHandle, Manager, State};
@@ -381,8 +380,8 @@ fn get_scan_regions(state: State<AppState>) -> Result<Option<ScanRegions>, Strin
 }
 
 #[tauri::command]
-fn scan_for_text(
-    state: State<AppState>,
+async fn scan_for_text(
+    state: State<'_, AppState>,
     app_handle: tauri::AppHandle,
 ) -> Result<bool, String> {
     // Get the scan region
@@ -393,30 +392,94 @@ fn scan_for_text(
             .ok_or_else(|| "No scan region set".to_string())?
     };
 
-    // Capture the primary monitor
-    let monitors = Monitor::all().map_err(|e| e.to_string())?;
-    let monitor = monitors.first().ok_or("No monitor found")?;
+    let scan_regions = {
+        let regions = state.scan_regions.lock().map_err(|e| e.to_string())?;
+        regions.clone()
+    };
 
-    // Capture the screen
-    let screenshot = monitor.capture_image().map_err(|e| e.to_string())?;
+    // Clone app_handle for the blocking task
+    let app_handle_clone = app_handle.clone();
 
-    // Crop to the specified region
-    let cropped = crop_imm(
-        &screenshot,
-        region.x,
-        region.y,
-        region.width,
-        region.height,
-    )
-    .to_image();
+    // Run the heavy OCR work on a blocking thread pool
+    let result = tokio::task::spawn_blocking(move || -> Result<(bool, Option<StatsData>), String> {
+        // Capture the primary monitor
+        let monitors = Monitor::all().map_err(|e| e.to_string())?;
+        let monitor = monitors.first().ok_or("No monitor found")?;
 
-    let cropped_dynamic = image::DynamicImage::ImageRgba8(cropped);
-    
-    // Perform OCR with preprocessing
-    let text = perform_ocr_on_image(&cropped_dynamic, &app_handle)?;
+        // Capture the screen
+        let screenshot = monitor.capture_image().map_err(|e| e.to_string())?;
 
-    // Check if "Echo Upgrade" is found (case-insensitive)
-    let found = text.to_lowercase().contains("echo upgrade");
+        // Crop to the specified region
+        let cropped = crop_imm(
+            &screenshot,
+            region.x,
+            region.y,
+            region.width,
+            region.height,
+        )
+        .to_image();
+
+        let cropped_dynamic = image::DynamicImage::ImageRgba8(cropped);
+        
+        // Perform OCR with preprocessing
+        let text = perform_ocr_on_image(&cropped_dynamic, &app_handle_clone)?;
+
+        // Check if "Echo Upgrade" is found (case-insensitive)
+        let found = text.to_lowercase().contains("echo upgrade");
+
+        // If Echo Upgrade is found, scan the stats regions
+        let stats_data = if found {
+            if let Some(regions) = scan_regions.as_ref() {
+                // Load stats config
+                let stats_config = load_stats_config(&app_handle_clone)?;
+                
+                // Scan main stats
+                let main_cropped = crop_imm(
+                    &screenshot,
+                    regions.main_stats.x,
+                    regions.main_stats.y,
+                    regions.main_stats.width,
+                    regions.main_stats.height,
+                )
+                .to_image();
+                let main_dynamic = image::DynamicImage::ImageRgba8(main_cropped);
+                let main_text = perform_ocr_on_image(&main_dynamic, &app_handle_clone)
+                    .unwrap_or_else(|_| String::new());
+
+                // Scan sub stats
+                let sub_cropped = crop_imm(
+                    &screenshot,
+                    regions.sub_stats.x,
+                    regions.sub_stats.y,
+                    regions.sub_stats.width,
+                    regions.sub_stats.height,
+                )
+                .to_image();
+                let sub_dynamic = image::DynamicImage::ImageRgba8(sub_cropped);
+                let sub_text = perform_ocr_on_image(&sub_dynamic, &app_handle_clone)
+                    .unwrap_or_else(|_| String::new());
+
+                // Parse and clean the stats with correction
+                let parsed_main = parse_stats(&main_text, "MAIN STAT", &stats_config, true);
+                let parsed_sub = parse_stats(&sub_text, "SUB STATS", &stats_config, false);
+
+                Some(StatsData {
+                    main_stats: parsed_main,
+                    sub_stats: parsed_sub,
+                })
+            } else {
+                None
+            }
+        } else {
+            None
+        };
+
+        Ok((found, stats_data))
+    })
+    .await
+    .map_err(|e| format!("Task join error: {}", e))??;
+
+    let (found, stats_data) = result;
 
     // Store the result
     {
@@ -424,61 +487,17 @@ fn scan_for_text(
         *last_result = Some(found);
     }
 
-    // If Echo Upgrade is found, scan the stats regions
-    if found {
-        let scan_regions = state.scan_regions.lock().map_err(|e| e.to_string())?;
-        if let Some(regions) = scan_regions.as_ref() {
-            // Load stats config
-            let stats_config = load_stats_config(&app_handle)?;
-            
-            // Scan main stats
-            let main_cropped = crop_imm(
-                &screenshot,
-                regions.main_stats.x,
-                regions.main_stats.y,
-                regions.main_stats.width,
-                regions.main_stats.height,
-            )
-            .to_image();
-            let main_dynamic = image::DynamicImage::ImageRgba8(main_cropped);
-            let main_text = perform_ocr_on_image(&main_dynamic, &app_handle)
-                .unwrap_or_else(|_| String::new());
-
-            // Scan sub stats
-            let sub_cropped = crop_imm(
-                &screenshot,
-                regions.sub_stats.x,
-                regions.sub_stats.y,
-                regions.sub_stats.width,
-                regions.sub_stats.height,
-            )
-            .to_image();
-            let sub_dynamic = image::DynamicImage::ImageRgba8(sub_cropped);
-            let sub_text = perform_ocr_on_image(&sub_dynamic, &app_handle)
-                .unwrap_or_else(|_| String::new());
-
-            // Parse and clean the stats with correction
-            let parsed_main = parse_stats(&main_text, "MAIN STAT", &stats_config, true);
-            let parsed_sub = parse_stats(&sub_text, "SUB STATS", &stats_config, false);
-
-            // Store stats data
-            let stats_data = StatsData {
-                main_stats: parsed_main,
-                sub_stats: parsed_sub,
-            };
-            
-            let mut last_stats = state.last_stats_data.lock().map_err(|e| e.to_string())?;
-            *last_stats = Some(stats_data.clone());
-
-            // Emit stats event to overlay
-            app_handle
-                .emit("stats-data", stats_data)
-                .map_err(|e| e.to_string())?;
-        }
-    } else {
-        // Clear stats if Echo Upgrade not found
+    // Store and emit stats data
+    {
         let mut last_stats = state.last_stats_data.lock().map_err(|e| e.to_string())?;
-        *last_stats = None;
+        *last_stats = stats_data.clone();
+    }
+
+    if let Some(data) = stats_data {
+        app_handle
+            .emit("stats-data", data)
+            .map_err(|e| e.to_string())?;
+    } else {
         app_handle
             .emit("stats-data", None::<StatsData>)
             .ok();
@@ -557,15 +576,6 @@ fn scan_region_for_text(app_handle: tauri::AppHandle, region: ScanRegion) -> Res
 }
 
 #[tauri::command]
-fn check_tesseract_installed() -> Result<bool, String> {
-    // Try to run tesseract --version to check if it's installed
-    match Command::new("tesseract").arg("--version").output() {
-        Ok(output) => Ok(output.status.success()),
-        Err(_) => Ok(false),
-    }
-}
-
-#[tauri::command]
 fn set_show_scan_region(
     state: State<AppState>,
     app_handle: tauri::AppHandle,
@@ -601,7 +611,6 @@ pub fn run() {
             scan_for_text,
             get_last_scan_result,
             get_last_stats_data,
-            check_tesseract_installed,
             set_show_scan_region,
             get_show_scan_region,
             scan_region_for_text

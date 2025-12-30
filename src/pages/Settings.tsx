@@ -30,9 +30,6 @@ export function Settings() {
 		width: 270,
 		height: 60,
 	});
-	const [tesseractInstalled, setTesseractInstalled] = useState<boolean | null>(
-		null,
-	);
 	const [showScanRegion, setShowScanRegion] = useState(false);
 	const [selectedResolution, setSelectedResolution] = useState<string>("");
 	const [showDebugSection, setShowDebugSection] = useState(false);
@@ -52,13 +49,6 @@ export function Settings() {
 				if (region) {
 					setScanRegion(region);
 				}
-			})
-			.catch(console.error);
-
-		// Check if Tesseract is installed
-		invoke<boolean>("check_tesseract_installed")
-			.then((installed) => {
-				setTesseractInstalled(installed);
 			})
 			.catch(console.error);
 
@@ -190,54 +180,6 @@ export function Settings() {
 
 						<Separator />
 
-						{tesseractInstalled === false && (
-							<div className="rounded-lg bg-destructive/10 border border-destructive/20 p-4 space-y-3">
-								<div className="flex items-start gap-3">
-									<span className="text-2xl">⚠️</span>
-									<div className="space-y-2 flex-1">
-										<h4 className="text-sm font-semibold text-destructive">
-											Tesseract OCR Not Installed
-										</h4>
-										<p className="text-sm text-muted-foreground leading-relaxed">
-											OCR functionality requires Tesseract to be installed on
-											your system.
-										</p>
-										<div className="space-y-2 text-sm">
-											<p className="font-medium">Installation steps:</p>
-											<ol className="list-decimal list-inside space-y-1 text-muted-foreground">
-												<li>
-													Download from:{" "}
-													<a
-														href="https://github.com/UB-Mannheim/tesseract/wiki"
-														target="_blank"
-														rel="noopener noreferrer"
-														className="text-primary underline hover:no-underline"
-													>
-														github.com/UB-Mannheim/tesseract/wiki
-													</a>
-												</li>
-												<li>
-													Run the installer and note the installation path
-												</li>
-												<li>
-													Add Tesseract to your system PATH or select "Add to
-													PATH" during installation
-												</li>
-												<li>Restart this application after installation</li>
-											</ol>
-										</div>
-									</div>
-								</div>
-							</div>
-						)}
-
-						{tesseractInstalled === true && (
-							<div className="rounded-lg bg-green-500/10 border border-green-500/20 p-3">
-								<p className="text-sm font-medium text-green-500">
-									✓ Tesseract OCR is installed and ready
-								</p>
-							</div>
-						)}
 						<div className="space-y-3">
 							<Label htmlFor="resolution-select">Screen Resolution</Label>
 							<Select
@@ -342,7 +284,7 @@ export function Settings() {
 								</div>
 								<Button
 									onClick={performDebugScan}
-									disabled={isDebugScanning || tesseractInstalled === false}
+									disabled={isDebugScanning}
 									variant="default"
 									className="w-full"
 								>

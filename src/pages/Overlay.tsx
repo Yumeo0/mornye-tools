@@ -130,36 +130,6 @@ function Overlay() {
 						alignItems: "center",
 					}}
 				>
-					{/* Echo Upgrade Detection Status */}
-					<div
-						style={{
-							background: textFound
-								? "rgba(34, 197, 94, 0.9)"
-								: "rgba(239, 68, 68, 0.9)",
-							padding: "20px 40px",
-							borderRadius: "12px",
-							color: "white",
-							fontSize: "32px",
-							fontWeight: "bold",
-							boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
-							pointerEvents: "auto",
-							border: textFound
-								? "3px solid rgba(34, 197, 94, 1)"
-								: "3px solid rgba(239, 68, 68, 1)",
-							display: "flex",
-							alignItems: "center",
-							gap: "16px",
-						}}
-					>
-						<span style={{ fontSize: "40px" }}>{textFound ? "✓" : "✗"}</span>
-						<div>
-							<div style={{ fontSize: "24px", marginBottom: "4px" }}>
-								{textFound ? "FOUND" : "NOT FOUND"}
-							</div>
-							<div style={{ fontSize: "16px", opacity: 0.9 }}>Echo Upgrade</div>
-						</div>
-					</div>
-
 					{/* Stats Display */}
 					{textFound && statsData && (
 						<div

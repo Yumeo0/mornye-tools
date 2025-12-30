@@ -15,7 +15,7 @@ phantomsubproperty_path = BASE_PATH / "BinData/phantom/phantomsubproperty.json"
 propertyindex_path = BASE_PATH / "BinData/property/propertyindex.json"
 
 # Output path
-output_path = Path("../public/echo_data.json")
+output_path = Path("../src/configs/echo_data.json")
 
 def load_json(file_path):
 	"""Load a JSON file and return its contents."""

@@ -15,7 +15,7 @@ propertyindex_path = BASE_PATH / "BinData/property/propertyindex.json"
 elementinfo_path = BASE_PATH / "BinData/element_info/elementinfo.json"
 
 # Output path
-output_path = Path("../public/character_data.json")
+output_path = Path("../src/configs/character_data.json")
 
 def load_json(file_path):
 	"""Load a JSON file and return its contents."""

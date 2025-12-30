@@ -1,0 +1,98 @@
+{
+    "main": {
+        "HP%": {
+            "min": 4.5,
+            "max": 33.0
+        },
+        "ATK%": {
+            "min": 3.6,
+            "max": 33.0
+        },
+        "DEF%": {
+            "min": 3.6,
+            "max": 41.5
+        },
+        "Crit. Rate": {
+            "min": 4.4,
+            "max": 22.0
+        },
+        "Crit. DMG": {
+            "min": 8.8,
+            "max": 44.0
+        },
+        "Healing Bonus": {
+            "min": 5.2,
+            "max": 26.0
+        },
+        "Aero DMG Bonus": {
+            "min": 6.0,
+            "max": 30.0
+        },
+        "Glacio DMG Bonus": {
+            "min": 6.0,
+            "max": 30.0
+        },
+        "Fusion DMG Bonus": {
+            "min": 6.0,
+            "max": 30.0
+        },
+        "Electro DMG Bonus": {
+            "min": 6.0,
+            "max": 30.0
+        },
+        "Havoc DMG Bonus": {
+            "min": 6.0,
+            "max": 30.0
+        },
+        "Spectro DMG Bonus": {
+            "min": 6.0,
+            "max": 30.0
+        },
+        "Energy Regen": {
+            "min": 6.4,
+            "max": 32.0
+        }
+    },
+    "sub": {
+        "HP%": {
+            "min": 6.4,
+            "max": 11.6
+        },
+        "ATK%": {
+            "min": 6.4,
+            "max": 11.6
+        },
+        "DEF%": {
+            "min": 8.1,
+            "max": 14.7
+        },
+        "Crit. Rate": {
+            "min": 6.3,
+            "max": 10.5
+        },
+        "Crit. DMG": {
+            "min": 12.6,
+            "max": 21.0
+        },
+        "Energy Regen": {
+            "min": 6.8,
+            "max": 12.4
+        },
+        "Basic Attack DMG Bonus": {
+            "min": 6.4,
+            "max": 11.6
+        },
+        "Heavy Attack DMG Bonus": {
+            "min": 6.4,
+            "max": 11.6
+        },
+        "Resonance Skill DMG Bonus": {
+            "min": 6.4,
+            "max": 11.6
+        },
+        "Resonance Liberation DMG Bonus": {
+            "min": 6.4,
+            "max": 11.6
+        }
+    }
+}

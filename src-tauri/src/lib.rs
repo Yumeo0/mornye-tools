@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 use std::sync::Mutex;
 use std::process::Command;
 use std::path::PathBuf;
+use std::collections::HashMap;
 use tauri::{AppHandle, Manager, State};
 use xcap::Monitor;
 use regex::Regex;
@@ -30,6 +31,18 @@ pub struct ScanRegions {
 pub struct StatsData {
     pub main_stats: String,
     pub sub_stats: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct StatRange {
+    pub min: f64,
+    pub max: f64,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct StatsConfig {
+    pub main: HashMap<String, StatRange>,
+    pub sub: HashMap<String, StatRange>,
 }
 
 #[derive(Default)]
@@ -65,6 +78,138 @@ fn get_tessdata_dir(app_handle: &AppHandle) -> Result<PathBuf, String> {
     
     Err("Tessdata directory not found. Please ensure tessdata is in src-tauri/tessdata for development or bundled with the app for production.".to_string())
 }
+
+fn load_stats_config(app_handle: &AppHandle) -> Result<StatsConfig, String> {
+    // Try development path first
+    if let Ok(manifest_dir) = std::env::var("CARGO_MANIFEST_DIR") {
+        let config_path = PathBuf::from(manifest_dir)
+            .parent()
+            .ok_or("Failed to get parent directory")?
+            .join("src/configs/stats.json");
+        
+        if config_path.exists() {
+            let content = std::fs::read_to_string(&config_path)
+                .map_err(|e| format!("Failed to read stats.json: {}", e))?;
+            let mut config: StatsConfig = serde_json::from_str(&content)
+                .map_err(|e| format!("Failed to parse stats.json: {}", e))?;
+            
+            // Normalize all keys in the config
+            config.main = config.main.into_iter()
+                .map(|(k, v)| (normalize_stat_name(&k), v))
+                .collect();
+            config.sub = config.sub.into_iter()
+                .map(|(k, v)| (normalize_stat_name(&k), v))
+                .collect();
+            
+            return Ok(config);
+        }
+    }
+    
+    // Try bundled resource path (for production)
+    if let Ok(resource_path) = app_handle.path().resource_dir() {
+        let config_path = resource_path.join("src/configs/stats.json");
+        if config_path.exists() {
+            let content = std::fs::read_to_string(&config_path)
+                .map_err(|e| format!("Failed to read stats.json: {}", e))?;
+            let mut config: StatsConfig = serde_json::from_str(&content)
+                .map_err(|e| format!("Failed to parse stats.json: {}", e))?;
+            
+            // Normalize all keys in the config
+            config.main = config.main.into_iter()
+                .map(|(k, v)| (normalize_stat_name(&k), v))
+                .collect();
+            config.sub = config.sub.into_iter()
+                .map(|(k, v)| (normalize_stat_name(&k), v))
+                .collect();
+            
+            return Ok(config);
+        }
+    }
+    
+    Err("Stats config file not found".to_string())
+}
+
+fn normalize_stat_name(name: &str) -> String {
+    name.replace(".", "")
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+fn try_fix_decimal(value_str: &str, min: f64, max: f64) -> Option<String> {
+    // Remove any existing decimal points for processing
+    let digits: String = value_str.chars().filter(|c| c.is_numeric()).collect();
+    
+    if digits.is_empty() {
+        return None;
+    }
+    
+    // Try the original number first
+    if let Ok(val) = value_str.parse::<f64>() {
+        if val >= min && val <= max {
+            return Some(value_str.to_string());
+        }
+    }
+    
+    // Try adding decimal point from right to left
+    for i in 1..=digits.len() {
+        let (left, right) = digits.split_at(digits.len() - i);
+        let candidate = if left.is_empty() {
+            format!("0.{}", right)
+        } else {
+            format!("{}.{}", left, right)
+        };
+        
+        if let Ok(val) = candidate.parse::<f64>() {
+            if val >= min && val <= max {
+                return Some(candidate);
+            }
+        }
+    }
+    
+    None
+}
+
+fn correct_stat_value(stat_name: &str, value_str: &str, stats_config: &StatsConfig, is_main_stat: bool) -> String {
+    let normalized_name = normalize_stat_name(stat_name);
+    
+    // Get the appropriate stat map (keys are already normalized)
+    let stat_map = if is_main_stat {
+        &stats_config.main
+    } else {
+        &stats_config.sub
+    };
+    
+    // Try to find the stat range with various name variations
+    let range = stat_map.get(&normalized_name)
+        .or_else(|| {
+            // Try with "Bonus" suffix for element DMG stats
+            stat_map.get(&format!("{} Bonus", normalized_name))
+        })
+        .or_else(|| {
+            // Try without "Bonus" suffix
+            let without_bonus = normalized_name.replace(" Bonus", "");
+            stat_map.get(&without_bonus)
+        })
+        .or_else(|| {
+            // Try with "DMG Bonus" suffix for element names
+            if !normalized_name.contains("DMG") && !normalized_name.contains("Bonus") {
+                stat_map.get(&format!("{} DMG Bonus", normalized_name))
+            } else {
+                None
+            }
+        });
+    
+    if let Some(range) = range {
+        if let Some(corrected) = try_fix_decimal(value_str, range.min, range.max) {
+            return corrected;
+        }
+    }
+    
+    // Return original if no correction found
+    value_str.to_string()
+}
+
 
 fn preprocess_image(img: &DynamicImage) -> GrayImage {
     // Convert to grayscale
@@ -113,7 +258,7 @@ fn perform_ocr_on_image(img: &DynamicImage, app_handle: &AppHandle) -> Result<St
         .map_err(|e| format!("OCR error: {}", e))
 }
 
-fn parse_stats(text: &str, _stat_type: &str) -> String {
+fn parse_stats(text: &str, _stat_type: &str, stats_config: &StatsConfig, is_main_stat: bool) -> String {
     //println!("=== {} RAW TEXT ===", stat_type);
     //println!("{}", text);
     //println!("{}", "=".repeat(26 + stat_type.len()));
@@ -144,7 +289,11 @@ fn parse_stats(text: &str, _stat_type: &str) -> String {
         
         // Normalize stat name
         let normalized = stat_name.replace(".", "").split_whitespace().collect::<Vec<_>>().join(" ");
-        stats.push(format!("{} {}%", normalized, value));
+        
+        // Correct the value if needed
+        let corrected_value = correct_stat_value(stat_name, value, stats_config, is_main_stat);
+        
+        stats.push(format!("{} {}%", normalized, corrected_value));
         matched_positions.push((match_start, captures.get(0).map_or(0, |m| m.end())));
     }
     
@@ -165,7 +314,11 @@ fn parse_stats(text: &str, _stat_type: &str) -> String {
             
             // Normalize stat name
             let normalized = stat_name.replace(".", "").split_whitespace().collect::<Vec<_>>().join(" ");
-            stats.push(format!("{} {}", normalized, value));
+            
+            // Correct the value if needed
+            let corrected_value = correct_stat_value(stat_name, value, stats_config, is_main_stat);
+            
+            stats.push(format!("{} {}", normalized, corrected_value));
         }
     }
     
@@ -275,6 +428,9 @@ fn scan_for_text(
     if found {
         let scan_regions = state.scan_regions.lock().map_err(|e| e.to_string())?;
         if let Some(regions) = scan_regions.as_ref() {
+            // Load stats config
+            let stats_config = load_stats_config(&app_handle)?;
+            
             // Scan main stats
             let main_cropped = crop_imm(
                 &screenshot,
@@ -301,9 +457,9 @@ fn scan_for_text(
             let sub_text = perform_ocr_on_image(&sub_dynamic, &app_handle)
                 .unwrap_or_else(|_| String::new());
 
-            // Parse and clean the stats
-            let parsed_main = parse_stats(&main_text, "MAIN STAT");
-            let parsed_sub = parse_stats(&sub_text, "SUB STATS");
+            // Parse and clean the stats with correction
+            let parsed_main = parse_stats(&main_text, "MAIN STAT", &stats_config, true);
+            let parsed_sub = parse_stats(&sub_text, "SUB STATS", &stats_config, false);
 
             // Store stats data
             let stats_data = StatsData {

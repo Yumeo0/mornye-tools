@@ -169,11 +169,13 @@ function Overlay() {
 				if (event.payload?.echo_name) {
 					// Find echo by name (case-insensitive match)
 					const echoName = event.payload.echo_name.toLowerCase();
-					const echo = (echoData as Echo[]).find(
+					const candidates = (echoData as Echo[]).filter(
 						(e) =>
 							e.echo_name.toLowerCase().includes(echoName) ||
 							echoName.includes(e.echo_name.toLowerCase()),
 					);
+					// Pick the candidate with the longest name (more specific match)
+					const echo = candidates.sort((a, b) => b.echo_name.length - a.echo_name.length)[0];
 
 					if (echo) {
 						// Get echo set IDs
@@ -226,11 +228,13 @@ function Overlay() {
 				// If we have echo data, try to find relevant characters
 				if (data?.echo_name) {
 					const echoName = data.echo_name.toLowerCase();
-					const echo = (echoData as Echo[]).find(
+					const candidates = (echoData as Echo[]).filter(
 						(e) =>
 							e.echo_name.toLowerCase().includes(echoName) ||
 							echoName.includes(e.echo_name.toLowerCase()),
 					);
+					// Pick the candidate with the longest name (more specific match)
+					const echo = candidates.sort((a, b) => b.echo_name.length - a.echo_name.length)[0];
 
 					if (echo) {
 						const setIds = echo.echo_sets.map((s) => s.id);
@@ -413,7 +417,13 @@ function Overlay() {
 								<div className="space-y-2">
 									<h3 className="text-base font-bold text-green-400">Relevant Characters</h3>
 									<div className="space-y-2">
-										{relevantCharacters.map((character) => {
+										{relevantCharacters
+											.sort((a, b) => {
+												const ratingA = calculateRating(a, statsData, parsedMainStats, parsedSubStats);
+												const ratingB = calculateRating(b, statsData, parsedMainStats, parsedSubStats);
+												return ratingB - ratingA;
+											})
+											.map((character) => {
 											const rating = calculateRating(character, statsData, parsedMainStats, parsedSubStats);
 											return (
 												<div key={character.character_id} className="flex items-center gap-3 bg-muted/50 p-2 rounded">

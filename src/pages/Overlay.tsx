@@ -380,8 +380,11 @@ function Overlay() {
 											const maxValue = getMaxStatValue(parsed.name, false);
 											if (!maxValue) {
 												return (
-													<div key={`sub-${stat}`} className="text-xs">
-														{stat}
+													<div key={`sub-${stat}`} className="space-y-1">
+														<div className="flex justify-between items-center text-xs">
+															<span>{parsed.name}</span>
+															<span className="font-bold">{parsed.value}{parsed.hasPercent ? '%' : ''}</span>
+														</div>
 													</div>
 												);
 											}

@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { getAllWindows } from "@tauri-apps/api/window";
+import { Store } from "@tauri-apps/plugin-store";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -42,22 +43,68 @@ export function Settings() {
 	const [debugOcrText, setDebugOcrText] = useState<string | null>(null);
 	const [isDebugScanning, setIsDebugScanning] = useState(false);
 
-	useEffect(() => {
-		// Load saved scan region on mount
-		invoke<ScanRegion | null>("get_scan_region")
-			.then((region) => {
-				if (region) {
-					setScanRegion(region);
+	const applyResolutionConfig = async (resolution: string) => {
+		const config = OCR_CONFIG[resolution as keyof typeof OCR_CONFIG];
+		if (config?.echoUpgrade) {
+			const echoUpgradeRegion = config.echoUpgrade;
+			setScanRegion(echoUpgradeRegion);
+			setSelectedResolution(resolution);
+			try {
+				// Set the echo upgrade scan region (for backward compatibility and debug outline)
+				await invoke("set_scan_region", { region: echoUpgradeRegion });
+				
+				// Set all three scan regions for stats scanning
+				if (config.mainStats && config.subStats) {
+					const scanRegions: ScanRegions = {
+						echo_upgrade: echoUpgradeRegion,
+						main_stats: config.mainStats,
+						sub_stats: config.subStats,
+					};
+					await invoke("set_scan_regions", { regions: scanRegions });
 				}
-			})
-			.catch(console.error);
+				
+				// Save the selected resolution to plugin-store
+				const store = await Store.load("settings.json");
+				await store.set("resolution", resolution);
+				await store.save();
+			} catch (error) {
+				console.error("Failed to update scan regions:", error);
+			}
+		}
+	};
 
-		// Load show scan region state
-		invoke<boolean>("get_show_scan_region")
-			.then((show) => {
-				setShowScanRegion(show);
-			})
-			.catch(console.error);
+	// biome-ignore lint/correctness/useExhaustiveDependencies: applyResolutionConfig changes on every re-render and should not be used as a hook dependency
+	useEffect(() => {
+		const initSettings = async () => {
+			// Load saved scan region on mount
+			invoke<ScanRegion | null>("get_scan_region")
+				.then((region) => {
+					if (region) {
+						setScanRegion(region);
+					}
+				})
+				.catch(console.error);
+
+			// Load show scan region state
+			invoke<boolean>("get_show_scan_region")
+				.then((show) => {
+					setShowScanRegion(show);
+				})
+				.catch(console.error);
+
+			// Load saved resolution from plugin-store
+			try {
+				const store = await Store.load("settings.json");
+				const savedResolution = await store.get<string>("resolution");
+				if (savedResolution) {
+					await applyResolutionConfig(savedResolution);
+				}
+			} catch (error) {
+				console.error("[Settings] Failed to load saved resolution:", error);
+			}
+		};
+
+		initSettings();
 	}, []);
 
 	// Update scan region when debug region changes and outline is visible
@@ -97,33 +144,6 @@ export function Settings() {
 		}
 	};
 
-	const applyResolutionConfig = async (resolution: string) => {
-		const config = OCR_CONFIG[resolution as keyof typeof OCR_CONFIG];
-		if (config?.echoUpgrade) {
-			const echoUpgradeRegion = config.echoUpgrade;
-			setScanRegion(echoUpgradeRegion);
-			setSelectedResolution(resolution);
-			try {
-				// Set the echo upgrade scan region (for backward compatibility and debug outline)
-				await invoke("set_scan_region", { region: echoUpgradeRegion });
-				
-				// Set all three scan regions for stats scanning
-				if (config.mainStats && config.subStats) {
-					const scanRegions: ScanRegions = {
-						echo_upgrade: echoUpgradeRegion,
-						main_stats: config.mainStats,
-						sub_stats: config.subStats,
-					};
-					await invoke("set_scan_regions", { regions: scanRegions });
-				}
-				
-				console.log("Scan regions updated to:", resolution, config);
-			} catch (error) {
-				console.error("Failed to update scan regions:", error);
-			}
-		}
-	};
-
 	const performDebugScan = async () => {
 		setIsDebugScanning(true);
 		setDebugOcrText(null);
@@ -144,9 +164,6 @@ export function Settings() {
 			<div className="max-w-4xl mx-auto space-y-6">
 				<div className="space-y-2">
 					<h1 className="text-4xl font-bold tracking-tight">Mornye Tools</h1>
-					<p className="text-muted-foreground">
-						Manage your overlay and application settings
-					</p>
 				</div>
 
 				<Separator />
@@ -173,9 +190,6 @@ export function Settings() {
 							<Label className="text-base font-medium">
 								OCR Text Detection
 							</Label>
-							<p className="text-sm text-muted-foreground">
-								Configure screen region to scan for "Echo Upgrade" text
-							</p>
 						</div>
 
 						<Separator />

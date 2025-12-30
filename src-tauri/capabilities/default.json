@@ -6,6 +6,7 @@
   "permissions": [
     "core:default",
     "opener:default",
+    "store:default",
     "core:window:allow-set-ignore-cursor-events",
     "core:window:allow-show",
     "core:window:allow-hide",

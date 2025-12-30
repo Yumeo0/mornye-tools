@@ -335,6 +335,13 @@ fn correct_stat_value(stat_name: &str, value_str: &str, stats_config: &StatsConf
     value_str.to_string()
 }
 
+fn correct_ocr_errors(text: &str) -> String {
+    text.replace("AIK", "ATK")
+        .replace("oe", "%")
+        .replace("—", "")
+        .replace("'", "")
+        .replace("\"", "")
+}
 
 fn preprocess_image(img: &DynamicImage) -> GrayImage {
     // Convert to grayscale
@@ -383,10 +390,10 @@ fn perform_ocr_on_image(img: &DynamicImage, app_handle: &AppHandle) -> Result<St
         .map_err(|e| format!("OCR error: {}", e))
 }
 
-fn parse_stats(text: &str, _stat_type: &str, stats_config: &StatsConfig, is_main_stat: bool) -> String {
-    //println!("=== {} RAW TEXT ===", stat_type);
-    //println!("{}", text);
-    //println!("{}", "=".repeat(26 + stat_type.len()));
+fn parse_stats(text: &str, stat_type: &str, stats_config: &StatsConfig, is_main_stat: bool) -> String {
+    println!("=== {} RAW TEXT ===", stat_type);
+    println!("{}", text);
+    println!("{}", "=".repeat(26 + stat_type.len()));
     
     // Clean up the text - keep only letters, numbers, spaces, periods, percent signs, and plus signs
     let cleaned: String = text
@@ -394,20 +401,23 @@ fn parse_stats(text: &str, _stat_type: &str, stats_config: &StatsConfig, is_main
         .filter(|c| c.is_alphanumeric() || c.is_whitespace() || *c == '.' || *c == '%' || *c == '+')
         .collect();
     
-    //println!("=== {} CLEANED ===", stat_type);
-    //println!("{}", cleaned);
-    //println!("{}", "=".repeat(23 + stat_type.len()));
+    // Correct common OCR errors
+    let corrected = correct_ocr_errors(&cleaned);
+    
+    println!("=== {} CORRECTED ===", stat_type);
+    println!("{}", corrected);
+    println!("{}", "=".repeat(25 + stat_type.len()));
     
     // Try to parse individual stat lines - flexible pattern to handle various OCR artifacts
     // First try to match percentages (more reliable), then fall back to flat values
     let percent_re = Regex::new(r"(?i)(HP|ATK|DEF|Energy\s*Regen|Crit\.?\s*Rate|Crit\.?\s*DMG|Healing\s*Bonus|Glacio\s*DMG|Fusion\s*DMG|Electro\s*DMG|Aero\s*DMG|Spectro\s*DMG|Havoc\s*DMG|Basic\s*Attack\s*DMG|Heavy\s*Attack\s*DMG|Resonance\s*Skill\s*DMG|Resonance\s*Liberation\s*DMG|Resonance\s*Skill|Resonance\s*Liberation).*?(\d+(?:\.\d+)?)\s*%").unwrap();
     let flat_re = Regex::new(r"(?i)(HP|ATK|DEF|Energy\s*Regen|Crit\.?\s*Rate|Crit\.?\s*DMG|Healing\s*Bonus|Glacio\s*DMG|Fusion\s*DMG|Electro\s*DMG|Aero\s*DMG|Spectro\s*DMG|Havoc\s*DMG|Basic\s*Attack\s*DMG|Heavy\s*Attack\s*DMG|Resonance\s*Skill\s*DMG|Resonance\s*Liberation\s*DMG|Resonance\s*Skill|Resonance\s*Liberation)[\s.]*(?:Bonus)?[\sa-z.]*?(\d+(?:\.\d+)?)").unwrap();
     
-    let mut stats = Vec::new();
-    let mut matched_positions = Vec::new();
+    // Collect all matches with their positions
+    let mut all_matches = Vec::new();
     
     // First, find all percentage matches
-    for captures in percent_re.captures_iter(&cleaned) {
+    for captures in percent_re.captures_iter(&corrected) {
         let stat_name: &str = captures.get(1).map_or("", |m| m.as_str());
         let value: &str = captures.get(2).map_or("", |m| m.as_str());
         let match_start = captures.get(0).map_or(0, |m| m.start());
@@ -421,45 +431,58 @@ fn parse_stats(text: &str, _stat_type: &str, stats_config: &StatsConfig, is_main
         // Correct the value if needed (use the version with % for proper range lookup)
         let corrected_value = correct_stat_value(&stat_name_with_percent, value, stats_config, is_main_stat);
         
-        stats.push(format!("{} {}%", canonical_name, corrected_value));
-        matched_positions.push((match_start, captures.get(0).map_or(0, |m| m.end())));
+        all_matches.push((match_start, format!("{} {}%", canonical_name, corrected_value)));
     }
     
-    // Then find flat value matches that don't overlap with percentage matches
-    for captures in flat_re.captures_iter(&cleaned) {
+    // Then find flat value matches
+    for captures in flat_re.captures_iter(&corrected) {
+        let stat_name: &str = captures.get(1).map_or("", |m| m.as_str());
+        let value: &str = captures.get(2).map_or("", |m| m.as_str());
         let match_start = captures.get(0).map_or(0, |m| m.start());
-        let match_end = captures.get(0).map_or(0, |m| m.end());
         
-        // Skip if this overlaps with a percentage match
-        let overlaps = matched_positions.iter().any(|(start, end)| {
-            (match_start >= *start && match_start < *end) || 
-            (match_end > *start && match_end <= *end)
+        // Check if this overlaps with any percentage match
+        let overlaps = all_matches.iter().any(|(pos, _)| {
+            let percent_match = percent_re.captures_iter(&corrected)
+                .find(|cap| cap.get(0).map_or(false, |m| m.start() == *pos))
+                .and_then(|cap| cap.get(0));
+            if let Some(percent_match) = percent_match {
+                let percent_start = percent_match.start();
+                let percent_end = percent_match.end();
+                let flat_start = match_start;
+                let flat_end = captures.get(0).map_or(match_start, |m| m.end());
+                (flat_start >= percent_start && flat_start < percent_end) || 
+                (flat_end > percent_start && flat_end <= percent_end)
+            } else {
+                false
+            }
         });
         
         if !overlaps {
-            let stat_name: &str = captures.get(1).map_or("", |m| m.as_str());
-            let value: &str = captures.get(2).map_or("", |m| m.as_str());
-            
             // Map to canonical stat name
             let canonical_name = map_to_canonical_stat_name(stat_name);
             
             // Correct the value if needed
             let corrected_value = correct_stat_value(stat_name, value, stats_config, is_main_stat);
             
-            stats.push(format!("{} {}", canonical_name, corrected_value));
+            all_matches.push((match_start, format!("{} {}", canonical_name, corrected_value)));
         }
     }
     
+    // Sort by position to preserve order
+    all_matches.sort_by_key(|(pos, _)| *pos);
+    
+    let stats: Vec<String> = all_matches.into_iter().map(|(_, stat)| stat).collect();
+    
     if !stats.is_empty() {
         let result = stats.join("\n");
-        //println!("=== {} PARSED ===", stat_type);
-        //println!("{}", result);
-        //println!("{}", "=".repeat(22 + stat_type.len()));
+        println!("=== {} PARSED ===", stat_type);
+        println!("{}", result);
+        println!("{}", "=".repeat(22 + stat_type.len()));
         return result;
     }
     
     // Fallback: Split by lines and filter meaningful content
-    let lines: Vec<String> = cleaned
+    let lines: Vec<String> = corrected
         .lines()
         .map(|line| line.trim().to_string())
         .filter(|line| {
@@ -475,9 +498,9 @@ fn parse_stats(text: &str, _stat_type: &str, stats_config: &StatsConfig, is_main
     
     let result = lines.join("\n");
     
-    //println!("=== {} PARSED (FALLBACK) ===", stat_type);
-    //println!("{}", result);
-    //println!("{}", "=".repeat(32 + stat_type.len()));
+    println!("=== {} PARSED (FALLBACK) ===", stat_type);
+    println!("{}", result);
+    println!("{}", "=".repeat(32 + stat_type.len()));
     
     result
 }
@@ -552,6 +575,7 @@ async fn scan_for_text(
         
         // Perform OCR with preprocessing
         let text = perform_ocr_on_image(&cropped_dynamic, &app_handle_clone)?;
+        println!("DEBUG: OCR text: {}", text);
 
         // Check if "Echo Upgrade" is found (case-insensitive)
         let found = text.to_lowercase().contains("echo upgrade");
@@ -587,11 +611,15 @@ async fn scan_for_text(
                 // Try to match with known echoes
                 let echo_name = if !cleaned_echo_name.is_empty() {
                     if let Ok(echoes) = load_echo_data(&app_handle_clone) {
-                        match_echo_name(&cleaned_echo_name, &echoes).unwrap_or(cleaned_echo_name)
+                        let matched = match_echo_name(&cleaned_echo_name, &echoes);
+                        println!("DEBUG: Cleaned echo name: '{}', Matched: {:?}", cleaned_echo_name, matched);
+                        matched.unwrap_or(cleaned_echo_name)
                     } else {
+                        println!("DEBUG: Failed to load echo data");
                         cleaned_echo_name
                     }
                 } else {
+                    println!("DEBUG: Empty echo name");
                     cleaned_echo_name
                 };
                 

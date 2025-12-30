@@ -1,12 +1,18 @@
 import { invoke } from "@tauri-apps/api/core";
-import { getAllWindows } from "@tauri-apps/api/window";
+import { getAllWindows, getCurrentWindow } from "@tauri-apps/api/window";
+import { exit } from "@tauri-apps/plugin-process";
 import { Store } from "@tauri-apps/plugin-store";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { OCR_CONFIG } from "@/configs/ocr";
 
@@ -52,7 +58,7 @@ export function Settings() {
 			try {
 				// Set the echo upgrade scan region (for backward compatibility and debug outline)
 				await invoke("set_scan_region", { region: echoUpgradeRegion });
-				
+
 				// Set all three scan regions for stats scanning
 				if (config.mainStats && config.subStats) {
 					const scanRegions: ScanRegions = {
@@ -62,7 +68,7 @@ export function Settings() {
 					};
 					await invoke("set_scan_regions", { regions: scanRegions });
 				}
-				
+
 				// Save the selected resolution to plugin-store
 				const store = await Store.load("settings.json");
 				await store.set("resolution", resolution);
@@ -107,6 +113,24 @@ export function Settings() {
 		initSettings();
 	}, []);
 
+	// Close overlay when settings window closes
+	useEffect(() => {
+		const setupCloseHandler = async () => {
+			const currentWin = getCurrentWindow();
+			const unlisten = await currentWin.onCloseRequested(async () => {
+				// Exit the entire application
+				await exit(0);
+			});
+			return unlisten;
+		};
+
+		const unlistenPromise = setupCloseHandler();
+
+		return () => {
+			unlistenPromise.then((unlisten) => unlisten());
+		};
+	}, []);
+
 	// Update scan region when debug region changes and outline is visible
 	useEffect(() => {
 		if (showScanRegion) {
@@ -131,12 +155,12 @@ export function Settings() {
 	const toggleShowScanRegion = async () => {
 		try {
 			const newValue = !showScanRegion;
-			
+
 			// When enabling the outline from debug section, temporarily set the scan region to debug region
 			if (newValue) {
 				await invoke("set_scan_region", { region: debugRegion });
 			}
-			
+
 			await invoke("set_show_scan_region", { show: newValue });
 			setShowScanRegion(newValue);
 		} catch (error) {
@@ -148,7 +172,9 @@ export function Settings() {
 		setIsDebugScanning(true);
 		setDebugOcrText(null);
 		try {
-			const text = await invoke<string>("scan_region_for_text", { region: debugRegion });
+			const text = await invoke<string>("scan_region_for_text", {
+				region: debugRegion,
+			});
 			setDebugOcrText(text);
 			console.log("Debug OCR result:", text);
 		} catch (error) {
@@ -201,7 +227,9 @@ export function Settings() {
 								onValueChange={(value) => applyResolutionConfig(value ?? "")}
 							>
 								<SelectTrigger className="w-full">
-									{selectedResolution === "" ? "Select your screen resolution" : selectedResolution}
+									{selectedResolution === ""
+										? "Select your screen resolution"
+										: selectedResolution}
 								</SelectTrigger>
 								<SelectContent>
 									{Object.keys(OCR_CONFIG).map((resolution) => (
@@ -235,84 +263,87 @@ export function Settings() {
 										<Label className="text-sm font-medium">
 											Manual Region Configuration
 										</Label>
-								<p className="text-xs text-muted-foreground">
-									Test a custom region without saving it to the main configuration
-								</p>
-								<div className="grid grid-cols-2 gap-4">
-									<div className="space-y-2">
-										<Label htmlFor="debug-region-x">X Position (px)</Label>
-										<Input
-											id="debug-region-x"
-											type="number"
-											value={debugRegion.x}
-											onChange={(e) =>
-												setDebugRegion({
-													...debugRegion,
-													x: Number(e.target.value),
-												})
-											}
-										/>
-									</div>
-									<div className="space-y-2">
-										<Label htmlFor="debug-region-y">Y Position (px)</Label>
-										<Input
-											id="debug-region-y"
-											type="number"
-											value={debugRegion.y}
-											onChange={(e) =>
-												setDebugRegion({
-													...debugRegion,
-													y: Number(e.target.value),
-												})
-											}
-										/>
-									</div>
-									<div className="space-y-2">
-										<Label htmlFor="debug-region-width">Width (px)</Label>
-										<Input
-											id="debug-region-width"
-											type="number"
-											value={debugRegion.width}
-											onChange={(e) =>
-												setDebugRegion({
-													...debugRegion,
-													width: Number(e.target.value),
-												})
-											}
-										/>
-									</div>
-									<div className="space-y-2">
-										<Label htmlFor="debug-region-height">Height (px)</Label>
-										<Input
-											id="debug-region-height"
-											type="number"
-											value={debugRegion.height}
-											onChange={(e) =>
-												setDebugRegion({
-													...debugRegion,
-													height: Number(e.target.value),
-												})
-											}
-										/>
-									</div>
-								</div>
-								<Button
-									onClick={performDebugScan}
-									disabled={isDebugScanning}
-									variant="default"
-									className="w-full"
-								>
-									{isDebugScanning ? "Scanning..." : "Test Scan Region"}
-								</Button>
+										<p className="text-xs text-muted-foreground">
+											Test a custom region without saving it to the main
+											configuration
+										</p>
+										<div className="grid grid-cols-2 gap-4">
+											<div className="space-y-2">
+												<Label htmlFor="debug-region-x">X Position (px)</Label>
+												<Input
+													id="debug-region-x"
+													type="number"
+													value={debugRegion.x}
+													onChange={(e) =>
+														setDebugRegion({
+															...debugRegion,
+															x: Number(e.target.value),
+														})
+													}
+												/>
+											</div>
+											<div className="space-y-2">
+												<Label htmlFor="debug-region-y">Y Position (px)</Label>
+												<Input
+													id="debug-region-y"
+													type="number"
+													value={debugRegion.y}
+													onChange={(e) =>
+														setDebugRegion({
+															...debugRegion,
+															y: Number(e.target.value),
+														})
+													}
+												/>
+											</div>
+											<div className="space-y-2">
+												<Label htmlFor="debug-region-width">Width (px)</Label>
+												<Input
+													id="debug-region-width"
+													type="number"
+													value={debugRegion.width}
+													onChange={(e) =>
+														setDebugRegion({
+															...debugRegion,
+															width: Number(e.target.value),
+														})
+													}
+												/>
+											</div>
+											<div className="space-y-2">
+												<Label htmlFor="debug-region-height">Height (px)</Label>
+												<Input
+													id="debug-region-height"
+													type="number"
+													value={debugRegion.height}
+													onChange={(e) =>
+														setDebugRegion({
+															...debugRegion,
+															height: Number(e.target.value),
+														})
+													}
+												/>
+											</div>
+										</div>
+										<Button
+											onClick={performDebugScan}
+											disabled={isDebugScanning}
+											variant="default"
+											className="w-full"
+										>
+											{isDebugScanning ? "Scanning..." : "Test Scan Region"}
+										</Button>
 
-								{debugOcrText !== null && (
-									<div className="rounded-lg bg-background border p-3 space-y-2">
-										<Label className="text-sm font-medium">OCR Result:</Label>
-										<pre className="text-xs text-muted-foreground whitespace-pre-wrap wrap-break-word font-mono">
-											{debugOcrText || "(No text detected)"}
-										</pre>
-									</div>
-								)}
+										{debugOcrText !== null && (
+											<div className="rounded-lg bg-background border p-3 space-y-2">
+												<Label className="text-sm font-medium">
+													OCR Result:
+												</Label>
+												<pre className="text-xs text-muted-foreground whitespace-pre-wrap wrap-break-word font-mono">
+													{debugOcrText || "(No text detected)"}
+												</pre>
+											</div>
+										)}
 									</div>
 
 									<Separator />

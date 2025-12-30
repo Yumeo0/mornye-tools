@@ -6,10 +6,12 @@
   "permissions": [
     "core:default",
     "opener:default",
+    "process:default",
     "store:default",
     "core:window:allow-set-ignore-cursor-events",
     "core:window:allow-show",
     "core:window:allow-hide",
-    "core:window:allow-get-all-windows"
+    "core:window:allow-get-all-windows",
+    "core:window:allow-destroy"
   ]
 }

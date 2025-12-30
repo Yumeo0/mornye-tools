@@ -1,134 +1,13 @@
-import { invoke } from "@tauri-apps/api/core";
-import { getAllWindows, getCurrentWindow } from "@tauri-apps/api/window";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { exit } from "@tauri-apps/plugin-process";
-import { Store } from "@tauri-apps/plugin-store";
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-} from "@/components/ui/select";
+import { useEffect } from "react";
+import { OcrTab } from "@/components/tabs/OcrTab";
+import { OverlayTab } from "@/components/tabs/OverlayTab";
+import { RulesTab } from "@/components/tabs/RulesTab";
 import { Separator } from "@/components/ui/separator";
-import { OCR_CONFIG } from "@/configs/ocr";
-
-interface ScanRegion {
-	x: number;
-	y: number;
-	width: number;
-	height: number;
-}
-
-interface ScanRegions {
-	echo_upgrade: ScanRegion;
-	main_stats: ScanRegion;
-	sub_stats: ScanRegion;
-}
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function Settings() {
-	const [overlayEnabled, setOverlayEnabled] = useState(false);
-	const [_scanRegion, setScanRegion] = useState<ScanRegion>({
-		x: 130,
-		y: 65,
-		width: 270,
-		height: 60,
-	});
-	const [showScanRegion, setShowScanRegion] = useState(false);
-	const [selectedResolution, setSelectedResolution] = useState<string>("");
-	const [showDebugSection, setShowDebugSection] = useState(false);
-	const [debugRegion, setDebugRegion] = useState<ScanRegion>({
-		x: 130,
-		y: 65,
-		width: 270,
-		height: 60,
-	});
-	const [debugOcrText, setDebugOcrText] = useState<string | null>(null);
-	const [isDebugScanning, setIsDebugScanning] = useState(false);
-
-	const applyResolutionConfig = async (resolution: string) => {
-		const config = OCR_CONFIG[resolution as keyof typeof OCR_CONFIG];
-		if (config?.echoUpgrade) {
-			const echoUpgradeRegion = config.echoUpgrade;
-			setScanRegion(echoUpgradeRegion);
-			setSelectedResolution(resolution);
-			try {
-				// Set the echo upgrade scan region (for backward compatibility and debug outline)
-				await invoke("set_scan_region", { region: echoUpgradeRegion });
-
-				// Set all three scan regions for stats scanning
-				if (config.mainStats && config.subStats) {
-					const scanRegions: ScanRegions = {
-						echo_upgrade: echoUpgradeRegion,
-						main_stats: config.mainStats,
-						sub_stats: config.subStats,
-					};
-					await invoke("set_scan_regions", { regions: scanRegions });
-				}
-
-				// Save the selected resolution to plugin-store
-				const store = await Store.load("settings.json");
-				await store.set("resolution", resolution);
-				await store.save();
-			} catch (error) {
-				console.error("Failed to update scan regions:", error);
-			}
-		}
-	};
-
-	// biome-ignore lint/correctness/useExhaustiveDependencies: applyResolutionConfig changes on every re-render and should not be used as a hook dependency
-	useEffect(() => {
-		const initSettings = async () => {
-			// Load saved scan region on mount
-			invoke<ScanRegion | null>("get_scan_region")
-				.then((region) => {
-					if (region) {
-						setScanRegion(region);
-					}
-				})
-				.catch(console.error);
-
-			// Load show scan region state
-			invoke<boolean>("get_show_scan_region")
-				.then((show) => {
-					setShowScanRegion(show);
-				})
-				.catch(console.error);
-
-			// Load saved resolution from plugin-store
-			try {
-				const store = await Store.load("settings.json");
-				const savedResolution = await store.get<string>("resolution");
-				if (savedResolution) {
-					await applyResolutionConfig(savedResolution);
-				}
-
-				// Load overlay enabled state
-				const savedOverlayEnabled = await store.get<boolean>("overlayEnabled");
-				if (savedOverlayEnabled !== null && savedOverlayEnabled !== undefined) {
-					setOverlayEnabled(savedOverlayEnabled);
-					// Show or hide overlay based on saved state
-					const windows = await getAllWindows();
-					const overlayWindow = windows.find((w) => w.label === "overlay");
-					if (overlayWindow) {
-						if (savedOverlayEnabled) {
-							await overlayWindow.show();
-						} else {
-							await overlayWindow.hide();
-						}
-					}
-				}
-			} catch (error) {
-				console.error("[Settings] Failed to load saved resolution:", error);
-			}
-		};
-
-		initSettings();
-	}, []);
-
 	// Close overlay when settings window closes
 	useEffect(() => {
 		const setupCloseHandler = async () => {
@@ -147,70 +26,6 @@ export function Settings() {
 		};
 	}, []);
 
-	// Update scan region when debug region changes and outline is visible
-	useEffect(() => {
-		if (showScanRegion) {
-			invoke("set_scan_region", { region: debugRegion }).catch(console.error);
-		}
-	}, [debugRegion, showScanRegion]);
-
-	const toggleOverlay = async () => {
-		const windows = await getAllWindows();
-		const overlayWindow = windows.find((w) => w.label === "overlay");
-
-		if (overlayWindow) {
-			const newState = !overlayEnabled;
-			if (newState) {
-				await overlayWindow.show();
-			} else {
-				await overlayWindow.hide();
-			}
-			setOverlayEnabled(newState);
-
-			// Save overlay enabled state to store
-			try {
-				const store = await Store.load("settings.json");
-				await store.set("overlayEnabled", newState);
-				await store.save();
-			} catch (error) {
-				console.error("[Settings] Failed to save overlay state:", error);
-			}
-		}
-	};
-
-	const toggleShowScanRegion = async () => {
-		try {
-			const newValue = !showScanRegion;
-
-			// When enabling the outline from debug section, temporarily set the scan region to debug region
-			if (newValue) {
-				await invoke("set_scan_region", { region: debugRegion });
-			}
-
-			await invoke("set_show_scan_region", { show: newValue });
-			setShowScanRegion(newValue);
-		} catch (error) {
-			console.error("Failed to toggle scan region visibility:", error);
-		}
-	};
-
-	const performDebugScan = async () => {
-		setIsDebugScanning(true);
-		setDebugOcrText(null);
-		try {
-			const text = await invoke<string>("scan_region_for_text", {
-				region: debugRegion,
-			});
-			setDebugOcrText(text);
-			console.log("Debug OCR result:", text);
-		} catch (error) {
-			console.error("Debug scan failed:", error);
-			setDebugOcrText(`Error: ${error}`);
-		} finally {
-			setIsDebugScanning(false);
-		}
-	};
-
 	return (
 		<div className="min-h-screen bg-background p-8">
 			<div className="max-w-4xl mx-auto space-y-6">
@@ -220,183 +35,25 @@ export function Settings() {
 
 				<Separator />
 
-				<Card>
-					<CardContent className="space-y-4">
-						<div className="flex items-center justify-between">
-							<div className="space-y-0.5">
-								<Label className="text-base font-medium">Enable Overlay</Label>
-							</div>
-							<Button
-								variant={overlayEnabled ? "destructive" : "default"}
-								onClick={toggleOverlay}
-							>
-								{overlayEnabled ? "Disable" : "Enable"}
-							</Button>
-						</div>
-					</CardContent>
-				</Card>
+				<Tabs defaultValue="rules" className="w-full">
+					<TabsList className="grid w-full grid-cols-3">
+						<TabsTrigger value="rules">Rules</TabsTrigger>
+						<TabsTrigger value="overlay">Overlay</TabsTrigger>
+						<TabsTrigger value="ocr">OCR</TabsTrigger>
+					</TabsList>
 
-				<Card>
-					<CardContent className="space-y-4">
-						<div className="space-y-2">
-							<Label className="text-base font-medium">
-								OCR Text Detection
-							</Label>
-						</div>
+					<TabsContent value="rules" className="space-y-6">
+						<RulesTab />
+					</TabsContent>
 
-						<Separator />
+					<TabsContent value="overlay" className="space-y-6">
+						<OverlayTab />
+					</TabsContent>
 
-						<div className="space-y-3">
-							<Label htmlFor="resolution-select">Screen Resolution</Label>
-							<Select
-								value={selectedResolution}
-								onValueChange={(value) => applyResolutionConfig(value ?? "")}
-							>
-								<SelectTrigger className="w-full">
-									{selectedResolution === ""
-										? "Select your screen resolution"
-										: selectedResolution}
-								</SelectTrigger>
-								<SelectContent>
-									{Object.keys(OCR_CONFIG).map((resolution) => (
-										<SelectItem key={resolution} value={resolution}>
-											{resolution}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-						</div>
-
-						<Separator />
-
-						<div className="space-y-3">
-							<Button
-								onClick={() => setShowDebugSection(!showDebugSection)}
-								variant="ghost"
-								className="w-full justify-between"
-							>
-								<span className="text-sm font-medium">
-									Developer / Debug Settings
-								</span>
-								<span className="text-muted-foreground">
-									{showDebugSection ? "▼" : "▶"}
-								</span>
-							</Button>
-
-							{showDebugSection && (
-								<div className="space-y-4 rounded-lg bg-muted/50 p-4">
-									<div className="space-y-2">
-										<Label className="text-sm font-medium">
-											Manual Region Configuration
-										</Label>
-										<p className="text-xs text-muted-foreground">
-											Test a custom region without saving it to the main
-											configuration
-										</p>
-										<div className="grid grid-cols-2 gap-4">
-											<div className="space-y-2">
-												<Label htmlFor="debug-region-x">X Position (px)</Label>
-												<Input
-													id="debug-region-x"
-													type="number"
-													value={debugRegion.x}
-													onChange={(e) =>
-														setDebugRegion({
-															...debugRegion,
-															x: Number(e.target.value),
-														})
-													}
-												/>
-											</div>
-											<div className="space-y-2">
-												<Label htmlFor="debug-region-y">Y Position (px)</Label>
-												<Input
-													id="debug-region-y"
-													type="number"
-													value={debugRegion.y}
-													onChange={(e) =>
-														setDebugRegion({
-															...debugRegion,
-															y: Number(e.target.value),
-														})
-													}
-												/>
-											</div>
-											<div className="space-y-2">
-												<Label htmlFor="debug-region-width">Width (px)</Label>
-												<Input
-													id="debug-region-width"
-													type="number"
-													value={debugRegion.width}
-													onChange={(e) =>
-														setDebugRegion({
-															...debugRegion,
-															width: Number(e.target.value),
-														})
-													}
-												/>
-											</div>
-											<div className="space-y-2">
-												<Label htmlFor="debug-region-height">Height (px)</Label>
-												<Input
-													id="debug-region-height"
-													type="number"
-													value={debugRegion.height}
-													onChange={(e) =>
-														setDebugRegion({
-															...debugRegion,
-															height: Number(e.target.value),
-														})
-													}
-												/>
-											</div>
-										</div>
-										<Button
-											onClick={performDebugScan}
-											disabled={isDebugScanning}
-											variant="default"
-											className="w-full"
-										>
-											{isDebugScanning ? "Scanning..." : "Test Scan Region"}
-										</Button>
-
-										{debugOcrText !== null && (
-											<div className="rounded-lg bg-background border p-3 space-y-2">
-												<Label className="text-sm font-medium">
-													OCR Result:
-												</Label>
-												<pre className="text-xs text-muted-foreground whitespace-pre-wrap wrap-break-word font-mono">
-													{debugOcrText || "(No text detected)"}
-												</pre>
-											</div>
-										)}
-									</div>
-
-									<Separator />
-
-									<div className="space-y-2">
-										<Label className="text-sm font-medium">
-											Region Outline Visibility
-										</Label>
-										<Button
-											onClick={toggleShowScanRegion}
-											variant={showScanRegion ? "default" : "outline"}
-											className="w-full"
-										>
-											{showScanRegion
-												? "Hide Region Outline"
-												: "Show Region Outline"}
-										</Button>
-										<p className="text-xs text-muted-foreground">
-											Displays a visual outline of the scan region on the
-											overlay
-										</p>
-									</div>
-								</div>
-							)}
-						</div>
-					</CardContent>
-				</Card>
+					<TabsContent value="ocr" className="space-y-6">
+						<OcrTab />
+					</TabsContent>
+				</Tabs>
 			</div>
 		</div>
 	);

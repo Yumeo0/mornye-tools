@@ -1,0 +1,10 @@
+[submodule "public/wuthering-waves-assets"]
+	path = public/wuthering-waves-assets
+	url = git@github.com:ryanbenson/wuthering-waves-assets.git
+[submodule "data/wuwa-assets"]
+	path = data/wuwa-assets
+	url = git@github.com:Yumeo0/wuwa-assets.git
+[submodule "data/wuwa-data"]
+	path = data/wuwa-data
+	url = git@github.com:Arikatsu/WutheringWaves_Data.git
+	branch = 3.0

@@ -132,6 +132,10 @@ def get_possible_substats(subprop_data, property_data, multitext_data):
 		if prop_name and prop_name not in substats:
 			substats.append(prop_name)
 	
+	substats.append("HP%")
+	substats.append("ATK%")
+	substats.append("DEF%")
+	
 	return sorted(substats)
 
 def compile_echo_data():

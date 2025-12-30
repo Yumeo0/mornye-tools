@@ -1,0 +1,127 @@
+[
+  {
+    "id": 1,
+    "name": "Freezing Frost",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIce.png"
+  },
+  {
+    "id": 2,
+    "name": "Molten Rift",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFire.png"
+  },
+  {
+    "id": 3,
+    "name": "Void Thunder",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriThunder.png"
+  },
+  {
+    "id": 4,
+    "name": "Sierra Gale",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWind.png"
+  },
+  {
+    "id": 5,
+    "name": "Celestial Light",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLight.png"
+  },
+  {
+    "id": 6,
+    "name": "Havoc Eclipse",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDark.png"
+  },
+  {
+    "id": 7,
+    "name": "Rejuvenating Glow",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCure.png"
+  },
+  {
+    "id": 8,
+    "name": "Moonlit Clouds",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCloud.png"
+  },
+  {
+    "id": 9,
+    "name": "Lingering Tunes",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAttack.png"
+  },
+  {
+    "id": 10,
+    "name": "Frosty Resolve",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceUltimateSkill.png"
+  },
+  {
+    "id": 11,
+    "name": "Eternal Radiance",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLightError.png"
+  },
+  {
+    "id": 12,
+    "name": "Midnight Veil",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDarkAssist.png"
+  },
+  {
+    "id": 13,
+    "name": "Empyrean Anthem",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCooperate.png"
+  },
+  {
+    "id": 14,
+    "name": "Tidebreaking Courage",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriEnergy.png"
+  },
+  {
+    "id": 16,
+    "name": "Gusts of Welkin",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindError.png"
+  },
+  {
+    "id": 17,
+    "name": "Windward Pilgrimage",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindErrorA.png"
+  },
+  {
+    "id": 18,
+    "name": "Flaming Clawprint",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireUltimateSkill.png"
+  },
+  {
+    "id": 19,
+    "name": "Dream of the Lost",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDarkVision.png"
+  },
+  {
+    "id": 20,
+    "name": "Crown of Valor",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriShield.png"
+  },
+  {
+    "id": 21,
+    "name": "Law of Harmony",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport.png"
+  },
+  {
+    "id": 22,
+    "name": "Flamewing's Shadow",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA.png"
+  },
+  {
+    "id": 23,
+    "name": "Thread of Severed Fate",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQianXiao.png"
+  },
+  {
+    "id": 24,
+    "name": "Pact of Neonlight Leap",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLightWeakness.png"
+  },
+  {
+    "id": 25,
+    "name": "Halo of Starry Radiance",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCureWeakness.png"
+  },
+  {
+    "id": 26,
+    "name": "Rite of Gilded Revelation",
+    "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAttackWeakness.png"
+  }
+]

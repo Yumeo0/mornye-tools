@@ -1,0 +1,15 @@
+{
+    "mainEchoes": [ 60001155 ],
+    "sets": [ 19, 6, 12, 9, 10 ],
+    "stats": {
+        "4cost": [["Crit. DMG", "Crit. Rate"]],
+        "3cost": [["Havoc DMG Bonus"]],
+        "1cost": [["ATK%"]],
+        "subs": [
+            ["Crit. DMG", "Crit. Rate"],
+            ["ATK%"],
+            ["Resonance Skill DMG Bonus"],
+            ["ATK"]
+        ]
+    }
+}

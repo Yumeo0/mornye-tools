@@ -105,6 +105,22 @@ export function Settings() {
 				if (savedResolution) {
 					await applyResolutionConfig(savedResolution);
 				}
+
+				// Load overlay enabled state
+				const savedOverlayEnabled = await store.get<boolean>("overlayEnabled");
+				if (savedOverlayEnabled !== null && savedOverlayEnabled !== undefined) {
+					setOverlayEnabled(savedOverlayEnabled);
+					// Show or hide overlay based on saved state
+					const windows = await getAllWindows();
+					const overlayWindow = windows.find((w) => w.label === "overlay");
+					if (overlayWindow) {
+						if (savedOverlayEnabled) {
+							await overlayWindow.show();
+						} else {
+							await overlayWindow.hide();
+						}
+					}
+				}
 			} catch (error) {
 				console.error("[Settings] Failed to load saved resolution:", error);
 			}
@@ -143,12 +159,22 @@ export function Settings() {
 		const overlayWindow = windows.find((w) => w.label === "overlay");
 
 		if (overlayWindow) {
-			if (overlayEnabled) {
-				await overlayWindow.hide();
-			} else {
+			const newState = !overlayEnabled;
+			if (newState) {
 				await overlayWindow.show();
+			} else {
+				await overlayWindow.hide();
 			}
-			setOverlayEnabled(!overlayEnabled);
+			setOverlayEnabled(newState);
+
+			// Save overlay enabled state to store
+			try {
+				const store = await Store.load("settings.json");
+				await store.set("overlayEnabled", newState);
+				await store.save();
+			} catch (error) {
+				console.error("[Settings] Failed to save overlay state:", error);
+			}
 		}
 	};
 

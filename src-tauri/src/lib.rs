@@ -2,11 +2,12 @@ use tauri::Emitter;
 use image::imageops::crop_imm;
 use image::{DynamicImage, GrayImage};
 use imageproc::contrast::{threshold, ThresholdType};
-use rusty_tesseract::{image_to_string, Args, Image};
+use kreuzberg_tesseract::TesseractAPI;
 use serde::{Deserialize, Serialize};
 use std::sync::Mutex;
 use std::process::Command;
-use tauri::State;
+use std::path::PathBuf;
+use tauri::{AppHandle, Manager, State};
 use xcap::Monitor;
 use regex::Regex;
 
@@ -40,6 +41,31 @@ pub struct AppState {
     pub show_scan_region: Mutex<bool>,
 }
 
+fn get_tessdata_dir(app_handle: &AppHandle) -> Result<PathBuf, String> {
+    // First, try development path (src-tauri/tessdata) relative to cargo manifest dir
+    if let Ok(manifest_dir) = std::env::var("CARGO_MANIFEST_DIR") {
+        let dev_tessdata = PathBuf::from(manifest_dir).join("tessdata");
+        if dev_tessdata.exists() {
+            return Ok(dev_tessdata);
+        }
+    }
+    
+    // Try to get bundled tessdata path (for production builds)
+    if let Ok(resource_path) = app_handle.path().resource_dir() {
+        let tessdata_path = resource_path.join("tessdata");
+        if tessdata_path.exists() {
+            return Ok(tessdata_path);
+        }
+    }
+    
+    // Fallback to TESSDATA_PREFIX environment variable
+    if let Ok(dir) = std::env::var("TESSDATA_PREFIX") {
+        return Ok(PathBuf::from(dir));
+    }
+    
+    Err("Tessdata directory not found. Please ensure tessdata is in src-tauri/tessdata for development or bundled with the app for production.".to_string())
+}
+
 fn preprocess_image(img: &DynamicImage) -> GrayImage {
     // Convert to grayscale
     let gray = img.to_luma8();
@@ -49,30 +75,45 @@ fn preprocess_image(img: &DynamicImage) -> GrayImage {
     threshold(&gray, 128, ThresholdType::Binary)
 }
 
-fn perform_ocr_on_image(img: &DynamicImage) -> Result<String, String> {
+fn perform_ocr_on_image(img: &DynamicImage, app_handle: &AppHandle) -> Result<String, String> {
     // Preprocess the image
     let processed = preprocess_image(img);
     
     // Convert back to DynamicImage
     let processed_dynamic = DynamicImage::ImageLuma8(processed);
     
-    // Convert to rusty_tesseract Image type
-    let tesseract_image = Image::from_dynamic_image(&processed_dynamic)
-        .map_err(|e| format!("Image conversion error: {}", e))?;
+    // Initialize Tesseract API
+    let api = TesseractAPI::new();
     
-    // Perform OCR with optimized settings
-    let args = Args {
-        lang: "eng".to_string(),
-        dpi: Some(300), // Higher DPI for better accuracy
-        psm: Some(6),   // Assume uniform block of text
-        oem: Some(3),   // Default OCR Engine Mode
-        config_variables: Default::default(),
-    };
+    let tessdata_dir = get_tessdata_dir(app_handle)?;
+    api.init(tessdata_dir.to_str().unwrap(), "eng")
+        .map_err(|e| format!("Failed to initialize Tesseract: {}", e))?;
     
-    image_to_string(&tesseract_image, &args).map_err(|e| format!("OCR error: {}", e))
+    // Set page segmentation mode to uniform block of text
+    api.set_variable("tessedit_pageseg_mode", "6")
+        .map_err(|e| format!("Failed to set PSM: {}", e))?;
+    
+    // Convert image to RGB format for Tesseract
+    let rgb_img = processed_dynamic.to_rgb8();
+    let (width, height) = rgb_img.dimensions();
+    let image_data = rgb_img.into_raw();
+    
+    // Set the image data
+    api.set_image(
+        &image_data,
+        width as i32,
+        height as i32,
+        3, // bytes per pixel (RGB)
+        (3 * width) as i32, // bytes per line
+    )
+    .map_err(|e| format!("Failed to set image: {}", e))?;
+    
+    // Get the recognized text
+    api.get_utf8_text()
+        .map_err(|e| format!("OCR error: {}", e))
 }
 
-fn parse_stats(text: &str, stat_type: &str) -> String {
+fn parse_stats(text: &str, _stat_type: &str) -> String {
     //println!("=== {} RAW TEXT ===", stat_type);
     //println!("{}", text);
     //println!("{}", "=".repeat(26 + stat_type.len()));
@@ -219,7 +260,7 @@ fn scan_for_text(
     let cropped_dynamic = image::DynamicImage::ImageRgba8(cropped);
     
     // Perform OCR with preprocessing
-    let text = perform_ocr_on_image(&cropped_dynamic)?;
+    let text = perform_ocr_on_image(&cropped_dynamic, &app_handle)?;
 
     // Check if "Echo Upgrade" is found (case-insensitive)
     let found = text.to_lowercase().contains("echo upgrade");
@@ -244,7 +285,7 @@ fn scan_for_text(
             )
             .to_image();
             let main_dynamic = image::DynamicImage::ImageRgba8(main_cropped);
-            let main_text = perform_ocr_on_image(&main_dynamic)
+            let main_text = perform_ocr_on_image(&main_dynamic, &app_handle)
                 .unwrap_or_else(|_| String::new());
 
             // Scan sub stats
@@ -257,7 +298,7 @@ fn scan_for_text(
             )
             .to_image();
             let sub_dynamic = image::DynamicImage::ImageRgba8(sub_cropped);
-            let sub_text = perform_ocr_on_image(&sub_dynamic)
+            let sub_text = perform_ocr_on_image(&sub_dynamic, &app_handle)
                 .unwrap_or_else(|_| String::new());
 
             // Parse and clean the stats
@@ -308,7 +349,7 @@ fn get_last_stats_data(state: State<AppState>) -> Result<Option<StatsData>, Stri
 }
 
 #[tauri::command]
-fn scan_region_for_text(region: ScanRegion) -> Result<String, String> {
+fn scan_region_for_text(app_handle: tauri::AppHandle, region: ScanRegion) -> Result<String, String> {
     // Capture the primary monitor
     let monitors = Monitor::all().map_err(|e| e.to_string())?;
     let monitor = monitors.first().ok_or("No monitor found")?;
@@ -326,22 +367,37 @@ fn scan_region_for_text(region: ScanRegion) -> Result<String, String> {
     )
     .to_image();
 
-    // Convert to rusty_tesseract Image type
-    let tesseract_image = Image::from_dynamic_image(&image::DynamicImage::ImageRgba8(cropped))
-        .map_err(|e| format!("Image conversion error: {}", e))?;
-
-    // Perform OCR
-    let args = Args {
-        lang: "eng".to_string(),
-        dpi: Some(150),
-        psm: Some(6),
-        oem: Some(3),
-        config_variables: Default::default(),
-    };
-
-    let text = image_to_string(&tesseract_image, &args).map_err(|e| format!("OCR error: {}", e))?;
-
-    Ok(text)
+    let cropped_dynamic = image::DynamicImage::ImageRgba8(cropped);
+    
+    // Initialize Tesseract API
+    let api = TesseractAPI::new();
+    
+    let tessdata_dir = get_tessdata_dir(&app_handle)?;
+    api.init(tessdata_dir.to_str().unwrap(), "eng")
+        .map_err(|e| format!("Failed to initialize Tesseract: {}", e))?;
+    
+    // Set page segmentation mode
+    api.set_variable("tessedit_pageseg_mode", "6")
+        .map_err(|e| format!("Failed to set PSM: {}", e))?;
+    
+    // Convert image to RGB format
+    let rgb_img = cropped_dynamic.to_rgb8();
+    let (width, height) = rgb_img.dimensions();
+    let image_data = rgb_img.into_raw();
+    
+    // Set the image data
+    api.set_image(
+        &image_data,
+        width as i32,
+        height as i32,
+        3,
+        (3 * width) as i32,
+    )
+    .map_err(|e| format!("Failed to set image: {}", e))?;
+    
+    // Get the recognized text
+    api.get_utf8_text()
+        .map_err(|e| format!("OCR error: {}", e))
 }
 
 #[tauri::command]

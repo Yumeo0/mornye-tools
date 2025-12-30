@@ -4,9 +4,11 @@ use image::{DynamicImage, GrayImage};
 use imageproc::contrast::{threshold, ThresholdType};
 use kreuzberg_tesseract::TesseractAPI;
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use std::sync::Mutex;
 use std::path::PathBuf;
 use std::collections::HashMap;
+use std::fs;
 use tauri::{AppHandle, Manager, State};
 use xcap::Monitor;
 use regex::Regex;
@@ -22,14 +24,35 @@ pub struct ScanRegion {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ScanRegions {
     pub echo_upgrade: ScanRegion,
+    pub echo_name: ScanRegion,
     pub main_stats: ScanRegion,
     pub sub_stats: ScanRegion,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct StatsData {
+    pub echo_name: String,
     pub main_stats: String,
     pub sub_stats: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CharacterInfo {
+    pub character_id: u32,
+    pub character_name: String,
+    pub icon_pile: String,
+    pub stats: CharacterStats,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CharacterStats {
+    #[serde(rename = "4cost")]
+    pub cost_4: Vec<Vec<String>>,
+    #[serde(rename = "3cost")]
+    pub cost_3: Vec<Vec<String>>,
+    #[serde(rename = "1cost")]
+    pub cost_1: Vec<Vec<String>>,
+    pub subs: Vec<Vec<String>>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -89,16 +112,8 @@ fn load_stats_config(app_handle: &AppHandle) -> Result<StatsConfig, String> {
         if config_path.exists() {
             let content = std::fs::read_to_string(&config_path)
                 .map_err(|e| format!("Failed to read stats.json: {}", e))?;
-            let mut config: StatsConfig = serde_json::from_str(&content)
+            let config: StatsConfig = serde_json::from_str(&content)
                 .map_err(|e| format!("Failed to parse stats.json: {}", e))?;
-            
-            // Normalize all keys in the config
-            config.main = config.main.into_iter()
-                .map(|(k, v)| (normalize_stat_name(&k), v))
-                .collect();
-            config.sub = config.sub.into_iter()
-                .map(|(k, v)| (normalize_stat_name(&k), v))
-                .collect();
             
             return Ok(config);
         }
@@ -110,16 +125,8 @@ fn load_stats_config(app_handle: &AppHandle) -> Result<StatsConfig, String> {
         if config_path.exists() {
             let content = std::fs::read_to_string(&config_path)
                 .map_err(|e| format!("Failed to read stats.json: {}", e))?;
-            let mut config: StatsConfig = serde_json::from_str(&content)
+            let config: StatsConfig = serde_json::from_str(&content)
                 .map_err(|e| format!("Failed to parse stats.json: {}", e))?;
-            
-            // Normalize all keys in the config
-            config.main = config.main.into_iter()
-                .map(|(k, v)| (normalize_stat_name(&k), v))
-                .collect();
-            config.sub = config.sub.into_iter()
-                .map(|(k, v)| (normalize_stat_name(&k), v))
-                .collect();
             
             return Ok(config);
         }
@@ -133,6 +140,52 @@ fn normalize_stat_name(name: &str) -> String {
         .split_whitespace()
         .collect::<Vec<_>>()
         .join(" ")
+}
+
+// Map OCR-detected stat names to canonical names from stats.json
+fn map_to_canonical_stat_name(stat_name: &str) -> String {
+    let normalized = normalize_stat_name(stat_name).to_lowercase();
+    
+    match normalized.as_str() {
+        // HP stats
+        s if s.contains("hp") && s.contains("%") => "HP%".to_string(),
+        s if s.contains("hp") => "HP".to_string(),
+        
+        // ATK stats
+        s if s.contains("atk") && s.contains("%") => "ATK%".to_string(),
+        s if s.contains("atk") => "ATK".to_string(),
+        
+        // DEF stats
+        s if s.contains("def") && s.contains("%") => "DEF%".to_string(),
+        s if s.contains("def") => "DEF".to_string(),
+        
+        // Crit stats
+        s if s.contains("crit") && (s.contains("rate") || s.contains("rat")) => "Crit. Rate".to_string(),
+        s if s.contains("crit") && s.contains("dmg") => "Crit. DMG".to_string(),
+        
+        // Healing
+        s if s.contains("healing") => "Healing Bonus".to_string(),
+        
+        // Element DMG
+        s if s.contains("aero") => "Aero DMG Bonus".to_string(),
+        s if s.contains("glacio") => "Glacio DMG Bonus".to_string(),
+        s if s.contains("fusion") => "Fusion DMG Bonus".to_string(),
+        s if s.contains("electro") => "Electro DMG Bonus".to_string(),
+        s if s.contains("havoc") => "Havoc DMG Bonus".to_string(),
+        s if s.contains("spectro") => "Spectro DMG Bonus".to_string(),
+        
+        // Energy Regen
+        s if s.contains("energy") => "Energy Regen".to_string(),
+        
+        // Attack type bonuses
+        s if s.contains("basic") && s.contains("attack") => "Basic Attack DMG Bonus".to_string(),
+        s if s.contains("heavy") && s.contains("attack") => "Heavy Attack DMG Bonus".to_string(),
+        s if s.contains("resonance") && s.contains("skill") => "Resonance Skill DMG Bonus".to_string(),
+        s if s.contains("resonance") && s.contains("liberation") => "Resonance Liberation DMG Bonus".to_string(),
+        
+        // Fallback - return the original normalized name
+        _ => stat_name.to_string(),
+    }
 }
 
 fn try_fix_decimal(value_str: &str, min: f64, max: f64) -> Option<String> {
@@ -170,7 +223,8 @@ fn try_fix_decimal(value_str: &str, min: f64, max: f64) -> Option<String> {
 }
 
 fn correct_stat_value(stat_name: &str, value_str: &str, stats_config: &StatsConfig, is_main_stat: bool) -> String {
-    let normalized_name = normalize_stat_name(stat_name);
+    // First map to canonical name
+    let canonical_name = map_to_canonical_stat_name(stat_name);
     
     // Get the appropriate stat map (keys are already normalized)
     let stat_map = if is_main_stat {
@@ -179,25 +233,8 @@ fn correct_stat_value(stat_name: &str, value_str: &str, stats_config: &StatsConf
         &stats_config.sub
     };
     
-    // Try to find the stat range with various name variations
-    let range = stat_map.get(&normalized_name)
-        .or_else(|| {
-            // Try with "Bonus" suffix for element DMG stats
-            stat_map.get(&format!("{} Bonus", normalized_name))
-        })
-        .or_else(|| {
-            // Try without "Bonus" suffix
-            let without_bonus = normalized_name.replace(" Bonus", "");
-            stat_map.get(&without_bonus)
-        })
-        .or_else(|| {
-            // Try with "DMG Bonus" suffix for element names
-            if !normalized_name.contains("DMG") && !normalized_name.contains("Bonus") {
-                stat_map.get(&format!("{} DMG Bonus", normalized_name))
-            } else {
-                None
-            }
-        });
+    // Try to find the stat range using canonical name
+    let range = stat_map.get(&canonical_name);
     
     if let Some(range) = range {
         if let Some(corrected) = try_fix_decimal(value_str, range.min, range.max) {
@@ -286,13 +323,16 @@ fn parse_stats(text: &str, _stat_type: &str, stats_config: &StatsConfig, is_main
         let value: &str = captures.get(2).map_or("", |m| m.as_str());
         let match_start = captures.get(0).map_or(0, |m| m.start());
         
-        // Normalize stat name
-        let normalized = stat_name.replace(".", "").split_whitespace().collect::<Vec<_>>().join(" ");
+        // For percentage stats, append % to the stat name for proper lookup
+        let stat_name_with_percent = format!("{}%", stat_name);
         
-        // Correct the value if needed
-        let corrected_value = correct_stat_value(stat_name, value, stats_config, is_main_stat);
+        // Map to canonical stat name (use the version with %)
+        let canonical_name = map_to_canonical_stat_name(&stat_name_with_percent);
         
-        stats.push(format!("{} {}%", normalized, corrected_value));
+        // Correct the value if needed (use the version with % for proper range lookup)
+        let corrected_value = correct_stat_value(&stat_name_with_percent, value, stats_config, is_main_stat);
+        
+        stats.push(format!("{} {}%", canonical_name, corrected_value));
         matched_positions.push((match_start, captures.get(0).map_or(0, |m| m.end())));
     }
     
@@ -311,13 +351,13 @@ fn parse_stats(text: &str, _stat_type: &str, stats_config: &StatsConfig, is_main
             let stat_name: &str = captures.get(1).map_or("", |m| m.as_str());
             let value: &str = captures.get(2).map_or("", |m| m.as_str());
             
-            // Normalize stat name
-            let normalized = stat_name.replace(".", "").split_whitespace().collect::<Vec<_>>().join(" ");
+            // Map to canonical stat name
+            let canonical_name = map_to_canonical_stat_name(stat_name);
             
             // Correct the value if needed
             let corrected_value = correct_stat_value(stat_name, value, stats_config, is_main_stat);
             
-            stats.push(format!("{} {}", normalized, corrected_value));
+            stats.push(format!("{} {}", canonical_name, corrected_value));
         }
     }
     
@@ -433,6 +473,28 @@ async fn scan_for_text(
                 // Load stats config
                 let stats_config = load_stats_config(&app_handle_clone)?;
                 
+                // Scan echo name
+                let name_cropped = crop_imm(
+                    &screenshot,
+                    regions.echo_name.x,
+                    regions.echo_name.y,
+                    regions.echo_name.width,
+                    regions.echo_name.height,
+                )
+                .to_image();
+                let name_dynamic = image::DynamicImage::ImageRgba8(name_cropped);
+                let name_text = perform_ocr_on_image(&name_dynamic, &app_handle_clone)
+                    .unwrap_or_else(|_| String::new());
+                
+                // Clean echo name - remove extra whitespace and trim
+                let echo_name = name_text.lines()
+                    .map(|line| line.trim())
+                    .filter(|line| !line.is_empty())
+                    .collect::<Vec<_>>()
+                    .join(" ")
+                    .trim()
+                    .to_string();
+                
                 // Scan main stats
                 let main_cropped = crop_imm(
                     &screenshot,
@@ -464,6 +526,7 @@ async fn scan_for_text(
                 let parsed_sub = parse_stats(&sub_text, "SUB STATS", &stats_config, false);
 
                 Some(StatsData {
+                    echo_name,
                     main_stats: parsed_main,
                     sub_stats: parsed_sub,
                 })
@@ -598,6 +661,132 @@ fn get_show_scan_region(state: State<AppState>) -> Result<bool, String> {
     Ok(*show_scan_region)
 }
 
+#[tauri::command]
+fn get_relevant_characters(
+    app_handle: tauri::AppHandle,
+    echo_set_ids: Vec<u32>,
+) -> Result<Vec<CharacterInfo>, String> {
+    // Load character data
+    let character_data_path = if let Ok(manifest_dir) = std::env::var("CARGO_MANIFEST_DIR") {
+        PathBuf::from(manifest_dir)
+            .parent()
+            .ok_or("Failed to get parent directory")?
+            .join("src/configs/character_data.json")
+    } else if let Ok(resource_path) = app_handle.path().resource_dir() {
+        resource_path.join("src/configs/character_data.json")
+    } else {
+        return Err("Could not find character data".to_string());
+    };
+
+    let character_data_str = fs::read_to_string(character_data_path)
+        .map_err(|e| format!("Failed to read character data: {}", e))?;
+    let character_data: Vec<Value> = serde_json::from_str(&character_data_str)
+        .map_err(|e| format!("Failed to parse character data: {}", e))?;
+
+    // Load character rules from plugin store directory
+    let mut relevant_characters = Vec::new();
+
+    for character in character_data {
+        let character_id = character.get("character_id")
+            .and_then(|v| v.as_u64())
+            .ok_or("Invalid character_id")? as u32;
+        
+        let character_name = character.get("character_name")
+            .and_then(|v| v.as_str())
+            .ok_or("Invalid character_name")?
+            .to_string();
+        
+        let icon_pile = character.get("icon_pile")
+            .and_then(|v| v.as_str())
+            .ok_or("Invalid icon_pile")?
+            .to_string();
+
+        // Try to load character config
+        let config_path = if let Ok(manifest_dir) = std::env::var("CARGO_MANIFEST_DIR") {
+            PathBuf::from(manifest_dir)
+                .parent()
+                .ok_or("Failed to get parent directory")?
+                .join(format!("src/configs/characters/{}.json", character_id))
+        } else if let Ok(resource_path) = app_handle.path().resource_dir() {
+            resource_path.join(format!("src/configs/characters/{}.json", character_id))
+        } else {
+            continue;
+        };
+
+        if config_path.exists() {
+            if let Ok(config_str) = fs::read_to_string(&config_path) {
+                if let Ok(config) = serde_json::from_str::<Value>(&config_str) {
+                    // Check if character has any matching echo sets
+                    if let Some(sets) = config.get("sets").and_then(|v| v.as_array()) {
+                        let has_matching_set = sets.iter()
+                            .filter_map(|v| v.as_u64())
+                            .any(|set_id| echo_set_ids.contains(&(set_id as u32)));
+
+                        if has_matching_set {
+                            // Parse stats
+                            if let Some(stats_obj) = config.get("stats") {
+                                let cost_4 = stats_obj.get("4cost")
+                                    .and_then(|v| v.as_array())
+                                    .map(|arr| arr.iter()
+                                        .filter_map(|v| v.as_array())
+                                        .map(|inner| inner.iter()
+                                            .filter_map(|s| s.as_str().map(|s| s.to_string()))
+                                            .collect())
+                                        .collect())
+                                    .unwrap_or_default();
+
+                                let cost_3 = stats_obj.get("3cost")
+                                    .and_then(|v| v.as_array())
+                                    .map(|arr| arr.iter()
+                                        .filter_map(|v| v.as_array())
+                                        .map(|inner| inner.iter()
+                                            .filter_map(|s| s.as_str().map(|s| s.to_string()))
+                                            .collect())
+                                        .collect())
+                                    .unwrap_or_default();
+
+                                let cost_1 = stats_obj.get("1cost")
+                                    .and_then(|v| v.as_array())
+                                    .map(|arr| arr.iter()
+                                        .filter_map(|v| v.as_array())
+                                        .map(|inner| inner.iter()
+                                            .filter_map(|s| s.as_str().map(|s| s.to_string()))
+                                            .collect())
+                                        .collect())
+                                    .unwrap_or_default();
+
+                                let subs = stats_obj.get("subs")
+                                    .and_then(|v| v.as_array())
+                                    .map(|arr| arr.iter()
+                                        .filter_map(|v| v.as_array())
+                                        .map(|inner| inner.iter()
+                                            .filter_map(|s| s.as_str().map(|s| s.to_string()))
+                                            .collect())
+                                        .collect())
+                                    .unwrap_or_default();
+
+                                relevant_characters.push(CharacterInfo {
+                                    character_id,
+                                    character_name,
+                                    icon_pile,
+                                    stats: CharacterStats {
+                                        cost_4,
+                                        cost_3,
+                                        cost_1,
+                                        subs,
+                                    },
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    Ok(relevant_characters)
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -615,7 +804,8 @@ pub fn run() {
             get_last_stats_data,
             set_show_scan_region,
             get_show_scan_region,
-            scan_region_for_text
+            scan_region_for_text,
+            get_relevant_characters
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

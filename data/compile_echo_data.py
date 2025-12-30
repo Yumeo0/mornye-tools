@@ -138,6 +138,29 @@ def get_possible_substats(subprop_data, property_data, multitext_data):
 	
 	return sorted(substats)
 
+def determine_echo_cost(mainstats):
+	"""Determine echo cost based on possible mainstats.
+	
+	Logic:
+	- If "Crit. DMG" is in possible mainstats → 4-cost
+	- Else if any element DMG Bonus is in possible mainstats → 3-cost
+	- Else → 1-cost
+	"""
+	if "Crit. DMG" in mainstats:
+		return 4
+	
+	# Check for element DMG bonuses
+	element_bonuses = [
+		"Havoc DMG Bonus", "Glacio DMG Bonus", "Fusion DMG Bonus",
+		"Electro DMG Bonus", "Aero DMG Bonus", "Spectro DMG Bonus"
+	]
+	
+	for bonus in element_bonuses:
+		if bonus in mainstats:
+			return 3
+	
+	return 1
+
 def compile_echo_data():
 	"""Compile all echo data into a single JSON file."""
 	print("Loading JSON files...")
@@ -193,6 +216,9 @@ def compile_echo_data():
 		mainstats = get_possible_mainstats(main_prop, mainprop_data, mainpropitem_data, 
 		                                   property_data, multitext_data)
 		
+		# Determine echo cost based on mainstats
+		echo_cost = determine_echo_cost(mainstats)
+		
 		# Get icon paths from the phantom item
 		icon_head = convert_unreal_path_to_relative(phantom_item.get("Icon"))
 		icon_middle = convert_unreal_path_to_relative(phantom_item.get("IconMiddle"))
@@ -202,6 +228,7 @@ def compile_echo_data():
 		echo_entry = {
 			"echo_name": echo_name,
 			"echo_id": echo_id,
+			"echo_cost": echo_cost,
 			"icon_head": icon_head,
 			"icon_middle": icon_middle,
 			"icon_small": icon_small,

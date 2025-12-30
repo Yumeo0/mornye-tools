@@ -23,6 +23,7 @@ interface ScanRegion {
 
 interface ScanRegions {
 	echo_upgrade: ScanRegion;
+	echo_name: ScanRegion;
 	main_stats: ScanRegion;
 	sub_stats: ScanRegion;
 }
@@ -56,10 +57,11 @@ export function OcrTab() {
 				// Set the echo upgrade scan region (for backward compatibility and debug outline)
 				await invoke("set_scan_region", { region: echoUpgradeRegion });
 
-				// Set all three scan regions for stats scanning
-				if (config.mainStats && config.subStats) {
+				// Set all scan regions including echo name for stats scanning
+				if (config.echoName && config.mainStats && config.subStats) {
 					const scanRegions: ScanRegions = {
 						echo_upgrade: echoUpgradeRegion,
+						echo_name: config.echoName,
 						main_stats: config.mainStats,
 						sub_stats: config.subStats,
 					};

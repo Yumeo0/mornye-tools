@@ -2,6 +2,7 @@
   {
     "echo_name": "Vanguard Junrock",
     "echo_id": 60000015,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_011_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_011_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_011_UI.png",
@@ -46,6 +47,7 @@
   {
     "echo_name": "Fission Junrock",
     "echo_id": 60000025,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_021_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_021_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_021_UI.png",
@@ -90,6 +92,7 @@
   {
     "echo_name": "Electro Predator",
     "echo_id": 60000035,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_031_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_031_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_031_UI.png",
@@ -129,6 +132,7 @@
   {
     "echo_name": "Fusion Warrior",
     "echo_id": 60000045,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_041_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_041_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_041_UI.png",
@@ -173,6 +177,7 @@
   {
     "echo_name": "Havoc Warrior",
     "echo_id": 60000055,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_051_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_051_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_051_UI.png",
@@ -212,6 +217,7 @@
   {
     "echo_name": "Snip Snap",
     "echo_id": 60000065,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_061_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_061_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_061_UI.png",
@@ -256,6 +262,7 @@
   {
     "echo_name": "Zig Zag",
     "echo_id": 60000075,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_071_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_071_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_071_UI.png",
@@ -300,6 +307,7 @@
   {
     "echo_name": "Whiff Whaff",
     "echo_id": 60000085,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_081_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_081_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_081_UI.png",
@@ -344,6 +352,7 @@
   {
     "echo_name": "Tick Tack",
     "echo_id": 60000095,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_091_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_091_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_091_UI.png",
@@ -388,6 +397,7 @@
   {
     "echo_name": "Glacio Predator",
     "echo_id": 60000105,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_101_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_101_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_101_UI.png",
@@ -427,6 +437,7 @@
   {
     "echo_name": "Gulpuff",
     "echo_id": 60000115,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_111_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_111_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_111_UI.png",
@@ -466,6 +477,7 @@
   {
     "echo_name": "Violet-Feathered Heron",
     "echo_id": 60000125,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_121_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_121_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_121_UI.png",
@@ -512,6 +524,7 @@
   {
     "echo_name": "Cyan-Feathered Heron",
     "echo_id": 60000135,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_131_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_131_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_131_UI.png",
@@ -558,6 +571,7 @@
   {
     "echo_name": "Glacio Prism",
     "echo_id": 60000145,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_141_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_141_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_141_UI.png",
@@ -602,6 +616,7 @@
   {
     "echo_name": "Fusion Prism",
     "echo_id": 60000155,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_151_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_151_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_151_UI.png",
@@ -646,6 +661,7 @@
   {
     "echo_name": "Spectro Prism",
     "echo_id": 60000165,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_161_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_161_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_161_UI.png",
@@ -690,6 +706,7 @@
   {
     "echo_name": "Havoc Prism",
     "echo_id": 60000175,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_171_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_171_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_171_UI.png",
@@ -734,6 +751,7 @@
   {
     "echo_name": "Stonewall Bracer",
     "echo_id": 60000185,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_181_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_181_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_181_UI.png",
@@ -780,6 +798,7 @@
   {
     "echo_name": "Flautist",
     "echo_id": 60000195,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_191_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_191_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_191_UI.png",
@@ -826,6 +845,7 @@
   {
     "echo_name": "Tambourinist",
     "echo_id": 60000205,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_201_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_201_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_201_UI.png",
@@ -872,6 +892,7 @@
   {
     "echo_name": "Chasm Guardian",
     "echo_id": 60000215,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_211_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_211_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_211_UI.png",
@@ -918,6 +939,7 @@
   {
     "echo_name": "Thundering Mephis",
     "echo_id": 60000225,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_222_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_222_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_222_UI.png",
@@ -955,6 +977,7 @@
   {
     "echo_name": "Aero Predator",
     "echo_id": 60000235,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_231_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_231_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_231_UI.png",
@@ -994,6 +1017,7 @@
   {
     "echo_name": "Rocksteady Guardian",
     "echo_id": 60000245,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_241_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_241_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_241_UI.png",
@@ -1040,6 +1064,7 @@
   {
     "echo_name": "Cruisewing",
     "echo_id": 60000255,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_251_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_251_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_251_UI.png",
@@ -1084,6 +1109,7 @@
   {
     "echo_name": "Sabyr Boar",
     "echo_id": 60000265,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_261_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_261_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_261_UI.png",
@@ -1128,6 +1154,7 @@
   {
     "echo_name": "Excarat",
     "echo_id": 60000275,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_271_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_271_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_271_UI.png",
@@ -1167,6 +1194,7 @@
   {
     "echo_name": "Baby Viridblaze Saurian",
     "echo_id": 60000285,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_281_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_281_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_281_UI.png",
@@ -1211,6 +1239,7 @@
   {
     "echo_name": "Viridblaze Saurian",
     "echo_id": 60000295,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_291_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_291_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_291_UI.png",
@@ -1257,6 +1286,7 @@
   {
     "echo_name": "Baby Roseshroom",
     "echo_id": 60000305,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_301_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_301_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_301_UI.png",
@@ -1296,6 +1326,7 @@
   {
     "echo_name": "Roseshroom",
     "echo_id": 60000315,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_311_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_311_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_311_UI.png",
@@ -1342,6 +1373,7 @@
   {
     "echo_name": "Inferno Rider",
     "echo_id": 60000325,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_321_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_321_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_321_UI.png",
@@ -1379,6 +1411,7 @@
   {
     "echo_name": "Spearback",
     "echo_id": 60000335,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_986_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_986_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_986_UI.png",
@@ -1425,6 +1458,7 @@
   {
     "echo_name": "Hoartoise",
     "echo_id": 60000345,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_969_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_969_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_969_UI.png",
@@ -1464,6 +1498,7 @@
   {
     "echo_name": "Havoc Dreadmane",
     "echo_id": 60000355,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_984_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_984_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_984_UI.png",
@@ -1510,6 +1545,7 @@
   {
     "echo_name": "Fusion Dreadmane",
     "echo_id": 60000365,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_980_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_980_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_980_UI.png",
@@ -1549,6 +1585,7 @@
   {
     "echo_name": "Bell-Borne Geochelone",
     "echo_id": 60000375,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_992_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_992_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_992_UI.png",
@@ -1591,6 +1628,7 @@
   {
     "echo_name": "Hooscamp",
     "echo_id": 60000385,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_988_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_988_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_988_UI.png",
@@ -1630,6 +1668,7 @@
   {
     "echo_name": "Tempest Mephis",
     "echo_id": 60000395,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_221_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_221_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_221_UI.png",
@@ -1667,6 +1706,7 @@
   {
     "echo_name": "Hoochief",
     "echo_id": 60000405,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_989_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_989_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_989_UI.png",
@@ -1713,6 +1753,7 @@
   {
     "echo_name": "Diamondclaw",
     "echo_id": 60000415,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_987_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_987_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_987_UI.png",
@@ -1752,6 +1793,7 @@
   {
     "echo_name": "Crownless",
     "echo_id": 60000425,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_9991_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_9991_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_9991_UI.png",
@@ -1789,6 +1831,7 @@
   {
     "echo_name": "Feilian Beringal",
     "echo_id": 60000435,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_996_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_996_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_996_UI.png",
@@ -1826,6 +1869,7 @@
   {
     "echo_name": "Lampylumen Myriad",
     "echo_id": 60000445,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_994_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_994_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_994_UI.png",
@@ -1863,6 +1907,7 @@
   {
     "echo_name": "Mourning Aix",
     "echo_id": 60000455,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_997_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_997_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_997_UI.png",
@@ -1900,6 +1945,7 @@
   {
     "echo_name": "Carapace",
     "echo_id": 60000465,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_970_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_970_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_970_UI.png",
@@ -1946,6 +1992,7 @@
   {
     "echo_name": "Chirpuff",
     "echo_id": 60000475,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_971_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_971_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_971_UI.png",
@@ -1985,6 +2032,7 @@
   {
     "echo_name": "Mech Abomination",
     "echo_id": 60000485,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_993_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_993_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_993_UI.png",
@@ -2022,6 +2070,7 @@
   {
     "echo_name": "Autopuppet Scout",
     "echo_id": 60000495,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1003_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_9995_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_9995_UI.png",
@@ -2068,6 +2117,7 @@
   {
     "echo_name": "Traffic Illuminator",
     "echo_id": 60000505,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1000_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_9992_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_9992_UI.png",
@@ -2112,6 +2162,7 @@
   {
     "echo_name": "Clang Bang",
     "echo_id": 60000515,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1001_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_9993_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_9993_UI.png",
@@ -2151,6 +2202,7 @@
   {
     "echo_name": "Impermanence Heron",
     "echo_id": 60000525,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_995_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_995_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_995_UI.png",
@@ -2188,6 +2240,7 @@
   {
     "echo_name": "Dreamless",
     "echo_id": 60000535,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_998_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_998_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_998_UI.png",
@@ -2225,6 +2278,7 @@
   {
     "echo_name": "Lava Larva",
     "echo_id": 60000545,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_326_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_322_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_322_UI.png",
@@ -2264,6 +2318,7 @@
   {
     "echo_name": "Dwarf Cassowary",
     "echo_id": 60000555,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_330_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_326_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_326_UI.png",
@@ -2303,6 +2358,7 @@
   {
     "echo_name": "Glacio Dreadmane",
     "echo_id": 60000565,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_985_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_985_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_985_UI.png",
@@ -2349,6 +2405,7 @@
   {
     "echo_name": "Lumiscale Construct",
     "echo_id": 60000575,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_329_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_325_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_325_UI.png",
@@ -2395,6 +2452,7 @@
   {
     "echo_name": "Lightcrusher",
     "echo_id": 60000585,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_328_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_324_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_324_UI.png",
@@ -2436,6 +2494,7 @@
   {
     "echo_name": "Jué",
     "echo_id": 60000595,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_327_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_323_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_323_UI.png",
@@ -2473,6 +2532,7 @@
   {
     "echo_name": "Fallacy of No Return",
     "echo_id": 60000605,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_350_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_350_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_350_UI.png",
@@ -2510,6 +2570,7 @@
   {
     "echo_name": "Galescourge Stalker",
     "echo_id": 60000615,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31037_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31037_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31037_UI.png",
@@ -2549,6 +2610,7 @@
   {
     "echo_name": "Voltscourge Stalker",
     "echo_id": 60000625,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31038_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31038_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31038_UI.png",
@@ -2588,6 +2650,7 @@
   {
     "echo_name": "Frostscourge Stalker",
     "echo_id": 60000635,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31039_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31039_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31039_UI.png",
@@ -2627,6 +2690,7 @@
   {
     "echo_name": "Chop Chop: Headless",
     "echo_id": 60000645,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31040_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31040_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31040_UI.png",
@@ -2666,6 +2730,7 @@
   {
     "echo_name": "Chop Chop: Leftless",
     "echo_id": 60000655,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31041_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31041_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31041_UI.png",
@@ -2705,6 +2770,7 @@
   {
     "echo_name": "Chop Chop: Rightless",
     "echo_id": 60000665,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31042_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31042_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31042_UI.png",
@@ -2744,6 +2810,7 @@
   {
     "echo_name": "Fae Ignis",
     "echo_id": 60000675,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31043_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31043_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31043_UI.png",
@@ -2788,6 +2855,7 @@
   {
     "echo_name": "Nimbus Wraith",
     "echo_id": 60000685,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31044_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31044_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31044_UI.png",
@@ -2832,6 +2900,7 @@
   {
     "echo_name": "Hocus Pocus",
     "echo_id": 60000695,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31045_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31045_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31045_UI.png",
@@ -2871,6 +2940,7 @@
   {
     "echo_name": "Lottie Lost",
     "echo_id": 60000705,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31046_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31046_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31046_UI.png",
@@ -2910,6 +2980,7 @@
   {
     "echo_name": "Diggy Duggy",
     "echo_id": 60000715,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31047_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31047_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31047_UI.png",
@@ -2949,6 +3020,7 @@
   {
     "echo_name": "Chest Mimic",
     "echo_id": 60000725,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31048_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31048_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31048_UI.png",
@@ -2993,6 +3065,7 @@
   {
     "echo_name": "Questless Knight",
     "echo_id": 60000735,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32022_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32022_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32022_UI.png",
@@ -3039,6 +3112,7 @@
   {
     "echo_name": "Diurnus Knight",
     "echo_id": 60000745,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32023_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32023_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32023_UI.png",
@@ -3085,6 +3159,7 @@
   {
     "echo_name": "Nocturnus Knight",
     "echo_id": 60000755,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32024_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32024_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32024_UI.png",
@@ -3131,6 +3206,7 @@
   {
     "echo_name": "Abyssal Patricius",
     "echo_id": 60000765,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32025_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32025_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32025_UI.png",
@@ -3177,6 +3253,7 @@
   {
     "echo_name": "Abyssal Gladius",
     "echo_id": 60000775,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32026_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32026_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32026_UI.png",
@@ -3228,6 +3305,7 @@
   {
     "echo_name": "Abyssal Mercator",
     "echo_id": 60000785,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32027_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32027_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32027_UI.png",
@@ -3274,6 +3352,7 @@
   {
     "echo_name": "Chop Chop",
     "echo_id": 60000795,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32028_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32028_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32028_UI.png",
@@ -3325,6 +3404,7 @@
   {
     "echo_name": "Vitreum Dancer",
     "echo_id": 60000805,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32029_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32029_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32029_UI.png",
@@ -3371,6 +3451,7 @@
   {
     "echo_name": "Cuddle Wuddle",
     "echo_id": 60000815,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32030_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32030_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32030_UI.png",
@@ -3417,6 +3498,7 @@
   {
     "echo_name": "Lorelei",
     "echo_id": 60000825,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33011_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_33011_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_33011_UI.png",
@@ -3454,6 +3536,7 @@
   {
     "echo_name": "Sentry Construct",
     "echo_id": 60000835,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33012_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_33012_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_33012_UI.png",
@@ -3491,6 +3574,7 @@
   {
     "echo_name": "Dragon of Dirge",
     "echo_id": 60000845,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33013_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_33013_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_33013_UI.png",
@@ -3528,6 +3612,7 @@
   {
     "echo_name": "Hecate",
     "echo_id": 60000855,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34010_1_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_34010_1_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_34010_1_UI.png",
@@ -3565,6 +3650,7 @@
   {
     "echo_name": "Nightmare: Feilian Beringal",
     "echo_id": 60000865,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_YZ_33014_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_YZ_33014_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_YZ_33014_UI.png",
@@ -3602,6 +3688,7 @@
   {
     "echo_name": "Nightmare: Impermanence Heron",
     "echo_id": 60000875,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_YZ_33015_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_YZ_33015_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_YZ_33015_UI.png",
@@ -3639,6 +3726,7 @@
   {
     "echo_name": "Nightmare: Thundering Mephis",
     "echo_id": 60000885,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_YZ_33016_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_YZ_33016_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_YZ_33016_UI.png",
@@ -3676,6 +3764,7 @@
   {
     "echo_name": "Nightmare: Tempest Mephis",
     "echo_id": 60000895,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_YZ_33017_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_YZ_33017_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_YZ_33017_UI.png",
@@ -3718,6 +3807,7 @@
   {
     "echo_name": "Nightmare: Crownless",
     "echo_id": 60000905,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_YZ_33018_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_YZ_33018_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_YZ_33018_UI.png",
@@ -3755,6 +3845,7 @@
   {
     "echo_name": "Nightmare: Inferno Rider",
     "echo_id": 60000915,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_YZ_33019_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_YZ_33019_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_YZ_33019_UI.png",
@@ -3792,6 +3883,7 @@
   {
     "echo_name": "Nightmare: Mourning Aix",
     "echo_id": 60000925,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_YZ_33020_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_YZ_33020_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_YZ_33020_UI.png",
@@ -3829,6 +3921,7 @@
   {
     "echo_name": "Golden Junrock",
     "echo_id": 60000935,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31049_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31049_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31049_UI.png",
@@ -3873,6 +3966,7 @@
   {
     "echo_name": "Calcified Junrock",
     "echo_id": 60000945,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31050_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31050_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31050_UI.png",
@@ -3917,6 +4011,7 @@
   {
     "echo_name": "Aero Prism",
     "echo_id": 60000955,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31051_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31051_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31051_UI.png",
@@ -3956,6 +4051,7 @@
   {
     "echo_name": "Rage Against the Statue",
     "echo_id": 60000965,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32031_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32031_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32031_UI.png",
@@ -4007,6 +4103,7 @@
   {
     "echo_name": "Hurriclaw",
     "echo_id": 60000975,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32032_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32032_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32032_UI.png",
@@ -4058,6 +4155,7 @@
   {
     "echo_name": "Nightmare: Lampylumen Myriad",
     "echo_id": 60001055,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34013_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_34013_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_34013_UI.png",
@@ -4100,6 +4198,7 @@
   {
     "echo_name": "La Guardia",
     "echo_id": 60000985,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31052_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31052_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31052_UI.png",
@@ -4144,6 +4243,7 @@
   {
     "echo_name": "Sagittario",
     "echo_id": 60000995,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31053_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31053_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31053_UI.png",
@@ -4188,6 +4288,7 @@
   {
     "echo_name": "Sacerdos",
     "echo_id": 60001005,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31054_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31054_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31054_UI.png",
@@ -4227,6 +4328,7 @@
   {
     "echo_name": "Aero Drake",
     "echo_id": 60001015,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31055_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31055_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31055_UI.png",
@@ -4271,6 +4373,7 @@
   {
     "echo_name": "Electro Drake",
     "echo_id": 60001025,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31056_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31056_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31056_UI.png",
@@ -4315,6 +4418,7 @@
   {
     "echo_name": "Glacio Drake",
     "echo_id": 60001035,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31057_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31057_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31057_UI.png",
@@ -4354,6 +4458,7 @@
   {
     "echo_name": "Capitaneus",
     "echo_id": 60001045,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32033_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32033_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32033_UI.png",
@@ -4405,6 +4510,7 @@
   {
     "echo_name": "Reminiscence: Fleurdelys",
     "echo_id": 60001065,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34012_1_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_34012_1_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_34012_1_UI.png",
@@ -4447,6 +4553,7 @@
   {
     "echo_name": "Fusion Drake",
     "echo_id": 60001075,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31058_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31058_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31058_UI.png",
@@ -4486,6 +4593,7 @@
   {
     "echo_name": "Spectro Drake",
     "echo_id": 60001085,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31059_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31059_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31059_UI.png",
@@ -4525,6 +4633,7 @@
   {
     "echo_name": "Havoc Drake",
     "echo_id": 60001095,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31060_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31060_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31060_UI.png",
@@ -4569,6 +4678,7 @@
   {
     "echo_name": "Devotee's Flesh",
     "echo_id": 60001105,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31061_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31061_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31061_UI.png",
@@ -4613,6 +4723,7 @@
   {
     "echo_name": "Pilgrim's Shell",
     "echo_id": 60001115,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32034_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32034_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32034_UI.png",
@@ -4659,6 +4770,7 @@
   {
     "echo_name": "Kerasaur",
     "echo_id": 60001125,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31062_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31062_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31062_UI.png",
@@ -4710,6 +4822,7 @@
   {
     "echo_name": "Nightmare: Kelpie",
     "echo_id": 60001135,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33021_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_33021_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_33021_UI.png",
@@ -4752,6 +4865,7 @@
   {
     "echo_name": "Lioness of Glory",
     "echo_id": 60001145,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33022_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_33022_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_33022_UI.png",
@@ -4789,6 +4903,7 @@
   {
     "echo_name": "Nightmare: Hecate",
     "echo_id": 60001155,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34016_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_34016_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_34016_UI.png",
@@ -4826,6 +4941,7 @@
   {
     "echo_name": "Reminiscence: Fenrico",
     "echo_id": 60001165,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34015_2_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_34015_2_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_34015_2_UI.png",
@@ -4868,6 +4984,7 @@
   {
     "echo_name": "Nightmare: Havoc Warrior",
     "echo_id": 60001175,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31063_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31063_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31063_UI.png",
@@ -4902,6 +5019,7 @@
   {
     "echo_name": "Nightmare: Glacio Predator",
     "echo_id": 60001185,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31064_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31064_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31064_UI.png",
@@ -4936,6 +5054,7 @@
   {
     "echo_name": "Nightmare: Tambourinist",
     "echo_id": 60001195,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32043_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32043_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32043_UI.png",
@@ -4977,6 +5096,7 @@
   {
     "echo_name": "Corrosaurus",
     "echo_id": 60001205,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32044_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32044_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32044_UI.png",
@@ -5023,6 +5143,7 @@
   {
     "echo_name": "The False Sovereign",
     "echo_id": 60001215,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34017_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_34017_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_34017_UI.png",
@@ -5060,6 +5181,7 @@
   {
     "echo_name": "Lady of the Sea",
     "echo_id": 60001605,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34018_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_34018_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_34018_UI.png",
@@ -5097,6 +5219,7 @@
   {
     "echo_name": "Nightmare: Violet-Feathered Heron",
     "echo_id": 60001615,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32045_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32045_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32045_UI.png",
@@ -5138,6 +5261,7 @@
   {
     "echo_name": "Nightmare: Cyan-Feathered Heron",
     "echo_id": 60001625,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32046_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32046_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32046_UI.png",
@@ -5179,6 +5303,7 @@
   {
     "echo_name": "Nightmare: Electro Predator",
     "echo_id": 60001635,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31065_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31065_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31065_UI.png",
@@ -5213,6 +5338,7 @@
   {
     "echo_name": "Nightmare: Aero Predator",
     "echo_id": 60001645,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31066_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31066_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31066_UI.png",
@@ -5247,6 +5373,7 @@
   {
     "echo_name": "Nightmare: Gulpuff",
     "echo_id": 60001655,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31067_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31067_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31067_UI.png",
@@ -5281,6 +5408,7 @@
   {
     "echo_name": "Nightmare: Chirpuff",
     "echo_id": 60001665,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31068_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31068_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31068_UI.png",
@@ -5315,6 +5443,7 @@
   {
     "echo_name": "Reminiscence: Threnodian - Leviathan",
     "echo_id": 60001675,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34020_1_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_34020_1_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_34020_1_UI.png",
@@ -5357,6 +5486,7 @@
   {
     "echo_name": "Nightmare: Viridblaze Saurian",
     "echo_id": 60001685,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32047_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32047_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32047_UI.png",
@@ -5398,6 +5528,7 @@
   {
     "echo_name": "Nightmare: Baby Viridblaze Saurian",
     "echo_id": 60001695,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31072_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31072_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31072_UI.png",
@@ -5432,6 +5563,7 @@
   {
     "echo_name": "Nightmare: Baby Roseshroom",
     "echo_id": 60001705,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31073_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31073_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31073_UI.png",
@@ -5466,6 +5598,7 @@
   {
     "echo_name": "Nightmare: Tick Tack",
     "echo_id": 60001719,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31075_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31075_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31075_UI.png",
@@ -5500,6 +5633,7 @@
   {
     "echo_name": "Nightmare: Dwarf Cassowary",
     "echo_id": 60001725,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31076_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31076_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31076_UI.png",
@@ -5534,6 +5668,7 @@
   {
     "echo_name": "Nightmare: Roseshroom",
     "echo_id": 60001739,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32048_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32048_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32048_UI.png",
@@ -5575,6 +5710,7 @@
   {
     "echo_name": "Tremor Warrior",
     "echo_id": 60001745,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31074_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31074_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31074_UI.png",
@@ -5609,6 +5745,7 @@
   {
     "echo_name": "Flora Drone",
     "echo_id": 60001755,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31077_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31077_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31077_UI.png",
@@ -5648,6 +5785,7 @@
   {
     "echo_name": "Mining Drone",
     "echo_id": 60001765,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31078_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31078_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31078_UI.png",
@@ -5687,6 +5825,7 @@
   {
     "echo_name": "Geospider S4",
     "echo_id": 60001775,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31079_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31079_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31079_UI.png",
@@ -5726,6 +5865,7 @@
   {
     "echo_name": "Zip Zap",
     "echo_id": 60001785,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31082_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31082_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31082_UI.png",
@@ -5765,6 +5905,7 @@
   {
     "echo_name": "Twin Nova: Nebulous Cannon",
     "echo_id": 60001795,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32049_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32049_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32049_UI.png",
@@ -5806,6 +5947,7 @@
   {
     "echo_name": "Twin Nova: Collapsar Blade",
     "echo_id": 60001809,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32050_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32050_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32050_UI.png",
@@ -5847,6 +5989,7 @@
   {
     "echo_name": "Flora Reindeer",
     "echo_id": 60001815,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32051_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32051_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32051_UI.png",
@@ -5888,6 +6031,7 @@
   {
     "echo_name": "Mining Reindeer",
     "echo_id": 60001825,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32052_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32052_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32052_UI.png",
@@ -5929,6 +6073,7 @@
   {
     "echo_name": "Ironhoof",
     "echo_id": 60001839,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32053_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32053_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32053_UI.png",
@@ -5970,6 +6115,7 @@
   {
     "echo_name": "Spacetrek Explorer",
     "echo_id": 60001845,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32054_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32054_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32054_UI.png",
@@ -6011,6 +6157,7 @@
   {
     "echo_name": "Sabercat Reaver",
     "echo_id": 60001855,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32055_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32055_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32055_UI.png",
@@ -6057,6 +6204,7 @@
   {
     "echo_name": "Sabercat Prowler",
     "echo_id": 60001865,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32056_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32056_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32056_UI.png",
@@ -6103,6 +6251,7 @@
   {
     "echo_name": "Frostbite Coleoid",
     "echo_id": 60001875,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32057_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32057_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32057_UI.png",
@@ -6144,6 +6293,7 @@
   {
     "echo_name": "Windlash Coleoid",
     "echo_id": 60001885,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32058_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32058_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32058_UI.png",
@@ -6185,6 +6335,7 @@
   {
     "echo_name": "Hyvatia",
     "echo_id": 60001895,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34021_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_34021_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_34021_UI.png",
@@ -6227,6 +6378,7 @@
   {
     "echo_name": "Reactor Husk",
     "echo_id": 60001905,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34022_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_34022_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_34022_UI.png",
@@ -6264,6 +6416,7 @@
   {
     "echo_name": "Phantom: Mourning Aix",
     "echo_id": 60001455,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1006_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_1001_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_1001_UI.png",
@@ -6301,6 +6454,7 @@
   {
     "echo_name": "Phantom: Rocksteady Guardian",
     "echo_id": 60001245,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1007_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_1002_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_1002_UI_png.png",
@@ -6347,6 +6501,7 @@
   {
     "echo_name": "Phantom: Hoartoise",
     "echo_id": 60001345,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1010_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_1005_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_1005_UI_png.png",
@@ -6386,6 +6541,7 @@
   {
     "echo_name": "Phantom: Thundering Mephis",
     "echo_id": 60001225,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1008_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_1003_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_1003_UI_png.png",
@@ -6423,6 +6579,7 @@
   {
     "echo_name": "Phantom: Feilian Beringal",
     "echo_id": 60001435,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1009_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_1004_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_1004_UI_png.png",
@@ -6460,6 +6617,7 @@
   {
     "echo_name": "Phantom: Impermanence Heron",
     "echo_id": 60001525,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1014_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_1006_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_1006_UI_png.png",
@@ -6497,6 +6655,7 @@
   {
     "echo_name": "Phantom: Clang Bang",
     "echo_id": 60100515,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1015_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_327_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_327_UI.png",
@@ -6536,6 +6695,7 @@
   {
     "echo_name": "Phantom: Lightcrusher",
     "echo_id": 60100585,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1016_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_328_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_328_UI.png",
@@ -6577,6 +6737,7 @@
   {
     "echo_name": "Phantom: Dreamless",
     "echo_id": 60100535,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_998_1_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_998_1_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_998_1_UI.png",
@@ -6614,6 +6775,7 @@
   {
     "echo_name": "Phantom: Gulpuff",
     "echo_id": 60100115,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_115_1_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_111_1_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_111_1_UI.png",
@@ -6653,6 +6815,7 @@
   {
     "echo_name": "Phantom: Lumiscale Construct",
     "echo_id": 60100575,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_329_1_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_325_1_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_325_1_UI.png",
@@ -6699,6 +6862,7 @@
   {
     "echo_name": "Phantom: Inferno Rider",
     "echo_id": 60100325,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_325_1_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_321_1_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_321_1_UI.png",
@@ -6736,6 +6900,7 @@
   {
     "echo_name": "Phantom: Diggy Duggy",
     "echo_id": 60100715,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_31047_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_31047_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_31047_UI.png",
@@ -6780,6 +6945,7 @@
   {
     "echo_name": "Phantom: Vitreum Dancer",
     "echo_id": 60100805,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_32029_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_32029_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_32029_UI.png",
@@ -6826,6 +6992,7 @@
   {
     "echo_name": "Phantom: Questless Knight",
     "echo_id": 60100735,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_32022_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_32022_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_32022_UI.png",
@@ -6872,6 +7039,7 @@
   {
     "echo_name": "Phantom: Sentry Construct",
     "echo_id": 60100835,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_33009_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_33009_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_33009_UI.png",
@@ -6909,6 +7077,7 @@
   {
     "echo_name": "Phantom: Lorelei",
     "echo_id": 60100825,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_33011_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_33011_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_33011_UI.png",
@@ -6946,6 +7115,7 @@
   {
     "echo_name": "Phantom: Capitaneus",
     "echo_id": 60101045,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_32033_1_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32033_1_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32033_1_UI.png",
@@ -6992,6 +7162,7 @@
   {
     "echo_name": "Phantom: Nimbus Wraith",
     "echo_id": 60100685,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_31044_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_31044_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_31044_UI.png",
@@ -7031,6 +7202,7 @@
   {
     "echo_name": "Phantom: Crownless",
     "echo_id": 60100425,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_9991_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_9991_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_9991_UI.png",
@@ -7068,6 +7240,7 @@
   {
     "echo_name": "Phantom: Nightmare Crownless",
     "echo_id": 60100905,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_33018_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_33018_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_33018_UI.png",
@@ -7105,6 +7278,7 @@
   {
     "echo_name": "Phantom: Chest Mimic",
     "echo_id": 60100725,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_31048_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_31048_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_31048_UI.png",
@@ -7149,6 +7323,7 @@
   {
     "echo_name": "Phantom: Fae Ignis",
     "echo_id": 60100675,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_31043_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_31043_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_31043_UI.png",
@@ -7188,6 +7363,7 @@
   {
     "echo_name": "Phantom: Cuddle Wuddle",
     "echo_id": 60100815,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_32030_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_32030_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_32030_UI.png",
@@ -7234,6 +7410,7 @@
   {
     "echo_name": "Phantom: Nightmare Inferno Rider",
     "echo_id": 60100915,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_33019_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_33019_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_33019_UI.png",
@@ -7271,6 +7448,7 @@
   {
     "echo_name": "Phantom: Fallacy of No Return",
     "echo_id": 60100605,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_350_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_350_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_350_UI.png",
@@ -7308,6 +7486,7 @@
   {
     "echo_name": "Phantom: Kerasaur",
     "echo_id": 60101125,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_31062_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_31062_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_31062_UI.png",
@@ -7354,6 +7533,7 @@
   {
     "echo_name": "Phantom: Chop Chop",
     "echo_id": 60100795,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_32028_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_32028_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_32028_UI.png",
@@ -7405,6 +7585,7 @@
   {
     "echo_name": "Phantom: The False Sovereign",
     "echo_id": 60101215,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_34017_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_34017_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_34017_UI.png",
@@ -7442,6 +7623,7 @@
   {
     "echo_name": "Phantom: Twin Nova - Nebulous Cannon",
     "echo_id": 60101795,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_32049_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_32049_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_32049_UI.png",
@@ -7483,6 +7665,7 @@
   {
     "echo_name": "Phantom: Twin Nova - Collapsar Blade",
     "echo_id": 60101805,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_32050_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_32050_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_32050_UI.png",
@@ -7524,6 +7707,7 @@
   {
     "echo_name": "Phantom: Hoartoise",
     "echo_id": 60200001,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1010_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_1005_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_1005_UI_png.png",
@@ -7563,6 +7747,7 @@
   {
     "echo_name": "Glacio Prism",
     "echo_id": 60200002,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_141_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_141_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_141_UI.png",
@@ -7607,6 +7792,7 @@
   {
     "echo_name": "Autopuppet Scout",
     "echo_id": 60200003,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1003_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_9995_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_9995_UI.png",
@@ -7653,6 +7839,7 @@
   {
     "echo_name": "Tick Tack",
     "echo_id": 60200004,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_091_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_091_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_091_UI.png",
@@ -7697,6 +7884,7 @@
   {
     "echo_name": "Phantom: Rocksteady Guardian",
     "echo_id": 60200005,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1007_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_1002_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_1002_UI_png.png",
@@ -7743,6 +7931,7 @@
   {
     "echo_name": "Whiff Whaff",
     "echo_id": 60200006,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_081_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_081_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_081_UI.png",
@@ -7787,6 +7976,7 @@
   {
     "echo_name": "Flautist",
     "echo_id": 60200007,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_201_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_201_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_201_UI.png",
@@ -7833,6 +8023,7 @@
   {
     "echo_name": "Phantom: Feilian Beringal",
     "echo_id": 60200008,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1009_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_1004_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_1004_UI_png.png",
@@ -7870,6 +8061,7 @@
   {
     "echo_name": "Phantom: Impermanence Heron",
     "echo_id": 60200009,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1014_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_1006_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_1006_UI_png.png",
@@ -7907,6 +8099,7 @@
   {
     "echo_name": "Phantom: Rocksteady Guardian",
     "echo_id": 60200011,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1007_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_1002_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_1002_UI_png.png",
@@ -7953,6 +8146,7 @@
   {
     "echo_name": "Phantom: Feilian Beringal",
     "echo_id": 60200015,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1009_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_1004_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_1004_UI_png.png",
@@ -7990,6 +8184,7 @@
   {
     "echo_name": "Phantom: Hoartoise",
     "echo_id": 60200016,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1010_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_1005_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_1005_UI_png.png",
@@ -8029,6 +8224,7 @@
   {
     "echo_name": "Flautist",
     "echo_id": 60200017,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_201_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_201_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_201_UI.png",
@@ -8075,6 +8271,7 @@
   {
     "echo_name": "Zig Zag",
     "echo_id": 60200019,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_071_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_071_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_071_UI.png",
@@ -8119,6 +8316,7 @@
   {
     "echo_name": "Phantom: Hoartoise",
     "echo_id": 60200021,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1010_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_1005_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_1005_UI_png.png",
@@ -8158,6 +8356,7 @@
   {
     "echo_name": "Glacio Prism",
     "echo_id": 60200022,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_141_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_141_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_141_UI.png",
@@ -8202,6 +8401,7 @@
   {
     "echo_name": "Autopuppet Scout",
     "echo_id": 60200023,
+    "echo_cost": 3,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1003_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_9995_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_9995_UI.png",
@@ -8248,6 +8448,7 @@
   {
     "echo_name": "Tick Tack",
     "echo_id": 60200024,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_115_1_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_111_1_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_111_1_UI.png",
@@ -8287,6 +8488,7 @@
   {
     "echo_name": "Whiff Whaff",
     "echo_id": 60200026,
+    "echo_cost": 1,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_081_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_081_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_081_UI.png",
@@ -8331,6 +8533,7 @@
   {
     "echo_name": "Phantom: Dreamless",
     "echo_id": 60200027,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_998_1_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_998_1_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_998_1_UI.png",
@@ -8368,6 +8571,7 @@
   {
     "echo_name": "Phantom: Feilian Beringal",
     "echo_id": 60200028,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1009_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_1004_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_1004_UI_png.png",
@@ -8405,6 +8609,7 @@
   {
     "echo_name": "Phantom: Impermanence Heron",
     "echo_id": 60200029,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1014_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_1006_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_1006_UI_png.png",
@@ -8442,6 +8647,7 @@
   {
     "echo_name": "Phantom: Dreamless",
     "echo_id": 60200101,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_998_1_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_998_1_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_998_1_UI.png",
@@ -8479,6 +8685,7 @@
   {
     "echo_name": "Phantom: Dreamless",
     "echo_id": 60200102,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_998_1_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_998_1_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_998_1_UI.png",
@@ -8516,6 +8723,7 @@
   {
     "echo_name": "Sentry Construct",
     "echo_id": 60200103,
+    "echo_cost": 4,
     "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33012_UI.png",
     "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_33012_UI.png",
     "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_33012_UI.png",

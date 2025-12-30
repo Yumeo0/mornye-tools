@@ -55,6 +55,19 @@ pub struct CharacterStats {
     pub subs: Vec<Vec<String>>,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EchoSet {
+    pub id: u32,
+    pub name: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Echo {
+    pub echo_name: String,
+    pub echo_id: u32,
+    pub echo_sets: Vec<EchoSet>,
+}
+
 #[derive(Debug, Clone, Deserialize)]
 pub struct StatRange {
     pub min: f64,
@@ -133,6 +146,82 @@ fn load_stats_config(app_handle: &AppHandle) -> Result<StatsConfig, String> {
     }
     
     Err("Stats config file not found".to_string())
+}
+
+fn load_echo_data(app_handle: &AppHandle) -> Result<Vec<Echo>, String> {
+    // Try development path first
+    if let Ok(manifest_dir) = std::env::var("CARGO_MANIFEST_DIR") {
+        let config_path = PathBuf::from(manifest_dir)
+            .parent()
+            .ok_or("Failed to get parent directory")?
+            .join("src/configs/echo_data.json");
+        
+        if config_path.exists() {
+            let content = std::fs::read_to_string(&config_path)
+                .map_err(|e| format!("Failed to read echo_data.json: {}", e))?;
+            let echoes: Vec<Echo> = serde_json::from_str(&content)
+                .map_err(|e| format!("Failed to parse echo_data.json: {}", e))?;
+            
+            return Ok(echoes);
+        }
+    }
+    
+    // Try bundled resource path (for production)
+    if let Ok(resource_path) = app_handle.path().resource_dir() {
+        let config_path = resource_path.join("src/configs/echo_data.json");
+        if config_path.exists() {
+            let content = std::fs::read_to_string(&config_path)
+                .map_err(|e| format!("Failed to read echo_data.json: {}", e))?;
+            let echoes: Vec<Echo> = serde_json::from_str(&content)
+                .map_err(|e| format!("Failed to parse echo_data.json: {}", e))?;
+            
+            return Ok(echoes);
+        }
+    }
+    
+    Err("Echo data file not found".to_string())
+}
+
+fn match_echo_name(ocr_text: &str, echoes: &[Echo]) -> Option<String> {
+    if ocr_text.trim().is_empty() {
+        return None;
+    }
+    
+    let ocr_lower = ocr_text.to_lowercase();
+    
+    // First, try exact matches
+    for echo in echoes {
+        if echo.echo_name.to_lowercase() == ocr_lower {
+            return Some(echo.echo_name.clone());
+        }
+    }
+    
+    // Then, try partial matches (OCR text contains echo name or vice versa)
+    let mut candidates = Vec::new();
+    for echo in echoes {
+        let echo_lower = echo.echo_name.to_lowercase();
+        if echo_lower.contains(&ocr_lower) || ocr_lower.contains(&echo_lower) {
+            candidates.push(echo);
+        }
+    }
+    
+    if !candidates.is_empty() {
+        // Prefer exact matches first, then by length (longer names are more specific)
+        candidates.sort_by(|a, b| {
+            let a_exact = a.echo_name.to_lowercase() == ocr_lower;
+            let b_exact = b.echo_name.to_lowercase() == ocr_lower;
+            if a_exact && !b_exact {
+                std::cmp::Ordering::Less
+            } else if !a_exact && b_exact {
+                std::cmp::Ordering::Greater
+            } else {
+                b.echo_name.len().cmp(&a.echo_name.len())
+            }
+        });
+        return Some(candidates[0].echo_name.clone());
+    }
+    
+    None
 }
 
 fn normalize_stat_name(name: &str) -> String {
@@ -487,13 +576,24 @@ async fn scan_for_text(
                     .unwrap_or_else(|_| String::new());
                 
                 // Clean echo name - remove extra whitespace and trim
-                let echo_name = name_text.lines()
+                let cleaned_echo_name = name_text.lines()
                     .map(|line| line.trim())
                     .filter(|line| !line.is_empty())
                     .collect::<Vec<_>>()
                     .join(" ")
                     .trim()
                     .to_string();
+                
+                // Try to match with known echoes
+                let echo_name = if !cleaned_echo_name.is_empty() {
+                    if let Ok(echoes) = load_echo_data(&app_handle_clone) {
+                        match_echo_name(&cleaned_echo_name, &echoes).unwrap_or(cleaned_echo_name)
+                    } else {
+                        cleaned_echo_name
+                    }
+                } else {
+                    cleaned_echo_name
+                };
                 
                 // Scan main stats
                 let main_cropped = crop_imm(

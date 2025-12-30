@@ -1,3 +1,5 @@
+import { StarIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { getCurrentWindow } from "@tauri-apps/api/window";
@@ -5,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import echoData from "@/configs/echo_data.json";
 import statsConfig from "@/configs/stats.json";
+import { cn } from "@/lib/utils";
 
 interface ScanRegion {
 	x: number;
@@ -51,18 +54,20 @@ function normalizeStatName(stat: string): string {
 }
 
 // Helper function to parse stat value from stat string (e.g., "HP% 10.5%" -> 10.5)
-function parseStatValue(statString: string): { name: string; value: number; hasPercent: boolean } | null {
+function parseStatValue(
+	statString: string,
+): { name: string; value: number; hasPercent: boolean } | null {
 	// Match patterns like "HP% 10.5%" or "ATK 123"
 	const match = statString.match(/^(.+?)\s+([\d.]+)(%?)$/);
 	if (match) {
 		let name = match[1].trim();
 		const hasPercent = match[3] === "%";
-		
+
 		// Map HP/ATK/DEF to HP%/ATK%/DEF% if the value has a %
 		if (hasPercent && (name === "HP" || name === "ATK" || name === "DEF")) {
 			name = `${name}%`;
 		}
-		
+
 		return {
 			name,
 			value: Number.parseFloat(match[2]),
@@ -91,9 +96,12 @@ function getStatProgress(
 ): { percentage: number; color: string } {
 	const percentage = Math.min((value / maxValue) * 100, 100);
 	let color: string;
-	if (percentage >= 85) color = "#10b981"; // green-500
-	else if (percentage >= 70) color = "#3b82f6"; // blue-500
-	else if (percentage >= 50) color = "#f59e0b"; // amber-500
+	if (percentage >= 85)
+		color = "#10b981"; // green-500
+	else if (percentage >= 70)
+		color = "#3b82f6"; // blue-500
+	else if (percentage >= 50)
+		color = "#f59e0b"; // amber-500
 	else color = "#ef4444"; // red-500
 	return { percentage, color };
 }
@@ -103,7 +111,7 @@ function calculateRating(
 	character: CharacterInfo,
 	statsData: StatsData | null,
 	parsedMainStats: string[],
-	parsedSubStats: string[]
+	parsedSubStats: string[],
 ): number {
 	if (!statsData) return 0;
 
@@ -116,10 +124,12 @@ function calculateRating(
 	const mainStatName = normalizeStatName(mainMatch[1]);
 
 	// Get echo sub stat names
-	const echoSubNames = parsedSubStats.map(stat => {
-		const parsed = parseStatValue(stat);
-		return parsed ? normalizeStatName(parsed.name) : '';
-	}).filter(Boolean);
+	const echoSubNames = parsedSubStats
+		.map((stat) => {
+			const parsed = parseStatValue(stat);
+			return parsed ? normalizeStatName(parsed.name) : "";
+		})
+		.filter(Boolean);
 
 	// Calculate main stat score
 	let mainScore = 0;
@@ -127,17 +137,19 @@ function calculateRating(
 	const all3cost = character.stats["3cost"].flat();
 	const all1cost = character.stats["1cost"].flat();
 
-	if (all4cost.some(s => normalizeStatName(s) === mainStatName)) {
+	if (all4cost.some((s) => normalizeStatName(s) === mainStatName)) {
 		mainScore = 40;
-	} else if (all3cost.some(s => normalizeStatName(s) === mainStatName)) {
+	} else if (all3cost.some((s) => normalizeStatName(s) === mainStatName)) {
 		mainScore = 30;
-	} else if (all1cost.some(s => normalizeStatName(s) === mainStatName)) {
+	} else if (all1cost.some((s) => normalizeStatName(s) === mainStatName)) {
 		mainScore = 20;
 	}
 
 	// Calculate sub stat score
 	const preferredSubs = character.stats.subs.flat().map(normalizeStatName);
-	const subMatches = preferredSubs.filter(pref => echoSubNames.includes(pref)).length;
+	const subMatches = preferredSubs.filter((pref) =>
+		echoSubNames.includes(pref),
+	).length;
 	const subScore = (subMatches / Math.max(preferredSubs.length, 1)) * 60;
 
 	return Math.round(mainScore + subScore);
@@ -174,8 +186,15 @@ function Overlay() {
 							e.echo_name.toLowerCase().includes(echoName) ||
 							echoName.includes(e.echo_name.toLowerCase()),
 					);
-					// Pick the candidate with the longest name (more specific match)
-					const echo = candidates.sort((a, b) => b.echo_name.length - a.echo_name.length)[0];
+					// Prefer exact matches, then by longest name for specificity
+					const exactMatches = candidates.filter(
+						(e) => e.echo_name.toLowerCase() === echoName,
+					);
+					const echo = exactMatches.length > 0
+						? exactMatches[0]
+						: candidates.sort(
+								(a, b) => b.echo_name.length - a.echo_name.length,
+							)[0];
 
 					if (echo) {
 						// Get echo set IDs
@@ -233,8 +252,15 @@ function Overlay() {
 							e.echo_name.toLowerCase().includes(echoName) ||
 							echoName.includes(e.echo_name.toLowerCase()),
 					);
-					// Pick the candidate with the longest name (more specific match)
-					const echo = candidates.sort((a, b) => b.echo_name.length - a.echo_name.length)[0];
+					// Prefer exact matches, then by longest name for specificity
+					const exactMatches = candidates.filter(
+						(e) => e.echo_name.toLowerCase() === echoName,
+					);
+					const echo = exactMatches.length > 0
+						? exactMatches[0]
+						: candidates.sort(
+								(a, b) => b.echo_name.length - a.echo_name.length,
+							)[0];
 
 					if (echo) {
 						const setIds = echo.echo_sets.map((s) => s.id);
@@ -296,6 +322,24 @@ function Overlay() {
 	const parsedSubStats =
 		statsData?.sub_stats.split("\n").filter((s) => s.trim()) || [];
 
+	// Compute preferred stats for the highest rated character
+	const highestCharacter =
+		relevantCharacters.length > 0 ? relevantCharacters[0] : null;
+	let preferredMainStats = new Set<string>();
+	let preferredSubStats = new Set<string>();
+	if (highestCharacter) {
+		preferredMainStats = new Set(
+			[
+				...highestCharacter.stats["4cost"].flat(),
+				...highestCharacter.stats["3cost"].flat(),
+				...highestCharacter.stats["1cost"].flat(),
+			].map(normalizeStatName),
+		);
+		preferredSubStats = new Set(
+			highestCharacter.stats.subs.flat().map(normalizeStatName),
+		);
+	}
+
 	return (
 		<div
 			style={{
@@ -354,63 +398,105 @@ function Overlay() {
 								<h3 className="text-base font-bold text-purple-400">
 									Main Stats
 								</h3>
-							<div className="space-y-1">
-								{parsedMainStats.map((stat) => (
-									<div key={`main-${stat}`} className="text-sm">
-										{stat}
-									</div>
-								))}
+								<div className="space-y-1">
+									{parsedMainStats.map((stat) => {
+										const parsed = parseStatValue(stat);
+										const statName = parsed
+											? normalizeStatName(parsed.name)
+											: "";
+										const isPreferred = preferredMainStats.has(statName);
+										return (
+											<div
+												key={`main-${stat}`}
+												className={cn("text-sm flex items-center gap-2")}
+											>
+												{isPreferred && (
+													<HugeiconsIcon
+														icon={StarIcon}
+														className="w-4 h-4 text-yellow-400"
+													/>
+												)}
+												{stat}
+											</div>
+										);
+									})}
+								</div>
 							</div>
-						</div>
 
-						{/* Sub Stats Section */}
-						<div className="space-y-2">
-							<h3 className="text-base font-bold text-blue-400">Sub Stats</h3>
+							{/* Sub Stats Section */}
 							<div className="space-y-2">
-								{parsedSubStats.map((stat) => {
-											const parsed = parseStatValue(stat);
-											if (!parsed) {
-												return (
-													<div key={`sub-${stat}`} className="text-xs">
-														{stat}
-													</div>
-												);
-											}
-
-											const maxValue = getMaxStatValue(parsed.name, false);
-											if (!maxValue) {
-												return (
-													<div key={`sub-${stat}`} className="space-y-1">
-														<div className="flex justify-between items-center text-xs">
-															<span>{parsed.name}</span>
-															<span className="font-bold">{parsed.value}{parsed.hasPercent ? '%' : ''}</span>
-														</div>
-													</div>
-												);
-											}
-
-											const { percentage, color } = getStatProgress(
-												parsed.value,
-												maxValue,
+								<h3 className="text-base font-bold text-blue-400">Sub Stats</h3>
+								<div className="space-y-2">
+									{parsedSubStats.map((stat) => {
+										const parsed = parseStatValue(stat);
+										if (!parsed) {
+											return (
+												<div key={`sub-${stat}`} className="text-xs">
+													{stat}
+												</div>
 											);
+										}
 
+										const statName = normalizeStatName(parsed.name);
+										const isPreferred = preferredSubStats.has(statName);
+										const maxValue = getMaxStatValue(parsed.name, false);
+										if (!maxValue) {
 											return (
 												<div key={`sub-${stat}`} className="space-y-1">
 													<div className="flex justify-between items-center text-xs">
-														<span>{parsed.name}</span>
-														<span className="font-bold">{parsed.value}{parsed.hasPercent ? '%' : ''}</span>
-													</div>
-													<div className="h-2 bg-black/30 rounded-full overflow-hidden">
-														<div
-															className="h-full transition-all duration-300"
-															style={{
-																width: `${percentage}%`,
-																backgroundColor: color,
-															}}
-														/>
+														<div className="flex items-center gap-2">
+															{isPreferred && (
+																<HugeiconsIcon
+																	icon={StarIcon}
+																	className="w-3 h-3 text-yellow-400"
+																/>
+															)}
+															<span>{parsed.name}</span>
+														</div>
+														<span className="font-bold">
+															{parsed.value}
+															{parsed.hasPercent ? "%" : ""}
+														</span>
 													</div>
 												</div>
 											);
+										}
+
+										const { percentage, color } = getStatProgress(
+											parsed.value,
+											maxValue,
+										);
+
+										return (
+											<div key={`sub-${stat}`} className="space-y-1">
+												<div
+													className="flex justify-between items-center text-xs"
+												>
+													<div className="flex items-center gap-2">
+														{isPreferred && (
+															<HugeiconsIcon
+																icon={StarIcon}
+																className="w-3 h-3 text-yellow-400"
+															/>
+														)}
+														<span>{parsed.name}</span>
+													</div>
+													<span className="font-bold">
+														{parsed.value}
+														{parsed.hasPercent ? "%" : ""}
+													</span>
+												</div>
+												<div className="h-2 bg-black/30 rounded-full overflow-hidden">
+													<div
+														className="h-full transition-all duration-300"
+														style={{
+															width: `${percentage}%`,
+															backgroundColor: color,
+														}}
+													/>
+												</div>
+											</div>
+										);
 									})}
 								</div>
 							</div>
@@ -418,28 +504,52 @@ function Overlay() {
 							{/* Relevant Characters Section */}
 							{relevantCharacters.length > 0 && (
 								<div className="space-y-2">
-									<h3 className="text-base font-bold text-green-400">Relevant Characters</h3>
+									<h3 className="text-base font-bold text-green-400">
+										Relevant Characters
+									</h3>
 									<div className="space-y-2">
 										{relevantCharacters
 											.sort((a, b) => {
-												const ratingA = calculateRating(a, statsData, parsedMainStats, parsedSubStats);
-												const ratingB = calculateRating(b, statsData, parsedMainStats, parsedSubStats);
+												const ratingA = calculateRating(
+													a,
+													statsData,
+													parsedMainStats,
+													parsedSubStats,
+												);
+												const ratingB = calculateRating(
+													b,
+													statsData,
+													parsedMainStats,
+													parsedSubStats,
+												);
 												return ratingB - ratingA;
 											})
 											.map((character) => {
-											const rating = calculateRating(character, statsData, parsedMainStats, parsedSubStats);
-											return (
-												<div key={character.character_id} className="flex items-center gap-3 bg-muted/50 p-2 rounded">
-													<img
-														src={character.icon_pile}
-														alt={character.character_name}
-														className="w-6 h-6 object-contain"
-													/>
-													<span className="text-sm flex-1">{character.character_name}</span>
-													<span className="text-sm font-bold text-yellow-400">{rating}%</span>
-												</div>
-											);
-										})}
+												const rating = calculateRating(
+													character,
+													statsData,
+													parsedMainStats,
+													parsedSubStats,
+												);
+												return (
+													<div
+														key={character.character_id}
+														className="flex items-center gap-3 bg-muted/50 p-2 rounded"
+													>
+														<img
+															src={character.icon_pile}
+															alt={character.character_name}
+															className="w-6 h-6 object-contain"
+														/>
+														<span className="text-sm flex-1">
+															{character.character_name}
+														</span>
+														<span className="text-sm font-bold text-yellow-400">
+															{rating}%
+														</span>
+													</div>
+												);
+											})}
 									</div>
 								</div>
 							)}
@@ -448,6 +558,7 @@ function Overlay() {
 				)}
 			</div>
 		</div>
-	);}
+	);
+}
 
 export default Overlay;

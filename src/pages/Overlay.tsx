@@ -18,6 +18,7 @@ interface ScanRegion {
 
 interface StatsData {
 	echo_name: string;
+	level: string;
 	main_stats: string;
 	sub_stats: string;
 }

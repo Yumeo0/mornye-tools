@@ -10,7 +10,7 @@ export default defineConfig(async () => ({
 	plugins: [react(), tailwindcss()],
 	resolve: {
 		alias: {
-			"@": path.resolve(__dirname, "./src"),
+			"@": path.resolve(import.meta.dirname, "./src"),
 		},
 	},
 
@@ -18,8 +18,8 @@ export default defineConfig(async () => ({
 	build: {
 		rollupOptions: {
 			input: {
-				main: path.resolve(__dirname, "index.html"),
-				overlay: path.resolve(__dirname, "overlay.html"),
+				main: path.resolve(import.meta.dirname, "index.html"),
+				overlay: path.resolve(import.meta.dirname, "overlay.html"),
 			},
 		},
 	},

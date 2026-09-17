@@ -1,15 +1,16 @@
 use tauri::Emitter;
 use image::imageops::crop_imm;
-use image::{DynamicImage, GrayImage};
+use image::{DynamicImage, GrayImage, ImageFormat};
 use imageproc::contrast::{threshold, ThresholdType};
-use kreuzberg_tesseract::TesseractAPI;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::sync::Mutex;
+use std::io::Cursor;
 use std::path::PathBuf;
 use std::collections::HashMap;
 use std::fs;
 use tauri::{AppHandle, Manager, State};
+use xberg::{extract, ExtractInput, ExtractionConfig, OcrConfig, TesseractConfig};
 use xcap::Monitor;
 use regex::Regex;
 
@@ -19,12 +20,47 @@ pub struct ScanRegion {
     pub y: u32,
     pub width: u32,
     pub height: u32,
+    /// Optional text color (hex like "#ced5d8") to filter for before OCR.
+    #[serde(default)]
+    pub text_color: Option<String>,
+    /// Max Euclidean RGB distance from text_color for a pixel to count as text.
+    #[serde(default)]
+    pub tolerance: Option<u16>,
+}
+
+impl ScanRegion {
+    fn color_filter(&self) -> Option<ColorFilter> {
+        let rgb = parse_hex_color(self.text_color.as_deref()?)?;
+        Some(ColorFilter {
+            rgb,
+            tolerance: self.tolerance.unwrap_or(DEFAULT_COLOR_TOLERANCE),
+        })
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct ColorFilter {
+    rgb: (u8, u8, u8),
+    tolerance: u16,
+}
+
+pub const DEFAULT_COLOR_TOLERANCE: u16 = 60;
+
+fn parse_hex_color(color: &str) -> Option<(u8, u8, u8)> {
+    let hex = color.trim().trim_start_matches('#');
+    if hex.len() != 6 {
+        return None;
+    }
+    let value = u32::from_str_radix(hex, 16).ok()?;
+    Some(((value >> 16) as u8, (value >> 8) as u8, value as u8))
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ScanRegions {
     pub echo_upgrade: ScanRegion,
     pub echo_name: ScanRegion,
+    #[serde(default)]
+    pub level: Option<ScanRegion>,
     pub main_stats: ScanRegion,
     pub sub_stats: ScanRegion,
 }
@@ -32,6 +68,8 @@ pub struct ScanRegions {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct StatsData {
     pub echo_name: String,
+    #[serde(default)]
+    pub level: String,
     pub main_stats: String,
     pub sub_stats: String,
 }
@@ -343,51 +381,90 @@ fn correct_ocr_errors(text: &str) -> String {
         .replace("\"", "")
 }
 
-fn preprocess_image(img: &DynamicImage) -> GrayImage {
-    // Convert to grayscale
+fn color_filter_image(img: &DynamicImage, filter: &ColorFilter) -> GrayImage {
+    let rgb = img.to_rgb8();
+    let (width, height) = rgb.dimensions();
+    let mut out: GrayImage = image::ImageBuffer::new(width, height);
+    let tol_sq = (filter.tolerance as u32) * (filter.tolerance as u32);
+
+    for (x, y, pixel) in rgb.enumerate_pixels() {
+        let dr = pixel[0] as i32 - filter.rgb.0 as i32;
+        let dg = pixel[1] as i32 - filter.rgb.1 as i32;
+        let db = pixel[2] as i32 - filter.rgb.2 as i32;
+        let dist_sq = (dr * dr + dg * dg + db * db) as u32;
+        let is_text = dist_sq <= tol_sq;
+        out.put_pixel(x, y, image::Luma([if is_text { 255 } else { 0 }]));
+    }
+
+    out
+}
+
+fn preprocess_image(img: &DynamicImage, filter: Option<&ColorFilter>) -> GrayImage {
+    if let Some(filter) = filter {
+        // Keep only pixels close to the configured text color (white) and
+        // make everything else black, so only the text remains for OCR.
+        return color_filter_image(img, filter);
+    }
+
+    // Fallback: convert to grayscale
     let gray = img.to_luma8();
-    
+
     // Apply thresholding to make text more distinct
     // This helps with white text on darker backgrounds
     threshold(&gray, 128, ThresholdType::Binary)
 }
 
-fn perform_ocr_on_image(img: &DynamicImage, app_handle: &AppHandle) -> Result<String, String> {
+fn build_ocr_config(app_handle: &AppHandle) -> Result<ExtractionConfig, String> {
+    let tessdata_dir = get_tessdata_dir(app_handle)?;
+
+    Ok(ExtractionConfig {
+        ocr: Some(OcrConfig {
+            backend: "tesseract".to_string(),
+            language: vec!["eng".to_string()],
+            tessdata_path: Some(tessdata_dir),
+            tesseract_config: Some(TesseractConfig {
+                psm: Some(6),
+                output_format: "text".to_string(),
+                // Table detection rebuilds the content as paragraphs + table and
+                // duplicates every line for columnar game-UI text.
+                enable_table_detection: false,
+                ..Default::default()
+            }),
+            ..Default::default()
+        }),
+        ..Default::default()
+    })
+}
+
+fn perform_ocr_on_image(
+    img: &DynamicImage,
+    app_handle: &AppHandle,
+    filter: Option<&ColorFilter>,
+) -> Result<String, String> {
     // Preprocess the image
-    let processed = preprocess_image(img);
-    
+    let processed = preprocess_image(img, filter);
+
     // Convert back to DynamicImage
     let processed_dynamic = DynamicImage::ImageLuma8(processed);
-    
-    // Initialize Tesseract API
-    let api = TesseractAPI::new();
-    
-    let tessdata_dir = get_tessdata_dir(app_handle)?;
-    api.init(tessdata_dir.to_str().unwrap(), "eng")
-        .map_err(|e| format!("Failed to initialize Tesseract: {}", e))?;
-    
-    // Set page segmentation mode to uniform block of text
-    api.set_variable("tessedit_pageseg_mode", "6")
-        .map_err(|e| format!("Failed to set PSM: {}", e))?;
-    
-    // Convert image to RGB format for Tesseract
-    let rgb_img = processed_dynamic.to_rgb8();
-    let (width, height) = rgb_img.dimensions();
-    let image_data = rgb_img.into_raw();
-    
-    // Set the image data
-    api.set_image(
-        &image_data,
-        width as i32,
-        height as i32,
-        3, // bytes per pixel (RGB)
-        (3 * width) as i32, // bytes per line
-    )
-    .map_err(|e| format!("Failed to set image: {}", e))?;
-    
-    // Get the recognized text
-    api.get_utf8_text()
-        .map_err(|e| format!("OCR error: {}", e))
+
+    // Encode the preprocessed image as PNG for xberg
+    let mut png_buffer = Cursor::new(Vec::new());
+    processed_dynamic
+        .write_to(&mut png_buffer, ImageFormat::Png)
+        .map_err(|e| format!("Failed to encode image: {}", e))?;
+
+    let input = ExtractInput::from_bytes(png_buffer.into_inner(), "image/png", None::<String>);
+    let config = build_ocr_config(app_handle)?;
+
+    let output = tauri::async_runtime::block_on(extract(input, &config))
+        .map_err(|e| format!("OCR error: {}", e))?;
+
+    let document = output
+        .results
+        .first()
+        .ok_or_else(|| "OCR returned no results".to_string())?;
+
+    Ok(document.content.clone())
 }
 
 fn parse_stats(text: &str, stat_type: &str, stats_config: &StatsConfig, is_main_stat: bool) -> String {
@@ -572,9 +649,9 @@ async fn scan_for_text(
         .to_image();
 
         let cropped_dynamic = image::DynamicImage::ImageRgba8(cropped);
-        
+
         // Perform OCR with preprocessing
-        let text = perform_ocr_on_image(&cropped_dynamic, &app_handle_clone)?;
+        let text = perform_ocr_on_image(&cropped_dynamic, &app_handle_clone, region.color_filter().as_ref())?;
         println!("DEBUG: OCR text: {}", text);
 
         // Check if "Echo Upgrade" is found (case-insensitive)
@@ -596,7 +673,7 @@ async fn scan_for_text(
                 )
                 .to_image();
                 let name_dynamic = image::DynamicImage::ImageRgba8(name_cropped);
-                let name_text = perform_ocr_on_image(&name_dynamic, &app_handle_clone)
+                let name_text = perform_ocr_on_image(&name_dynamic, &app_handle_clone, regions.echo_name.color_filter().as_ref())
                     .unwrap_or_else(|_| String::new());
                 
                 // Clean echo name - remove extra whitespace and trim
@@ -623,6 +700,37 @@ async fn scan_for_text(
                     cleaned_echo_name
                 };
                 
+                // Scan level (e.g. "+25")
+                let level_text = if let Some(level_region) = regions.level.as_ref() {
+                    let level_cropped = crop_imm(
+                        &screenshot,
+                        level_region.x,
+                        level_region.y,
+                        level_region.width,
+                        level_region.height,
+                    )
+                    .to_image();
+                    let level_dynamic = image::DynamicImage::ImageRgba8(level_cropped);
+                    perform_ocr_on_image(
+                        &level_dynamic,
+                        &app_handle_clone,
+                        level_region.color_filter().as_ref(),
+                    )
+                    .unwrap_or_else(|_| String::new())
+                } else {
+                    String::new()
+                };
+
+                // Clean level text - remove extra whitespace and trim
+                let cleaned_level = level_text
+                    .lines()
+                    .map(|line| line.trim())
+                    .filter(|line| !line.is_empty())
+                    .collect::<Vec<_>>()
+                    .join(" ")
+                    .trim()
+                    .to_string();
+
                 // Scan main stats
                 let main_cropped = crop_imm(
                     &screenshot,
@@ -633,7 +741,7 @@ async fn scan_for_text(
                 )
                 .to_image();
                 let main_dynamic = image::DynamicImage::ImageRgba8(main_cropped);
-                let main_text = perform_ocr_on_image(&main_dynamic, &app_handle_clone)
+                let main_text = perform_ocr_on_image(&main_dynamic, &app_handle_clone, regions.main_stats.color_filter().as_ref())
                     .unwrap_or_else(|_| String::new());
 
                 // Scan sub stats
@@ -646,7 +754,7 @@ async fn scan_for_text(
                 )
                 .to_image();
                 let sub_dynamic = image::DynamicImage::ImageRgba8(sub_cropped);
-                let sub_text = perform_ocr_on_image(&sub_dynamic, &app_handle_clone)
+                let sub_text = perform_ocr_on_image(&sub_dynamic, &app_handle_clone, regions.sub_stats.color_filter().as_ref())
                     .unwrap_or_else(|_| String::new());
 
                 // Parse and clean the stats with correction
@@ -655,6 +763,7 @@ async fn scan_for_text(
 
                 Some(StatsData {
                     echo_name,
+                    level: cleaned_level,
                     main_stats: parsed_main,
                     sub_stats: parsed_sub,
                 })
@@ -715,55 +824,37 @@ fn get_last_stats_data(state: State<AppState>) -> Result<Option<StatsData>, Stri
 }
 
 #[tauri::command]
-fn scan_region_for_text(app_handle: tauri::AppHandle, region: ScanRegion) -> Result<String, String> {
-    // Capture the primary monitor
-    let monitors = Monitor::all().map_err(|e| e.to_string())?;
-    let monitor = monitors.first().ok_or("No monitor found")?;
+async fn scan_region_for_text(
+    app_handle: tauri::AppHandle,
+    region: ScanRegion,
+) -> Result<String, String> {
+    // Run the heavy OCR work on a blocking thread pool. Running it inline on the
+    // IPC handler thread (main thread) overflows the stack.
+    tauri::async_runtime::spawn_blocking(move || {
+        // Capture the primary monitor
+        let monitors = Monitor::all().map_err(|e| e.to_string())?;
+        let monitor = monitors.first().ok_or("No monitor found")?;
 
-    // Capture the screen
-    let screenshot = monitor.capture_image().map_err(|e| e.to_string())?;
+        // Capture the screen
+        let screenshot = monitor.capture_image().map_err(|e| e.to_string())?;
 
-    // Crop to the specified region
-    let cropped = crop_imm(
-        &screenshot,
-        region.x,
-        region.y,
-        region.width,
-        region.height,
-    )
-    .to_image();
+        // Crop to the specified region
+        let cropped = crop_imm(
+            &screenshot,
+            region.x,
+            region.y,
+            region.width,
+            region.height,
+        )
+        .to_image();
 
-    let cropped_dynamic = image::DynamicImage::ImageRgba8(cropped);
-    
-    // Initialize Tesseract API
-    let api = TesseractAPI::new();
-    
-    let tessdata_dir = get_tessdata_dir(&app_handle)?;
-    api.init(tessdata_dir.to_str().unwrap(), "eng")
-        .map_err(|e| format!("Failed to initialize Tesseract: {}", e))?;
-    
-    // Set page segmentation mode
-    api.set_variable("tessedit_pageseg_mode", "6")
-        .map_err(|e| format!("Failed to set PSM: {}", e))?;
-    
-    // Convert image to RGB format
-    let rgb_img = cropped_dynamic.to_rgb8();
-    let (width, height) = rgb_img.dimensions();
-    let image_data = rgb_img.into_raw();
-    
-    // Set the image data
-    api.set_image(
-        &image_data,
-        width as i32,
-        height as i32,
-        3,
-        (3 * width) as i32,
-    )
-    .map_err(|e| format!("Failed to set image: {}", e))?;
-    
-    // Get the recognized text
-    api.get_utf8_text()
-        .map_err(|e| format!("OCR error: {}", e))
+        let cropped_dynamic = image::DynamicImage::ImageRgba8(cropped);
+
+        // Perform OCR with preprocessing
+        perform_ocr_on_image(&cropped_dynamic, &app_handle, region.color_filter().as_ref())
+    })
+    .await
+    .map_err(|e| format!("Task join error: {}", e))?
 }
 
 #[tauri::command]
@@ -922,6 +1013,9 @@ pub fn run() {
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_store::Builder::new().build())
         .manage(AppState::default())
+        .setup(|_app| {
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             set_scan_region,
             get_scan_region,
@@ -937,4 +1031,112 @@ pub fn run() {
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn test_ocr(img: &DynamicImage, filter: Option<&ColorFilter>) -> String {
+        let processed = preprocess_image(img, filter);
+        let processed_dynamic = DynamicImage::ImageLuma8(processed);
+
+        let mut png_buffer = Cursor::new(Vec::new());
+        processed_dynamic
+            .write_to(&mut png_buffer, ImageFormat::Png)
+            .unwrap();
+
+        let input = ExtractInput::from_bytes(png_buffer.into_inner(), "image/png", None::<String>);
+        let tessdata = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tessdata");
+        let config = ExtractionConfig {
+            ocr: Some(OcrConfig {
+                backend: "tesseract".to_string(),
+                language: vec!["eng".to_string()],
+                tessdata_path: Some(tessdata),
+                tesseract_config: Some(TesseractConfig {
+                    psm: Some(6),
+                    output_format: "text".to_string(),
+                    enable_table_detection: false,
+                    ..Default::default()
+                }),
+                ..Default::default()
+            }),
+            ..Default::default()
+        };
+
+        let output = tauri::async_runtime::block_on(extract(input, &config)).unwrap();
+        output.results.first().unwrap().content.clone()
+    }
+
+    #[test]
+    fn scan_screenshot() {
+        let screenshot_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .unwrap()
+            .join("Screenshot 2026-09-17 224637.png");
+        if !screenshot_path.exists() {
+            eprintln!("skipping: screenshot not found");
+            return;
+        }
+
+        let img = image::open(&screenshot_path).unwrap();
+
+        let stats_config: StatsConfig = serde_json::from_str(
+            &std::fs::read_to_string(
+                PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                    .parent()
+                    .unwrap()
+                    .join("src/configs/stats.json"),
+            )
+            .unwrap(),
+        )
+        .unwrap();
+
+        // Regions + text colors from src/configs/ocr.json (2560x1440)
+        let ocr_json: Value = serde_json::from_str(
+            &std::fs::read_to_string(
+                PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                    .parent()
+                    .unwrap()
+                    .join("src/configs/ocr.json"),
+            )
+            .unwrap(),
+        )
+        .unwrap();
+        let res2560 = &ocr_json["resolutions"]["2560x1440"];
+        let main_stats: ScanRegion =
+            serde_json::from_value(res2560["mainStats"].clone()).unwrap();
+        let sub_stats: ScanRegion = serde_json::from_value(res2560["subStats"].clone()).unwrap();
+        let level: ScanRegion = serde_json::from_value(res2560["level"].clone()).unwrap();
+
+        let level_cropped = crop_imm(&img, level.x, level.y, level.width, level.height).to_image();
+        let level_text = test_ocr(&DynamicImage::ImageRgba8(level_cropped), level.color_filter().as_ref());
+        println!("LEVEL OCR TEXT:\n{}\n---", level_text);
+
+        let main_cropped = crop_imm(&img, main_stats.x, main_stats.y, main_stats.width, main_stats.height).to_image();
+        let main_text = test_ocr(&DynamicImage::ImageRgba8(main_cropped), main_stats.color_filter().as_ref());
+        println!("MAIN OCR TEXT:\n{}\n---", main_text);
+        let parsed_main = parse_stats(&main_text, "MAIN STAT", &stats_config, true);
+        println!("MAIN PARSED:\n{}\n===", parsed_main);
+
+        let sub_cropped = crop_imm(&img, sub_stats.x, sub_stats.y, sub_stats.width, sub_stats.height).to_image();
+        let sub_text = test_ocr(&DynamicImage::ImageRgba8(sub_cropped), sub_stats.color_filter().as_ref());
+        println!("SUB OCR TEXT:\n{}\n---", sub_text);
+        let parsed_sub = parse_stats(&sub_text, "SUB STATS", &stats_config, false);
+        println!("SUB PARSED:\n{}\n===", parsed_sub);
+    }
+
+    #[test]
+    fn scan_live_region_like_sync_command() {
+        // Mimic scan_region_for_text: capture screen, crop, OCR
+        let monitors = Monitor::all().unwrap();
+        let monitor = monitors.first().unwrap();
+        let screenshot = monitor.capture_image().unwrap();
+        println!("Captured: {}x{}", screenshot.width(), screenshot.height());
+
+        let region = ScanRegion { x: 130, y: 65, width: 270, height: 60, text_color: None, tolerance: None };
+        let cropped = crop_imm(&screenshot, region.x, region.y, region.width, region.height).to_image();
+        let text = test_ocr(&DynamicImage::ImageRgba8(cropped), region.color_filter().as_ref());
+        println!("LIVE OCR TEXT:\n{}\n===", text);
+    }
 }

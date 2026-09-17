@@ -8,11 +8,12 @@ import { OverlayTab } from "@/components/tabs/OverlayTab";
 import { RulesTab } from "@/components/tabs/RulesTab";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { OCR_CONFIG } from "@/configs/ocr";
+import OCR_CONFIG from "@/configs/ocr.json";
 
 interface ScanRegions {
 	echo_upgrade: { x: number; y: number; width: number; height: number };
 	echo_name: { x: number; y: number; width: number; height: number };
+	level: { x: number; y: number; width: number; height: number };
 	main_stats: { x: number; y: number; width: number; height: number };
 	sub_stats: { x: number; y: number; width: number; height: number };
 }
@@ -29,7 +30,7 @@ export function Settings() {
 				const resolution = savedResolution || "2560x1440"; // Default resolution
 
 				const config =
-					OCR_CONFIG[resolution as keyof typeof OCR_CONFIG];
+					OCR_CONFIG.resolutions[resolution as keyof typeof OCR_CONFIG.resolutions];
 				if (config?.echoUpgrade) {
 					const echoUpgradeRegion = config.echoUpgrade;
 
@@ -37,10 +38,11 @@ export function Settings() {
 					await invoke("set_scan_region", { region: echoUpgradeRegion });
 
 					// Set all scan regions including echo name for stats scanning
-					if (config.echoName && config.mainStats && config.subStats) {
+					if (config.echoName && config.level && config.mainStats && config.subStats) {
 						const scanRegions: ScanRegions = {
 							echo_upgrade: echoUpgradeRegion,
 							echo_name: config.echoName,
+							level: config.level,
 							main_stats: config.mainStats,
 							sub_stats: config.subStats,
 						};

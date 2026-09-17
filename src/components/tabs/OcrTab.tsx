@@ -12,7 +12,7 @@ import {
 	SelectTrigger,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { OCR_CONFIG } from "@/configs/ocr";
+import OCR_CONFIG from "@/configs/ocr.json";
 
 interface ScanRegion {
 	x: number;
@@ -24,6 +24,7 @@ interface ScanRegion {
 interface ScanRegions {
 	echo_upgrade: ScanRegion;
 	echo_name: ScanRegion;
+	level: ScanRegion;
 	main_stats: ScanRegion;
 	sub_stats: ScanRegion;
 }
@@ -48,7 +49,8 @@ export function OcrTab() {
 	const [isDebugScanning, setIsDebugScanning] = useState(false);
 
 	const applyResolutionConfig = async (resolution: string) => {
-		const config = OCR_CONFIG[resolution as keyof typeof OCR_CONFIG];
+		const config =
+			OCR_CONFIG.resolutions[resolution as keyof typeof OCR_CONFIG.resolutions];
 		if (config?.echoUpgrade) {
 			const echoUpgradeRegion = config.echoUpgrade;
 			setScanRegion(echoUpgradeRegion);
@@ -58,10 +60,11 @@ export function OcrTab() {
 				await invoke("set_scan_region", { region: echoUpgradeRegion });
 
 				// Set all scan regions including echo name for stats scanning
-				if (config.echoName && config.mainStats && config.subStats) {
+				if (config.echoName && config.level && config.mainStats && config.subStats) {
 					const scanRegions: ScanRegions = {
 						echo_upgrade: echoUpgradeRegion,
 						echo_name: config.echoName,
+						level: config.level,
 						main_stats: config.mainStats,
 						sub_stats: config.subStats,
 					};
@@ -173,7 +176,7 @@ export function OcrTab() {
 								: selectedResolution}
 						</SelectTrigger>
 						<SelectContent>
-							{Object.keys(OCR_CONFIG).map((resolution) => (
+							{Object.keys(OCR_CONFIG.resolutions).map((resolution) => (
 								<SelectItem key={resolution} value={resolution}>
 									{resolution}
 								</SelectItem>

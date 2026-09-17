@@ -3,7 +3,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import echoData from "@/configs/echo_data.json";
 import statsConfig from "@/configs/stats.json";
@@ -107,15 +107,29 @@ function getStatProgress(
 	return { percentage, color };
 }
 
+// Find the echo matching an OCR'd echo name (case-insensitive, exact matches
+// preferred, then by longest name for specificity)
+function findEcho(echoName: string): Echo | undefined {
+	const lower = echoName.toLowerCase();
+	const candidates = (echoData as Echo[]).filter(
+		(e) =>
+			e.echo_name.toLowerCase().includes(lower) ||
+			lower.includes(e.echo_name.toLowerCase()),
+	);
+	const exactMatches = candidates.filter(
+		(e) => e.echo_name.toLowerCase() === lower,
+	);
+	return exactMatches.length > 0
+		? exactMatches[0]
+		: candidates.sort((a, b) => b.echo_name.length - a.echo_name.length)[0];
+}
+
 // Helper function to calculate echo rating for a character
 function calculateRating(
 	character: CharacterInfo,
-	statsData: StatsData | null,
 	parsedMainStats: string[],
 	parsedSubStats: string[],
 ): number {
-	if (!statsData) return 0;
-
 	const mainStatString = parsedMainStats[0];
 	if (!mainStatString) return 0;
 
@@ -158,13 +172,34 @@ function calculateRating(
 
 function Overlay() {
 	const [textFound, setTextFound] = useState<boolean>(false);
-	const [isScanning, setIsScanning] = useState(false);
 	const [scanRegion, setScanRegion] = useState<ScanRegion | null>(null);
 	const [showScanRegion, setShowScanRegion] = useState(false);
 	const [statsData, setStatsData] = useState<StatsData | null>(null);
 	const [relevantCharacters, setRelevantCharacters] = useState<CharacterInfo[]>(
 		[],
 	);
+	const isScanningRef = useRef(false);
+
+	// Look up characters matching the echo's sets and store them
+	const fetchRelevantCharacters = useCallback(async (echoName: string) => {
+		const echo = findEcho(echoName);
+		if (!echo) {
+			setRelevantCharacters([]);
+			return;
+		}
+		try {
+			const characters = await invoke<CharacterInfo[]>(
+				"get_relevant_characters",
+				{
+					echoSetIds: echo.echo_sets.map((s) => s.id),
+				},
+			);
+			setRelevantCharacters(characters);
+		} catch (error) {
+			console.error("Failed to get relevant characters:", error);
+			setRelevantCharacters([]);
+		}
+	}, []);
 
 	useEffect(() => {
 		// Listen for OCR results from the backend
@@ -173,55 +208,15 @@ function Overlay() {
 		});
 
 		// Listen for stats data from the backend
-		const unlistenStats = listen<StatsData | null>(
-			"stats-data",
-			async (event) => {
-				setStatsData(event.payload);
+		const unlistenStats = listen<StatsData | null>("stats-data", (event) => {
+			setStatsData(event.payload);
 
-				// If we have echo data, try to find relevant characters
-				if (event.payload?.echo_name) {
-					// Find echo by name (case-insensitive match)
-					const echoName = event.payload.echo_name.toLowerCase();
-					const candidates = (echoData as Echo[]).filter(
-						(e) =>
-							e.echo_name.toLowerCase().includes(echoName) ||
-							echoName.includes(e.echo_name.toLowerCase()),
-					);
-					// Prefer exact matches, then by longest name for specificity
-					const exactMatches = candidates.filter(
-						(e) => e.echo_name.toLowerCase() === echoName,
-					);
-					const echo = exactMatches.length > 0
-						? exactMatches[0]
-						: candidates.sort(
-								(a, b) => b.echo_name.length - a.echo_name.length,
-							)[0];
-
-					if (echo) {
-						// Get echo set IDs
-						const setIds = echo.echo_sets.map((s) => s.id);
-
-						// Get relevant characters from backend
-						try {
-							const characters = await invoke<CharacterInfo[]>(
-								"get_relevant_characters",
-								{
-									echoSetIds: setIds,
-								},
-							);
-							setRelevantCharacters(characters);
-						} catch (error) {
-							console.error("Failed to get relevant characters:", error);
-							setRelevantCharacters([]);
-						}
-					} else {
-						setRelevantCharacters([]);
-					}
-				} else {
-					setRelevantCharacters([]);
-				}
-			},
-		);
+			if (event.payload?.echo_name) {
+				fetchRelevantCharacters(event.payload.echo_name);
+			} else {
+				setRelevantCharacters([]);
+			}
+		});
 
 		// Listen for scan region visibility changes
 		const unlistenShowRegion = listen<boolean>(
@@ -242,41 +237,10 @@ function Overlay() {
 
 		// Load last stats data on mount
 		invoke<StatsData | null>("get_last_stats_data")
-			.then(async (data) => {
+			.then((data) => {
 				setStatsData(data);
-
-				// If we have echo data, try to find relevant characters
 				if (data?.echo_name) {
-					const echoName = data.echo_name.toLowerCase();
-					const candidates = (echoData as Echo[]).filter(
-						(e) =>
-							e.echo_name.toLowerCase().includes(echoName) ||
-							echoName.includes(e.echo_name.toLowerCase()),
-					);
-					// Prefer exact matches, then by longest name for specificity
-					const exactMatches = candidates.filter(
-						(e) => e.echo_name.toLowerCase() === echoName,
-					);
-					const echo = exactMatches.length > 0
-						? exactMatches[0]
-						: candidates.sort(
-								(a, b) => b.echo_name.length - a.echo_name.length,
-							)[0];
-
-					if (echo) {
-						const setIds = echo.echo_sets.map((s) => s.id);
-						try {
-							const characters = await invoke<CharacterInfo[]>(
-								"get_relevant_characters",
-								{
-									echoSetIds: setIds,
-								},
-							);
-							setRelevantCharacters(characters);
-						} catch (error) {
-							console.error("Failed to get relevant characters:", error);
-						}
-					}
+					fetchRelevantCharacters(data.echo_name);
 				}
 			})
 			.catch(console.error);
@@ -297,15 +261,14 @@ function Overlay() {
 
 		// Set up interval for continuous scanning
 		const scanInterval = setInterval(async () => {
-			if (!isScanning) {
-				setIsScanning(true);
-				try {
-					await invoke("scan_for_text");
-				} catch (error) {
-					console.error("Scan error:", error);
-				} finally {
-					setIsScanning(false);
-				}
+			if (isScanningRef.current) return;
+			isScanningRef.current = true;
+			try {
+				await invoke("scan_for_text");
+			} catch (error) {
+				console.error("Scan error:", error);
+			} finally {
+				isScanningRef.current = false;
 			}
 		}, 2000); // Scan every 2 seconds
 
@@ -315,7 +278,7 @@ function Overlay() {
 			unlistenShowRegion.then((fn) => fn());
 			clearInterval(scanInterval);
 		};
-	}, [isScanning]);
+	}, [fetchRelevantCharacters]);
 
 	// Parse stats with scores
 	const parsedMainStats =
@@ -470,9 +433,7 @@ function Overlay() {
 
 										return (
 											<div key={`sub-${stat}`} className="space-y-1">
-												<div
-													className="flex justify-between items-center text-xs"
-												>
+												<div className="flex justify-between items-center text-xs">
 													<div className="flex items-center gap-2">
 														{isPreferred && (
 															<HugeiconsIcon
@@ -509,26 +470,15 @@ function Overlay() {
 										Relevant Characters
 									</h3>
 									<div className="space-y-2">
-										{relevantCharacters
-											.sort((a, b) => {
-												const ratingA = calculateRating(
-													a,
-													statsData,
-													parsedMainStats,
-													parsedSubStats,
-												);
-												const ratingB = calculateRating(
-													b,
-													statsData,
-													parsedMainStats,
-													parsedSubStats,
-												);
-												return ratingB - ratingA;
-											})
+										{[...relevantCharacters]
+											.sort(
+												(a, b) =>
+													calculateRating(b, parsedMainStats, parsedSubStats) -
+													calculateRating(a, parsedMainStats, parsedSubStats),
+											)
 											.map((character) => {
 												const rating = calculateRating(
 													character,
-													statsData,
 													parsedMainStats,
 													parsedSubStats,
 												);

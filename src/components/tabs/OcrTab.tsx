@@ -30,12 +30,6 @@ interface ScanRegions {
 }
 
 export function OcrTab() {
-	const [_scanRegion, setScanRegion] = useState<ScanRegion>({
-		x: 130,
-		y: 65,
-		width: 270,
-		height: 60,
-	});
 	const [showScanRegion, setShowScanRegion] = useState(false);
 	const [selectedResolution, setSelectedResolution] = useState<string>("");
 	const [showDebugSection, setShowDebugSection] = useState(false);
@@ -53,14 +47,18 @@ export function OcrTab() {
 			OCR_CONFIG.resolutions[resolution as keyof typeof OCR_CONFIG.resolutions];
 		if (config?.echoUpgrade) {
 			const echoUpgradeRegion = config.echoUpgrade;
-			setScanRegion(echoUpgradeRegion);
 			setSelectedResolution(resolution);
 			try {
 				// Set the echo upgrade scan region (for backward compatibility and debug outline)
 				await invoke("set_scan_region", { region: echoUpgradeRegion });
 
 				// Set all scan regions including echo name for stats scanning
-				if (config.echoName && config.level && config.mainStats && config.subStats) {
+				if (
+					config.echoName &&
+					config.level &&
+					config.mainStats &&
+					config.subStats
+				) {
 					const scanRegions: ScanRegions = {
 						echo_upgrade: echoUpgradeRegion,
 						echo_name: config.echoName,
@@ -84,15 +82,6 @@ export function OcrTab() {
 	// biome-ignore lint/correctness/useExhaustiveDependencies: applyResolutionConfig changes on every re-render and should not be used as a hook dependency
 	useEffect(() => {
 		const initOcrSettings = async () => {
-			// Load saved scan region on mount
-			invoke<ScanRegion | null>("get_scan_region")
-				.then((region) => {
-					if (region) {
-						setScanRegion(region);
-					}
-				})
-				.catch(console.error);
-
 			// Load show scan region state
 			invoke<boolean>("get_show_scan_region")
 				.then((show) => {
@@ -146,7 +135,6 @@ export function OcrTab() {
 				region: debugRegion,
 			});
 			setDebugOcrText(text);
-			console.log("Debug OCR result:", text);
 		} catch (error) {
 			console.error("Debug scan failed:", error);
 			setDebugOcrText(`Error: ${error}`);
@@ -208,7 +196,8 @@ export function OcrTab() {
 									Manual Region Configuration
 								</Label>
 								<p className="text-xs text-muted-foreground">
-									Test a custom region without saving it to the main configuration
+									Test a custom region without saving it to the main
+									configuration
 								</p>
 								<div className="grid grid-cols-2 gap-4">
 									<div className="space-y-2">
@@ -298,7 +287,9 @@ export function OcrTab() {
 									variant={showScanRegion ? "default" : "outline"}
 									className="w-full"
 								>
-									{showScanRegion ? "Hide Region Outline" : "Show Region Outline"}
+									{showScanRegion
+										? "Hide Region Outline"
+										: "Show Region Outline"}
 								</Button>
 								<p className="text-xs text-muted-foreground">
 									Displays a visual outline of the scan region on the overlay

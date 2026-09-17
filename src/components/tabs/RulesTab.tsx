@@ -34,14 +34,33 @@ interface CharacterConfig {
 	};
 }
 
+function emptyCharacterConfig(enabled: boolean): CharacterConfig {
+	return {
+		enabled,
+		mainEchoes: [],
+		sets: [],
+		stats: {
+			"4cost": [],
+			"3cost": [],
+			"1cost": [],
+			subs: [],
+		},
+	};
+}
+
 export function RulesTab() {
 	const characters = characterData as Character[];
 	const echoSets = echoSetsData as EchoSet[];
 	const [searchQuery, setSearchQuery] = useState("");
-	const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null,);
-	const [characterConfig, setCharacterConfig] = useState<CharacterConfig | null>(null);
+	const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(
+		null,
+	);
+	const [characterConfig, setCharacterConfig] =
+		useState<CharacterConfig | null>(null);
 	const [configs, setConfigs] = useState<Record<number, CharacterConfig>>({});
-	const [enabledStates, setEnabledStates] = useState<Record<number, boolean>>({},);
+	const [enabledStates, setEnabledStates] = useState<Record<number, boolean>>(
+		{},
+	);
 
 	// Filter characters based on search query
 	const filteredCharacters = characters.filter((character) =>
@@ -54,7 +73,8 @@ export function RulesTab() {
 			const newConfigs: Record<number, CharacterConfig> = {};
 			const store = await Store.load("character-rules.json");
 			// Load enabled states from store
-			const enabled = (await store.get("enabled")) as Record<number, boolean> || {};
+			const enabled =
+				((await store.get("enabled")) as Record<number, boolean>) || {};
 			setEnabledStates(enabled);
 			for (const character of characters) {
 				try {
@@ -66,51 +86,29 @@ export function RulesTab() {
 						config.enabled = enabled[character.character_id] || false;
 						newConfigs[character.character_id] = config;
 					} else {
-						newConfigs[character.character_id] = {
-							enabled: enabled[character.character_id] || false,
-							mainEchoes: [],
-							sets: [],
-							stats: {
-								"4cost": [],
-								"3cost": [],
-								"1cost": [],
-								subs: [],
-							},
-						};
+						newConfigs[character.character_id] = emptyCharacterConfig(
+							enabled[character.character_id] || false,
+						);
 					}
 				} catch (_error) {
-					newConfigs[character.character_id] = {
-						enabled: enabled[character.character_id] || false,
-						mainEchoes: [],
-						sets: [],
-						stats: {
-							"4cost": [],
-							"3cost": [],
-							"1cost": [],
-							subs: [],
-						},
-					};
+					newConfigs[character.character_id] = emptyCharacterConfig(
+						enabled[character.character_id] || false,
+					);
 				}
 			}
 			setConfigs(newConfigs);
 		};
 		loadAllConfigs();
-	}, [characters]);
+	}, []);
 
 	// Load character config when character is selected
 	useEffect(() => {
 		if (selectedCharacter) {
-			const config = configs[selectedCharacter.character_id] || {
-				enabled: enabledStates[selectedCharacter.character_id] || false,
-				mainEchoes: [],
-				sets: [],
-				stats: {
-					"4cost": [],
-					"3cost": [],
-					"1cost": [],
-					subs: [],
-				},
-			};
+			const config =
+				configs[selectedCharacter.character_id] ||
+				emptyCharacterConfig(
+					enabledStates[selectedCharacter.character_id] || false,
+				);
 			setCharacterConfig(config);
 		}
 	}, [selectedCharacter, configs, enabledStates]);
@@ -120,7 +118,10 @@ export function RulesTab() {
 
 		try {
 			const store = await Store.load("character-rules.json");
-			const newEnabled = { ...enabledStates, [selectedCharacter.character_id]: characterConfig.enabled };
+			const newEnabled = {
+				...enabledStates,
+				[selectedCharacter.character_id]: characterConfig.enabled,
+			};
 			await store.set("enabled", newEnabled);
 			await store.save();
 			setEnabledStates(newEnabled);

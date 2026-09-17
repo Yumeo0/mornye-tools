@@ -3,7 +3,6 @@ use image::imageops::crop_imm;
 use image::{DynamicImage, GrayImage, ImageFormat};
 use imageproc::contrast::{threshold, ThresholdType};
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
 use std::sync::Mutex;
 use std::io::Cursor;
 use std::path::PathBuf;
@@ -152,114 +151,67 @@ fn get_tessdata_dir(app_handle: &AppHandle) -> Result<PathBuf, String> {
     Err("Tessdata directory not found. Please ensure tessdata is in src-tauri/tessdata for development or bundled with the app for production.".to_string())
 }
 
-fn load_stats_config(app_handle: &AppHandle) -> Result<StatsConfig, String> {
-    // Try development path first
+/// Load a JSON config from src/configs, trying the development path first and
+/// then the bundled resource path (for production builds).
+fn load_json_resource<T: serde::de::DeserializeOwned>(
+    app_handle: &AppHandle,
+    file_name: &str,
+) -> Result<T, String> {
+    let mut candidates: Vec<PathBuf> = Vec::new();
     if let Ok(manifest_dir) = std::env::var("CARGO_MANIFEST_DIR") {
-        let config_path = PathBuf::from(manifest_dir)
-            .parent()
-            .ok_or("Failed to get parent directory")?
-            .join("src/configs/stats.json");
-        
-        if config_path.exists() {
-            let content = std::fs::read_to_string(&config_path)
-                .map_err(|e| format!("Failed to read stats.json: {}", e))?;
-            let config: StatsConfig = serde_json::from_str(&content)
-                .map_err(|e| format!("Failed to parse stats.json: {}", e))?;
-            
-            return Ok(config);
+        if let Some(project_root) = PathBuf::from(manifest_dir).parent() {
+            candidates.push(project_root.join("src/configs").join(file_name));
         }
     }
-    
-    // Try bundled resource path (for production)
-    if let Ok(resource_path) = app_handle.path().resource_dir() {
-        let config_path = resource_path.join("src/configs/stats.json");
-        if config_path.exists() {
-            let content = std::fs::read_to_string(&config_path)
-                .map_err(|e| format!("Failed to read stats.json: {}", e))?;
-            let config: StatsConfig = serde_json::from_str(&content)
-                .map_err(|e| format!("Failed to parse stats.json: {}", e))?;
-            
-            return Ok(config);
+    if let Ok(resource_dir) = app_handle.path().resource_dir() {
+        candidates.push(resource_dir.join("src/configs").join(file_name));
+    }
+
+    for path in candidates {
+        if let Ok(content) = fs::read_to_string(&path) {
+            return serde_json::from_str(&content)
+                .map_err(|e| format!("Failed to parse {}: {}", file_name, e));
         }
     }
-    
-    Err("Stats config file not found".to_string())
+
+    Err(format!("{} not found", file_name))
+}
+
+fn load_stats_config(app_handle: &AppHandle) -> Result<StatsConfig, String> {
+    load_json_resource(app_handle, "stats.json")
 }
 
 fn load_echo_data(app_handle: &AppHandle) -> Result<Vec<Echo>, String> {
-    // Try development path first
-    if let Ok(manifest_dir) = std::env::var("CARGO_MANIFEST_DIR") {
-        let config_path = PathBuf::from(manifest_dir)
-            .parent()
-            .ok_or("Failed to get parent directory")?
-            .join("src/configs/echo_data.json");
-        
-        if config_path.exists() {
-            let content = std::fs::read_to_string(&config_path)
-                .map_err(|e| format!("Failed to read echo_data.json: {}", e))?;
-            let echoes: Vec<Echo> = serde_json::from_str(&content)
-                .map_err(|e| format!("Failed to parse echo_data.json: {}", e))?;
-            
-            return Ok(echoes);
-        }
-    }
-    
-    // Try bundled resource path (for production)
-    if let Ok(resource_path) = app_handle.path().resource_dir() {
-        let config_path = resource_path.join("src/configs/echo_data.json");
-        if config_path.exists() {
-            let content = std::fs::read_to_string(&config_path)
-                .map_err(|e| format!("Failed to read echo_data.json: {}", e))?;
-            let echoes: Vec<Echo> = serde_json::from_str(&content)
-                .map_err(|e| format!("Failed to parse echo_data.json: {}", e))?;
-            
-            return Ok(echoes);
-        }
-    }
-    
-    Err("Echo data file not found".to_string())
+    load_json_resource(app_handle, "echo_data.json")
 }
 
 fn match_echo_name(ocr_text: &str, echoes: &[Echo]) -> Option<String> {
     if ocr_text.trim().is_empty() {
         return None;
     }
-    
+
     let ocr_lower = ocr_text.to_lowercase();
-    
+
     // First, try exact matches
     for echo in echoes {
         if echo.echo_name.to_lowercase() == ocr_lower {
             return Some(echo.echo_name.clone());
         }
     }
-    
+
     // Then, try partial matches (OCR text contains echo name or vice versa)
-    let mut candidates = Vec::new();
+    // and prefer the longest name, since it is the most specific.
+    let mut best: Option<&Echo> = None;
     for echo in echoes {
         let echo_lower = echo.echo_name.to_lowercase();
-        if echo_lower.contains(&ocr_lower) || ocr_lower.contains(&echo_lower) {
-            candidates.push(echo);
+        if (echo_lower.contains(&ocr_lower) || ocr_lower.contains(&echo_lower))
+            && best.is_none_or(|b| echo.echo_name.len() > b.echo_name.len())
+        {
+            best = Some(echo);
         }
     }
-    
-    if !candidates.is_empty() {
-        // Prefer exact matches first, then by length (longer names are more specific)
-        candidates.sort_by(|a, b| {
-            let a_exact = a.echo_name.to_lowercase() == ocr_lower;
-            let b_exact = b.echo_name.to_lowercase() == ocr_lower;
-            if a_exact && !b_exact {
-                std::cmp::Ordering::Less
-            } else if !a_exact && b_exact {
-                std::cmp::Ordering::Greater
-            } else {
-                b.echo_name.len().cmp(&a.echo_name.len())
-            }
-        });
-        return Some(candidates[0].echo_name.clone());
-    }
-    
-    None
+
+    best.map(|echo| echo.echo_name.clone())
 }
 
 fn normalize_stat_name(name: &str) -> String {
@@ -467,119 +419,92 @@ fn perform_ocr_on_image(
     Ok(document.content.clone())
 }
 
-fn parse_stats(text: &str, stat_type: &str, stats_config: &StatsConfig, is_main_stat: bool) -> String {
-    println!("=== {} RAW TEXT ===", stat_type);
-    println!("{}", text);
-    println!("{}", "=".repeat(26 + stat_type.len()));
-    
+fn parse_stats(text: &str, stats_config: &StatsConfig, is_main_stat: bool) -> String {
     // Clean up the text - keep only letters, numbers, spaces, periods, percent signs, and plus signs
     let cleaned: String = text
         .chars()
         .filter(|c| c.is_alphanumeric() || c.is_whitespace() || *c == '.' || *c == '%' || *c == '+')
         .collect();
-    
+
     // Correct common OCR errors
     let corrected = correct_ocr_errors(&cleaned);
-    
-    println!("=== {} CORRECTED ===", stat_type);
-    println!("{}", corrected);
-    println!("{}", "=".repeat(25 + stat_type.len()));
-    
+
     // Try to parse individual stat lines - flexible pattern to handle various OCR artifacts
     // First try to match percentages (more reliable), then fall back to flat values
     let percent_re = Regex::new(r"(?i)(HP|ATK|DEF|Energy\s*Regen|Crit\.?\s*Rate|Crit\.?\s*DMG|Healing\s*Bonus|Glacio\s*DMG|Fusion\s*DMG|Electro\s*DMG|Aero\s*DMG|Spectro\s*DMG|Havoc\s*DMG|Basic\s*Attack\s*DMG|Heavy\s*Attack\s*DMG|Resonance\s*Skill\s*DMG|Resonance\s*Liberation\s*DMG|Resonance\s*Skill|Resonance\s*Liberation).*?(\d+(?:\.\d+)?)\s*%").unwrap();
     let flat_re = Regex::new(r"(?i)(HP|ATK|DEF|Energy\s*Regen|Crit\.?\s*Rate|Crit\.?\s*DMG|Healing\s*Bonus|Glacio\s*DMG|Fusion\s*DMG|Electro\s*DMG|Aero\s*DMG|Spectro\s*DMG|Havoc\s*DMG|Basic\s*Attack\s*DMG|Heavy\s*Attack\s*DMG|Resonance\s*Skill\s*DMG|Resonance\s*Liberation\s*DMG|Resonance\s*Skill|Resonance\s*Liberation)[\s.]*(?:Bonus)?[\sa-z.]*?(\d+(?:\.\d+)?)").unwrap();
-    
+
     // Collect all matches with their positions
-    let mut all_matches = Vec::new();
-    
+    let mut all_matches: Vec<(usize, String)> = Vec::new();
+
+    // Ranges already covered by percentage matches, so flat matches can skip them
+    let mut percent_ranges: Vec<(usize, usize)> = Vec::new();
+
     // First, find all percentage matches
     for captures in percent_re.captures_iter(&corrected) {
         let stat_name: &str = captures.get(1).map_or("", |m| m.as_str());
         let value: &str = captures.get(2).map_or("", |m| m.as_str());
-        let match_start = captures.get(0).map_or(0, |m| m.start());
-        
+        let full_match = captures.get(0).map_or(0..0, |m| m.start()..m.end());
+
         // For percentage stats, append % to the stat name for proper lookup
         let stat_name_with_percent = format!("{}%", stat_name);
-        
+
         // Map to canonical stat name (use the version with %)
         let canonical_name = map_to_canonical_stat_name(&stat_name_with_percent);
-        
+
         // Correct the value if needed (use the version with % for proper range lookup)
         let corrected_value = correct_stat_value(&stat_name_with_percent, value, stats_config, is_main_stat);
-        
-        all_matches.push((match_start, format!("{} {}%", canonical_name, corrected_value)));
+
+        percent_ranges.push((full_match.start, full_match.end));
+        all_matches.push((full_match.start, format!("{} {}%", canonical_name, corrected_value)));
     }
-    
-    // Then find flat value matches
+
+    // Then find flat value matches that don't overlap a percentage match
     for captures in flat_re.captures_iter(&corrected) {
         let stat_name: &str = captures.get(1).map_or("", |m| m.as_str());
         let value: &str = captures.get(2).map_or("", |m| m.as_str());
-        let match_start = captures.get(0).map_or(0, |m| m.start());
-        
-        // Check if this overlaps with any percentage match
-        let overlaps = all_matches.iter().any(|(pos, _)| {
-            let percent_match = percent_re.captures_iter(&corrected)
-                .find(|cap| cap.get(0).map_or(false, |m| m.start() == *pos))
-                .and_then(|cap| cap.get(0));
-            if let Some(percent_match) = percent_match {
-                let percent_start = percent_match.start();
-                let percent_end = percent_match.end();
-                let flat_start = match_start;
-                let flat_end = captures.get(0).map_or(match_start, |m| m.end());
-                (flat_start >= percent_start && flat_start < percent_end) || 
-                (flat_end > percent_start && flat_end <= percent_end)
-            } else {
-                false
-            }
+        let full_match = captures.get(0).map_or(0..0, |m| m.start()..m.end());
+
+        let overlaps = percent_ranges.iter().any(|&(start, end)| {
+            (full_match.start >= start && full_match.start < end)
+                || (full_match.end > start && full_match.end <= end)
         });
-        
+
         if !overlaps {
             // Map to canonical stat name
             let canonical_name = map_to_canonical_stat_name(stat_name);
-            
+
             // Correct the value if needed
             let corrected_value = correct_stat_value(stat_name, value, stats_config, is_main_stat);
-            
-            all_matches.push((match_start, format!("{} {}", canonical_name, corrected_value)));
+
+            all_matches.push((full_match.start, format!("{} {}", canonical_name, corrected_value)));
         }
     }
-    
+
     // Sort by position to preserve order
     all_matches.sort_by_key(|(pos, _)| *pos);
-    
+
     let stats: Vec<String> = all_matches.into_iter().map(|(_, stat)| stat).collect();
-    
+
     if !stats.is_empty() {
-        let result = stats.join("\n");
-        println!("=== {} PARSED ===", stat_type);
-        println!("{}", result);
-        println!("{}", "=".repeat(22 + stat_type.len()));
-        return result;
+        return stats.join("\n");
     }
-    
+
     // Fallback: Split by lines and filter meaningful content
-    let lines: Vec<String> = corrected
+    corrected
         .lines()
         .map(|line| line.trim().to_string())
         .filter(|line| {
             // Keep lines that contain meaningful content
             let l = line.to_lowercase();
-            !line.is_empty() && 
-            (l.contains("upgrade") || l.contains("activate") || 
-             l.contains("hp") || l.contains("atk") || l.contains("def") || 
+            !line.is_empty() &&
+            (l.contains("upgrade") || l.contains("activate") ||
+             l.contains("hp") || l.contains("atk") || l.contains("def") ||
              l.contains("crit") || l.contains("dmg") || l.contains("energy") ||
              l.contains("+"))
         })
-        .collect();
-    
-    let result = lines.join("\n");
-    
-    println!("=== {} PARSED (FALLBACK) ===", stat_type);
-    println!("{}", result);
-    println!("{}", "=".repeat(32 + stat_type.len()));
-    
-    result
+        .collect::<Vec<_>>()
+        .join("\n")
 }
 
 #[tauri::command]
@@ -652,7 +577,6 @@ async fn scan_for_text(
 
         // Perform OCR with preprocessing
         let text = perform_ocr_on_image(&cropped_dynamic, &app_handle_clone, region.color_filter().as_ref())?;
-        println!("DEBUG: OCR text: {}", text);
 
         // Check if "Echo Upgrade" is found (case-insensitive)
         let found = text.to_lowercase().contains("echo upgrade");
@@ -688,15 +612,11 @@ async fn scan_for_text(
                 // Try to match with known echoes
                 let echo_name = if !cleaned_echo_name.is_empty() {
                     if let Ok(echoes) = load_echo_data(&app_handle_clone) {
-                        let matched = match_echo_name(&cleaned_echo_name, &echoes);
-                        println!("DEBUG: Cleaned echo name: '{}', Matched: {:?}", cleaned_echo_name, matched);
-                        matched.unwrap_or(cleaned_echo_name)
+                        match_echo_name(&cleaned_echo_name, &echoes).unwrap_or(cleaned_echo_name)
                     } else {
-                        println!("DEBUG: Failed to load echo data");
                         cleaned_echo_name
                     }
                 } else {
-                    println!("DEBUG: Empty echo name");
                     cleaned_echo_name
                 };
                 
@@ -758,8 +678,8 @@ async fn scan_for_text(
                     .unwrap_or_else(|_| String::new());
 
                 // Parse and clean the stats with correction
-                let parsed_main = parse_stats(&main_text, "MAIN STAT", &stats_config, true);
-                let parsed_sub = parse_stats(&sub_text, "SUB STATS", &stats_config, false);
+                let parsed_main = parse_stats(&main_text, &stats_config, true);
+                let parsed_sub = parse_stats(&sub_text, &stats_config, false);
 
                 Some(StatsData {
                     echo_name,
@@ -880,126 +800,47 @@ fn get_show_scan_region(state: State<AppState>) -> Result<bool, String> {
     Ok(*show_scan_region)
 }
 
+#[derive(Debug, Clone, Deserialize)]
+struct CharacterEntry {
+    character_id: u32,
+    character_name: String,
+    icon_pile: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct CharacterRuleConfig {
+    sets: Vec<u32>,
+    stats: CharacterStats,
+}
+
 #[tauri::command]
 fn get_relevant_characters(
     app_handle: tauri::AppHandle,
     echo_set_ids: Vec<u32>,
 ) -> Result<Vec<CharacterInfo>, String> {
-    // Load character data
-    let character_data_path = if let Ok(manifest_dir) = std::env::var("CARGO_MANIFEST_DIR") {
-        PathBuf::from(manifest_dir)
-            .parent()
-            .ok_or("Failed to get parent directory")?
-            .join("src/configs/character_data.json")
-    } else if let Ok(resource_path) = app_handle.path().resource_dir() {
-        resource_path.join("src/configs/character_data.json")
-    } else {
-        return Err("Could not find character data".to_string());
-    };
+    let characters: Vec<CharacterEntry> = load_json_resource(&app_handle, "character_data.json")?;
 
-    let character_data_str = fs::read_to_string(character_data_path)
-        .map_err(|e| format!("Failed to read character data: {}", e))?;
-    let character_data: Vec<Value> = serde_json::from_str(&character_data_str)
-        .map_err(|e| format!("Failed to parse character data: {}", e))?;
-
-    // Load character rules from plugin store directory
     let mut relevant_characters = Vec::new();
 
-    for character in character_data {
-        let character_id = character.get("character_id")
-            .and_then(|v| v.as_u64())
-            .ok_or("Invalid character_id")? as u32;
-        
-        let character_name = character.get("character_name")
-            .and_then(|v| v.as_str())
-            .ok_or("Invalid character_name")?
-            .to_string();
-        
-        let icon_pile = character.get("icon_pile")
-            .and_then(|v| v.as_str())
-            .ok_or("Invalid icon_pile")?
-            .to_string();
-
-        // Try to load character config
-        let config_path = if let Ok(manifest_dir) = std::env::var("CARGO_MANIFEST_DIR") {
-            PathBuf::from(manifest_dir)
-                .parent()
-                .ok_or("Failed to get parent directory")?
-                .join(format!("src/configs/characters/{}.json", character_id))
-        } else if let Ok(resource_path) = app_handle.path().resource_dir() {
-            resource_path.join(format!("src/configs/characters/{}.json", character_id))
-        } else {
+    for character in characters {
+        let Ok(config) = load_json_resource::<CharacterRuleConfig>(
+            &app_handle,
+            &format!("characters/{}.json", character.character_id),
+        ) else {
             continue;
         };
 
-        if config_path.exists() {
-            if let Ok(config_str) = fs::read_to_string(&config_path) {
-                if let Ok(config) = serde_json::from_str::<Value>(&config_str) {
-                    // Check if character has any matching echo sets
-                    if let Some(sets) = config.get("sets").and_then(|v| v.as_array()) {
-                        let has_matching_set = sets.iter()
-                            .filter_map(|v| v.as_u64())
-                            .any(|set_id| echo_set_ids.contains(&(set_id as u32)));
-
-                        if has_matching_set {
-                            // Parse stats
-                            if let Some(stats_obj) = config.get("stats") {
-                                let cost_4 = stats_obj.get("4cost")
-                                    .and_then(|v| v.as_array())
-                                    .map(|arr| arr.iter()
-                                        .filter_map(|v| v.as_array())
-                                        .map(|inner| inner.iter()
-                                            .filter_map(|s| s.as_str().map(|s| s.to_string()))
-                                            .collect())
-                                        .collect())
-                                    .unwrap_or_default();
-
-                                let cost_3 = stats_obj.get("3cost")
-                                    .and_then(|v| v.as_array())
-                                    .map(|arr| arr.iter()
-                                        .filter_map(|v| v.as_array())
-                                        .map(|inner| inner.iter()
-                                            .filter_map(|s| s.as_str().map(|s| s.to_string()))
-                                            .collect())
-                                        .collect())
-                                    .unwrap_or_default();
-
-                                let cost_1 = stats_obj.get("1cost")
-                                    .and_then(|v| v.as_array())
-                                    .map(|arr| arr.iter()
-                                        .filter_map(|v| v.as_array())
-                                        .map(|inner| inner.iter()
-                                            .filter_map(|s| s.as_str().map(|s| s.to_string()))
-                                            .collect())
-                                        .collect())
-                                    .unwrap_or_default();
-
-                                let subs = stats_obj.get("subs")
-                                    .and_then(|v| v.as_array())
-                                    .map(|arr| arr.iter()
-                                        .filter_map(|v| v.as_array())
-                                        .map(|inner| inner.iter()
-                                            .filter_map(|s| s.as_str().map(|s| s.to_string()))
-                                            .collect())
-                                        .collect())
-                                    .unwrap_or_default();
-
-                                relevant_characters.push(CharacterInfo {
-                                    character_id,
-                                    character_name,
-                                    icon_pile,
-                                    stats: CharacterStats {
-                                        cost_4,
-                                        cost_3,
-                                        cost_1,
-                                        subs,
-                                    },
-                                });
-                            }
-                        }
-                    }
-                }
-            }
+        if config
+            .sets
+            .iter()
+            .any(|set_id| echo_set_ids.contains(set_id))
+        {
+            relevant_characters.push(CharacterInfo {
+                character_id: character.character_id,
+                character_name: character.character_name,
+                icon_pile: character.icon_pile,
+                stats: config.stats,
+            });
         }
     }
 
@@ -1013,9 +854,6 @@ pub fn run() {
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_store::Builder::new().build())
         .manage(AppState::default())
-        .setup(|_app| {
-            Ok(())
-        })
         .invoke_handler(tauri::generate_handler![
             set_scan_region,
             get_scan_region,
@@ -1036,6 +874,7 @@ pub fn run() {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use serde_json::Value;
 
     fn test_ocr(img: &DynamicImage, filter: Option<&ColorFilter>) -> String {
         let processed = preprocess_image(img, filter);
@@ -1116,13 +955,13 @@ mod tests {
         let main_cropped = crop_imm(&img, main_stats.x, main_stats.y, main_stats.width, main_stats.height).to_image();
         let main_text = test_ocr(&DynamicImage::ImageRgba8(main_cropped), main_stats.color_filter().as_ref());
         println!("MAIN OCR TEXT:\n{}\n---", main_text);
-        let parsed_main = parse_stats(&main_text, "MAIN STAT", &stats_config, true);
+        let parsed_main = parse_stats(&main_text, &stats_config, true);
         println!("MAIN PARSED:\n{}\n===", parsed_main);
 
         let sub_cropped = crop_imm(&img, sub_stats.x, sub_stats.y, sub_stats.width, sub_stats.height).to_image();
         let sub_text = test_ocr(&DynamicImage::ImageRgba8(sub_cropped), sub_stats.color_filter().as_ref());
         println!("SUB OCR TEXT:\n{}\n---", sub_text);
-        let parsed_sub = parse_stats(&sub_text, "SUB STATS", &stats_config, false);
+        let parsed_sub = parse_stats(&sub_text, &stats_config, false);
         println!("SUB PARSED:\n{}\n===", parsed_sub);
     }
 

@@ -5719,6 +5719,16 @@
         "id": 25,
         "name": "Halo of Starry Radiance",
         "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCureWeakness.png"
+      },
+      {
+        "id": 28,
+        "name": "Chromatic Foam",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA2.png"
+      },
+      {
+        "id": 30,
+        "name": "Wishes of Quiet Snowfall",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceA1.png"
       }
     ],
     "possible_mainstats": [
@@ -5759,6 +5769,16 @@
         "id": 26,
         "name": "Rite of Gilded Revelation",
         "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAttackWeakness.png"
+      },
+      {
+        "id": 29,
+        "name": "Sound of True Name",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindVision.png"
+      },
+      {
+        "id": 31,
+        "name": "Reel of Spliced Memories",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport1.png"
       }
     ],
     "possible_mainstats": [
@@ -5799,6 +5819,16 @@
         "id": 26,
         "name": "Rite of Gilded Revelation",
         "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAttackWeakness.png"
+      },
+      {
+        "id": 29,
+        "name": "Sound of True Name",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindVision.png"
+      },
+      {
+        "id": 31,
+        "name": "Reel of Spliced Memories",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport1.png"
       }
     ],
     "possible_mainstats": [
@@ -5839,6 +5869,11 @@
         "id": 25,
         "name": "Halo of Starry Radiance",
         "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCureWeakness.png"
+      },
+      {
+        "id": 27,
+        "name": "Trailblazing Star",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA1.png"
       }
     ],
     "possible_mainstats": [
@@ -5879,6 +5914,16 @@
         "id": 26,
         "name": "Rite of Gilded Revelation",
         "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAttackWeakness.png"
+      },
+      {
+        "id": 28,
+        "name": "Chromatic Foam",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA2.png"
+      },
+      {
+        "id": 29,
+        "name": "Sound of True Name",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindVision.png"
       }
     ],
     "possible_mainstats": [
@@ -5914,6 +5959,11 @@
         "id": 26,
         "name": "Rite of Gilded Revelation",
         "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAttackWeakness.png"
+      },
+      {
+        "id": 28,
+        "name": "Chromatic Foam",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA2.png"
       }
     ],
     "possible_mainstats": [
@@ -5956,6 +6006,16 @@
         "id": 26,
         "name": "Rite of Gilded Revelation",
         "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAttackWeakness.png"
+      },
+      {
+        "id": 27,
+        "name": "Trailblazing Star",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA1.png"
+      },
+      {
+        "id": 29,
+        "name": "Sound of True Name",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindVision.png"
       }
     ],
     "possible_mainstats": [
@@ -5998,6 +6058,11 @@
         "id": 26,
         "name": "Rite of Gilded Revelation",
         "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAttackWeakness.png"
+      },
+      {
+        "id": 31,
+        "name": "Reel of Spliced Memories",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport1.png"
       }
     ],
     "possible_mainstats": [
@@ -6040,6 +6105,11 @@
         "id": 24,
         "name": "Pact of Neonlight Leap",
         "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLightWeakness.png"
+      },
+      {
+        "id": 31,
+        "name": "Reel of Spliced Memories",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport1.png"
       }
     ],
     "possible_mainstats": [
@@ -6082,6 +6152,16 @@
         "id": 24,
         "name": "Pact of Neonlight Leap",
         "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLightWeakness.png"
+      },
+      {
+        "id": 30,
+        "name": "Wishes of Quiet Snowfall",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceA1.png"
+      },
+      {
+        "id": 31,
+        "name": "Reel of Spliced Memories",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport1.png"
       }
     ],
     "possible_mainstats": [
@@ -6124,6 +6204,16 @@
         "id": 25,
         "name": "Halo of Starry Radiance",
         "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCureWeakness.png"
+      },
+      {
+        "id": 28,
+        "name": "Chromatic Foam",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA2.png"
+      },
+      {
+        "id": 29,
+        "name": "Sound of True Name",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindVision.png"
       }
     ],
     "possible_mainstats": [
@@ -6171,6 +6261,11 @@
         "id": 25,
         "name": "Halo of Starry Radiance",
         "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCureWeakness.png"
+      },
+      {
+        "id": 29,
+        "name": "Sound of True Name",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindVision.png"
       }
     ],
     "possible_mainstats": [
@@ -6218,6 +6313,11 @@
         "id": 25,
         "name": "Halo of Starry Radiance",
         "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCureWeakness.png"
+      },
+      {
+        "id": 29,
+        "name": "Sound of True Name",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindVision.png"
       }
     ],
     "possible_mainstats": [
@@ -6260,6 +6360,11 @@
         "id": 25,
         "name": "Halo of Starry Radiance",
         "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCureWeakness.png"
+      },
+      {
+        "id": 30,
+        "name": "Wishes of Quiet Snowfall",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceA1.png"
       }
     ],
     "possible_mainstats": [
@@ -6302,6 +6407,11 @@
         "id": 26,
         "name": "Rite of Gilded Revelation",
         "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAttackWeakness.png"
+      },
+      {
+        "id": 30,
+        "name": "Wishes of Quiet Snowfall",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceA1.png"
       }
     ],
     "possible_mainstats": [
@@ -6387,6 +6497,11 @@
         "id": 25,
         "name": "Halo of Starry Radiance",
         "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCureWeakness.png"
+      },
+      {
+        "id": 28,
+        "name": "Chromatic Foam",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA2.png"
       }
     ],
     "possible_mainstats": [
@@ -6396,6 +6511,318 @@
       "DEF",
       "HP",
       "Healing Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Sigillum",
+    "echo_id": 60001915,
+    "echo_cost": 4,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34025_0_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_34025_0_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_34025_0_UI.png",
+    "echo_sets": [
+      {
+        "id": 27,
+        "name": "Trailblazing Star",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA1.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "HP",
+      "Healing Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Nameless Explorer",
+    "echo_id": 60001925,
+    "echo_cost": 4,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34026_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_34026_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_34026_UI.png",
+    "echo_sets": [
+      {
+        "id": 29,
+        "name": "Sound of True Name",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindVision.png"
+      },
+      {
+        "id": 31,
+        "name": "Reel of Spliced Memories",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport1.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "HP",
+      "Healing Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Kronablight",
+    "echo_id": 60001935,
+    "echo_cost": 3,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32059_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32059_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32059_UI.png",
+    "echo_sets": [
+      {
+        "id": 27,
+        "name": "Trailblazing Star",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA1.png"
+      },
+      {
+        "id": 28,
+        "name": "Chromatic Foam",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA2.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Aero DMG Bonus",
+      "DEF",
+      "Electro DMG Bonus",
+      "Energy Regen",
+      "Fusion DMG Bonus",
+      "Glacio DMG Bonus",
+      "HP",
+      "Havoc DMG Bonus",
+      "Spectro DMG Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Reminiscence: Kronaclaw",
+    "echo_id": 60001945,
+    "echo_cost": 3,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32060_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32060_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32060_UI.png",
+    "echo_sets": [
+      {
+        "id": 27,
+        "name": "Trailblazing Star",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA1.png"
+      },
+      {
+        "id": 28,
+        "name": "Chromatic Foam",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA2.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Aero DMG Bonus",
+      "DEF",
+      "Electro DMG Bonus",
+      "Energy Regen",
+      "Fusion DMG Bonus",
+      "Glacio DMG Bonus",
+      "HP",
+      "Havoc DMG Bonus",
+      "Spectro DMG Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Glommoth",
+    "echo_id": 60001955,
+    "echo_cost": 3,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32061_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32061_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32061_UI.png",
+    "echo_sets": [
+      {
+        "id": 27,
+        "name": "Trailblazing Star",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA1.png"
+      },
+      {
+        "id": 30,
+        "name": "Wishes of Quiet Snowfall",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceA1.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Aero DMG Bonus",
+      "DEF",
+      "Electro DMG Bonus",
+      "Energy Regen",
+      "Fusion DMG Bonus",
+      "Glacio DMG Bonus",
+      "HP",
+      "Havoc DMG Bonus",
+      "Spectro DMG Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Iceglint Dancer",
+    "echo_id": 60001965,
+    "echo_cost": 1,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31083_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31083_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31083_UI.png",
+    "echo_sets": [
+      {
+        "id": 27,
+        "name": "Trailblazing Star",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA1.png"
+      },
+      {
+        "id": 30,
+        "name": "Wishes of Quiet Snowfall",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceA1.png"
+      },
+      {
+        "id": 31,
+        "name": "Reel of Spliced Memories",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport1.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "DEF",
+      "HP"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Shadow Stepper",
+    "echo_id": 60001975,
+    "echo_cost": 1,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31084_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31084_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31084_UI.png",
+    "echo_sets": [
+      {
+        "id": 27,
+        "name": "Trailblazing Star",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA1.png"
+      },
+      {
+        "id": 28,
+        "name": "Chromatic Foam",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA2.png"
+      },
+      {
+        "id": 30,
+        "name": "Wishes of Quiet Snowfall",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceA1.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "DEF",
+      "HP"
     ],
     "possible_substats": [
       "ATK",
@@ -7705,6 +8132,79 @@
     ]
   },
   {
+    "echo_name": "Phantom: Sigillum",
+    "echo_id": 60101915,
+    "echo_cost": 4,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_34025_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_34025_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_34025_UI.png",
+    "echo_sets": [
+      {
+        "id": 27,
+        "name": "Trailblazing Star",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA1.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "HP",
+      "Healing Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Phantom: Iceglint Dancer",
+    "echo_id": 60101965,
+    "echo_cost": 1,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_31083_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_31083_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_31083_UI.png",
+    "echo_sets": [
+      {
+        "id": 27,
+        "name": "Trailblazing Star",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA1.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "DEF",
+      "HP"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
     "echo_name": "Phantom: Hoartoise",
     "echo_id": 60200001,
     "echo_cost": 1,
@@ -8741,6 +9241,1336 @@
       "DEF",
       "HP",
       "Healing Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Phantom: Zip Zap",
+    "echo_id": 60101785,
+    "echo_cost": 1,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_31082_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_31082_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_31082_UI.png",
+    "echo_sets": [
+      {
+        "id": 24,
+        "name": "Pact of Neonlight Leap",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLightWeakness.png"
+      },
+      {
+        "id": 26,
+        "name": "Rite of Gilded Revelation",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAttackWeakness.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "DEF",
+      "HP"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Voidwing Moth",
+    "echo_id": 60001985,
+    "echo_cost": 3,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32066_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32066_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32066_UI.png",
+    "echo_sets": [
+      {
+        "id": 31,
+        "name": "Reel of Spliced Memories",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport1.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Aero DMG Bonus",
+      "DEF",
+      "Electro DMG Bonus",
+      "Energy Regen",
+      "Fusion DMG Bonus",
+      "Glacio DMG Bonus",
+      "HP",
+      "Havoc DMG Bonus",
+      "Spectro DMG Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Reminiscence: Threnodian - Voidborne Construct",
+    "echo_id": 60001995,
+    "echo_cost": 4,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34027_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_34027_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_34027_UI.png",
+    "echo_sets": [
+      {
+        "id": 30,
+        "name": "Wishes of Quiet Snowfall",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceA1.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "HP",
+      "Healing Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Reminiscence: Denia",
+    "echo_id": 60002005,
+    "echo_cost": 4,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34028_1_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_34028_1_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_34028_1_UI.png",
+    "echo_sets": [
+      {
+        "id": 28,
+        "name": "Chromatic Foam",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA2.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "HP",
+      "Healing Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Phantom: Reactor Husk",
+    "echo_id": 60101905,
+    "echo_cost": 4,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_34022_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_34022_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_34022_UI.png",
+    "echo_sets": [
+      {
+        "id": 25,
+        "name": "Halo of Starry Radiance",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCureWeakness.png"
+      },
+      {
+        "id": 28,
+        "name": "Chromatic Foam",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA2.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "HP",
+      "Healing Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Phantom: Kronaclaw",
+    "echo_id": 60101945,
+    "echo_cost": 3,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_32060_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_32060_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_32060_UI.png",
+    "echo_sets": [
+      {
+        "id": 27,
+        "name": "Trailblazing Star",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA1.png"
+      },
+      {
+        "id": 28,
+        "name": "Chromatic Foam",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA2.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Aero DMG Bonus",
+      "DEF",
+      "Electro DMG Bonus",
+      "Energy Regen",
+      "Fusion DMG Bonus",
+      "Glacio DMG Bonus",
+      "HP",
+      "Havoc DMG Bonus",
+      "Spectro DMG Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Kronablight",
+    "echo_id": 60300001,
+    "echo_cost": 3,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32059_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32059_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32059_UI.png",
+    "echo_sets": [
+      {
+        "id": 27,
+        "name": "Trailblazing Star",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA1.png"
+      },
+      {
+        "id": 28,
+        "name": "Chromatic Foam",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA2.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Aero DMG Bonus",
+      "DEF",
+      "Electro DMG Bonus",
+      "Energy Regen",
+      "Fusion DMG Bonus",
+      "Glacio DMG Bonus",
+      "HP",
+      "Havoc DMG Bonus",
+      "Spectro DMG Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Reminiscence: Kronaclaw",
+    "echo_id": 60300002,
+    "echo_cost": 3,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32060_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32060_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32060_UI.png",
+    "echo_sets": [
+      {
+        "id": 27,
+        "name": "Trailblazing Star",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA1.png"
+      },
+      {
+        "id": 28,
+        "name": "Chromatic Foam",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA2.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Aero DMG Bonus",
+      "DEF",
+      "Electro DMG Bonus",
+      "Energy Regen",
+      "Fusion DMG Bonus",
+      "Glacio DMG Bonus",
+      "HP",
+      "Havoc DMG Bonus",
+      "Spectro DMG Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Reminiscence - Nightmare: Adam Smasher",
+    "echo_id": 60002015,
+    "echo_cost": 4,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34029_1_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_34029_1_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_34029_1_UI.png",
+    "echo_sets": [
+      {
+        "id": 32,
+        "name": "Shadow of Shattered Dreams",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAdam.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "HP",
+      "Healing Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Phantom: Glommoth",
+    "echo_id": 60101955,
+    "echo_cost": 3,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_32061_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_32061_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_32061_UI.png",
+    "echo_sets": [
+      {
+        "id": 27,
+        "name": "Trailblazing Star",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA1.png"
+      },
+      {
+        "id": 30,
+        "name": "Wishes of Quiet Snowfall",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceA1.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Aero DMG Bonus",
+      "DEF",
+      "Electro DMG Bonus",
+      "Energy Regen",
+      "Fusion DMG Bonus",
+      "Glacio DMG Bonus",
+      "HP",
+      "Havoc DMG Bonus",
+      "Spectro DMG Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Phantom: Thundering Mephis",
+    "echo_id": 60200106,
+    "echo_cost": 4,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1008_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_1003_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_1003_UI_png.png",
+    "echo_sets": [
+      {
+        "id": 3,
+        "name": "Void Thunder",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriThunder.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "HP",
+      "Healing Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Smiter",
+    "echo_id": 60002025,
+    "echo_cost": 1,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31090_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31090_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31090_UI.png",
+    "echo_sets": [
+      {
+        "id": 33,
+        "name": "Song of Feathered Trace",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriYangyang.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "DEF",
+      "HP"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Porcelain Picket",
+    "echo_id": 60002035,
+    "echo_cost": 1,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31091_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31091_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31091_UI.png",
+    "echo_sets": [
+      {
+        "id": 35,
+        "name": "Lamp of Nether Road",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriJingran.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "DEF",
+      "HP"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Stone Picket",
+    "echo_id": 60002045,
+    "echo_cost": 1,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31092_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31092_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31092_UI.png",
+    "echo_sets": [
+      {
+        "id": 35,
+        "name": "Lamp of Nether Road",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriJingran.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "DEF",
+      "HP"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Aureate Picket",
+    "echo_id": 60002055,
+    "echo_cost": 1,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31093_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31093_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31093_UI.png",
+    "echo_sets": [
+      {
+        "id": 34,
+        "name": "Heart of Evil's Purge",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQingxiao.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "DEF",
+      "HP"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Kernel Puppet: Joy",
+    "echo_id": 60002065,
+    "echo_cost": 1,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31094_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31094_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31094_UI.png",
+    "echo_sets": [
+      {
+        "id": 33,
+        "name": "Song of Feathered Trace",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriYangyang.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "DEF",
+      "HP"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Kernel Puppet: Anger",
+    "echo_id": 60002075,
+    "echo_cost": 1,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31095_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31095_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31095_UI.png",
+    "echo_sets": [
+      {
+        "id": 34,
+        "name": "Heart of Evil's Purge",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQingxiao.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "DEF",
+      "HP"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Kernel Puppet: Worry",
+    "echo_id": 60002085,
+    "echo_cost": 1,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31096_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31096_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31096_UI.png",
+    "echo_sets": [
+      {
+        "id": 34,
+        "name": "Heart of Evil's Purge",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQingxiao.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "DEF",
+      "HP"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Kernel Puppet: Reflection",
+    "echo_id": 60002095,
+    "echo_cost": 1,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31097_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31097_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31097_UI.png",
+    "echo_sets": [
+      {
+        "id": 34,
+        "name": "Heart of Evil's Purge",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQingxiao.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "DEF",
+      "HP"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Kernel Puppet: Grief",
+    "echo_id": 60002105,
+    "echo_cost": 1,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31098_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31098_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31098_UI.png",
+    "echo_sets": [
+      {
+        "id": 35,
+        "name": "Lamp of Nether Road",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriJingran.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "DEF",
+      "HP"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Kernel Puppet: Fright",
+    "echo_id": 60002115,
+    "echo_cost": 1,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31099_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31099_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31099_UI.png",
+    "echo_sets": [
+      {
+        "id": 35,
+        "name": "Lamp of Nether Road",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriJingran.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "DEF",
+      "HP"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Fog Lionarch: Body",
+    "echo_id": 60002125,
+    "echo_cost": 1,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31100_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31100_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31100_UI.png",
+    "echo_sets": [
+      {
+        "id": 33,
+        "name": "Song of Feathered Trace",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriYangyang.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "DEF",
+      "HP"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Fog Lionarch: Head",
+    "echo_id": 60002135,
+    "echo_cost": 1,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31101_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31101_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31101_UI.png",
+    "echo_sets": [
+      {
+        "id": 33,
+        "name": "Song of Feathered Trace",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriYangyang.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "DEF",
+      "HP"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Smolder",
+    "echo_id": 60002145,
+    "echo_cost": 1,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31102_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_31102_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_31102_UI.png",
+    "echo_sets": [
+      {
+        "id": 33,
+        "name": "Song of Feathered Trace",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriYangyang.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "DEF",
+      "HP"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Fog Lionarch",
+    "echo_id": 60002155,
+    "echo_cost": 3,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32067_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32067_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32067_UI.png",
+    "echo_sets": [
+      {
+        "id": 33,
+        "name": "Song of Feathered Trace",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriYangyang.png"
+      },
+      {
+        "id": 34,
+        "name": "Heart of Evil's Purge",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQingxiao.png"
+      },
+      {
+        "id": 35,
+        "name": "Lamp of Nether Road",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriJingran.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Aero DMG Bonus",
+      "DEF",
+      "Electro DMG Bonus",
+      "Energy Regen",
+      "Fusion DMG Bonus",
+      "Glacio DMG Bonus",
+      "HP",
+      "Havoc DMG Bonus",
+      "Spectro DMG Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Forbidden Bastion",
+    "echo_id": 60002165,
+    "echo_cost": 3,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32068_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32068_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32068_UI.png",
+    "echo_sets": [
+      {
+        "id": 33,
+        "name": "Song of Feathered Trace",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriYangyang.png"
+      },
+      {
+        "id": 34,
+        "name": "Heart of Evil's Purge",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQingxiao.png"
+      },
+      {
+        "id": 35,
+        "name": "Lamp of Nether Road",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriJingran.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Aero DMG Bonus",
+      "DEF",
+      "Electro DMG Bonus",
+      "Energy Regen",
+      "Fusion DMG Bonus",
+      "Glacio DMG Bonus",
+      "HP",
+      "Havoc DMG Bonus",
+      "Spectro DMG Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Myriad Snare: Rustfire Chassis",
+    "echo_id": 60002175,
+    "echo_cost": 4,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34030_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_34030_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_34030_UI.png",
+    "echo_sets": [
+      {
+        "id": 34,
+        "name": "Heart of Evil's Purge",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQingxiao.png"
+      },
+      {
+        "id": 35,
+        "name": "Lamp of Nether Road",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriJingran.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "HP",
+      "Healing Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Thousand-Puppet Pavilion",
+    "echo_id": 60002185,
+    "echo_cost": 4,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34031_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_34031_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_34031_UI.png",
+    "echo_sets": [
+      {
+        "id": 33,
+        "name": "Song of Feathered Trace",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriYangyang.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "HP",
+      "Healing Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Phantom: Forbidden Bastion",
+    "echo_id": 60102165,
+    "echo_cost": 3,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_32068_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_32068_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_32068_UI.png",
+    "echo_sets": [
+      {
+        "id": 33,
+        "name": "Song of Feathered Trace",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriYangyang.png"
+      },
+      {
+        "id": 34,
+        "name": "Heart of Evil's Purge",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQingxiao.png"
+      },
+      {
+        "id": 35,
+        "name": "Lamp of Nether Road",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriJingran.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Aero DMG Bonus",
+      "DEF",
+      "Electro DMG Bonus",
+      "Energy Regen",
+      "Fusion DMG Bonus",
+      "Glacio DMG Bonus",
+      "HP",
+      "Havoc DMG Bonus",
+      "Spectro DMG Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Phantom: Smiter",
+    "echo_id": 60102025,
+    "echo_cost": 1,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_31090_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_31090_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_31090_UI.png",
+    "echo_sets": [
+      {
+        "id": 33,
+        "name": "Song of Feathered Trace",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriYangyang.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "DEF",
+      "HP"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Calamity Effigy",
+    "echo_id": 60002215,
+    "echo_cost": 4,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34032_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_34032_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_34032_UI.png",
+    "echo_sets": [
+      {
+        "id": 34,
+        "name": "Heart of Evil's Purge",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQingxiao.png"
+      },
+      {
+        "id": 35,
+        "name": "Lamp of Nether Road",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriJingran.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "HP",
+      "Healing Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Phantom: Myriad Snare: Rustfire Chassis",
+    "echo_id": 60102175,
+    "echo_cost": 4,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_SG_34030_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_SG_34030_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_SG_34030_UI.png",
+    "echo_sets": [
+      {
+        "id": 34,
+        "name": "Heart of Evil's Purge",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQingxiao.png"
+      },
+      {
+        "id": 35,
+        "name": "Lamp of Nether Road",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriJingran.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "HP",
+      "Healing Bonus"
+    ],
+    "possible_substats": [
+      "ATK",
+      "ATK%",
+      "Basic Attack DMG Bonus",
+      "Crit. DMG",
+      "Crit. Rate",
+      "DEF",
+      "DEF%",
+      "Energy Regen",
+      "HP",
+      "HP%",
+      "Heavy Attack DMG Bonus",
+      "Resonance Liberation DMG Bonus",
+      "Resonance Skill DMG Bonus"
+    ]
+  },
+  {
+    "echo_name": "Forbidden Bastion",
+    "echo_id": 60300003,
+    "echo_cost": 3,
+    "icon_head": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32068_UI.png",
+    "icon_middle": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_32068_UI.png",
+    "icon_small": "/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods80/T_IconMonsterGoods80_32068_UI.png",
+    "echo_sets": [
+      {
+        "id": 33,
+        "name": "Song of Feathered Trace",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriYangyang.png"
+      },
+      {
+        "id": 34,
+        "name": "Heart of Evil's Purge",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQingxiao.png"
+      },
+      {
+        "id": 35,
+        "name": "Lamp of Nether Road",
+        "icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriJingran.png"
+      }
+    ],
+    "possible_mainstats": [
+      "ATK",
+      "Aero DMG Bonus",
+      "DEF",
+      "Electro DMG Bonus",
+      "Energy Regen",
+      "Fusion DMG Bonus",
+      "Glacio DMG Bonus",
+      "HP",
+      "Havoc DMG Bonus",
+      "Spectro DMG Bonus"
     ],
     "possible_substats": [
       "ATK",

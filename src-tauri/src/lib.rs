@@ -349,13 +349,16 @@ pub fn run() {
             get_show_scan_region,
             scan_region_for_text,
             inventory::scan_echo_inventory,
+            inventory::scan_current_echo,
             inventory::stop_echo_inventory,
             inventory::test_inventory_scroll,
             inventory::set_inventory_preview,
             inventory::get_inventory_preview,
             inventory::get_inventory_config,
             inventory::get_saved_echoes,
-            inventory::clear_saved_echoes
+            inventory::clear_saved_echoes,
+            inventory::delete_saved_echo,
+            inventory::set_echo_equipped_by
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -4,7 +4,11 @@ Copies required image assets from wuwa-assets to the public folder for Tauri app
 """
 
 import shutil
+import sys
 from pathlib import Path
+
+# Fix emoji output on Windows consoles (cp1252)
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 # Paths
 ASSETS_PATH = Path("wuwa-assets/UI/UIResources/Common/Image")
@@ -19,9 +23,6 @@ ASSET_FOLDERS = [
 	"IconElementAttri128",
 	
 	# Character assets
-	"IconRoleHead80",
-	"IconRoleHead150",
-	"IconRoleHead175",
 	"IconRoleHead256",
 	"IconRoleHeadCircle256",
 	"IconRolePile",
@@ -30,6 +31,9 @@ ASSET_FOLDERS = [
 	# Element assets
 	"IconElement128",
 	"IconElementRound",
+
+	# Stat icons
+	"IconAttribute",
 ]
 
 def copy_assets():

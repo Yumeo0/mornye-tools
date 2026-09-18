@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import OCR_CONFIG from "@/configs/ocr.json";
-import { Bug, Monitor, ScanText } from "lucide-react";
+import { Bug, Monitor, ScanSearch, ScanText } from "lucide-react";
 
 interface ScanRegion {
 	x: number;
@@ -36,6 +36,9 @@ export function SettingsTab() {
 	const [selectedResolution, setSelectedResolution] = useState<string>("");
 	const [showDebugSection, setShowDebugSection] = useState(false);
 	const [overlayEnabled, setOverlayEnabled] = useState(false);
+	const [preview, setPreview] = useState(false);
+	const [countdown, setCountdown] = useState<number | null>(null);
+	const [scrollStatus, setScrollStatus] = useState<string | null>(null);
 	const [debugRegion, setDebugRegion] = useState<ScanRegion>({
 		x: 130,
 		y: 65,
@@ -113,6 +116,11 @@ export function SettingsTab() {
 			} catch (error) {
 				console.error("[SettingsTab] Failed to load overlay state:", error);
 			}
+
+			// Load inventory region preview state
+			invoke<boolean>("get_inventory_preview")
+				.then(setPreview)
+				.catch(console.error);
 		};
 
 		initOcrSettings();
@@ -163,6 +171,36 @@ export function SettingsTab() {
 				console.error("[SettingsTab] Failed to save overlay state:", error);
 			}
 		}
+	};
+
+	const togglePreview = async () => {
+		try {
+			await invoke("set_inventory_preview", { show: !preview });
+			setPreview(!preview);
+		} catch (error) {
+			console.error("[SettingsTab] Failed to toggle region preview:", error);
+		}
+	};
+
+	const testScroll = () => {
+		if (countdown !== null) return;
+		setScrollStatus(null);
+		let remaining = 5;
+		setCountdown(remaining);
+		const interval = setInterval(() => {
+			remaining -= 1;
+			if (remaining <= 0) {
+				clearInterval(interval);
+				setCountdown(null);
+				invoke<string>("test_inventory_scroll")
+					.then(setScrollStatus)
+					.catch((error) =>
+						console.error("[SettingsTab] Test scroll failed:", error),
+					);
+			} else {
+				setCountdown(remaining);
+			}
+		}, 1000);
 	};
 
 	const performDebugScan = async () => {
@@ -256,108 +294,160 @@ export function SettingsTab() {
 					{showDebugSection && (
 						<div className="space-y-4 rounded-lg bg-muted/50 p-4">
 							<div className="space-y-2">
-								<Label className="text-sm font-medium">
-									Manual Region Configuration
+								<Label className="flex items-center gap-2 text-sm font-medium">
+									<ScanText className="size-3.5" /> OCR Debug
 								</Label>
-								<p className="text-xs text-muted-foreground">
-									Test a custom region without saving it to the main
-									configuration
-								</p>
-								<div className="grid grid-cols-2 gap-4">
-									<div className="space-y-2">
-										<Label htmlFor="debug-region-x">X Position (px)</Label>
-										<Input
-											id="debug-region-x"
-											type="number"
-											value={debugRegion.x}
-											onChange={(e) =>
-												setDebugRegion({
-													...debugRegion,
-													x: Number(e.target.value),
-												})
-											}
-										/>
-									</div>
-									<div className="space-y-2">
-										<Label htmlFor="debug-region-y">Y Position (px)</Label>
-										<Input
-											id="debug-region-y"
-											type="number"
-											value={debugRegion.y}
-											onChange={(e) =>
-												setDebugRegion({
-													...debugRegion,
-													y: Number(e.target.value),
-												})
-											}
-										/>
-									</div>
-									<div className="space-y-2">
-										<Label htmlFor="debug-region-width">Width (px)</Label>
-										<Input
-											id="debug-region-width"
-											type="number"
-											value={debugRegion.width}
-											onChange={(e) =>
-												setDebugRegion({
-													...debugRegion,
-													width: Number(e.target.value),
-												})
-											}
-										/>
-									</div>
-									<div className="space-y-2">
-										<Label htmlFor="debug-region-height">Height (px)</Label>
-										<Input
-											id="debug-region-height"
-											type="number"
-											value={debugRegion.height}
-											onChange={(e) =>
-												setDebugRegion({
-													...debugRegion,
-													height: Number(e.target.value),
-												})
-											}
-										/>
-									</div>
-								</div>
-								<Button
-									onClick={performDebugScan}
-									disabled={isDebugScanning}
-									variant="default"
-									className="w-full"
-								>
-									{isDebugScanning ? "Scanning..." : "Test Scan Region"}
-								</Button>
 
-								{debugOcrText !== null && (
-									<div className="rounded-lg bg-background border p-3 space-y-2">
-										<Label className="text-sm font-medium">OCR Result:</Label>
-										<pre className="text-xs text-muted-foreground whitespace-pre-wrap wrap-break-word font-mono">
-											{debugOcrText || "(No text detected)"}
-										</pre>
+								<div className="space-y-2 rounded-md bg-background p-3">
+									<Label className="text-sm font-medium">
+										Manual Region Configuration
+									</Label>
+									<p className="text-xs text-muted-foreground">
+										Test a custom region without saving it to the main
+										configuration
+									</p>
+									<div className="grid grid-cols-2 gap-4">
+										<div className="space-y-2">
+											<Label htmlFor="debug-region-x">X Position (px)</Label>
+											<Input
+												id="debug-region-x"
+												type="number"
+												value={debugRegion.x}
+												onChange={(e) =>
+													setDebugRegion({
+														...debugRegion,
+														x: Number(e.target.value),
+													})
+												}
+											/>
+										</div>
+										<div className="space-y-2">
+											<Label htmlFor="debug-region-y">Y Position (px)</Label>
+											<Input
+												id="debug-region-y"
+												type="number"
+												value={debugRegion.y}
+												onChange={(e) =>
+													setDebugRegion({
+														...debugRegion,
+														y: Number(e.target.value),
+													})
+												}
+											/>
+										</div>
+										<div className="space-y-2">
+											<Label htmlFor="debug-region-width">Width (px)</Label>
+											<Input
+												id="debug-region-width"
+												type="number"
+												value={debugRegion.width}
+												onChange={(e) =>
+													setDebugRegion({
+														...debugRegion,
+														width: Number(e.target.value),
+													})
+												}
+											/>
+										</div>
+										<div className="space-y-2">
+											<Label htmlFor="debug-region-height">Height (px)</Label>
+											<Input
+												id="debug-region-height"
+												type="number"
+												value={debugRegion.height}
+												onChange={(e) =>
+													setDebugRegion({
+														...debugRegion,
+														height: Number(e.target.value),
+													})
+												}
+											/>
+										</div>
 									</div>
-								)}
+									<Button
+										onClick={performDebugScan}
+										disabled={isDebugScanning}
+										variant="default"
+										className="w-full"
+									>
+										{isDebugScanning ? "Scanning..." : "Test Scan Region"}
+									</Button>
+
+									{debugOcrText !== null && (
+										<div className="rounded-lg bg-muted/50 border p-3 space-y-2">
+											<Label className="text-sm font-medium">
+												OCR Result:
+											</Label>
+											<pre className="text-xs text-muted-foreground whitespace-pre-wrap wrap-break-word font-mono">
+												{debugOcrText || "(No text detected)"}
+											</pre>
+										</div>
+									)}
+								</div>
+
+								<div className="space-y-2 rounded-md bg-background p-3">
+									<Label className="text-sm font-medium">
+										Region Outline Visibility
+									</Label>
+									<Button
+										onClick={toggleShowScanRegion}
+										variant={showScanRegion ? "default" : "outline"}
+										className="w-full"
+									>
+										{showScanRegion
+											? "Hide Region Outline"
+											: "Show Region Outline"}
+									</Button>
+									<p className="text-xs text-muted-foreground">
+										Displays a visual outline of the scan region on the
+										overlay
+									</p>
+								</div>
 							</div>
 
 							<Separator />
 
 							<div className="space-y-2">
-								<Label className="text-sm font-medium">
-									Region Outline Visibility
+								<Label className="flex items-center gap-2 text-sm font-medium">
+									<ScanSearch className="size-3.5" /> Inventory Scan Debug
 								</Label>
-								<Button
-									onClick={toggleShowScanRegion}
-									variant={showScanRegion ? "default" : "outline"}
-									className="w-full"
-								>
-									{showScanRegion
-										? "Hide Region Outline"
-										: "Show Region Outline"}
-								</Button>
-								<p className="text-xs text-muted-foreground">
-									Displays a visual outline of the scan region on the overlay
-								</p>
+
+								<div className="space-y-2 rounded-md bg-background p-3">
+									<Button
+										onClick={togglePreview}
+										variant={preview ? "default" : "outline"}
+										className="w-full"
+									>
+										{preview ? "Hide Region Preview" : "Preview Region Layout"}
+									</Button>
+									<p className="text-xs text-muted-foreground">
+										Shows the inventory scan regions on the overlay: green
+										boxes = clicked grid cells, yellow boxes = OCR regions,
+										blue box = ownership counter.
+									</p>
+								</div>
+
+								<div className="space-y-2 rounded-md bg-background p-3">
+									<Button
+										onClick={testScroll}
+										variant="outline"
+										className="w-full"
+										disabled={countdown !== null}
+									>
+										{countdown !== null
+											? `Scrolling in ${countdown}...`
+											: "Test Scroll"}
+									</Button>
+									<p className="text-xs text-muted-foreground">
+										Moves to the center of the last grid element, holds left
+										click, drags up smoothly, stays at the end position for
+										0.5 seconds and releases — the same motion the scan uses
+										to advance pages.
+									</p>
+									{scrollStatus && (
+										<p className="text-sm text-green-400">{scrollStatus}</p>
+									)}
+								</div>
 							</div>
 						</div>
 					)}

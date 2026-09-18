@@ -4,9 +4,10 @@ import { exit } from "@tauri-apps/plugin-process";
 import { Store } from "@tauri-apps/plugin-store";
 import { Minus, Square, X } from "lucide-react";
 import type { ReactNode } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { CharactersTab } from "@/components/tabs/CharactersTab";
 import { InventoryTab } from "@/components/tabs/InventoryTab";
+import { ScannerTab } from "@/components/tabs/ScannerTab";
 import { SettingsTab } from "@/components/tabs/SettingsTab";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OCR_CONFIG from "@/configs/ocr.json";
@@ -71,6 +72,8 @@ function TitleBar() {
 }
 
 export default function Settings() {
+	const [tab, setTab] = useState("characters");
+
 	// Initialize scan regions and overlay state on app start
 	useEffect(() => {
 		const initApp = async () => {
@@ -154,12 +157,14 @@ export default function Settings() {
 			<TitleBar />
 			<div className="mx-auto flex w-full max-w-4xl min-h-0 flex-1 flex-col px-6 pt-2">
 				<Tabs
-					defaultValue="characters"
+					value={tab}
+					onValueChange={setTab}
 					className="flex w-full min-h-0 flex-1 flex-col"
 				>
-					<TabsList className="grid w-full shrink-0 grid-cols-3">
+					<TabsList className="grid w-full shrink-0 grid-cols-4">
 						<TabsTrigger value="characters">Characters</TabsTrigger>
 						<TabsTrigger value="inventory">Inventory</TabsTrigger>
+						<TabsTrigger value="scanner">Scanner</TabsTrigger>
 						<TabsTrigger value="settings">Settings</TabsTrigger>
 					</TabsList>
 
@@ -171,7 +176,14 @@ export default function Settings() {
 						value="inventory"
 						className="min-h-0 flex-1 space-y-6 overflow-y-auto"
 					>
-						<InventoryTab />
+						<InventoryTab onOpenScanner={() => setTab("scanner")} />
+					</TabsContent>
+
+					<TabsContent
+						value="scanner"
+						className="min-h-0 flex-1 space-y-6 overflow-y-auto"
+					>
+						<ScannerTab />
 					</TabsContent>
 
 					<TabsContent

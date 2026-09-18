@@ -1,8 +1,8 @@
 use crate::config::{load_json_resource, load_stats_config};
-use crate::echo::{load_echo_data, match_echo_name};
+use crate::echo::{load_echo_data, match_echo_name, Echo};
 use crate::ocr::perform_ocr_on_image;
 use crate::scan_region::ScanRegion;
-use crate::stats::parse_stats;
+use crate::stats::{parse_stats, StatsConfig};
 use crate::AppState;
 use enigo::{Button, Coordinate, Direction, Enigo, Mouse, Settings};
 use image::DynamicImage;
@@ -260,11 +260,67 @@ fn emit_done(app_handle: &AppHandle, scanned: usize, cancelled: bool, error: Opt
     );
 }
 
-fn run_inventory_scan(app_handle: &AppHandle) {
+/// What to scan: the whole echo grid, or only echoes that have been upgraded
+/// (scanning stops at the first level 0 echo).
+#[derive(Debug, Clone, Copy, PartialEq)]
+enum ScanMode {
+    All,
+    LeveledOnly,
+}
+
+impl ScanMode {
+    fn parse(mode: &str) -> Result<Self, String> {
+        match mode {
+            "all" => Ok(Self::All),
+            "leveled" => Ok(Self::LeveledOnly),
+            _ => Err(format!("Unknown scan mode: {mode}")),
+        }
+    }
+}
+
+/// OCR the echo detail panel currently shown on screen. Returns `None` if no
+/// echo name is visible (e.g. an empty grid cell).
+fn scan_echo_detail(
+    screenshot: &DynamicImage,
+    config: &InventoryConfig,
+    stats_config: &StatsConfig,
+    echoes: &[Echo],
+    app_handle: &AppHandle,
+) -> Result<Option<InventoryEcho>, String> {
+    let echo_name = clean_text(&ocr_region(screenshot, &config.name, app_handle)?);
+    if echo_name.is_empty() {
+        return Ok(None);
+    }
+    // Correct OCR artifacts by matching against the known echo names, same as
+    // the echo detail OCR pipeline
+    let echo_name = match_echo_name(&echo_name, echoes).unwrap_or(echo_name);
+
+    let level_raw = ocr_region(screenshot, &config.level, app_handle)?;
+    let level_digits: String = level_raw.chars().filter(|c| c.is_ascii_digit()).collect();
+    let level = if level_digits.is_empty() {
+        String::new()
+    } else {
+        format!("+{level_digits}")
+    };
+
+    let main_text = ocr_region(screenshot, &config.main_stats, app_handle)?;
+    let sub_text = ocr_region(screenshot, &config.sub_stats, app_handle)?;
+    let equipped_by = clean_text(&ocr_region(screenshot, &config.equipped_by, app_handle)?);
+
+    Ok(Some(InventoryEcho {
+        echo_name,
+        level,
+        main_stats: parse_stats(&main_text, stats_config, true),
+        sub_stats: parse_stats(&sub_text, stats_config, false),
+        equipped_by,
+    }))
+}
+
+fn run_inventory_scan(app_handle: &AppHandle, mode: ScanMode) {
     let state = app_handle.state::<AppState>();
     state.inventory_cancel.store(false, Ordering::SeqCst);
 
-    let result = run_scan(app_handle, &state);
+    let result = run_scan(app_handle, &state, mode);
 
     state.inventory_scanning.store(false, Ordering::SeqCst);
     match result {
@@ -279,6 +335,7 @@ fn run_inventory_scan(app_handle: &AppHandle) {
 fn run_scan(
     app_handle: &AppHandle,
     state: &tauri::State<AppState>,
+    mode: ScanMode,
 ) -> Result<(usize, bool), String> {
     let config = load_inventory_config(app_handle)?;
     let stats_config = load_stats_config(app_handle)?;
@@ -320,54 +377,41 @@ fn run_scan(
                 sleep(Duration::from_millis(config.grid.click_wait_ms));
 
                 let screenshot = capture_screen()?;
-                let echo_name = clean_text(&ocr_region(&screenshot, &config.name, app_handle)?);
-                if echo_name.is_empty() {
-                    continue;
+                let echo =
+                    match scan_echo_detail(&screenshot, &config, &stats_config, &echoes, app_handle)?
+                    {
+                        Some(echo) => echo,
+                        None => continue,
+                    };
+
+                // Leveled-only mode: the inventory is sorted so upgraded echoes
+                // come first; stop at the first level 0 echo
+                if mode == ScanMode::LeveledOnly {
+                    let level_num: u32 = echo
+                        .level
+                        .trim_start_matches('+')
+                        .parse()
+                        .unwrap_or(0);
+                    if level_num == 0 {
+                        return Ok((scanned, false));
+                    }
                 }
-                // Correct OCR artifacts by matching against the known echo
-                // names, same as the echo detail OCR pipeline
-                let echo_name = match_echo_name(&echo_name, &echoes).unwrap_or(echo_name);
 
-                let level_raw = ocr_region(&screenshot, &config.level, app_handle)?;
-                let level_digits: String =
-                    level_raw.chars().filter(|c| c.is_ascii_digit()).collect();
-                let level = if level_digits.is_empty() {
-                    String::new()
-                } else {
-                    format!("+{level_digits}")
-                };
-
-                let main_text = ocr_region(&screenshot, &config.main_stats, app_handle)?;
-                let sub_text = ocr_region(&screenshot, &config.sub_stats, app_handle)?;
-                let equipped_by =
-                    clean_text(&ocr_region(&screenshot, &config.equipped_by, app_handle)?);
-                let main_stats = parse_stats(&main_text, &stats_config, true);
-                let sub_stats = parse_stats(&sub_text, &stats_config, false);
-
-                let key = format!("{echo_name}|{level}|{main_stats}|{sub_stats}|{equipped_by}");
+                let key = format!(
+                    "{}|{}|{}|{}|{}",
+                    echo.echo_name, echo.level, echo.main_stats, echo.sub_stats, echo.equipped_by
+                );
                 if seen.insert(key) {
                     scanned += 1;
                     // Persist the echo so scans accumulate across sessions
-                    if let Err(e) = append_saved_echo(app_handle, &InventoryEcho {
-                        echo_name: echo_name.clone(),
-                        level: level.clone(),
-                        main_stats: main_stats.clone(),
-                        sub_stats: sub_stats.clone(),
-                        equipped_by: equipped_by.clone(),
-                    }) {
+                    if let Err(e) = append_saved_echo(app_handle, &echo) {
                         eprintln!("Failed to save echo: {e}");
                     }
                     let _ = app_handle.emit(
                         "inventory-progress",
                         InventoryProgress {
                             scanned,
-                            echo: InventoryEcho {
-                                echo_name,
-                                level,
-                                main_stats,
-                                sub_stats,
-                                equipped_by,
-                            },
+                            echo,
                         },
                     );
                 }
@@ -392,7 +436,11 @@ fn run_scan(
 }
 
 #[tauri::command]
-pub async fn scan_echo_inventory(app_handle: tauri::AppHandle) -> Result<(), String> {
+pub async fn scan_echo_inventory(
+    app_handle: tauri::AppHandle,
+    mode: String,
+) -> Result<(), String> {
+    let mode = ScanMode::parse(&mode)?;
     {
         let state = app_handle.state::<AppState>();
         if state
@@ -405,10 +453,34 @@ pub async fn scan_echo_inventory(app_handle: tauri::AppHandle) -> Result<(), Str
     }
 
     tauri::async_runtime::spawn_blocking(move || {
-        run_inventory_scan(&app_handle);
+        run_inventory_scan(&app_handle, mode);
     });
 
     Ok(())
+}
+
+/// OCR the echo that is currently open on the detail page and save it.
+#[tauri::command]
+pub async fn scan_current_echo(app_handle: tauri::AppHandle) -> Result<InventoryEcho, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let config = load_inventory_config(&app_handle)?;
+        let stats_config = load_stats_config(&app_handle)?;
+        let echoes = load_echo_data(&app_handle).unwrap_or_default();
+
+        let screenshot = capture_screen()?;
+        let echo =
+            scan_echo_detail(&screenshot, &config, &stats_config, &echoes, &app_handle)?
+                .ok_or("No echo selected. Open an echo's detail page first.")?;
+
+        append_saved_echo(&app_handle, &echo)?;
+        let _ = app_handle.emit(
+            "inventory-progress",
+            InventoryProgress { scanned: 1, echo: echo.clone() },
+        );
+        Ok(echo)
+    })
+    .await
+    .map_err(|e| format!("Task join error: {e}"))?
 }
 
 #[tauri::command]
@@ -460,6 +532,41 @@ pub fn get_saved_echoes(app_handle: AppHandle) -> Result<Vec<InventoryEcho>, Str
 pub fn clear_saved_echoes(app_handle: AppHandle) -> Result<(), String> {
     let path = echo_store_path(&app_handle)?;
     std::fs::write(path, "[]").map_err(|e| e.to_string())
+}
+
+/// Delete one saved echo, matched by exact content (a single duplicate if any).
+#[tauri::command]
+pub fn delete_saved_echo(app_handle: AppHandle, echo: InventoryEcho) -> Result<(), String> {
+    let path = echo_store_path(&app_handle)?;
+    let mut echoes = load_saved_echoes(&app_handle);
+    if let Some(position) = echoes.iter().position(|e| *e == echo) {
+        echoes.remove(position);
+    }
+    let content = serde_json::to_string_pretty(&echoes).map_err(|e| e.to_string())?;
+    std::fs::write(path, content).map_err(|e| e.to_string())
+}
+
+/// Change which character an echo is equipped by, matched by exact content.
+#[tauri::command]
+pub fn set_echo_equipped_by(
+    app_handle: AppHandle,
+    echo: InventoryEcho,
+    equipped_by: String,
+) -> Result<(), String> {
+    let path = echo_store_path(&app_handle)?;
+    let mut echoes = load_saved_echoes(&app_handle);
+    let mut updated = false;
+    for saved in echoes.iter_mut() {
+        if *saved == echo {
+            saved.equipped_by = equipped_by.clone();
+            updated = true;
+        }
+    }
+    if !updated {
+        return Err("Echo not found".to_string());
+    }
+    let content = serde_json::to_string_pretty(&echoes).map_err(|e| e.to_string())?;
+    std::fs::write(path, content).map_err(|e| e.to_string())
 }
 
 #[tauri::command]

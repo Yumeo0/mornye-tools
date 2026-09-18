@@ -215,16 +215,18 @@ fn scan_stats_data(
         cleaned_echo_name
     };
 
-    // Scan level (e.g. "+25") and clean - remove extra whitespace and trim
+    // Scan level (e.g. "+25") - keep only digits and sanitize, since OCR
+    // frequently misreads the leading "+" as a "4" (e.g. "+25" -> "425")
     let level = if let Some(level_region) = regions.level.as_ref() {
-        ocr(level_region)
-            .lines()
-            .map(|line| line.trim())
-            .filter(|line| !line.is_empty())
-            .collect::<Vec<_>>()
-            .join(" ")
-            .trim()
-            .to_string()
+        let digits: String = ocr(level_region)
+            .chars()
+            .filter(|c| c.is_ascii_digit())
+            .collect();
+        if digits.is_empty() {
+            String::new()
+        } else {
+            format!("+{}", inventory::sanitize_level_digits(&digits))
+        }
     } else {
         String::new()
     };

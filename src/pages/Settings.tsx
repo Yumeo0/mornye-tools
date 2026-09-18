@@ -7,9 +7,7 @@ import {
 	Minus,
 	PanelLeftClose,
 	PanelLeftOpen,
-	ScanSearch,
 	Square,
-	Users,
 	X,
 } from "lucide-react";
 import type { ReactNode } from "react";
@@ -193,24 +191,28 @@ export default function Settings() {
 						</Button>
 					</div>
 
-					<div className="flex min-h-0 flex-1 flex-col justify-center gap-1">
+					<div className="flex min-h-0 flex-1 flex-col justify-center gap-1 self-stretch">
 						<TabsTrigger
 							value="characters"
 							title="Characters"
 							className={`h-auto flex-none gap-3 py-2.5 text-base ${sidebarOpen ? "px-3 justify-start" : "px-0 group-data-[orientation=vertical]/tabs:justify-center"}`}
 						>
-							<Users className="size-5 shrink-0" />
+							<img
+								src="/characters.webp"
+								alt=""
+								className="size-7 shrink-0 object-contain"
+							/>
 							{sidebarOpen && "Characters"}
 						</TabsTrigger>
 						<TabsTrigger
 							value="echoes"
 							title="Echoes"
-							className={`h-auto flex-none gap-3 py-2.5 text-lg ${sidebarOpen ? "px-3 justify-start" : "px-0 group-data-[orientation=vertical]/tabs:justify-center"}`}
+							className={`h-auto flex-none gap-3 py-2.5 text-base ${sidebarOpen ? "px-3 justify-start" : "px-0 group-data-[orientation=vertical]/tabs:justify-center"}`}
 						>
 							<img
-								src="/wuwa-assets/UI/UIResources/Common/Image/IconAttribute/T_Iconpropertyabsorbup_UI.png"
+								src="/echoes.webp"
 								alt=""
-								className="size-6 shrink-0 object-contain"
+								className="size-7 shrink-0 object-contain"
 							/>
 							{sidebarOpen && "Echoes"}
 						</TabsTrigger>
@@ -219,7 +221,11 @@ export default function Settings() {
 							title="Scanner"
 							className={`h-auto flex-none gap-3 py-2.5 text-base ${sidebarOpen ? "px-3 justify-start" : "px-0 group-data-[orientation=vertical]/tabs:justify-center"}`}
 						>
-							<ScanSearch className="size-5 shrink-0" />
+							<img
+								src="/camera.webp"
+								alt=""
+								className="size-7 shrink-0 object-contain"
+							/>
 							{sidebarOpen && "Scanner"}
 						</TabsTrigger>
 					</div>
@@ -236,6 +242,7 @@ export default function Settings() {
 				<div className="flex min-h-0 flex-1 flex-col px-6 pt-4">
 					<TabsContent
 						value="characters"
+						keepMounted
 						className="min-h-0 flex-1 flex flex-col"
 					>
 						<CharactersTab />
@@ -243,6 +250,7 @@ export default function Settings() {
 
 					<TabsContent
 						value="echoes"
+						keepMounted
 						className="flex min-h-0 flex-1 flex-col space-y-6 overflow-y-auto"
 					>
 						<InventoryTab onOpenScanner={() => setTab("scanner")} />
@@ -250,6 +258,7 @@ export default function Settings() {
 
 					<TabsContent
 						value="scanner"
+						keepMounted
 						className="min-h-0 flex-1 space-y-6 overflow-y-auto"
 					>
 						<ScannerTab />
@@ -257,6 +266,7 @@ export default function Settings() {
 
 					<TabsContent
 						value="settings"
+						keepMounted
 						className="min-h-0 flex-1 space-y-6 overflow-y-auto"
 					>
 						<SettingsTab />

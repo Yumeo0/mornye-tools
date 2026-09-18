@@ -49,6 +49,12 @@
 				"textColor": "#f7eba6",
 				"tolerance": 60
 			},
+			"echoSet": {
+				"x": 1860,
+				"y": 263,
+				"width": 42,
+				"height": 42
+			},
 			"grid": {
 				"startX": 236,
 				"startY": 187,

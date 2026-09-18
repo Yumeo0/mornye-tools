@@ -158,7 +158,7 @@ function matchesFilters(echo: InventoryEcho, filters: Filters): boolean {
 
 	if (
 		filters.set.length > 0 &&
-		!filters.set.includes(echoSet(echo.echo_name)?.name ?? "")
+		!filters.set.includes(echoSet(echo)?.name ?? "")
 	) {
 		return false;
 	}
@@ -395,8 +395,8 @@ export function InventoryTab({ onOpenScanner }: { onOpenScanner: () => void }) {
 					cmp = (echoCost(a.echo_name) ?? 0) - (echoCost(b.echo_name) ?? 0);
 					break;
 				case "set":
-					cmp = (echoSet(a.echo_name)?.name ?? "").localeCompare(
-						echoSet(b.echo_name)?.name ?? "",
+					cmp = (echoSet(a)?.name ?? "").localeCompare(
+						echoSet(b)?.name ?? "",
 					);
 					break;
 				case "relevance":
@@ -674,7 +674,7 @@ export function InventoryTab({ onOpenScanner }: { onOpenScanner: () => void }) {
 				</p>
 			) : (
 				<div className="max-h-[60vh] overflow-y-auto pr-1">
-					<div className="grid gap-2 sm:grid-cols-2 2xl:grid-cols-3">
+					<div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
 						{sortedEchoes.map((echo, index) => {
 							const character = equippedCharacter(echo.equippedBy);
 							return (

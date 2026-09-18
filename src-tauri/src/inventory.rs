@@ -1,5 +1,5 @@
 use crate::config::{load_json_resource, load_stats_config};
-use crate::echo::{load_echo_data, match_echo_name, Echo};
+use crate::echo::{load_echo_data, match_echo_name, Echo, EchoSet};
 use crate::ocr::perform_ocr_on_image;
 use crate::scan_region::ScanRegion;
 use crate::stats::{parse_stats, StatsConfig};
@@ -28,6 +28,9 @@ pub struct InventoryConfig {
     pub sub_stats: ScanRegion,
     #[serde(rename = "equippedBy")]
     pub equipped_by: ScanRegion,
+    /// Bounds of the sonata set icon on the detail panel
+    #[serde(rename = "echoSet", default)]
+    pub echo_set: Option<ScanRegion>,
     pub grid: GridConfig,
 }
 
@@ -112,6 +115,10 @@ pub struct InventoryEcho {
     pub sub_stats: String,
     #[serde(rename = "equippedBy")]
     pub equipped_by: String,
+    /// Sonata set the echo belongs to, determined by matching the set icon
+    /// against all possible set icons of the echo
+    #[serde(rename = "echoSet", default)]
+    pub echo_set: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -297,6 +304,108 @@ impl ScanMode {
     }
 }
 
+/// Sanitize OCR'd level digits. Echo levels range from 0 to +25, and OCR
+/// frequently misreads the leading "+" as a "4" (e.g. "+25" -> "425"), so
+/// drop leading digits until the value fits the valid level range.
+pub(crate) fn sanitize_level_digits(digits: &str) -> String {
+    let mut digits = digits;
+    while digits.len() > 1 && digits.parse::<u32>().is_ok_and(|v| v > 25) {
+        digits = &digits[1..];
+    }
+    match digits.parse::<u32>() {
+        Ok(v) if v <= 25 => digits.to_string(),
+        _ => String::new(),
+    }
+}
+
+/// Max mean absolute RGB difference for an icon comparison to count as a match
+const SET_ICON_MATCH_THRESHOLD: f32 = 60.0;
+
+/// The sonata icon assets only ship in the IconElementAttri128 resolution,
+/// same transform as `sonataIcon128` in the frontend.
+fn sonata_icon_path_128(icon: &str) -> String {
+    icon.replace(
+        "IconElementAttri/T_IconElementAttri",
+        "IconElementAttri128/T_IconElementAttri128_",
+    )
+}
+
+/// Resolve a web asset path (e.g. "/wuwa-assets/UI/...") to a file on disk,
+/// trying the development public dir first and then the bundled resource dir.
+fn resolve_asset_path(app_handle: &AppHandle, web_path: &str) -> Option<PathBuf> {
+    let relative = web_path.trim_start_matches('/');
+    let mut candidates: Vec<PathBuf> = Vec::new();
+    if let Ok(manifest_dir) = std::env::var("CARGO_MANIFEST_DIR") {
+        if let Some(project_root) = PathBuf::from(manifest_dir).parent() {
+            candidates.push(project_root.join("public").join(relative));
+        }
+    }
+    if let Ok(resource_dir) = app_handle.path().resource_dir() {
+        candidates.push(resource_dir.join(relative));
+    }
+    candidates.into_iter().find(|path| path.exists())
+}
+
+/// Mean absolute RGB difference between the captured icon crop and a known
+/// set icon, ignoring transparent pixels of the reference icon (0 = identical).
+fn icon_difference(crop: &image::RgbaImage, icon: &DynamicImage) -> f32 {
+    let (width, height) = (crop.width(), crop.height());
+    let resized = icon
+        .resize_exact(width, height, image::imageops::FilterType::CatmullRom)
+        .to_rgba8();
+
+    let mut total = 0f64;
+    let mut count = 0u64;
+    for (x, y, pixel) in crop.enumerate_pixels() {
+        let reference = resized.get_pixel(x, y);
+        if (reference.0[3] as f64 / 255.0) < 0.5 {
+            continue;
+        }
+        for channel in 0..3 {
+            total += (pixel.0[channel] as i32 - reference.0[channel] as i32).abs() as f64;
+        }
+        count += 1;
+    }
+
+    if count == 0 {
+        f32::MAX
+    } else {
+        (total / (count as f64 * 3.0)) as f32
+    }
+}
+
+/// Identify which sonata set an echo belongs to by comparing the captured set
+/// icon against all possible set icons of the echo and picking the best match.
+fn detect_echo_set(
+    screenshot: &DynamicImage,
+    region: &ScanRegion,
+    candidate_sets: &[&EchoSet],
+    app_handle: &AppHandle,
+) -> Option<String> {
+    let crop = image::imageops::crop_imm(screenshot, region.x, region.y, region.width, region.height)
+        .to_image();
+
+    let mut best: Option<(f32, &str)> = None;
+    for set in candidate_sets {
+        let icon_path = resolve_asset_path(app_handle, &sonata_icon_path_128(&set.icon))
+            .or_else(|| resolve_asset_path(app_handle, &set.icon));
+        let Some(icon_path) = icon_path else {
+            continue;
+        };
+        let Ok(icon) = image::open(&icon_path) else {
+            eprintln!("Failed to load set icon: {}", icon_path.display());
+            continue;
+        };
+        let diff = icon_difference(&crop, &icon);
+        if best.is_none_or(|(best_diff, _)| diff < best_diff) {
+            best = Some((diff, set.name.as_str()));
+        }
+    }
+
+    best.filter(|(diff, _)| *diff <= SET_ICON_MATCH_THRESHOLD)
+        .map(|(_, name)| name.to_string())
+}
+
 /// OCR the echo detail panel currently shown on screen. Returns `None` if no
 /// echo name is visible (e.g. an empty grid cell).
 fn scan_echo_detail(
@@ -319,12 +428,29 @@ fn scan_echo_detail(
     let level = if level_digits.is_empty() {
         String::new()
     } else {
-        format!("+{level_digits}")
+        format!("+{}", sanitize_level_digits(&level_digits))
     };
 
     let main_text = ocr_region(screenshot, &config.main_stats, app_handle)?;
     let sub_text = ocr_region(screenshot, &config.sub_stats, app_handle)?;
     let equipped_by = clean_text(&ocr_region(screenshot, &config.equipped_by, app_handle)?);
+
+    // Some echoes exist in multiple sonata sets, so compare the captured set
+    // icon against all possible set icons of the matched echo. The echo data
+    // contains duplicate entries per name with different set lists, so merge
+    // the sets of all entries with the matched name.
+    let mut candidate_sets: Vec<&EchoSet> = Vec::new();
+    for echo in echoes.iter().filter(|echo| echo.echo_name == echo_name) {
+        for set in &echo.echo_sets {
+            if !candidate_sets.iter().any(|candidate| candidate.id == set.id) {
+                candidate_sets.push(set);
+            }
+        }
+    }
+
+    let echo_set = config.echo_set.as_ref().and_then(|region| {
+        detect_echo_set(screenshot, region, &candidate_sets, app_handle)
+    });
 
     Ok(Some(InventoryEcho {
         echo_name,
@@ -332,6 +458,7 @@ fn scan_echo_detail(
         main_stats: parse_stats(&main_text, stats_config, true),
         sub_stats: parse_stats(&sub_text, stats_config, false),
         equipped_by,
+        echo_set,
     }))
 }
 
@@ -417,8 +544,13 @@ fn run_scan(
                 }
 
                 let key = format!(
-                    "{}|{}|{}|{}|{}",
-                    echo.echo_name, echo.level, echo.main_stats, echo.sub_stats, echo.equipped_by
+                    "{}|{}|{}|{}|{}|{}",
+                    echo.echo_name,
+                    echo.echo_set.as_deref().unwrap_or(""),
+                    echo.level,
+                    echo.main_stats,
+                    echo.sub_stats,
+                    echo.equipped_by
                 );
                 let is_new = seen.insert(key);
                 if is_new {
@@ -603,6 +735,105 @@ mod tests {
     use crate::tests::test_ocr;
     use image::GenericImageView;
     use std::path::PathBuf;
+
+    #[test]
+    fn sanitize_level_strips_misread_plus_sign() {
+        assert_eq!(sanitize_level_digits("425"), "25");
+        assert_eq!(sanitize_level_digits("25"), "25");
+        assert_eq!(sanitize_level_digits("5"), "5");
+        assert_eq!(sanitize_level_digits("0"), "0");
+        assert_eq!(sanitize_level_digits("420"), "20");
+        assert_eq!(sanitize_level_digits(""), "");
+        assert_eq!(sanitize_level_digits("abc"), "");
+    }
+
+    #[test]
+    fn sonata_icon_path_uses_128_resolution() {
+        assert_eq!(
+            sonata_icon_path_128(
+                "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCure.png"
+            ),
+            "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri128/T_IconElementAttri128_Cure.png"
+        );
+    }
+
+    #[test]
+    fn icon_difference_matches_correct_set_icon() {
+        let assets = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .unwrap()
+            .join("public/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri128");
+        if !assets.exists() {
+            eprintln!("skipping: sonata icon assets not found");
+            return;
+        }
+
+        let load = |name: &str| image::open(assets.join(name)).unwrap();
+        let cure = load("T_IconElementAttri128_Cure.png");
+        let cloud = load("T_IconElementAttri128_Cloud.png");
+
+        // Simulate a captured 42x42 set icon crop of the "Cure" set
+        let crop = image::imageops::resize(
+            &cure,
+            42,
+            42,
+            image::imageops::FilterType::CatmullRom,
+        );
+
+        let self_diff = icon_difference(&crop, &cure);
+        let other_diff = icon_difference(&crop, &cloud);
+        assert!(
+            self_diff < other_diff,
+            "self diff {self_diff} should be below other diff {other_diff}"
+        );
+        assert!(self_diff <= SET_ICON_MATCH_THRESHOLD);
+    }
+
+    #[test]
+    fn set_icon_detection_on_sample_screenshot() {
+        let project_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .unwrap()
+            .to_path_buf();
+        let screenshot_path = project_root.join("samples/tick_tack_havoc_screenshot.png");
+        if !screenshot_path.exists() {
+            eprintln!("skipping: sample screenshot not found");
+            return;
+        }
+
+        let content = std::fs::read_to_string(project_root.join("src/configs/inventory.json"))
+            .unwrap();
+        let file: InventoryConfigFile = serde_json::from_str(&content).unwrap();
+        let config = file.resolutions.get("2560x1440").unwrap();
+        let region = config.echo_set.as_ref().expect("echoSet region configured");
+
+        let img = image::open(&screenshot_path).unwrap();
+        let crop =
+            image::imageops::crop_imm(&img, region.x, region.y, region.width, region.height)
+                .to_image();
+        crop.save(std::env::temp_dir().join("set_icon_crop.png"))
+            .unwrap();
+
+        let assets = project_root
+            .join("public/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri128");
+        let candidates = [
+            ("Lingering Tunes", "T_IconElementAttri128_Attack.png"),
+            ("Rejuvenating Glow", "T_IconElementAttri128_Cure.png"),
+            ("Havoc Eclipse", "T_IconElementAttri128_Dark.png"),
+        ];
+        let mut diffs = Vec::new();
+        for (name, file_name) in candidates {
+            let icon = image::open(assets.join(file_name)).unwrap();
+            let diff = icon_difference(&crop, &icon);
+            println!("set icon diff [{name}]: {diff}");
+            diffs.push((diff, name));
+        }
+        diffs.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap());
+        assert_eq!(
+            diffs[0].1, "Havoc Eclipse",
+            "expected the Havoc Eclipse icon to match best"
+        );
+    }
 
     #[test]
     fn ocr_inventory_screenshot() {

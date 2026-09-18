@@ -7,6 +7,8 @@ use crate::config::load_json_resource;
 pub struct EchoSet {
     pub id: u32,
     pub name: String,
+    /// Web path of the set icon (e.g. "/wuwa-assets/UI/.../T_IconElementAttriCure.png")
+    pub icon: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

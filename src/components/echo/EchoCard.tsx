@@ -15,6 +15,8 @@ export interface InventoryEcho {
 	main_stats: string;
 	sub_stats: string;
 	equippedBy?: string;
+	/** Sonata set name, detected by matching the set icon during scanning */
+	echoSet?: string;
 }
 
 export interface CharacterEntry {
@@ -27,7 +29,7 @@ interface EchoEntry {
 	echo_name: string;
 	echo_cost?: number;
 	icon_middle?: string;
-	echo_sets?: { name: string; icon: string }[];
+	echo_sets?: { id: number; name: string; icon: string }[];
 }
 
 // Deduplicate characters, drop excluded forms, and sort by name
@@ -46,9 +48,26 @@ const charactersByLowerName = new Map(
 	]),
 );
 
-const echoesByLowerName = new Map<string, EchoEntry>(
-	(echoData as EchoEntry[]).map((echo) => [echo.echo_name.toLowerCase(), echo]),
-);
+// The echo data contains duplicate entries per name with different set lists
+// (the same echo appears in multiple sonata groups), so merge the sets of all
+// entries with the same name
+const echoesByLowerName = new Map<string, EchoEntry>();
+for (const echo of echoData as EchoEntry[]) {
+	const key = echo.echo_name.toLowerCase();
+	const existing = echoesByLowerName.get(key);
+	if (!existing) {
+		echoesByLowerName.set(key, {
+			...echo,
+			echo_sets: [...(echo.echo_sets ?? [])],
+		});
+		continue;
+	}
+	for (const set of echo.echo_sets ?? []) {
+		if (!existing.echo_sets?.some((s) => s.id === set.id)) {
+			existing.echo_sets = [...(existing.echo_sets ?? []), set];
+		}
+	}
+}
 
 // The sonata icon assets only ship in the IconElementAttri128 resolution
 export function sonataIcon128(icon: string): string {
@@ -61,6 +80,7 @@ export function sonataIcon128(icon: string): string {
 export function echoKey(echo: InventoryEcho): string {
 	return [
 		echo.echo_name,
+		echo.echoSet ?? "",
 		echo.level,
 		echo.main_stats,
 		echo.sub_stats,
@@ -72,8 +92,11 @@ export function echoImage(name: string): string | undefined {
 	return echoesByLowerName.get(name.toLowerCase())?.icon_middle;
 }
 
-export function echoSet(name: string) {
-	return echoesByLowerName.get(name.toLowerCase())?.echo_sets?.[0];
+export function echoSet(echo: InventoryEcho) {
+	const sets = echoesByLowerName.get(echo.echo_name.toLowerCase())?.echo_sets;
+	if (!sets?.length) return undefined;
+	// Prefer the set detected by the scanner, fall back to the first one
+	return sets.find((set) => set.name === echo.echoSet) ?? sets[0];
 }
 
 export function echoCost(name: string): number | undefined {
@@ -131,7 +154,7 @@ export function EchoCard({
 	footer?: ReactNode;
 }) {
 	const image = echoImage(echo.echo_name);
-	const set = echoSet(echo.echo_name);
+	const set = echoSet(echo);
 	const mainLines = parseStatLines(echo.main_stats);
 	const subLines = parseStatLines(echo.sub_stats);
 	return (

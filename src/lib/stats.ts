@@ -144,10 +144,14 @@ export function sonataNames(sonata: string | null | undefined): string[] {
 export interface StatTier {
 	code: string;
 	name: string;
+	/** Breakpoint to hit before lower tiers are valued, e.g. "120%" from "ER:120%" */
+	breakpoint?: string;
 }
 
 // "ER:120%>CR=CD>ATK%>Lib%>ATK" -> tiers of equal-priority stats;
-// ">" separates tiers, "=" marks stats of equal priority within a tier
+// ">" separates tiers, "=" marks stats of equal priority within a tier,
+// ":" marks a breakpoint the stat should reach ("~", ranges and "+" suffixes
+// like "ER:200-250%+" are kept verbatim)
 export function parseSubstatTiers(
 	raw: string | null | undefined,
 ): StatTier[][] {
@@ -156,11 +160,18 @@ export function parseSubstatTiers(
 		.split(">")
 		.map((tier) =>
 			tier
-				.split(":")[0]
 				.split("=")
 				.map((code) => code.trim())
 				.filter(Boolean)
-				.map((code) => ({ code, name: statFullName(code) })),
+				.map((code) => {
+					const colon = code.indexOf(":");
+					if (colon === -1) {
+						return { code, name: statFullName(code) };
+					}
+					const base = code.slice(0, colon).trim();
+					const breakpoint = code.slice(colon + 1).trim();
+					return { code: base, name: statFullName(base), breakpoint };
+				}),
 		)
 		.filter((tier) => tier.length > 0);
 }

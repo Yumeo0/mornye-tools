@@ -221,7 +221,12 @@ function SubstatChip({ stat }: { stat: StatTier }) {
 	return (
 		<div className="flex items-center justify-center gap-2 bg-primary text-primary-foreground px-3 py-2 flex-1 min-w-0">
 			<img src={statIconUrl(stat.code)} alt="" className="size-4 shrink-0" />
-			<span className="text-sm font-semibold truncate">{stat.name}</span>
+			<span className="text-sm font-semibold truncate">
+				{stat.name}
+				{stat.breakpoint && (
+					<span className="font-normal opacity-80"> [{stat.breakpoint}]</span>
+				)}
+			</span>
 		</div>
 	);
 }

@@ -126,4 +126,30 @@
   html {
     @apply font-sans;
   }
+
+  /* Square, theme-colored scrollbars */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(
+      in oklab,
+      var(--muted-foreground) 50%,
+      transparent
+    ) transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in oklab, var(--muted-foreground) 50%, transparent);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in oklab, var(--muted-foreground) 75%, transparent);
+  }
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
 }

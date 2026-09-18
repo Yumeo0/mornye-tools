@@ -2,7 +2,11 @@ import { StarIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-import { cursorPosition, getCurrentWindow } from "@tauri-apps/api/window";
+import {
+	currentMonitor,
+	cursorPosition,
+	getCurrentWindow,
+} from "@tauri-apps/api/window";
 import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import buildsData from "@/configs/character_builds.json";
@@ -47,6 +51,28 @@ interface Echo {
 	echo_name: string;
 	echo_id: number;
 	echo_sets: EchoSet[];
+}
+
+interface GridConfig {
+	startX: number;
+	startY: number;
+	columnSpacing: number;
+	rowSpacing: number;
+	cellWidth: number;
+	cellHeight: number;
+	columns: number;
+	rows: number;
+	clickWaitMs: number;
+	scrollWaitMs: number;
+}
+
+interface InventoryConfig {
+	counter: ScanRegion;
+	name: ScanRegion;
+	level: ScanRegion;
+	mainStats: ScanRegion;
+	subStats: ScanRegion;
+	grid: GridConfig;
 }
 
 // Set overlay to ignore cursor events so you can click through it
@@ -299,6 +325,11 @@ function Overlay() {
 	const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(
 		null,
 	);
+	const [inventoryPreview, setInventoryPreview] = useState(false);
+	const [inventoryConfig, setInventoryConfig] =
+		useState<InventoryConfig | null>(null);
+	// Ratio of physical screen pixels to overlay CSS pixels
+	const [displayScale, setDisplayScale] = useState(1);
 	const cardRef = useRef<HTMLDivElement | null>(null);
 	const isScanningRef = useRef(false);
 	// Echo name of the last stats event, used to detect echo changes
@@ -388,11 +419,43 @@ function Overlay() {
 			}
 		});
 
+		// Listen for scan region changes so the outline follows live edits
+		const unlistenScanRegion = listen<ScanRegion>(
+			"scan-region-changed",
+			(event) => {
+				setScanRegion(event.payload);
+			},
+		);
+
 		// Listen for scan region visibility changes
 		const unlistenShowRegion = listen<boolean>(
 			"show-scan-region-changed",
 			(event) => {
 				setShowScanRegion(event.payload);
+				// Re-read the region; the overlay may have started before any
+				// region was set
+				invoke<ScanRegion | null>("get_scan_region")
+					.then((region) => {
+						setScanRegion(region);
+					})
+					.catch(console.error);
+			},
+		);
+
+		// Listen for inventory region preview changes
+		const unlistenInventoryPreview = listen<boolean>(
+			"inventory-preview-changed",
+			(event) => {
+				setInventoryPreview(event.payload);
+				if (event.payload) {
+					// Make sure we have the region config; a mount-time fetch may
+					// have failed (e.g. backend not ready yet)
+					invoke<InventoryConfig>("get_inventory_config")
+						.then((config) => {
+							setInventoryConfig(config);
+						})
+						.catch(console.error);
+				}
 			},
 		);
 
@@ -427,6 +490,34 @@ function Overlay() {
 			})
 			.catch(console.error);
 
+		// Load inventory preview state and region config
+		invoke<boolean>("get_inventory_preview")
+			.then((show) => {
+				setInventoryPreview(show);
+			})
+			.catch(console.error);
+		invoke<InventoryConfig>("get_inventory_config")
+			.then((config) => {
+				setInventoryConfig(config);
+			})
+			.catch(console.error);
+
+		// Region outlines are positioned in physical screen pixels; scale them
+		// into the overlay window's CSS pixel space. Measuring the actual
+		// monitor width against the viewport covers both DPI scaling and a
+		// fullscreen window that did not cover the whole monitor.
+		const updateDisplayScale = () => {
+			currentMonitor()
+				.then((monitor) => {
+					if (monitor && window.innerWidth > 0) {
+						setDisplayScale(monitor.size.width / window.innerWidth);
+					}
+				})
+				.catch(console.error);
+		};
+		updateDisplayScale();
+		window.addEventListener("resize", updateDisplayScale);
+
 		// Set up interval for continuous scanning
 		const scanInterval = setInterval(async () => {
 			if (isScanningRef.current) return;
@@ -443,7 +534,10 @@ function Overlay() {
 		return () => {
 			unlistenOcr.then((fn) => fn());
 			unlistenStats.then((fn) => fn());
+			unlistenScanRegion.then((fn) => fn());
 			unlistenShowRegion.then((fn) => fn());
+			unlistenInventoryPreview.then((fn) => fn());
+			window.removeEventListener("resize", updateDisplayScale);
 			clearInterval(scanInterval);
 		};
 	}, []);
@@ -502,10 +596,10 @@ function Overlay() {
 				<div
 					style={{
 						position: "absolute",
-						left: `${scanRegion.x}px`,
-						top: `${scanRegion.y}px`,
-						width: `${scanRegion.width}px`,
-						height: `${scanRegion.height}px`,
+						left: `${scanRegion.x * displayScale}px`,
+						top: `${scanRegion.y * displayScale}px`,
+						width: `${scanRegion.width * displayScale}px`,
+						height: `${scanRegion.height * displayScale}px`,
 						border: "3px solid rgba(147, 51, 234, 0.9)",
 						backgroundColor: "rgba(147, 51, 234, 0.1)",
 						pointerEvents: "none",
@@ -513,6 +607,104 @@ function Overlay() {
 						zIndex: 1,
 					}}
 				/>
+			)}
+
+			{/* Inventory Scan Region Preview */}
+			{inventoryPreview && (
+				<div
+					style={{
+						position: "absolute",
+						left: "8px",
+						bottom: "8px",
+						padding: "4px 8px",
+						backgroundColor: "rgba(0,0,0,0.7)",
+						color: "white",
+						fontSize: "12px",
+						pointerEvents: "none",
+						zIndex: 2,
+					}}
+				>
+					Inventory preview · config {inventoryConfig ? "loaded" : "MISSING"} ·
+					scale {displayScale.toFixed(2)}
+				</div>
+			)}
+			{inventoryPreview && inventoryConfig && (
+				<>
+					{[
+						{
+							label: "counter",
+							region: inventoryConfig.counter,
+							color: "rgba(56, 189, 248, 0.9)",
+						},
+						{
+							label: "name",
+							region: inventoryConfig.name,
+							color: "rgba(250, 204, 21, 0.9)",
+						},
+						{
+							label: "level",
+							region: inventoryConfig.level,
+							color: "rgba(250, 204, 21, 0.9)",
+						},
+						{
+							label: "main",
+							region: inventoryConfig.mainStats,
+							color: "rgba(250, 204, 21, 0.9)",
+						},
+						{
+							label: "subs",
+							region: inventoryConfig.subStats,
+							color: "rgba(250, 204, 21, 0.9)",
+						},
+					].map(({ label, region, color }) => (
+						<div
+							key={label}
+							style={{
+								position: "absolute",
+								left: `${region.x * displayScale}px`,
+								top: `${region.y * displayScale}px`,
+								width: `${region.width * displayScale}px`,
+								height: `${region.height * displayScale}px`,
+								border: `2px solid ${color}`,
+								pointerEvents: "none",
+								zIndex: 1,
+							}}
+						/>
+					))}
+					{Array.from({ length: inventoryConfig.grid.rows }).flatMap((_, row) =>
+						Array.from({ length: inventoryConfig.grid.columns }).map(
+							(_, column) => {
+								// startX/startY are the top-left corner of the first cell
+								const x =
+									(inventoryConfig.grid.startX +
+										column * inventoryConfig.grid.columnSpacing) *
+									displayScale;
+								const y =
+									(inventoryConfig.grid.startY +
+										row * inventoryConfig.grid.rowSpacing) *
+									displayScale;
+								return (
+									<div
+										// The grid is static; row/column are grid coordinates,
+										// not list positions
+										// biome-ignore lint/suspicious/noArrayIndexKey: keys are stable grid coordinates
+										key={`cell-${row}-${column}`}
+										style={{
+											position: "absolute",
+											left: `${x}px`,
+											top: `${y}px`,
+											width: `${inventoryConfig.grid.cellWidth * displayScale}px`,
+											height: `${inventoryConfig.grid.cellHeight * displayScale}px`,
+											border: "2px solid rgba(74, 222, 128, 0.9)",
+											pointerEvents: "none",
+											zIndex: 1,
+										}}
+									/>
+								);
+							},
+						),
+					)}
+				</>
 			)}
 
 			<div

@@ -15,10 +15,10 @@
         "label": "settings",
         "title": "Mornye Tools",
         "url": "index.html",
-        "width": 800,
-        "height": 600,
+        "width": 1280,
+        "height": 720,
         "visible": true,
-        "decorations": true,
+        "decorations": false,
         "resizable": true
       },
       {

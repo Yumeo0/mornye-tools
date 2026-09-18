@@ -1,4 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
+import { getAllWindows } from "@tauri-apps/api/window";
 import { Store } from "@tauri-apps/plugin-store";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import OCR_CONFIG from "@/configs/ocr.json";
+import { Bug, Monitor, ScanText } from "lucide-react";
 
 interface ScanRegion {
 	x: number;
@@ -29,10 +31,11 @@ interface ScanRegions {
 	sub_stats: ScanRegion;
 }
 
-export function OcrTab() {
+export function SettingsTab() {
 	const [showScanRegion, setShowScanRegion] = useState(false);
 	const [selectedResolution, setSelectedResolution] = useState<string>("");
 	const [showDebugSection, setShowDebugSection] = useState(false);
+	const [overlayEnabled, setOverlayEnabled] = useState(false);
 	const [debugRegion, setDebugRegion] = useState<ScanRegion>({
 		x: 130,
 		y: 65,
@@ -99,6 +102,17 @@ export function OcrTab() {
 			} catch (error) {
 				console.error("[OcrTab] Failed to load saved resolution:", error);
 			}
+
+			// Load overlay enabled state (window visibility is handled on app start)
+			try {
+				const store = await Store.load("settings.json");
+				const savedOverlayEnabled = await store.get<boolean>("overlayEnabled");
+				if (savedOverlayEnabled !== null && savedOverlayEnabled !== undefined) {
+					setOverlayEnabled(savedOverlayEnabled);
+				}
+			} catch (error) {
+				console.error("[SettingsTab] Failed to load overlay state:", error);
+			}
 		};
 
 		initOcrSettings();
@@ -127,6 +141,30 @@ export function OcrTab() {
 		}
 	};
 
+	const toggleOverlay = async () => {
+		const windows = await getAllWindows();
+		const overlayWindow = windows.find((w) => w.label === "overlay");
+
+		if (overlayWindow) {
+			const newState = !overlayEnabled;
+			if (newState) {
+				await overlayWindow.show();
+			} else {
+				await overlayWindow.hide();
+			}
+			setOverlayEnabled(newState);
+
+			// Save overlay enabled state to store
+			try {
+				const store = await Store.load("settings.json");
+				await store.set("overlayEnabled", newState);
+				await store.save();
+			} catch (error) {
+				console.error("[SettingsTab] Failed to save overlay state:", error);
+			}
+		}
+	};
+
 	const performDebugScan = async () => {
 		setIsDebugScanning(true);
 		setDebugOcrText(null);
@@ -144,45 +182,71 @@ export function OcrTab() {
 	};
 
 	return (
-		<Card>
-			<CardContent className="space-y-4">
-				<div className="space-y-2">
-					<Label className="text-base font-medium">OCR Text Detection</Label>
-				</div>
+		<div className="space-y-6">
+			<Card>
+				<CardContent className="space-y-4">
+					<div className="space-y-0.5">
+						<Label className="flex items-center gap-2 text-base font-medium">
+							<Monitor className="size-4" /> Overlay
+						</Label>
+						<p className="text-xs text-muted-foreground">
+							Show the transparent overlay window on top of the game
+						</p>
+					</div>
+					<div className="flex items-center justify-between">
+						<Label>Enable Overlay</Label>
+						<Button
+							variant={overlayEnabled ? "destructive" : "default"}
+							onClick={toggleOverlay}
+						>
+							{overlayEnabled ? "Disable" : "Enable"}
+						</Button>
+					</div>
+				</CardContent>
+			</Card>
 
-				<Separator />
+			<Card>
+				<CardContent className="space-y-4">
+					<div className="space-y-0.5">
+						<Label className="flex items-center gap-2 text-base font-medium">
+							<ScanText className="size-4" /> OCR Text Detection
+						</Label>
+						<p className="text-xs text-muted-foreground">
+							Picks the scan regions matching your screen resolution
+						</p>
+					</div>
+					<div className="space-y-2">
+						<Label htmlFor="resolution-select">Screen Resolution</Label>
+						<Select
+							value={selectedResolution}
+							onValueChange={(value) => applyResolutionConfig(value ?? "")}
+						>
+							<SelectTrigger className="w-full">
+								{selectedResolution === ""
+									? "Select your screen resolution"
+									: selectedResolution}
+							</SelectTrigger>
+							<SelectContent>
+								{Object.keys(OCR_CONFIG.resolutions).map((resolution) => (
+									<SelectItem key={resolution} value={resolution}>
+										{resolution}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</div>
+				</CardContent>
+			</Card>
 
-				<div className="space-y-3">
-					<Label htmlFor="resolution-select">Screen Resolution</Label>
-					<Select
-						value={selectedResolution}
-						onValueChange={(value) => applyResolutionConfig(value ?? "")}
-					>
-						<SelectTrigger className="w-full">
-							{selectedResolution === ""
-								? "Select your screen resolution"
-								: selectedResolution}
-						</SelectTrigger>
-						<SelectContent>
-							{Object.keys(OCR_CONFIG.resolutions).map((resolution) => (
-								<SelectItem key={resolution} value={resolution}>
-									{resolution}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-				</div>
-
-				<Separator />
-
-				<div className="space-y-3">
+			<Card>
+				<CardContent className="space-y-3">
 					<Button
 						onClick={() => setShowDebugSection(!showDebugSection)}
 						variant="ghost"
-						className="w-full justify-between"
+						className="w-full justify-between px-0 hover:bg-transparent"
 					>
-						<span className="text-sm font-medium">
-							Developer / Debug Settings
+						<span className="flex items-center gap-2 text-base font-medium">
+							<Bug className="size-4" /> Developer / Debug
 						</span>
 						<span className="text-muted-foreground">
 							{showDebugSection ? "▼" : "▶"}
@@ -297,8 +361,8 @@ export function OcrTab() {
 							</div>
 						</div>
 					)}
-				</div>
-			</CardContent>
-		</Card>
+				</CardContent>
+			</Card>
+		</div>
 	);
 }

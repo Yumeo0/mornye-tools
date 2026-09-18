@@ -2,11 +2,12 @@ import { invoke } from "@tauri-apps/api/core";
 import { getAllWindows, getCurrentWindow } from "@tauri-apps/api/window";
 import { exit } from "@tauri-apps/plugin-process";
 import { Store } from "@tauri-apps/plugin-store";
+import { Minus, Square, X } from "lucide-react";
+import type { ReactNode } from "react";
 import { useEffect } from "react";
-import { OcrTab } from "@/components/tabs/OcrTab";
-import { OverlayTab } from "@/components/tabs/OverlayTab";
-import { RulesTab } from "@/components/tabs/RulesTab";
-import { Separator } from "@/components/ui/separator";
+import { CharactersTab } from "@/components/tabs/CharactersTab";
+import { InventoryTab } from "@/components/tabs/InventoryTab";
+import { SettingsTab } from "@/components/tabs/SettingsTab";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OCR_CONFIG from "@/configs/ocr.json";
 
@@ -16,6 +17,57 @@ interface ScanRegions {
 	level: { x: number; y: number; width: number; height: number };
 	main_stats: { x: number; y: number; width: number; height: number };
 	sub_stats: { x: number; y: number; width: number; height: number };
+}
+
+function WindowButton({
+	onClick,
+	hoverClass,
+	children,
+}: {
+	onClick: () => void;
+	hoverClass?: string;
+	children: ReactNode;
+}) {
+	return (
+		<button
+			type="button"
+			onClick={onClick}
+			className={`grid w-11 place-items-center text-muted-foreground transition-colors hover:bg-muted/70 hover:text-foreground ${hoverClass ?? ""}`}
+		>
+			{children}
+		</button>
+	);
+}
+
+function TitleBar() {
+	const win = getCurrentWindow();
+
+	return (
+		<div
+			data-tauri-drag-region
+			className="flex h-9 shrink-0 items-stretch select-none border-b bg-background"
+		>
+			<span
+				data-tauri-drag-region
+				className="flex items-center px-3 text-xs font-medium text-muted-foreground"
+			>
+				Mornye Tools
+			</span>
+			<div data-tauri-drag-region className="flex-1" />
+			<WindowButton onClick={() => win.minimize()}>
+				<Minus className="size-4" />
+			</WindowButton>
+			<WindowButton onClick={() => win.toggleMaximize()}>
+				<Square className="size-3.5" />
+			</WindowButton>
+			<WindowButton
+				onClick={() => win.close()}
+				hoverClass="hover:bg-destructive hover:text-destructive-foreground"
+			>
+				<X className="size-4" />
+			</WindowButton>
+		</div>
+	);
 }
 
 export default function Settings() {
@@ -98,31 +150,35 @@ export default function Settings() {
 	}, []);
 
 	return (
-		<div className="min-h-screen bg-background p-8">
-			<div className="max-w-4xl mx-auto space-y-6">
-				<div className="space-y-2">
-					<h1 className="text-4xl font-bold tracking-tight">Mornye Tools</h1>
-				</div>
-
-				<Separator />
-
-				<Tabs defaultValue="rules" className="w-full">
-					<TabsList className="grid w-full grid-cols-3">
-						<TabsTrigger value="rules">Rules</TabsTrigger>
-						<TabsTrigger value="overlay">Overlay</TabsTrigger>
-						<TabsTrigger value="ocr">OCR</TabsTrigger>
+		<div className="flex h-screen flex-col overflow-hidden bg-background">
+			<TitleBar />
+			<div className="mx-auto flex w-full max-w-4xl min-h-0 flex-1 flex-col px-6 pt-2">
+				<Tabs
+					defaultValue="characters"
+					className="flex w-full min-h-0 flex-1 flex-col"
+				>
+					<TabsList className="grid w-full shrink-0 grid-cols-3">
+						<TabsTrigger value="characters">Characters</TabsTrigger>
+						<TabsTrigger value="inventory">Inventory</TabsTrigger>
+						<TabsTrigger value="settings">Settings</TabsTrigger>
 					</TabsList>
 
-					<TabsContent value="rules" className="space-y-6">
-						<RulesTab />
+					<TabsContent value="characters" className="min-h-0 flex-1 flex flex-col">
+						<CharactersTab />
 					</TabsContent>
 
-					<TabsContent value="overlay" className="space-y-6">
-						<OverlayTab />
+					<TabsContent
+						value="inventory"
+						className="min-h-0 flex-1 space-y-6 overflow-y-auto"
+					>
+						<InventoryTab />
 					</TabsContent>
 
-					<TabsContent value="ocr" className="space-y-6">
-						<OcrTab />
+					<TabsContent
+						value="settings"
+						className="min-h-0 flex-1 space-y-6 overflow-y-auto"
+					>
+						<SettingsTab />
 					</TabsContent>
 				</Tabs>
 			</div>

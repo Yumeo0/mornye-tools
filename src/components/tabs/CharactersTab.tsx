@@ -357,7 +357,7 @@ function BuildDetail({
 	);
 }
 
-export function RulesTab() {
+export function CharactersTab() {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(
 		null,
@@ -374,54 +374,49 @@ export function RulesTab() {
 
 	if (selectedCharacter) {
 		return (
-			<BuildDetail
-				character={selectedCharacter}
-				onBack={() => setSelectedCharacterId(null)}
-			/>
+			<div className="min-h-0 flex-1 overflow-y-auto">
+				<BuildDetail
+					character={selectedCharacter}
+					onBack={() => setSelectedCharacterId(null)}
+				/>
+			</div>
 		);
 	}
 
 	return (
-		<div className="space-y-6">
-			<div className="space-y-3">
-				<Input
-					type="text"
-					placeholder="Search characters by name..."
-					value={searchQuery}
-					onChange={(e) => setSearchQuery(e.target.value)}
-				/>
+		<div className="flex min-h-0 flex-1 flex-col gap-3">
+			<Input
+				type="text"
+				placeholder="Search characters by name..."
+				value={searchQuery}
+				onChange={(e) => setSearchQuery(e.target.value)}
+				className="shrink-0"
+			/>
 
-				<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+			<div className="min-h-0 flex-1 overflow-y-auto pr-1">
+				<div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
 					{filteredCharacters.map((character) => (
 						<Card
 							key={character.character_id}
-							className="cursor-pointer hover:border-primary transition-colors"
+							className="relative aspect-[696/960] cursor-pointer overflow-hidden hover:border-primary transition-colors"
 							onClick={() => setSelectedCharacterId(character.character_id)}
 						>
-							<CardContent className="p-4 flex flex-col items-center gap-3">
-								<div className="relative w-full aspect-square">
-									<img
-										src={character.icon_pile}
-										alt={character.character_name}
-										className="w-full h-full object-contain"
-									/>
-								</div>
-								<div className="text-center space-y-1 w-full">
-									<p className="text-sm font-medium truncate">
-										{character.character_name}
-									</p>
-									<p className="text-xs text-muted-foreground">
-										{character.roles.length} Role
-										{character.roles.length === 1 ? "" : "s"}
-									</p>
-								</div>
-							</CardContent>
+							<img
+								src={character.icon_pile}
+								alt={character.character_name}
+								className="absolute inset-0 h-full w-full object-cover"
+							/>
+							<div className="absolute inset-x-0 bottom-0 space-y-0.5 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-2 pt-8 pb-2 text-center">
+								<p className="text-sm font-medium text-white drop-shadow">
+									{character.character_name}
+								</p>
+							</div>
 						</Card>
 					))}
 				</div>
 
 				{filteredCharacters.length === 0 && (
-					<div className="text-center py-8 text-muted-foreground">
+					<div className="py-8 text-center text-muted-foreground">
 						No characters found matching "{searchQuery}"
 					</div>
 				)}

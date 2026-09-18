@@ -2,11 +2,14 @@ import { StarIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-import { getCurrentWindow } from "@tauri-apps/api/window";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { cursorPosition, getCurrentWindow } from "@tauri-apps/api/window";
+import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import buildsData from "@/configs/character_builds.json";
+import characterData from "@/configs/character_data.json";
 import echoData from "@/configs/echo_data.json";
 import statsConfig from "@/configs/stats.json";
+import { parseSubstatTiers, sonataNames, splitStatCodes } from "@/lib/stats";
 import { cn } from "@/lib/utils";
 
 interface ScanRegion {
@@ -124,6 +127,120 @@ function findEcho(echoName: string): Echo | undefined {
 		: candidates.sort((a, b) => b.echo_name.length - a.echo_name.length)[0];
 }
 
+interface BuildSet {
+	variant: string;
+	name: string;
+	sonata?: string;
+	value?: string;
+}
+
+interface RoleBuild {
+	echo_sets: {
+		variant: string;
+		sets: BuildSet[];
+		main_stats: string[];
+	};
+	substats_priority: string | null;
+}
+
+interface BuildEntry {
+	character_id: number | null;
+	roles: Record<string, RoleBuild>;
+}
+
+const builds = buildsData as Record<string, BuildEntry>;
+
+const characterById = new Map<number, { name: string; icon_pile: string }>();
+for (const character of characterData as {
+	character_id: number;
+	character_name: string;
+	icon_pile: string;
+}[]) {
+	if (!characterById.has(character.character_id)) {
+		characterById.set(character.character_id, {
+			name: character.character_name,
+			icon_pile: character.icon_pile,
+		});
+	}
+}
+
+// "ER:120%>CR=CD>ATK%>Lib%>ATK" -> ["Energy Regen", "Crit. Rate", ...]
+function parseSubstatPriority(raw: string | null | undefined): string[] {
+	return parseSubstatTiers(raw)
+		.flat()
+		.map((stat) => stat.name);
+}
+
+// Find characters whose builds use any of the scanned echo's sonata sets.
+// For each character the role with the most set matches provides the
+// preferred stats.
+function getRelevantCharacters(setNames: string[]): CharacterInfo[] {
+	const wanted = setNames.map((name) => name.toLowerCase());
+	const relevant: CharacterInfo[] = [];
+
+	for (const [name, build] of Object.entries(builds)) {
+		if (build.character_id === null) continue;
+		const character = characterById.get(build.character_id);
+		if (!character) continue;
+
+		// Roles without their own substat priority fall back to the first role's
+		const firstRolePriority =
+			Object.values(build.roles)[0]?.substats_priority ?? null;
+
+		let bestMatches = 0;
+		let bestStats: CharacterInfo["stats"] | null = null;
+
+		for (const guide of Object.values(build.roles)) {
+			const sets = guide.echo_sets?.sets ?? [];
+			const matches = sets.filter(
+				(set) =>
+					sonataNames(set.sonata).some((sonata) =>
+						wanted.includes(sonata.toLowerCase()),
+					) || wanted.includes(set.name.toLowerCase()),
+			).length;
+			if (matches === 0 || matches <= bestMatches) continue;
+
+			const mainStats = guide.echo_sets.main_stats ?? [];
+			bestMatches = matches;
+			bestStats = {
+				"4cost": [splitStatCodes(mainStats[0])].filter(
+					(group) => group.length > 0,
+				),
+				"3cost": [
+					splitStatCodes(mainStats[1]),
+					splitStatCodes(mainStats[2]),
+				].filter((group) => group.length > 0),
+				"1cost": [
+					splitStatCodes(mainStats[3]),
+					splitStatCodes(mainStats[4]),
+				].filter((group) => group.length > 0),
+				subs: [
+					parseSubstatPriority(guide.substats_priority ?? firstRolePriority),
+				].filter((group) => group.length > 0),
+			};
+		}
+
+		if (bestStats) {
+			relevant.push({
+				character_id: build.character_id,
+				character_name: name,
+				icon_pile: character.icon_pile,
+				stats: bestStats,
+			});
+		}
+	}
+
+	return relevant;
+}
+
+// Update relevant characters based on the scanned echo's sonata sets
+function getRelevantCharactersForStatsData(data: StatsData | null) {
+	if (!data?.echo_name) return [];
+	const echo = findEcho(data.echo_name);
+	if (!echo) return [];
+	return getRelevantCharacters(echo.echo_sets.map((set) => set.name));
+}
+
 // Helper function to calculate echo rating for a character
 function calculateRating(
 	character: CharacterInfo,
@@ -178,28 +295,80 @@ function Overlay() {
 	const [relevantCharacters, setRelevantCharacters] = useState<CharacterInfo[]>(
 		[],
 	);
+	// Character whose preferred stats are highlighted; null = top ranked
+	const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(
+		null,
+	);
+	const cardRef = useRef<HTMLDivElement | null>(null);
 	const isScanningRef = useRef(false);
+	// Echo name of the last stats event, used to detect echo changes
+	const lastEchoNameRef = useRef<string | null>(null);
 
-	// Look up characters matching the echo's sets and store them
-	const fetchRelevantCharacters = useCallback(async (echoName: string) => {
-		const echo = findEcho(echoName);
-		if (!echo) {
-			setRelevantCharacters([]);
-			return;
-		}
-		try {
-			const characters = await invoke<CharacterInfo[]>(
-				"get_relevant_characters",
-				{
-					echoSetIds: echo.echo_sets.map((s) => s.id),
-				},
+	// The overlay window is click-through so the game stays playable. To allow
+	// clicking the stats card we poll the global cursor position and disable
+	// click-through only while the cursor hovers over the card.
+	useEffect(() => {
+		if (!textFound || !statsData) return;
+
+		const win = getCurrentWindow();
+		let disposed = false;
+		let timer: number | undefined;
+		let ignoring = true;
+
+		const setIgnoring = (value: boolean) => {
+			if (ignoring === value) return;
+			ignoring = value;
+			win.setIgnoreCursorEvents(value).catch(() => {});
+		};
+
+		const isOverCard = (cssX: number, cssY: number) => {
+			const card = cardRef.current;
+			if (!card) return false;
+			const rect = card.getBoundingClientRect();
+			return (
+				cssX >= rect.left &&
+				cssX <= rect.right &&
+				cssY >= rect.top &&
+				cssY <= rect.bottom
 			);
-			setRelevantCharacters(characters);
-		} catch (error) {
-			console.error("Failed to get relevant characters:", error);
-			setRelevantCharacters([]);
-		}
-	}, []);
+		};
+
+		const pollCursor = async () => {
+			if (disposed) return;
+			try {
+				const [cursor, origin, scale] = await Promise.all([
+					cursorPosition(),
+					win.outerPosition(),
+					win.scaleFactor(),
+				]);
+				// Cursor position and window origin are physical pixels,
+				// getBoundingClientRect is CSS pixels
+				setIgnoring(
+					!isOverCard(
+						(cursor.x - origin.x) / scale,
+						(cursor.y - origin.y) / scale,
+					),
+				);
+			} catch {
+				// Not running inside Tauri
+			}
+			timer = window.setTimeout(pollCursor, 100);
+		};
+
+		// Instantly re-enable click-through once the cursor leaves the card
+		const onMouseMove = (event: MouseEvent) => {
+			setIgnoring(!isOverCard(event.clientX, event.clientY));
+		};
+		window.addEventListener("mousemove", onMouseMove);
+		pollCursor();
+
+		return () => {
+			disposed = true;
+			if (timer !== undefined) clearTimeout(timer);
+			window.removeEventListener("mousemove", onMouseMove);
+			setIgnoring(true);
+		};
+	}, [textFound, statsData]);
 
 	useEffect(() => {
 		// Listen for OCR results from the backend
@@ -210,11 +379,12 @@ function Overlay() {
 		// Listen for stats data from the backend
 		const unlistenStats = listen<StatsData | null>("stats-data", (event) => {
 			setStatsData(event.payload);
-
-			if (event.payload?.echo_name) {
-				fetchRelevantCharacters(event.payload.echo_name);
-			} else {
-				setRelevantCharacters([]);
+			setRelevantCharacters(getRelevantCharactersForStatsData(event.payload));
+			// Only reset the selection when a different echo is scanned; the
+			// backend emits stats-data on every scan tick (every 2 seconds)
+			if ((event.payload?.echo_name ?? null) !== lastEchoNameRef.current) {
+				lastEchoNameRef.current = event.payload?.echo_name ?? null;
+				setSelectedCharacterId(null);
 			}
 		});
 
@@ -239,9 +409,7 @@ function Overlay() {
 		invoke<StatsData | null>("get_last_stats_data")
 			.then((data) => {
 				setStatsData(data);
-				if (data?.echo_name) {
-					fetchRelevantCharacters(data.echo_name);
-				}
+				setRelevantCharacters(getRelevantCharactersForStatsData(data));
 			})
 			.catch(console.error);
 
@@ -278,7 +446,7 @@ function Overlay() {
 			unlistenShowRegion.then((fn) => fn());
 			clearInterval(scanInterval);
 		};
-	}, [fetchRelevantCharacters]);
+	}, []);
 
 	// Parse stats with scores
 	const parsedMainStats =
@@ -286,23 +454,37 @@ function Overlay() {
 	const parsedSubStats =
 		statsData?.sub_stats.split("\n").filter((s) => s.trim()) || [];
 
-	// Compute preferred stats for the highest rated character
-	const highestCharacter =
-		relevantCharacters.length > 0 ? relevantCharacters[0] : null;
-	let preferredMainStats = new Set<string>();
-	let preferredSubStats = new Set<string>();
-	if (highestCharacter) {
-		preferredMainStats = new Set(
-			[
-				...highestCharacter.stats["4cost"].flat(),
-				...highestCharacter.stats["3cost"].flat(),
-				...highestCharacter.stats["1cost"].flat(),
-			].map(normalizeStatName),
-		);
-		preferredSubStats = new Set(
-			highestCharacter.stats.subs.flat().map(normalizeStatName),
-		);
-	}
+	// Rank the relevant characters by how well the scanned echo fits them
+	const rankedCharacters = relevantCharacters
+		.map((character) => ({
+			character,
+			rating: calculateRating(character, parsedMainStats, parsedSubStats),
+		}))
+		.sort((a, b) => b.rating - a.rating);
+
+	// Character whose preferred stats are highlighted by the stars
+	const activeCharacter =
+		rankedCharacters.find(
+			({ character }) => character.character_id === selectedCharacterId,
+		)?.character ??
+		rankedCharacters[0]?.character ??
+		null;
+	const preferredMainStats = new Set(
+		activeCharacter
+			? [
+					...activeCharacter.stats["4cost"],
+					...activeCharacter.stats["3cost"],
+					...activeCharacter.stats["1cost"],
+				]
+					.flat()
+					.map(normalizeStatName)
+			: [],
+	);
+	const preferredSubStats = new Set(
+		activeCharacter
+			? activeCharacter.stats.subs.flat().map(normalizeStatName)
+			: [],
+	);
 
 	return (
 		<div
@@ -343,68 +525,97 @@ function Overlay() {
 			>
 				{/* Stats Display */}
 				{textFound && statsData && (
-					<Card
-						className="min-w-112.5 bg-card/95 backdrop-blur-sm shadow-2xl border-2"
-						style={{ pointerEvents: "auto" }}
-					>
-						{/* Echo Name Header */}
-						{statsData.echo_name && (
-							<CardHeader className="border-b pb-4">
-								<CardTitle className="text-xl text-center">
-									{statsData.echo_name}
-								</CardTitle>
-							</CardHeader>
-						)}
+					<div ref={cardRef}>
+						<Card
+							className="min-w-112.5 bg-card/95 backdrop-blur-sm shadow-2xl border-2"
+							style={{ pointerEvents: "auto" }}
+						>
+							{/* Echo Name Header */}
+							{statsData.echo_name && (
+								<CardHeader className="border-b pb-4">
+									<CardTitle className="text-xl text-center">
+										{statsData.echo_name}
+									</CardTitle>
+								</CardHeader>
+							)}
 
-						<CardContent className="space-y-4">
-							{/* Main Stats Section */}
-							<div className="space-y-2">
-								<h3 className="text-base font-bold text-purple-400">
-									Main Stats
-								</h3>
-								<div className="space-y-1">
-									{parsedMainStats.map((stat) => {
-										const parsed = parseStatValue(stat);
-										const statName = parsed
-											? normalizeStatName(parsed.name)
-											: "";
-										const isPreferred = preferredMainStats.has(statName);
-										return (
-											<div
-												key={`main-${stat}`}
-												className={cn("text-sm flex items-center gap-2")}
-											>
-												{isPreferred && (
-													<HugeiconsIcon
-														icon={StarIcon}
-														className="w-4 h-4 text-yellow-400"
-													/>
-												)}
-												{stat}
-											</div>
-										);
-									})}
-								</div>
-							</div>
-
-							{/* Sub Stats Section */}
-							<div className="space-y-2">
-								<h3 className="text-base font-bold text-blue-400">Sub Stats</h3>
+							<CardContent className="space-y-4">
+								{/* Main Stats Section */}
 								<div className="space-y-2">
-									{parsedSubStats.map((stat) => {
-										const parsed = parseStatValue(stat);
-										if (!parsed) {
+									<h3 className="text-base font-bold text-purple-400">
+										Main Stats
+									</h3>
+									<div className="space-y-1">
+										{parsedMainStats.map((stat) => {
+											const parsed = parseStatValue(stat);
+											const statName = parsed
+												? normalizeStatName(parsed.name)
+												: "";
+											const isPreferred = preferredMainStats.has(statName);
 											return (
-												<div key={`sub-${stat}`} className="text-xs">
+												<div
+													key={`main-${stat}`}
+													className={cn("text-sm flex items-center gap-2")}
+												>
+													{isPreferred && (
+														<HugeiconsIcon
+															icon={StarIcon}
+															className="w-4 h-4 text-yellow-400"
+														/>
+													)}
 													{stat}
 												</div>
 											);
-										}
+										})}
+									</div>
+								</div>
 
-										const statName = normalizeStatName(parsed.name);
-										const isPreferred = preferredSubStats.has(statName);
-										const maxValue = getMaxStatValue(parsed.name, false);
-										if (!maxValue) {
+								{/* Sub Stats Section */}
+								<div className="space-y-2">
+									<h3 className="text-base font-bold text-blue-400">
+										Sub Stats
+									</h3>
+									<div className="space-y-2">
+										{parsedSubStats.map((stat) => {
+											const parsed = parseStatValue(stat);
+											if (!parsed) {
+												return (
+													<div key={`sub-${stat}`} className="text-xs">
+														{stat}
+													</div>
+												);
+											}
+
+											const statName = normalizeStatName(parsed.name);
+											const isPreferred = preferredSubStats.has(statName);
+											const maxValue = getMaxStatValue(parsed.name, false);
+											if (!maxValue) {
+												return (
+													<div key={`sub-${stat}`} className="space-y-1">
+														<div className="flex justify-between items-center text-xs">
+															<div className="flex items-center gap-2">
+																{isPreferred && (
+																	<HugeiconsIcon
+																		icon={StarIcon}
+																		className="w-3 h-3 text-yellow-400"
+																	/>
+																)}
+																<span>{parsed.name}</span>
+															</div>
+															<span className="font-bold">
+																{parsed.value}
+																{parsed.hasPercent ? "%" : ""}
+															</span>
+														</div>
+													</div>
+												);
+											}
+
+											const { percentage, color } = getStatProgress(
+												parsed.value,
+												maxValue,
+											);
+
 											return (
 												<div key={`sub-${stat}`} className="space-y-1">
 													<div className="flex justify-between items-center text-xs">
@@ -422,70 +633,49 @@ function Overlay() {
 															{parsed.hasPercent ? "%" : ""}
 														</span>
 													</div>
+													<div className="h-2 bg-black/30 rounded-full overflow-hidden">
+														<div
+															className="h-full transition-all duration-300"
+															style={{
+																width: `${percentage}%`,
+																backgroundColor: color,
+															}}
+														/>
+													</div>
 												</div>
 											);
-										}
-
-										const { percentage, color } = getStatProgress(
-											parsed.value,
-											maxValue,
-										);
-
-										return (
-											<div key={`sub-${stat}`} className="space-y-1">
-												<div className="flex justify-between items-center text-xs">
-													<div className="flex items-center gap-2">
-														{isPreferred && (
-															<HugeiconsIcon
-																icon={StarIcon}
-																className="w-3 h-3 text-yellow-400"
-															/>
-														)}
-														<span>{parsed.name}</span>
-													</div>
-													<span className="font-bold">
-														{parsed.value}
-														{parsed.hasPercent ? "%" : ""}
-													</span>
-												</div>
-												<div className="h-2 bg-black/30 rounded-full overflow-hidden">
-													<div
-														className="h-full transition-all duration-300"
-														style={{
-															width: `${percentage}%`,
-															backgroundColor: color,
-														}}
-													/>
-												</div>
-											</div>
-										);
-									})}
+										})}
+									</div>
 								</div>
-							</div>
 
-							{/* Relevant Characters Section */}
-							{relevantCharacters.length > 0 && (
-								<div className="space-y-2">
-									<h3 className="text-base font-bold text-green-400">
-										Relevant Characters
-									</h3>
+								{/* Relevant Characters Section */}
+								{relevantCharacters.length > 0 && (
 									<div className="space-y-2">
-										{[...relevantCharacters]
-											.sort(
-												(a, b) =>
-													calculateRating(b, parsedMainStats, parsedSubStats) -
-													calculateRating(a, parsedMainStats, parsedSubStats),
-											)
-											.map((character) => {
-												const rating = calculateRating(
-													character,
-													parsedMainStats,
-													parsedSubStats,
-												);
+										<h3 className="text-base font-bold text-green-400">
+											Relevant Characters
+										</h3>
+										<p className="text-xs text-muted-foreground">
+											Click a character to highlight their preferred stats
+										</p>
+										<div className="space-y-2">
+											{rankedCharacters.map(({ character, rating }) => {
+												const isActive =
+													character.character_id ===
+													activeCharacter?.character_id;
 												return (
-													<div
+													<button
+														type="button"
 														key={character.character_id}
-														className="flex items-center gap-3 bg-muted/50 p-2 rounded"
+														onClick={() =>
+															setSelectedCharacterId(
+																isActive && selectedCharacterId !== null
+																	? null
+																	: character.character_id,
+															)
+														}
+														className={`flex w-full items-center gap-3 bg-muted/50 p-2 text-left ${
+															isActive ? "border border-primary" : ""
+														}`}
 													>
 														<img
 															src={character.icon_pile}
@@ -498,14 +688,15 @@ function Overlay() {
 														<span className="text-sm font-bold text-yellow-400">
 															{rating}%
 														</span>
-													</div>
+													</button>
 												);
 											})}
+										</div>
 									</div>
-								</div>
-							)}
-						</CardContent>
-					</Card>
+								)}
+							</CardContent>
+						</Card>
+					</div>
 				)}
 			</div>
 		</div>

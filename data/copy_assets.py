@@ -16,7 +16,7 @@ ASSET_FOLDERS = [
 	"IconMonsterHead",
 	"IconMonsterGoods160",
 	"IconMonsterGoods80",
-	"IconElementAttri",
+	"IconElementAttri128",
 	
 	# Character assets
 	"IconRoleHead80",

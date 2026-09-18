@@ -74,25 +74,6 @@ pub struct StatsData {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CharacterInfo {
-    pub character_id: u32,
-    pub character_name: String,
-    pub icon_pile: String,
-    pub stats: CharacterStats,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CharacterStats {
-    #[serde(rename = "4cost")]
-    pub cost_4: Vec<Vec<String>>,
-    #[serde(rename = "3cost")]
-    pub cost_3: Vec<Vec<String>>,
-    #[serde(rename = "1cost")]
-    pub cost_1: Vec<Vec<String>>,
-    pub subs: Vec<Vec<String>>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EchoSet {
     pub id: u32,
     pub name: String,
@@ -800,53 +781,6 @@ fn get_show_scan_region(state: State<AppState>) -> Result<bool, String> {
     Ok(*show_scan_region)
 }
 
-#[derive(Debug, Clone, Deserialize)]
-struct CharacterEntry {
-    character_id: u32,
-    character_name: String,
-    icon_pile: String,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-struct CharacterRuleConfig {
-    sets: Vec<u32>,
-    stats: CharacterStats,
-}
-
-#[tauri::command]
-fn get_relevant_characters(
-    app_handle: tauri::AppHandle,
-    echo_set_ids: Vec<u32>,
-) -> Result<Vec<CharacterInfo>, String> {
-    let characters: Vec<CharacterEntry> = load_json_resource(&app_handle, "character_data.json")?;
-
-    let mut relevant_characters = Vec::new();
-
-    for character in characters {
-        let Ok(config) = load_json_resource::<CharacterRuleConfig>(
-            &app_handle,
-            &format!("characters/{}.json", character.character_id),
-        ) else {
-            continue;
-        };
-
-        if config
-            .sets
-            .iter()
-            .any(|set_id| echo_set_ids.contains(set_id))
-        {
-            relevant_characters.push(CharacterInfo {
-                character_id: character.character_id,
-                character_name: character.character_name,
-                icon_pile: character.icon_pile,
-                stats: config.stats,
-            });
-        }
-    }
-
-    Ok(relevant_characters)
-}
-
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -864,8 +798,7 @@ pub fn run() {
             get_last_stats_data,
             set_show_scan_region,
             get_show_scan_region,
-            scan_region_for_text,
-            get_relevant_characters
+            scan_region_for_text
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

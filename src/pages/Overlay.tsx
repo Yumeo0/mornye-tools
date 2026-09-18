@@ -9,11 +9,16 @@ import {
 } from "@tauri-apps/api/window";
 import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import buildsData from "@/configs/character_builds.json";
-import characterData from "@/configs/character_data.json";
-import echoData from "@/configs/echo_data.json";
-import statsConfig from "@/configs/stats.json";
-import { parseSubstatTiers, sonataNames, splitStatCodes } from "@/lib/stats";
+import {
+	type CharacterInfo,
+	calculateRating,
+	findEcho,
+	getMaxStatValue,
+	getRelevantCharacters,
+	getStatProgress,
+	parseStatValue,
+} from "@/lib/rating";
+import { normalizeStatName } from "@/lib/stats";
 import { cn } from "@/lib/utils";
 
 interface ScanRegion {
@@ -28,29 +33,6 @@ interface StatsData {
 	level: string;
 	main_stats: string;
 	sub_stats: string;
-}
-
-interface CharacterInfo {
-	character_id: number;
-	character_name: string;
-	icon_pile: string;
-	stats: {
-		"4cost": string[][];
-		"3cost": string[][];
-		"1cost": string[][];
-		subs: string[][];
-	};
-}
-
-interface EchoSet {
-	id: number;
-	name: string;
-}
-
-interface Echo {
-	echo_name: string;
-	echo_id: number;
-	echo_sets: EchoSet[];
 }
 
 interface GridConfig {
@@ -78,239 +60,12 @@ interface InventoryConfig {
 // Set overlay to ignore cursor events so you can click through it
 await getCurrentWindow().setIgnoreCursorEvents(true);
 
-// Helper function to normalize stat names for comparison
-function normalizeStatName(stat: string): string {
-	return stat.replace(/\./g, "").replace(/\s+/g, " ").trim().toLowerCase();
-}
-
-// Helper function to parse stat value from stat string (e.g., "HP% 10.5%" -> 10.5)
-function parseStatValue(
-	statString: string,
-): { name: string; value: number; hasPercent: boolean } | null {
-	// Match patterns like "HP% 10.5%" or "ATK 123"
-	const match = statString.match(/^(.+?)\s+([\d.]+)(%?)$/);
-	if (match) {
-		let name = match[1].trim();
-		const hasPercent = match[3] === "%";
-
-		// Map HP/ATK/DEF to HP%/ATK%/DEF% if the value has a %
-		if (hasPercent && (name === "HP" || name === "ATK" || name === "DEF")) {
-			name = `${name}%`;
-		}
-
-		return {
-			name,
-			value: Number.parseFloat(match[2]),
-			hasPercent,
-		};
-	}
-	return null;
-}
-
-// Helper function to get max value for a stat
-function getMaxStatValue(statName: string, isMainStat: boolean): number | null {
-	const stats = isMainStat ? statsConfig.main : statsConfig.sub;
-	const statKey = Object.keys(stats).find(
-		(key) => normalizeStatName(key) === normalizeStatName(statName),
-	);
-	if (statKey) {
-		return stats[statKey as keyof typeof stats].max;
-	}
-	return null;
-}
-
-// Helper function to calculate percentage and get color
-function getStatProgress(
-	value: number,
-	maxValue: number,
-): { percentage: number; color: string } {
-	const percentage = Math.min((value / maxValue) * 100, 100);
-	let color: string;
-	if (percentage >= 85)
-		color = "#10b981"; // green-500
-	else if (percentage >= 70)
-		color = "#3b82f6"; // blue-500
-	else if (percentage >= 50)
-		color = "#f59e0b"; // amber-500
-	else color = "#ef4444"; // red-500
-	return { percentage, color };
-}
-
-// Find the echo matching an OCR'd echo name (case-insensitive, exact matches
-// preferred, then by longest name for specificity)
-function findEcho(echoName: string): Echo | undefined {
-	const lower = echoName.toLowerCase();
-	const candidates = (echoData as Echo[]).filter(
-		(e) =>
-			e.echo_name.toLowerCase().includes(lower) ||
-			lower.includes(e.echo_name.toLowerCase()),
-	);
-	const exactMatches = candidates.filter(
-		(e) => e.echo_name.toLowerCase() === lower,
-	);
-	return exactMatches.length > 0
-		? exactMatches[0]
-		: candidates.sort((a, b) => b.echo_name.length - a.echo_name.length)[0];
-}
-
-interface BuildSet {
-	variant: string;
-	name: string;
-	sonata?: string;
-	value?: string;
-}
-
-interface RoleBuild {
-	echo_sets: {
-		variant: string;
-		sets: BuildSet[];
-		main_stats: string[];
-	};
-	substats_priority: string | null;
-}
-
-interface BuildEntry {
-	character_id: number | null;
-	roles: Record<string, RoleBuild>;
-}
-
-const builds = buildsData as Record<string, BuildEntry>;
-
-const characterById = new Map<number, { name: string; icon_pile: string }>();
-for (const character of characterData as {
-	character_id: number;
-	character_name: string;
-	icon_pile: string;
-}[]) {
-	if (!characterById.has(character.character_id)) {
-		characterById.set(character.character_id, {
-			name: character.character_name,
-			icon_pile: character.icon_pile,
-		});
-	}
-}
-
-// "ER:120%>CR=CD>ATK%>Lib%>ATK" -> ["Energy Regen", "Crit. Rate", ...]
-function parseSubstatPriority(raw: string | null | undefined): string[] {
-	return parseSubstatTiers(raw)
-		.flat()
-		.map((stat) => stat.name);
-}
-
-// Find characters whose builds use any of the scanned echo's sonata sets.
-// For each character the role with the most set matches provides the
-// preferred stats.
-function getRelevantCharacters(setNames: string[]): CharacterInfo[] {
-	const wanted = setNames.map((name) => name.toLowerCase());
-	const relevant: CharacterInfo[] = [];
-
-	for (const [name, build] of Object.entries(builds)) {
-		if (build.character_id === null) continue;
-		const character = characterById.get(build.character_id);
-		if (!character) continue;
-
-		// Roles without their own substat priority fall back to the first role's
-		const firstRolePriority =
-			Object.values(build.roles)[0]?.substats_priority ?? null;
-
-		let bestMatches = 0;
-		let bestStats: CharacterInfo["stats"] | null = null;
-
-		for (const guide of Object.values(build.roles)) {
-			const sets = guide.echo_sets?.sets ?? [];
-			const matches = sets.filter(
-				(set) =>
-					sonataNames(set.sonata).some((sonata) =>
-						wanted.includes(sonata.toLowerCase()),
-					) || wanted.includes(set.name.toLowerCase()),
-			).length;
-			if (matches === 0 || matches <= bestMatches) continue;
-
-			const mainStats = guide.echo_sets.main_stats ?? [];
-			bestMatches = matches;
-			bestStats = {
-				"4cost": [splitStatCodes(mainStats[0])].filter(
-					(group) => group.length > 0,
-				),
-				"3cost": [
-					splitStatCodes(mainStats[1]),
-					splitStatCodes(mainStats[2]),
-				].filter((group) => group.length > 0),
-				"1cost": [
-					splitStatCodes(mainStats[3]),
-					splitStatCodes(mainStats[4]),
-				].filter((group) => group.length > 0),
-				subs: [
-					parseSubstatPriority(guide.substats_priority ?? firstRolePriority),
-				].filter((group) => group.length > 0),
-			};
-		}
-
-		if (bestStats) {
-			relevant.push({
-				character_id: build.character_id,
-				character_name: name,
-				icon_pile: character.icon_pile,
-				stats: bestStats,
-			});
-		}
-	}
-
-	return relevant;
-}
-
 // Update relevant characters based on the scanned echo's sonata sets
 function getRelevantCharactersForStatsData(data: StatsData | null) {
 	if (!data?.echo_name) return [];
 	const echo = findEcho(data.echo_name);
 	if (!echo) return [];
 	return getRelevantCharacters(echo.echo_sets.map((set) => set.name));
-}
-
-// Helper function to calculate echo rating for a character
-function calculateRating(
-	character: CharacterInfo,
-	parsedMainStats: string[],
-	parsedSubStats: string[],
-): number {
-	const mainStatString = parsedMainStats[0];
-	if (!mainStatString) return 0;
-
-	// Parse main stat name
-	const mainMatch = mainStatString.match(/^(.+?)\s+\d/);
-	if (!mainMatch) return 0;
-	const mainStatName = normalizeStatName(mainMatch[1]);
-
-	// Get echo sub stat names
-	const echoSubNames = parsedSubStats
-		.map((stat) => {
-			const parsed = parseStatValue(stat);
-			return parsed ? normalizeStatName(parsed.name) : "";
-		})
-		.filter(Boolean);
-
-	// Calculate main stat score
-	let mainScore = 0;
-	const all4cost = character.stats["4cost"].flat();
-	const all3cost = character.stats["3cost"].flat();
-	const all1cost = character.stats["1cost"].flat();
-
-	if (all4cost.some((s) => normalizeStatName(s) === mainStatName)) {
-		mainScore = 40;
-	} else if (all3cost.some((s) => normalizeStatName(s) === mainStatName)) {
-		mainScore = 30;
-	} else if (all1cost.some((s) => normalizeStatName(s) === mainStatName)) {
-		mainScore = 20;
-	}
-
-	// Calculate sub stat score
-	const preferredSubs = character.stats.subs.flat().map(normalizeStatName);
-	const subMatches = preferredSubs.filter((pref) =>
-		echoSubNames.includes(pref),
-	).length;
-	const subScore = (subMatches / Math.max(preferredSubs.length, 1)) * 60;
-
-	return Math.round(mainScore + subScore);
 }
 
 function Overlay() {

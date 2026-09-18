@@ -358,7 +358,8 @@ pub fn run() {
             inventory::get_saved_echoes,
             inventory::clear_saved_echoes,
             inventory::delete_saved_echo,
-            inventory::set_echo_equipped_by
+            inventory::set_echo_equipped_by,
+            inventory::save_echo
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

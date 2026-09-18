@@ -118,6 +118,7 @@ pub struct InventoryEcho {
 struct InventoryProgress {
     scanned: usize,
     echo: InventoryEcho,
+    duplicate: bool,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -160,6 +161,24 @@ fn append_saved_echo(app_handle: &AppHandle, echo: &InventoryEcho) -> Result<(),
     }
     let content = serde_json::to_string_pretty(&echoes).map_err(|e| e.to_string())?;
     std::fs::write(path, content).map_err(|e| e.to_string())
+}
+
+fn write_echoes(
+    path: &std::path::Path,
+    echoes: &[InventoryEcho],
+) -> Result<(), String> {
+    let content = serde_json::to_string_pretty(echoes).map_err(|e| e.to_string())?;
+    std::fs::write(path, content).map_err(|e| e.to_string())
+}
+
+/// Add an echo unconditionally, allowing exact duplicates. Used by the
+/// scanner's "Keep" action for duplicate scans.
+#[tauri::command]
+pub fn save_echo(app_handle: AppHandle, echo: InventoryEcho) -> Result<(), String> {
+    let path = echo_store_path(&app_handle)?;
+    let mut echoes = load_saved_echoes(&app_handle);
+    echoes.insert(0, echo);
+    write_echoes(&path, &echoes)
 }
 
 fn load_inventory_config(app_handle: &AppHandle) -> Result<InventoryConfig, String> {
@@ -401,20 +420,22 @@ fn run_scan(
                     "{}|{}|{}|{}|{}",
                     echo.echo_name, echo.level, echo.main_stats, echo.sub_stats, echo.equipped_by
                 );
-                if seen.insert(key) {
+                let is_new = seen.insert(key);
+                if is_new {
                     scanned += 1;
                     // Persist the echo so scans accumulate across sessions
                     if let Err(e) = append_saved_echo(app_handle, &echo) {
                         eprintln!("Failed to save echo: {e}");
                     }
-                    let _ = app_handle.emit(
-                        "inventory-progress",
-                        InventoryProgress {
-                            scanned,
-                            echo,
-                        },
-                    );
                 }
+                let _ = app_handle.emit(
+                    "inventory-progress",
+                    InventoryProgress {
+                        scanned,
+                        echo,
+                        duplicate: !is_new,
+                    },
+                );
             }
         }
 
@@ -472,10 +493,13 @@ pub async fn scan_current_echo(app_handle: tauri::AppHandle) -> Result<Inventory
             scan_echo_detail(&screenshot, &config, &stats_config, &echoes, &app_handle)?
                 .ok_or("No echo selected. Open an echo's detail page first.")?;
 
-        append_saved_echo(&app_handle, &echo)?;
+        let duplicate = load_saved_echoes(&app_handle).contains(&echo);
+        if !duplicate {
+            append_saved_echo(&app_handle, &echo)?;
+        }
         let _ = app_handle.emit(
             "inventory-progress",
-            InventoryProgress { scanned: 1, echo: echo.clone() },
+            InventoryProgress { scanned: 1, echo: echo.clone(), duplicate },
         );
         Ok(echo)
     })
@@ -542,8 +566,7 @@ pub fn delete_saved_echo(app_handle: AppHandle, echo: InventoryEcho) -> Result<(
     if let Some(position) = echoes.iter().position(|e| *e == echo) {
         echoes.remove(position);
     }
-    let content = serde_json::to_string_pretty(&echoes).map_err(|e| e.to_string())?;
-    std::fs::write(path, content).map_err(|e| e.to_string())
+    write_echoes(&path, &echoes)
 }
 
 /// Change which character an echo is equipped by, matched by exact content.
@@ -556,17 +579,15 @@ pub fn set_echo_equipped_by(
     let path = echo_store_path(&app_handle)?;
     let mut echoes = load_saved_echoes(&app_handle);
     let mut updated = false;
-    for saved in echoes.iter_mut() {
-        if *saved == echo {
-            saved.equipped_by = equipped_by.clone();
-            updated = true;
-        }
+    // Update only the first match so identical duplicates stay independent
+    if let Some(saved) = echoes.iter_mut().find(|e| **e == echo) {
+        saved.equipped_by = equipped_by.clone();
+        updated = true;
     }
     if !updated {
         return Err("Echo not found".to_string());
     }
-    let content = serde_json::to_string_pretty(&echoes).map_err(|e| e.to_string())?;
-    std::fs::write(path, content).map_err(|e| e.to_string())
+    write_echoes(&path, &echoes)
 }
 
 #[tauri::command]

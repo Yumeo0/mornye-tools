@@ -1,12 +1,18 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { useEffect, useRef, useState } from "react";
+import {
+	EchoCard,
+	type InventoryEcho,
+} from "@/components/echo/EchoCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 
 interface InventoryProgress {
 	scanned: number;
+	echo: InventoryEcho;
+	duplicate: boolean;
 }
 
 interface InventoryDone {
@@ -15,17 +21,39 @@ interface InventoryDone {
 	error: string | null;
 }
 
+interface RecentEcho {
+	id: number;
+	echo: InventoryEcho;
+	duplicate: boolean;
+	status: "pending" | "kept" | "removed";
+}
+
+const MAX_RECENT = 50;
+
 export function ScannerTab() {
 	const [isScanning, setIsScanning] = useState(false);
 	const [scanned, setScanned] = useState(0);
 	const [error, setError] = useState<string | null>(null);
+	const [recent, setRecent] = useState<RecentEcho[]>([]);
 	const isScanningRef = useRef(false);
+	const recentIdRef = useRef(0);
 
 	useEffect(() => {
 		const unlistenProgress = listen<InventoryProgress>(
 			"inventory-progress",
 			(event) => {
 				setScanned(event.payload.scanned);
+				setRecent((prev) =>
+					[
+						{
+							id: recentIdRef.current++,
+							echo: event.payload.echo,
+							duplicate: event.payload.duplicate,
+							status: "pending" as const,
+						},
+						...prev,
+					].slice(0, MAX_RECENT),
+				);
 			},
 		);
 
@@ -49,6 +77,7 @@ export function ScannerTab() {
 	const startScan = async (mode: "all" | "leveled") => {
 		setError(null);
 		setScanned(0);
+		setRecent([]);
 		try {
 			await invoke("scan_echo_inventory", { mode });
 			setIsScanning(true);
@@ -73,6 +102,29 @@ export function ScannerTab() {
 		} catch (e) {
 			setError(String(e));
 		}
+	};
+
+	// "Keep" adds a second copy of the duplicate echo to the inventory
+	const keepRecent = async (entry: RecentEcho) => {
+		try {
+			await invoke("save_echo", { echo: entry.echo });
+			setRecent((prev) =>
+				prev.map((e) =>
+					e.id === entry.id ? { ...e, status: "kept" as const } : e,
+				),
+			);
+		} catch (e) {
+			setError(String(e));
+		}
+	};
+
+	// "Remove" discards the duplicate scan; the original stays untouched
+	const removeRecent = (id: number) => {
+		setRecent((prev) =>
+			prev.map((e) =>
+				e.id === id ? { ...e, status: "removed" as const } : e,
+			),
+		);
 	};
 
 	return (
@@ -124,6 +176,68 @@ export function ScannerTab() {
 				</p>
 
 				{error && <p className="text-sm text-destructive">{error}</p>}
+
+				{recent.length > 0 && (
+					<div className="space-y-2">
+						<div className="flex items-center justify-between">
+							<Label className="text-sm text-muted-foreground">
+								Recently scanned
+							</Label>
+							<Button variant="ghost" size="sm" onClick={() => setRecent([])}>
+								Clear
+							</Button>
+						</div>
+						<div className="max-h-[60vh] overflow-y-auto pr-1">
+							<div className="grid gap-2 sm:grid-cols-2 2xl:grid-cols-3">
+								{recent.map((entry) => (
+									<EchoCard
+										key={entry.id}
+										echo={entry.echo}
+										footer={
+											entry.duplicate ? (
+												entry.status === "kept" ? (
+													<span className="text-xs text-muted-foreground">
+														Kept
+													</span>
+												) : entry.status === "removed" ? (
+													<span className="text-xs text-muted-foreground">
+														Removed
+													</span>
+												) : (
+													<>
+														<span className="text-xs font-medium text-amber-500">
+															Duplicate
+														</span>
+														<div className="flex shrink-0 items-center gap-1.5">
+															<Button
+																variant="outline"
+																size="sm"
+																onClick={() => keepRecent(entry)}
+															>
+																Keep
+															</Button>
+															<Button
+																variant="destructive"
+																size="sm"
+																onClick={() => removeRecent(entry.id)}
+															>
+																Remove
+															</Button>
+														</div>
+													</>
+												)
+											) : (
+												<span className="text-xs font-medium text-green-500">
+													New
+												</span>
+											)
+										}
+									/>
+								))}
+							</div>
+						</div>
+					</div>
+				)}
 			</CardContent>
 		</Card>
 	);

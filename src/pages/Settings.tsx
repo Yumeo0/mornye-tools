@@ -2,13 +2,23 @@ import { invoke } from "@tauri-apps/api/core";
 import { getAllWindows, getCurrentWindow } from "@tauri-apps/api/window";
 import { exit } from "@tauri-apps/plugin-process";
 import { Store } from "@tauri-apps/plugin-store";
-import { Minus, Square, X } from "lucide-react";
+import {
+	Cog,
+	Minus,
+	PanelLeftClose,
+	PanelLeftOpen,
+	ScanSearch,
+	Square,
+	Users,
+	X,
+} from "lucide-react";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { CharactersTab } from "@/components/tabs/CharactersTab";
 import { InventoryTab } from "@/components/tabs/InventoryTab";
 import { ScannerTab } from "@/components/tabs/ScannerTab";
 import { SettingsTab } from "@/components/tabs/SettingsTab";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OCR_CONFIG from "@/configs/ocr.json";
 
@@ -73,6 +83,7 @@ function TitleBar() {
 
 export default function Settings() {
 	const [tab, setTab] = useState("characters");
+	const [sidebarOpen, setSidebarOpen] = useState(true);
 
 	// Initialize scan regions and overlay state on app start
 	useEffect(() => {
@@ -155,26 +166,84 @@ export default function Settings() {
 	return (
 		<div className="flex h-screen flex-col overflow-hidden bg-background">
 			<TitleBar />
-			<div className="mx-auto flex w-full max-w-4xl min-h-0 flex-1 flex-col px-6 pt-2">
-				<Tabs
-					value={tab}
-					onValueChange={setTab}
-					className="flex w-full min-h-0 flex-1 flex-col"
+			<Tabs
+				orientation="vertical"
+				value={tab}
+				onValueChange={setTab}
+				className="flex min-h-0 flex-1 flex-row"
+			>
+				<TabsList
+					className={`group-data-[orientation=vertical]/tabs:h-full shrink-0 flex-col gap-1 rounded-none border-r bg-muted/30 p-2 transition-[width] ${
+						sidebarOpen ? "w-44" : "w-12"
+					}`}
 				>
-					<TabsList className="grid w-full shrink-0 grid-cols-4">
-						<TabsTrigger value="characters">Characters</TabsTrigger>
-						<TabsTrigger value="inventory">Inventory</TabsTrigger>
-						<TabsTrigger value="scanner">Scanner</TabsTrigger>
-						<TabsTrigger value="settings">Settings</TabsTrigger>
-					</TabsList>
+					<div className="mb-1 flex h-9 shrink-0 items-center justify-center">
+						<Button
+							variant="ghost"
+							size="sm"
+							title={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
+							className="size-9 shrink-0 p-0 text-muted-foreground"
+							onClick={() => setSidebarOpen((open) => !open)}
+						>
+							{sidebarOpen ? (
+								<PanelLeftClose className="size-5" />
+							) : (
+								<PanelLeftOpen className="size-5" />
+							)}
+						</Button>
+					</div>
 
-					<TabsContent value="characters" className="min-h-0 flex-1 flex flex-col">
+					<div className="flex min-h-0 flex-1 flex-col justify-center gap-1">
+						<TabsTrigger
+							value="characters"
+							title="Characters"
+							className={`h-auto flex-none gap-3 py-2.5 text-base ${sidebarOpen ? "px-3 justify-start" : "px-0 group-data-[orientation=vertical]/tabs:justify-center"}`}
+						>
+							<Users className="size-5 shrink-0" />
+							{sidebarOpen && "Characters"}
+						</TabsTrigger>
+						<TabsTrigger
+							value="echoes"
+							title="Echoes"
+							className={`h-auto flex-none gap-3 py-2.5 text-lg ${sidebarOpen ? "px-3 justify-start" : "px-0 group-data-[orientation=vertical]/tabs:justify-center"}`}
+						>
+							<img
+								src="/wuwa-assets/UI/UIResources/Common/Image/IconAttribute/T_Iconpropertyabsorbup_UI.png"
+								alt=""
+								className="size-6 shrink-0 object-contain"
+							/>
+							{sidebarOpen && "Echoes"}
+						</TabsTrigger>
+						<TabsTrigger
+							value="scanner"
+							title="Scanner"
+							className={`h-auto flex-none gap-3 py-2.5 text-base ${sidebarOpen ? "px-3 justify-start" : "px-0 group-data-[orientation=vertical]/tabs:justify-center"}`}
+						>
+							<ScanSearch className="size-5 shrink-0" />
+							{sidebarOpen && "Scanner"}
+						</TabsTrigger>
+					</div>
+					<TabsTrigger
+						value="settings"
+						title="Settings"
+						className={`h-auto flex-none gap-3 py-2.5 text-base ${sidebarOpen ? "px-3 justify-start" : "px-0 group-data-[orientation=vertical]/tabs:justify-center"}`}
+					>
+						<Cog className="size-5 shrink-0" />
+						{sidebarOpen && "Settings"}
+					</TabsTrigger>
+				</TabsList>
+
+				<div className="flex min-h-0 flex-1 flex-col px-6 pt-4">
+					<TabsContent
+						value="characters"
+						className="min-h-0 flex-1 flex flex-col"
+					>
 						<CharactersTab />
 					</TabsContent>
 
 					<TabsContent
-						value="inventory"
-						className="min-h-0 flex-1 space-y-6 overflow-y-auto"
+						value="echoes"
+						className="flex min-h-0 flex-1 flex-col space-y-6 overflow-y-auto"
 					>
 						<InventoryTab onOpenScanner={() => setTab("scanner")} />
 					</TabsContent>
@@ -192,8 +261,8 @@ export default function Settings() {
 					>
 						<SettingsTab />
 					</TabsContent>
-				</Tabs>
-			</div>
+				</div>
+			</Tabs>
 		</div>
 	);
 }

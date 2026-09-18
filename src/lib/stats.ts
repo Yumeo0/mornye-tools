@@ -38,6 +38,50 @@ export function statIconUrl(code: string): string {
 	return `https://r2.tethys.gg/asset/stat-icon/${code.replace("%", " Percent")}.webp`;
 }
 
+import statsJson from "@/configs/stats.json";
+
+// Special Rover finishing-attack forms are not real characters and must not
+// appear as equip targets, filters or build guides
+const EXCLUDED_CHARACTER_IDS = new Set([9990, 9991]);
+
+export function isExcludedCharacter(characterId: number): boolean {
+	return EXCLUDED_CHARACTER_IDS.has(characterId);
+}
+
+interface StatRangeJson {
+	min: number;
+	max: number;
+}
+
+interface StatsJson {
+	main: Record<string, StatRangeJson>;
+	sub: Record<string, StatRangeJson>;
+}
+
+// Normalize a stat name for lookup (matches the overlay's normalization)
+export function normalizeStatName(stat: string): string {
+	return stat.replace(/\./g, "").replace(/\s+/g, " ").trim().toLowerCase();
+}
+
+// Max possible substat roll for a stat name, or null if unknown
+export function maxSubStatValue(statName: string): number | null {
+	const stats = (statsJson as StatsJson).sub;
+	const key = Object.keys(stats).find(
+		(k) => normalizeStatName(k) === normalizeStatName(statName),
+	);
+	return key ? stats[key].max : null;
+}
+
+// Color a substat roll by how close it is to the max possible roll
+// (same colors as the overlay's progress bars)
+export function subStatRollColor(value: number, maxValue: number): string {
+	const percentage = Math.min((value / maxValue) * 100, 100);
+	if (percentage >= 85) return "#10b981"; // green-500
+	if (percentage >= 70) return "#3b82f6"; // blue-500
+	if (percentage >= 50) return "#f59e0b"; // amber-500
+	return "#ef4444"; // red-500
+}
+
 // Local game asset icons (IconAttribute folder) keyed by full stat name
 const STAT_ASSETS: Record<string, string> = {
 	HP: "greenlife",

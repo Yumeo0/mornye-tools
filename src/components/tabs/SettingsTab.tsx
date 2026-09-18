@@ -1,6 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { getAllWindows } from "@tauri-apps/api/window";
 import { Store } from "@tauri-apps/plugin-store";
+import { Bug, Monitor, ScanSearch, ScanText } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,7 +15,6 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import OCR_CONFIG from "@/configs/ocr.json";
-import { Bug, Monitor, ScanSearch, ScanText } from "lucide-react";
 
 interface ScanRegion {
 	x: number;
@@ -375,9 +375,7 @@ export function SettingsTab() {
 
 									{debugOcrText !== null && (
 										<div className="rounded-lg bg-muted/50 border p-3 space-y-2">
-											<Label className="text-sm font-medium">
-												OCR Result:
-											</Label>
+											<Label className="text-sm font-medium">OCR Result:</Label>
 											<pre className="text-xs text-muted-foreground whitespace-pre-wrap wrap-break-word font-mono">
 												{debugOcrText || "(No text detected)"}
 											</pre>
@@ -399,8 +397,7 @@ export function SettingsTab() {
 											: "Show Region Outline"}
 									</Button>
 									<p className="text-xs text-muted-foreground">
-										Displays a visual outline of the scan region on the
-										overlay
+										Displays a visual outline of the scan region on the overlay
 									</p>
 								</div>
 							</div>
@@ -421,9 +418,9 @@ export function SettingsTab() {
 										{preview ? "Hide Region Preview" : "Preview Region Layout"}
 									</Button>
 									<p className="text-xs text-muted-foreground">
-										Shows the inventory scan regions on the overlay: green
-										boxes = clicked grid cells, yellow boxes = OCR regions,
-										blue box = ownership counter.
+										Shows the inventory scan regions on the overlay: green boxes
+										= clicked grid cells, yellow boxes = OCR regions, blue box =
+										ownership counter.
 									</p>
 								</div>
 
@@ -440,9 +437,9 @@ export function SettingsTab() {
 									</Button>
 									<p className="text-xs text-muted-foreground">
 										Moves to the center of the last grid element, holds left
-										click, drags up smoothly, stays at the end position for
-										0.5 seconds and releases — the same motion the scan uses
-										to advance pages.
+										click, drags up smoothly, stays at the end position for 0.5
+										seconds and releases — the same motion the scan uses to
+										advance pages.
 									</p>
 									{scrollStatus && (
 										<p className="text-sm text-green-400">{scrollStatus}</p>

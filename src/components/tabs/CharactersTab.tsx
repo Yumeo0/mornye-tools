@@ -10,6 +10,7 @@ import {
 	SelectTrigger,
 } from "@/components/ui/select";
 import {
+	isExcludedCharacter,
 	parseSubstatTiers,
 	type StatTier,
 	sonataNames,
@@ -272,6 +273,7 @@ function buildCharacters(): (Character & { roles: string[] })[] {
 	const seen = new Set<number>();
 	for (const character of characterData as Character[]) {
 		if (seen.has(character.character_id)) continue;
+		if (isExcludedCharacter(character.character_id)) continue;
 		const build = Object.values(builds).find(
 			(entry) => entry.character_id === character.character_id,
 		);
@@ -283,7 +285,9 @@ function buildCharacters(): (Character & { roles: string[] })[] {
 			});
 		}
 	}
-	return characters;
+	return characters.sort((a, b) =>
+		a.character_name.localeCompare(b.character_name),
+	);
 }
 
 const allCharacters = buildCharacters();
@@ -394,7 +398,7 @@ export function CharactersTab() {
 			/>
 
 			<div className="min-h-0 flex-1 overflow-y-auto pr-1">
-				<div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+				<div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
 					{filteredCharacters.map((character) => (
 						<Card
 							key={character.character_id}

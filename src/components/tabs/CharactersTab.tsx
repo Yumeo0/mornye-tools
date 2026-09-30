@@ -407,7 +407,7 @@ export function CharactersTab() {
 					{filteredCharacters.map((character) => (
 						<Card
 							key={character.character_id}
-							className="relative aspect-[696/960] cursor-pointer overflow-hidden hover:border-primary transition-colors"
+							className="relative aspect-696/960 cursor-pointer overflow-hidden hover:border-primary transition-colors"
 							onClick={() => setSelectedCharacterId(character.character_id)}
 						>
 							<img
@@ -415,7 +415,7 @@ export function CharactersTab() {
 								alt={character.character_name}
 								className="absolute inset-0 h-full w-full object-cover"
 							/>
-							<div className="absolute inset-x-0 bottom-0 space-y-0.5 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-2 pt-8 pb-2 text-center">
+							<div className="absolute inset-x-0 bottom-0 space-y-0.5 bg-linear-to-t from-black/80 via-black/40 to-transparent px-2 pt-8 pb-2 text-center">
 								<p className="text-sm font-medium text-white drop-shadow">
 									{character.character_name}
 								</p>

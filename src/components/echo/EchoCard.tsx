@@ -209,6 +209,7 @@ export function EchoCard({
 			{subLines.length > 0 && (
 				<div className="mt-1 space-y-0.5 border-t pt-1">
 					{subLines.map((line, index) => (
+						// biome-ignore lint/suspicious/noArrayIndexKey: substat lines can repeat the same stat
 						<StatRow key={`${line.name}-${index}`} {...line} muted />
 					))}
 				</div>

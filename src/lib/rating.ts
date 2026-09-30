@@ -204,9 +204,7 @@ function firstRoleStats(build: BuildEntry): CharacterInfo["stats"] | null {
 	if (!firstRole) return null;
 	const mainStats = firstRole.echo_sets.main_stats ?? [];
 	return {
-		"4cost": [splitStatCodes(mainStats[0])].filter(
-			(group) => group.length > 0,
-		),
+		"4cost": [splitStatCodes(mainStats[0])].filter((group) => group.length > 0),
 		"3cost": [
 			splitStatCodes(mainStats[1]),
 			splitStatCodes(mainStats[2]),

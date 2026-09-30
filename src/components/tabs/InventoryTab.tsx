@@ -204,7 +204,7 @@ function FilterSelect({
 }) {
 	const selected = options.find((option) => option.value === value);
 	return (
-		<label className="flex min-w-0 flex-col gap-0.5">
+		<div className="flex min-w-0 flex-col gap-0.5">
 			<span className="text-[10px] text-muted-foreground">{label}</span>
 			<Select value={value} onValueChange={(v) => onChange(v ?? "any")}>
 				<SelectTrigger size="sm" className="w-full">
@@ -232,7 +232,7 @@ function FilterSelect({
 					))}
 				</SelectContent>
 			</Select>
-		</label>
+		</div>
 	);
 }
 
@@ -395,9 +395,7 @@ export function InventoryTab({ onOpenScanner }: { onOpenScanner: () => void }) {
 					cmp = (echoCost(a.echo_name) ?? 0) - (echoCost(b.echo_name) ?? 0);
 					break;
 				case "set":
-					cmp = (echoSet(a)?.name ?? "").localeCompare(
-						echoSet(b)?.name ?? "",
-					);
+					cmp = (echoSet(a)?.name ?? "").localeCompare(echoSet(b)?.name ?? "");
 					break;
 				case "relevance":
 					cmp =
@@ -673,12 +671,13 @@ export function InventoryTab({ onOpenScanner }: { onOpenScanner: () => void }) {
 					No echoes match the current filters.
 				</p>
 			) : (
-				<div className="max-h-[60vh] overflow-y-auto pr-1">
+				<div className="max-h-[75vh] overflow-y-auto pr-1">
 					<div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
 						{sortedEchoes.map((echo, index) => {
 							const character = equippedCharacter(echo.equippedBy);
 							return (
 								<EchoCard
+									// biome-ignore lint/suspicious/noArrayIndexKey: the list can contain exact duplicate echoes
 									key={`${echoKey(echo)}-${index}`}
 									echo={echo}
 									actions={

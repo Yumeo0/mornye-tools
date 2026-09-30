@@ -118,7 +118,9 @@ export interface ParsedStatLine {
 }
 
 // "Crit. DMG 44.0%\nATK 150" -> [{ name: "Crit. DMG", value: "44.0%" }, { name: "ATK", value: "150" }]
-export function parseStatLines(raw: string | null | undefined): ParsedStatLine[] {
+export function parseStatLines(
+	raw: string | null | undefined,
+): ParsedStatLine[] {
 	if (!raw) return [];
 	return raw
 		.split("\n")

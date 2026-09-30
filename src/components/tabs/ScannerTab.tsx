@@ -1,10 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { useEffect, useRef, useState } from "react";
-import {
-	EchoCard,
-	type InventoryEcho,
-} from "@/components/echo/EchoCard";
+import { EchoCard, type InventoryEcho } from "@/components/echo/EchoCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -121,9 +118,7 @@ export function ScannerTab() {
 	// "Remove" discards the duplicate scan; the original stays untouched
 	const removeRecent = (id: number) => {
 		setRecent((prev) =>
-			prev.map((e) =>
-				e.id === id ? { ...e, status: "removed" as const } : e,
-			),
+			prev.map((e) => (e.id === id ? { ...e, status: "removed" as const } : e)),
 		);
 	};
 
@@ -133,12 +128,10 @@ export function ScannerTab() {
 				<div className="space-y-2">
 					<Label className="text-base font-medium">Echo Scanner</Label>
 					<p className="text-sm text-muted-foreground">
-						Open the Echo Management page in-game and make sure the game
-						window is focused, then start a scan. Do not move the mouse or
-						use the keyboard while scanning. Press{" "}
-						<kbd className="bg-muted px-1 font-mono text-xs">
-							Ctrl+Shift+S
-						</kbd>{" "}
+						Open the Echo Management page in-game and make sure the game window
+						is focused, then start a scan. Do not move the mouse or use the
+						keyboard while scanning. Press{" "}
+						<kbd className="bg-muted px-1 font-mono text-xs">Ctrl+Shift+S</kbd>{" "}
 						to stop the scan.
 					</p>
 				</div>
@@ -170,9 +163,9 @@ export function ScannerTab() {
 				</div>
 
 				<p className="text-xs text-muted-foreground">
-					Scan Current Echo saves the echo that is open on the detail page.
-					Scan All Echoes walks the whole inventory grid page by page. Scan
-					Leveled Echoes stops as soon as it reaches an echo at level 0.
+					Scan Current Echo saves the echo that is open on the detail page. Scan
+					All Echoes walks the whole inventory grid page by page. Scan Leveled
+					Echoes stops as soon as it reaches an echo at level 0.
 				</p>
 
 				{error && <p className="text-sm text-destructive">{error}</p>}

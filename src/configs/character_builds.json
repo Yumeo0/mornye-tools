@@ -1,1727 +1,1379 @@
 {
-  "Aalto": {
-    "character_id": 1403,
-    "roles": {
-      "Sub DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Impermanence Heron",
-              "sonata": "Moonlit Clouds",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Aero%",
-            "Aero%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "CR=CD>ER:110-120%>ATK%>ATK",
-        "url": "https://tethys.gg/resonators/1403?role=Sub+DPS"
-      }
-    }
-  },
-  "Aemeath": {
-    "character_id": 1210,
-    "roles": {
-      "Rupture mDPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Sigillum",
-              "sonata": "Trailblazing Star",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Fusion%",
-            "Fusion%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:122%>CR=CD>ATK%>Lib%>ATK",
-        "url": "https://tethys.gg/resonators/1210?role=Rupture+mDPS"
-      }
-    }
-  },
-  "Augusta": {
-    "character_id": 1306,
-    "roles": {
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "3+2",
-              "name": "The False Sovereign",
-              "sonata": "Crown of Valor\nVoid Thunder/Lingering Tunes",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Electro%",
-            "Electro%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:125%>CR=CD>ATK%>HA%>ATK",
-        "url": "https://tethys.gg/resonators/1306?role=Main+DPS"
-      }
-    }
-  },
-  "Brant": {
-    "character_id": 1206,
-    "roles": {
-      "Sub DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Dragon of Dirge",
-              "sonata": "Tidebreaking Courage",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Nightmare: Inferno Rider",
-              "sonata": "Molten Rift",
-              "value": "ALT"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "ER",
-            "ER/Fusion%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:200-250%+>CR=CD>BA%>ATK%>ATK",
-        "url": "https://tethys.gg/resonators/1206?role=Sub+DPS"
-      }
-    }
-  },
-  "Buling": {
-    "character_id": 1307,
-    "roles": {
-      "Support": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Fallacy of No Return",
-              "sonata": "Rejuvenating Glow",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Bell-Borne Geochelone",
-              "sonata": "Rejuvenating Glow",
-              "value": "ALT"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Electro%",
-            "Electro%/ER",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER>CR=CD>ATK%>Lib%>ATK>BA%",
-        "url": "https://tethys.gg/resonators/1307?role=Support"
-      }
-    }
-  },
-  "Calcharo": {
-    "character_id": 1301,
-    "roles": {
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Nightmare: Thundering Mephis",
-              "sonata": "Void Thunder",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Electro%",
-            "Electro%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:120%>CR=CD>ATK%>Lib%>ATK",
-        "url": "https://tethys.gg/resonators/1301?role=Main+DPS"
-      }
-    }
-  },
-  "Camellya": {
-    "character_id": 1603,
-    "roles": {
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Nightmare: Crownless",
-              "sonata": "Havoc Eclipse",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Havoc%",
-            "Havoc%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:120%>CR=CD>ATK%>BA%>ATK",
-        "url": "https://tethys.gg/resonators/1603?role=Main+DPS"
-      }
-    }
-  },
-  "Cantarella": {
-    "character_id": 1607,
-    "roles": {
-      "Hybrid": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Fallacy of No Return",
-              "sonata": "Rejuvenating Glow",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Lorelei",
-              "sonata": "Midnight Veil",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Hecate",
-              "sonata": "Empyrean Anthem",
-              "value": "ALT"
-            },
-            {
-              "variant": "4",
-              "name": "Impermanence Heron",
-              "sonata": "Moonlit Clouds",
-              "value": "ALT"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Havoc%",
-            "Havoc%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:130%+>CR=CD>ATK%>BA%>ATK",
-        "url": "https://tethys.gg/resonators/1607?role=Hybrid"
-      }
-    }
-  },
-  "Carlotta": {
-    "character_id": 1107,
-    "roles": {
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Sentry Construct",
-              "sonata": "Frosty Resolve",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Glacio%",
-            "Glacio%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:110%-130%>CR=CD>ATK%>Skill%>ATK",
-        "url": "https://tethys.gg/resonators/1107?role=Main+DPS"
-      }
-    }
-  },
-  "Cartethyia": {
-    "character_id": 1409,
-    "roles": {
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "44111",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Reminiscence: Fleurdelys",
-              "sonata": "Windward Pilgrimage",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "CD",
-            "HP%",
-            "HP%",
-            "HP%"
-          ]
-        },
-        "substats_priority": "ER:100-120%>CR=CD>HP%>BA%>HP=Lib%",
-        "url": "https://tethys.gg/resonators/1409?role=Main+DPS"
-      }
-    }
-  },
-  "Changli": {
-    "character_id": 1205,
-    "roles": {
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Nightmare: Inferno Rider",
-              "sonata": "Molten Rift",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Fusion%",
-            "Fusion%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:~125%>CR=CD>ATK%>Skill%>ATK=Lib%",
-        "url": "https://tethys.gg/resonators/1205?role=Main+DPS"
-      }
-    }
-  },
-  "Chisa": {
-    "character_id": 1508,
-    "roles": {
-      "Hybrid": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Fallacy of No Return",
-              "sonata": "Rejuvenating Glow",
-              "value": "BIS"
-            },
-            {
-              "variant": "3+2",
-              "name": "Reminiscence: Threnodian - Leviathan",
-              "sonata": "Thread of Severed Fate\nHavoc Eclipse/Midnight Veil",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Bell-Borne Geochelone",
-              "sonata": "Moonlit Clouds",
-              "value": "ALT"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Havoc%",
-            "Havoc%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:120%>CR=CD>ATK%>Lib%>ATK",
-        "url": "https://tethys.gg/resonators/1508?role=Hybrid"
-      }
-    }
-  },
-  "Ciaccona": {
-    "character_id": 1407,
-    "roles": {
-      "Sub DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Nightmare: Kelpie",
-              "sonata": "Gusts of Welkin",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Aero%",
-            "Aero%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:120-130%>CR=CD>ATK%>ATK>Lib%=BA%",
-        "url": "https://tethys.gg/resonators/1407?role=Sub+DPS"
-      }
-    }
-  },
-  "Danjin": {
-    "character_id": 1602,
-    "roles": {
-      "Sub DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Nightmare: Impermanence Heron",
-              "sonata": "Midnight Veil",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Impermanence Heron",
-              "sonata": "Moonlit Clouds",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Havoc%/ATK%",
-            "Havoc%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "CR=CD>ER:110-120%>ATK%>ATK",
-        "url": "https://tethys.gg/resonators/1602?role=Sub+DPS"
-      },
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Nightmare: Crownless",
-              "sonata": "Havoc Eclipse",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Dreamless",
-              "sonata": "Havoc Eclipse",
-              "value": "ALT"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Havoc%",
-            "Havoc%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "CR=CD>ER:100-115%>ATK%>ATK",
-        "url": "https://tethys.gg/resonators/1602?role=Main+DPS"
-      }
-    }
-  },
-  "Denia": {
-    "character_id": 1211,
-    "roles": {
-      "Burst sDPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Reminiscence: Denia",
-              "sonata": "Chromatic Foam",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Lioness of Glory",
-              "sonata": "Flaming Clawprint",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Fusion%",
-            "Fusion%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:120%>CR=CD>ATK%>Lib%>ATK",
-        "url": "https://tethys.gg/resonators/1211?role=Burst+sDPS"
-      },
-      "Strain sDPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Hyvatia",
-              "sonata": "Pact of Neonlight Leap",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Voidwing Moth",
-              "sonata": "Reel of Spliced Memories",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Fusion%",
-            "Fusion%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": null,
-        "url": "https://tethys.gg/resonators/1211?role=Strain+sDPS"
-      }
-    }
-  },
-  "Encore": {
-    "character_id": 1203,
-    "roles": {
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Inferno Rider",
-              "sonata": "Molten Rift",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Fusion%",
-            "Fusion%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:110-120%>CR=CD>ATK%>BA%>ATK",
-        "url": "https://tethys.gg/resonators/1203?role=Main+DPS"
-      }
-    }
-  },
-  "Galbrena": {
-    "character_id": 1208,
-    "roles": {
-      "Echo mDPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "3+2",
-              "name": "Corrosaurus",
-              "sonata": "Flamewing's Shadow\nMolten Rift/Flaming Clawprint/Lingering Tunes",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Fusion%",
-            "Fusion%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:120%>CR=CD>ATK%>ATK>HA%",
-        "url": "https://tethys.gg/resonators/1208?role=Echo+mDPS"
-      },
-      "Heavy mDPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "3+2",
-              "name": "Corrosaurus",
-              "sonata": "Flamewing's Shadow\nMolten Rift/Flaming Clawprint/Lingering Tunes",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Fusion%",
-            "Fusion%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:120%>CR=CD>HA%=ATK%>ATK",
-        "url": "https://tethys.gg/resonators/1208?role=Heavy+mDPS"
-      }
-    }
-  },
-  "Hiyuki": {
-    "character_id": 1108,
-    "roles": {
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Reminiscence: Threnodian - Voidborne Construct",
-              "sonata": "Wishes of Quiet Snowfall",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Glacio%",
-            "Glacio%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:120%>CR=CD>ATK%>Lib%>ATK",
-        "url": "https://tethys.gg/resonators/1108?role=Main+DPS"
-      }
-    }
-  },
-  "Iuno": {
-    "character_id": 1410,
-    "roles": {
-      "Sub DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "3+2",
-              "name": "Lady of the Sea",
-              "sonata": "Crown of Valor\nSierra Gale/Windward Pilgrimage/Lingering Tunes",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Impermanence Heron",
-              "sonata": "Moonlit Clouds",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Aero%",
-            "Aero%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:~130%>CR=CD>Lib%>ATK%>ATK",
-        "url": "https://tethys.gg/resonators/1410?role=Sub+DPS"
-      },
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "3+2",
-              "name": "Lady of the Sea",
-              "sonata": "Crown of Valor\nSierra Gale/Windward Pilgrimage/Lingering Tunes",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Aero%",
-            "Aero%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:110%>CR=CD>ATK%>Lib%>ATK",
-        "url": "https://tethys.gg/resonators/1410?role=Main+DPS"
-      }
-    }
-  },
-  "Jianxin": {
-    "character_id": 1405,
-    "roles": {
-      "Support": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Fallacy of No Return",
-              "sonata": "Rejuvenating Glow",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Aero%",
-            "Aero%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "CR=CD>ATK%>ER:140%>ATK>Lib%>HA%>Skill%",
-        "url": "https://tethys.gg/resonators/1405?role=Support"
-      },
-      "Sub DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Impermanence Heron",
-              "sonata": "Moonlit Clouds",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Aero%",
-            "Aero%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": null,
-        "url": "https://tethys.gg/resonators/1405?role=Sub+DPS"
-      }
-    }
-  },
-  "Jingran": {
-    "character_id": 1212,
-    "roles": {
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "44111",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Myriad Snare: Rustfire Chassis",
-              "sonata": "Lamp of Nether Road",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CD/CR",
-            "CD",
-            "HP%",
-            "HP%",
-            "HP%"
-          ]
-        },
-        "substats_priority": "ER:120%>CR=CD>HA%>ATK%>ATK>HP%",
-        "url": "https://tethys.gg/resonators/1212?role=Main+DPS"
-      }
-    }
-  },
-  "Jinhsi": {
-    "character_id": 1304,
-    "roles": {
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Jué",
-              "sonata": "Celestial Light",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Spectro%",
-            "Spectro%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:110-130%>CR=CD>ATK%>Skill%>ATK>Lib%",
-        "url": "https://tethys.gg/resonators/1304?role=Main+DPS"
-      }
-    }
-  },
-  "Jiyan": {
-    "character_id": 1404,
-    "roles": {
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Feilian Beringal",
-              "sonata": "Sierra Gale",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Aero%",
-            "Aero%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:~125%>CR=CD>ATK%>HA%>ATK",
-        "url": "https://tethys.gg/resonators/1404?role=Main+DPS"
-      }
-    }
-  },
-  "Lucilla": {
-    "character_id": 1109,
-    "roles": {
-      "Chafe sDPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Glommoth",
-              "sonata": "Wishes of Quiet Snowfall",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Impermanence Heron",
-              "sonata": "Moonlit Clouds",
-              "value": "ALT"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Glacio%",
-            "Glacio%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "CR=CD>ATK%>BA%>ATK",
-        "url": "https://tethys.gg/resonators/1109?role=Chafe+sDPS"
-      },
-      "Echo sDPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Impermanence Heron",
-              "sonata": "Moonlit Clouds",
-              "value": "BIS"
-            },
-            {
-              "variant": "3+2",
-              "name": "Voidwing Moth",
-              "sonata": "Dream of the Lost\nReel of Spliced Memories",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Glacio%",
-            "Glacio%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "CR=CD>ATK%>ATK>BA%",
-        "url": "https://tethys.gg/resonators/1109?role=Echo+sDPS"
-      }
-    }
-  },
-  "Lucy": {
-    "character_id": 1511,
-    "roles": {
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "1+2+2",
-              "name": "Reminiscence - Nightmare: Adam Smasher",
-              "sonata": "Shadow of Shattered Dreams\nELE/ELE",
-              "value": "BIS"
-            },
-            {
-              "variant": "1+2+2",
-              "name": "Reminiscence - Nightmare: Adam Smasher",
-              "sonata": "Shadow of Shattered Dreams\nELE/ATK",
-              "value": "ALT"
-            },
-            {
-              "variant": "1+2+2",
-              "name": "Reminiscence - Nightmare: Adam Smasher",
-              "sonata": "Shadow of Shattered Dreams\nATK/ATK",
-              "value": "ALT"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Spectro%",
-            "Spectro%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:120%>CR=CD>ATK%>HA%>ATK",
-        "url": "https://tethys.gg/resonators/1511?role=Main+DPS"
-      }
-    }
-  },
-  "Lupa": {
-    "character_id": 1207,
-    "roles": {
-      "Hybrid": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Lioness of Glory",
-              "sonata": "Flaming Clawprint",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Fusion%",
-            "Fusion%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:125%>CR=CD>ATK%>Lib%>ATK",
-        "url": "https://tethys.gg/resonators/1207?role=Hybrid"
-      }
-    }
-  },
-  "Luuk Herssen": {
-    "character_id": 1510,
-    "roles": {
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Twin Nova: Nebulous Cannon",
-              "sonata": "Rite of Gilded Revelation",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Spectro%",
-            "Spectro%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:120%>CR=CD>ATK%>BA%>ATK",
-        "url": "https://tethys.gg/resonators/1510?role=Main+DPS"
-      }
-    }
-  },
-  "Lynae": {
-    "character_id": 1509,
-    "roles": {
-      "Sub DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Hyvatia",
-              "sonata": "Pact of Neonlight Leap",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Impermanence Heron",
-              "sonata": "Moonlit Clouds",
-              "value": "ALT"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Spectro%",
-            "Spectro%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:122%>CR=CD>ATK%>ATK>BA%",
-        "url": "https://tethys.gg/resonators/1509?role=Sub+DPS"
-      }
-    }
-  },
-  "Mortefi": {
-    "character_id": 1204,
-    "roles": {
-      "Sub DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Hecate",
-              "sonata": "Empyrean Anthem",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Impermanence Heron",
-              "sonata": "Moonlit Clouds",
-              "value": "ALT"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Fusion%",
-            "Fusion%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "CR=CD>ER:105-120%>ATK%>Lib%>ATK",
-        "url": "https://tethys.gg/resonators/1204?role=Sub+DPS"
-      }
-    }
-  },
-  "Mornye": {
-    "character_id": 1209,
-    "roles": {
-      "Support": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Reactor Husk",
-              "sonata": "Halo of Starry Radiance",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Fallacy of No Return",
-              "sonata": "Rejuvenating Glow",
-              "value": "ALT"
-            }
-          ],
-          "main_stats": [
-            "DEF%",
-            "ER",
-            "ER/Fusion%",
-            "DEF%",
-            "DEF%"
-          ]
-        },
-        "substats_priority": "ER:260%>Lib%=CD>DEF%>ATK%>DEF>ATK",
-        "url": "https://tethys.gg/resonators/1209?role=Support"
-      }
-    }
-  },
-  "Phoebe": {
-    "character_id": 1506,
-    "roles": {
-      "Sub DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Impermanence Heron",
-              "sonata": "Moonlit Clouds",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Nightmare: Mourning Aix",
-              "sonata": "Eternal Radiance",
-              "value": "ALT"
-            }
-          ],
-          "main_stats": [
-            "CD",
-            "Spectro%",
-            "Spectro%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:120%>CR=CD>ATK%>ATK>HA%>Lib%=BA%",
-        "url": "https://tethys.gg/resonators/1506?role=Sub+DPS"
-      },
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Nightmare: Mourning Aix",
-              "sonata": "Eternal Radiance",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CD",
-            "Spectro%",
-            "Spectro%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": null,
-        "url": "https://tethys.gg/resonators/1506?role=Main+DPS"
-      }
-    }
-  },
-  "Phrolova": {
-    "character_id": 1608,
-    "roles": {
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "3+2",
-              "name": "Nightmare: Hecate",
-              "sonata": "Dream of the Lost\nHavoc Eclipse/Midnight Veil",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Havoc%",
-            "Havoc%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "CR=CD>ATK%>Skill%=ATK",
-        "url": "https://tethys.gg/resonators/1608?role=Main+DPS"
-      }
-    }
-  },
-  "Qingxiao": {
-    "character_id": 1413,
-    "roles": {
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "44111",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Calamity Effigy",
-              "sonata": "Heart of Evil's Purge",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR",
-            "CD",
-            "ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:125%>CR=CD>ATK%>ATK>HA%>Lib%",
-        "url": "https://tethys.gg/resonators/1413?role=Main+DPS"
-      }
-    }
-  },
-  "Qiuyuan": {
-    "character_id": 1411,
-    "roles": {
-      "Sub DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "3+2",
-              "name": "Reminiscence: Fenrico",
-              "sonata": "Law of Harmony\nSierra Gale/Windward Pilgrimage/Lingering Tunes",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Impermanence Heron",
-              "sonata": "Moonlit Clouds",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Aero%",
-            "Aero%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:130%>CR=CD>ATK%>HA%>ATK",
-        "url": "https://tethys.gg/resonators/1411?role=Sub+DPS"
-      }
-    }
-  },
-  "Rebecca": {
-    "character_id": 1308,
-    "roles": {
-      "Sub DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "1+2+2",
-              "name": "Reminiscence - Nightmare: Adam Smasher",
-              "sonata": "Shadow of Shattered Dreams\nELE/ATK",
-              "value": "BIS"
-            },
-            {
-              "variant": "1+2+2",
-              "name": "Reminiscence - Nightmare: Adam Smasher",
-              "sonata": "Shadow of Shattered Dreams\nATK/ATK",
-              "value": "ALT"
-            },
-            {
-              "variant": "4",
-              "name": "Bell-Borne Geochelone",
-              "sonata": "Moonlit Clouds",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Electro%",
-            "Electro%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:120%>CR=CD>ATK%>BA%>ATK",
-        "url": "https://tethys.gg/resonators/1308?role=Sub+DPS"
-      }
-    }
-  },
-  "Roccia": {
-    "character_id": 1606,
-    "roles": {
-      "Sub DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Nightmare: Impermanence Heron",
-              "sonata": "Midnight Veil",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Impermanence Heron",
-              "sonata": "Moonlit Clouds",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Havoc%",
-            "Havoc%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:~110%>CR:70%>CD>ATK%>HA%=ATK",
-        "url": "https://tethys.gg/resonators/1606?role=Sub+DPS"
-      }
-    }
-  },
-  "Rover: Aero": {
-    "character_id": 1406,
-    "roles": {
-      "Support": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Reminiscence: Fleurdelys",
-              "sonata": "Windward Pilgrimage",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Bell-Borne Geochelone",
-              "sonata": "Rejuvenating Glow",
-              "value": "ALT"
-            },
-            {
-              "variant": "4",
-              "name": "Fallacy of No Return",
-              "sonata": "Rejuvenating Glow",
-              "value": "ALT"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Aero%",
-            "Aero%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:120%>CR=CD>ATK%>Skill%>ATK",
-        "url": "https://tethys.gg/resonators/1406?role=Support"
-      },
-      "Sub DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Reminiscence: Fleurdelys",
-              "sonata": "Gusts of Welkin",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Reminiscence: Fleurdelys",
-              "sonata": "Windward Pilgrimage",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Aero%",
-            "Aero%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": null,
-        "url": "https://tethys.gg/resonators/1406?role=Sub+DPS"
-      }
-    }
-  },
-  "Rover: Havoc": {
-    "character_id": 1604,
-    "roles": {
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Nightmare: Crownless",
-              "sonata": "Havoc Eclipse",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Havoc%",
-            "Havoc%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "CR=CD>ER:115-130%>ATK%>ATK",
-        "url": "https://tethys.gg/resonators/1604?role=Main+DPS"
-      }
-    }
-  },
-  "Rover: Spectro": {
-    "character_id": 1501,
-    "roles": {
-      "Support": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Fallacy of No Return",
-              "sonata": "Rejuvenating Glow",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Spectro%",
-            "Spectro%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:~130%>CR=CD>Skill%=ATK%>ATK>Lib%",
-        "url": "https://tethys.gg/resonators/1501?role=Support"
-      },
-      "DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Nightmare: Mourning Aix",
-              "sonata": "Eternal Radiance",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Impermanence Heron",
-              "sonata": "Moonlit Clouds",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Spectro%",
-            "Spectro%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": null,
-        "url": "https://tethys.gg/resonators/1501?role=DPS"
-      }
-    }
-  },
-  "Sanhua": {
-    "character_id": 1102,
-    "roles": {
-      "Sub DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Impermanence Heron",
-              "sonata": "Moonlit Clouds",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Glacio%",
-            "Glacio%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "CR=CD>ATK%>ER:~110%>ATK>Lib%",
-        "url": "https://tethys.gg/resonators/1102?role=Sub+DPS"
-      }
-    }
-  },
-  "Shorekeeper": {
-    "character_id": 1505,
-    "roles": {
-      "Support": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Fallacy of No Return",
-              "sonata": "Rejuvenating Glow",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Bell-Borne Geochelone",
-              "sonata": "Rejuvenating Glow",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "HP%/CD",
-            "ER",
-            "ER/Spectro%",
-            "HP%",
-            "HP%"
-          ]
-        },
-        "substats_priority": "ER:230-250%>HP%>CD>Lib%>HP",
-        "url": "https://tethys.gg/resonators/1505?role=Support"
-      }
-    }
-  },
-  "Sigrika": {
-    "character_id": 1412,
-    "roles": {
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Nameless Explorer",
-              "sonata": "Sound of True Name",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "ATK%",
-            "ER/Aero%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:120%-150%>CR=CD>ATK%>ATK",
-        "url": "https://tethys.gg/resonators/1412?role=Main+DPS"
-      }
-    }
-  },
-  "Suisui": {
-    "character_id": 1110,
-    "roles": {
-      "Support": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Forbidden Bastion",
-              "sonata": "Song of Feathered Trace",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "HP%/CD",
-            "ER",
-            "ER/HP%",
-            "HP%",
-            "HP%"
-          ]
-        },
-        "substats_priority": "ER:260%>CD>CR>HP%>BA%",
-        "url": "https://tethys.gg/resonators/1110?role=Support"
-      }
-    }
-  },
-  "Verina": {
-    "character_id": 1503,
-    "roles": {
-      "Support": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Fallacy of No Return",
-              "sonata": "Rejuvenating Glow",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Bell-Borne Geochelone",
-              "sonata": "Rejuvenating Glow",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "Heal%/ATK%",
-            "ER",
-            "ER",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:200-210%>ATK%>ATK",
-        "url": "https://tethys.gg/resonators/1503?role=Support"
-      }
-    }
-  },
-  "Xiangli Yao": {
-    "character_id": 1305,
-    "roles": {
-      "DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Nightmare: Thundering Mephis",
-              "sonata": "Void Thunder",
-              "value": "BIS"
-            },
-            {
-              "variant": "2+2",
-              "name": "Nightmare: Thundering Mephis",
-              "sonata": "Void Thunder\nLingering Tunes",
-              "value": "ALT"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Electro%",
-            "Electro%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:~120%>CR>CD>ATK%>Lib%=ATK",
-        "url": "https://tethys.gg/resonators/1305?role=DPS"
-      }
-    }
-  },
-  "Yangyang: Xuanling": {
-    "character_id": 1610,
-    "roles": {
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Thousand-Puppet Pavilion",
-              "sonata": "Song of Feathered Trace",
-              "value": "BIS"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Havoc%",
-            "Havoc%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:120%>CR=CD>HA%>ATK%>ATK",
-        "url": "https://tethys.gg/resonators/1610?role=Main+DPS"
-      }
-    }
-  },
-  "Yinlin": {
-    "character_id": 1302,
-    "roles": {
-      "Sub DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Hecate",
-              "sonata": "Empyrean Anthem",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Impermanence Heron",
-              "sonata": "Moonlit Clouds",
-              "value": "ALT"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Electro%",
-            "Electro%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:~120%>CR=CD>ATK%>Skill%>ATK",
-        "url": "https://tethys.gg/resonators/1302?role=Sub+DPS"
-      }
-    }
-  },
-  "Zani": {
-    "character_id": 1507,
-    "roles": {
-      "Main DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Capitaneus",
-              "sonata": "Eternal Radiance",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Nightmare: Mourning Aix",
-              "sonata": "Eternal Radiance",
-              "value": "ALT"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Spectro%",
-            "Spectro%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:110-120%>CR=CD>ATK%>HA%>ATK",
-        "url": "https://tethys.gg/resonators/1507?role=Main+DPS"
-      }
-    }
-  },
-  "Zhezhi": {
-    "character_id": 1105,
-    "roles": {
-      "Sub DPS": {
-        "echo_sets": {
-          "variant": "43311",
-          "sets": [
-            {
-              "variant": "4",
-              "name": "Nightmare: Lampylumen Myriad",
-              "sonata": "Empyrean Anthem",
-              "value": "BIS"
-            },
-            {
-              "variant": "4",
-              "name": "Impermanence Heron",
-              "sonata": "Moonlit Clouds",
-              "value": "ALT"
-            }
-          ],
-          "main_stats": [
-            "CR/CD",
-            "Glacio%",
-            "Glacio%/ATK%",
-            "ATK%",
-            "ATK%"
-          ]
-        },
-        "substats_priority": "ER:125%>CR=CD>ATK%>BA%>ATK",
-        "url": "https://tethys.gg/resonators/1105?role=Sub+DPS"
-      }
-    }
-  }
+	"Aalto": {
+		"character_id": 1403,
+		"roles": {
+			"Sub DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Impermanence Heron",
+							"sonata": "Moonlit Clouds",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Aero%", "Aero%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "CR=CD>ER:110-120%>ATK%>ATK",
+				"url": "https://tethys.gg/resonators/1403?role=Sub+DPS"
+			}
+		}
+	},
+	"Aemeath": {
+		"character_id": 1210,
+		"roles": {
+			"Rupture mDPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Sigillum",
+							"sonata": "Trailblazing Star",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Fusion%", "Fusion%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:122%>CR=CD>ATK%>Lib%>ATK",
+				"url": "https://tethys.gg/resonators/1210?role=Rupture+mDPS"
+			}
+		}
+	},
+	"Augusta": {
+		"character_id": 1306,
+		"roles": {
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "3+2",
+							"name": "The False Sovereign",
+							"sonata": "Crown of Valor\nVoid Thunder/Lingering Tunes",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Electro%", "Electro%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:125%>CR=CD>ATK%>HA%>ATK",
+				"url": "https://tethys.gg/resonators/1306?role=Main+DPS"
+			}
+		}
+	},
+	"Brant": {
+		"character_id": 1206,
+		"roles": {
+			"Sub DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Dragon of Dirge",
+							"sonata": "Tidebreaking Courage",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Nightmare: Inferno Rider",
+							"sonata": "Molten Rift",
+							"value": "ALT"
+						}
+					],
+					"main_stats": ["CR/CD", "ER", "ER/Fusion%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:200-250%+>CR=CD>BA%>ATK%>ATK",
+				"url": "https://tethys.gg/resonators/1206?role=Sub+DPS"
+			}
+		}
+	},
+	"Buling": {
+		"character_id": 1307,
+		"roles": {
+			"Support": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Fallacy of No Return",
+							"sonata": "Rejuvenating Glow",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Bell-Borne Geochelone",
+							"sonata": "Rejuvenating Glow",
+							"value": "ALT"
+						}
+					],
+					"main_stats": ["CR/CD", "Electro%", "Electro%/ER", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER>CR=CD>ATK%>Lib%>ATK>BA%",
+				"url": "https://tethys.gg/resonators/1307?role=Support"
+			}
+		}
+	},
+	"Calcharo": {
+		"character_id": 1301,
+		"roles": {
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Nightmare: Thundering Mephis",
+							"sonata": "Void Thunder",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Electro%", "Electro%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:120%>CR=CD>ATK%>Lib%>ATK",
+				"url": "https://tethys.gg/resonators/1301?role=Main+DPS"
+			}
+		}
+	},
+	"Camellya": {
+		"character_id": 1603,
+		"roles": {
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Nightmare: Crownless",
+							"sonata": "Havoc Eclipse",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Havoc%", "Havoc%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:120%>CR=CD>ATK%>BA%>ATK",
+				"url": "https://tethys.gg/resonators/1603?role=Main+DPS"
+			}
+		}
+	},
+	"Cantarella": {
+		"character_id": 1607,
+		"roles": {
+			"Hybrid": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Fallacy of No Return",
+							"sonata": "Rejuvenating Glow",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Lorelei",
+							"sonata": "Midnight Veil",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Hecate",
+							"sonata": "Empyrean Anthem",
+							"value": "ALT"
+						},
+						{
+							"variant": "4",
+							"name": "Impermanence Heron",
+							"sonata": "Moonlit Clouds",
+							"value": "ALT"
+						}
+					],
+					"main_stats": ["CR/CD", "Havoc%", "Havoc%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:130%+>CR=CD>ATK%>BA%>ATK",
+				"url": "https://tethys.gg/resonators/1607?role=Hybrid"
+			}
+		}
+	},
+	"Carlotta": {
+		"character_id": 1107,
+		"roles": {
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Sentry Construct",
+							"sonata": "Frosty Resolve",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Glacio%", "Glacio%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:110%-130%>CR=CD>ATK%>Skill%>ATK",
+				"url": "https://tethys.gg/resonators/1107?role=Main+DPS"
+			}
+		}
+	},
+	"Cartethyia": {
+		"character_id": 1409,
+		"roles": {
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "44111",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Reminiscence: Fleurdelys",
+							"sonata": "Windward Pilgrimage",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "CD", "HP%", "HP%", "HP%"]
+				},
+				"substats_priority": "ER:100-120%>CR=CD>HP%>BA%>HP=Lib%",
+				"url": "https://tethys.gg/resonators/1409?role=Main+DPS"
+			}
+		}
+	},
+	"Changli": {
+		"character_id": 1205,
+		"roles": {
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Nightmare: Inferno Rider",
+							"sonata": "Molten Rift",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Fusion%", "Fusion%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:~125%>CR=CD>ATK%>Skill%>ATK=Lib%",
+				"url": "https://tethys.gg/resonators/1205?role=Main+DPS"
+			}
+		}
+	},
+	"Chisa": {
+		"character_id": 1508,
+		"roles": {
+			"Hybrid": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Fallacy of No Return",
+							"sonata": "Rejuvenating Glow",
+							"value": "BIS"
+						},
+						{
+							"variant": "3+2",
+							"name": "Reminiscence: Threnodian - Leviathan",
+							"sonata": "Thread of Severed Fate\nHavoc Eclipse/Midnight Veil",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Bell-Borne Geochelone",
+							"sonata": "Moonlit Clouds",
+							"value": "ALT"
+						}
+					],
+					"main_stats": ["CR/CD", "Havoc%", "Havoc%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:120%>CR=CD>ATK%>Lib%>ATK",
+				"url": "https://tethys.gg/resonators/1508?role=Hybrid"
+			}
+		}
+	},
+	"Ciaccona": {
+		"character_id": 1407,
+		"roles": {
+			"Sub DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Nightmare: Kelpie",
+							"sonata": "Gusts of Welkin",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Aero%", "Aero%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:120-130%>CR=CD>ATK%>ATK>Lib%=BA%",
+				"url": "https://tethys.gg/resonators/1407?role=Sub+DPS"
+			}
+		}
+	},
+	"Danjin": {
+		"character_id": 1602,
+		"roles": {
+			"Sub DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Nightmare: Impermanence Heron",
+							"sonata": "Midnight Veil",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Impermanence Heron",
+							"sonata": "Moonlit Clouds",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Havoc%/ATK%", "Havoc%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "CR=CD>ER:110-120%>ATK%>ATK",
+				"url": "https://tethys.gg/resonators/1602?role=Sub+DPS"
+			},
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Nightmare: Crownless",
+							"sonata": "Havoc Eclipse",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Dreamless",
+							"sonata": "Havoc Eclipse",
+							"value": "ALT"
+						}
+					],
+					"main_stats": ["CR/CD", "Havoc%", "Havoc%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "CR=CD>ER:100-115%>ATK%>ATK",
+				"url": "https://tethys.gg/resonators/1602?role=Main+DPS"
+			}
+		}
+	},
+	"Denia": {
+		"character_id": 1211,
+		"roles": {
+			"Burst sDPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Reminiscence: Denia",
+							"sonata": "Chromatic Foam",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Lioness of Glory",
+							"sonata": "Flaming Clawprint",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Fusion%", "Fusion%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:120%>CR=CD>ATK%>Lib%>ATK",
+				"url": "https://tethys.gg/resonators/1211?role=Burst+sDPS"
+			},
+			"Strain sDPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Hyvatia",
+							"sonata": "Pact of Neonlight Leap",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Voidwing Moth",
+							"sonata": "Reel of Spliced Memories",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Fusion%", "Fusion%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": null,
+				"url": "https://tethys.gg/resonators/1211?role=Strain+sDPS"
+			}
+		}
+	},
+	"Encore": {
+		"character_id": 1203,
+		"roles": {
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Inferno Rider",
+							"sonata": "Molten Rift",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Fusion%", "Fusion%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:110-120%>CR=CD>ATK%>BA%>ATK",
+				"url": "https://tethys.gg/resonators/1203?role=Main+DPS"
+			}
+		}
+	},
+	"Galbrena": {
+		"character_id": 1208,
+		"roles": {
+			"Echo mDPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "3+2",
+							"name": "Corrosaurus",
+							"sonata": "Flamewing's Shadow\nMolten Rift/Flaming Clawprint/Lingering Tunes",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Fusion%", "Fusion%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:120%>CR=CD>ATK%>ATK>HA%",
+				"url": "https://tethys.gg/resonators/1208?role=Echo+mDPS"
+			},
+			"Heavy mDPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "3+2",
+							"name": "Corrosaurus",
+							"sonata": "Flamewing's Shadow\nMolten Rift/Flaming Clawprint/Lingering Tunes",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Fusion%", "Fusion%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:120%>CR=CD>HA%=ATK%>ATK",
+				"url": "https://tethys.gg/resonators/1208?role=Heavy+mDPS"
+			}
+		}
+	},
+	"Hiyuki": {
+		"character_id": 1108,
+		"roles": {
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Reminiscence: Threnodian - Voidborne Construct",
+							"sonata": "Wishes of Quiet Snowfall",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Glacio%", "Glacio%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:120%>CR=CD>ATK%>Lib%>ATK",
+				"url": "https://tethys.gg/resonators/1108?role=Main+DPS"
+			}
+		}
+	},
+	"Iuno": {
+		"character_id": 1410,
+		"roles": {
+			"Sub DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "3+2",
+							"name": "Lady of the Sea",
+							"sonata": "Crown of Valor\nSierra Gale/Windward Pilgrimage/Lingering Tunes",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Impermanence Heron",
+							"sonata": "Moonlit Clouds",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Aero%", "Aero%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:~130%>CR=CD>Lib%>ATK%>ATK",
+				"url": "https://tethys.gg/resonators/1410?role=Sub+DPS"
+			},
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "3+2",
+							"name": "Lady of the Sea",
+							"sonata": "Crown of Valor\nSierra Gale/Windward Pilgrimage/Lingering Tunes",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Aero%", "Aero%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:110%>CR=CD>ATK%>Lib%>ATK",
+				"url": "https://tethys.gg/resonators/1410?role=Main+DPS"
+			}
+		}
+	},
+	"Jianxin": {
+		"character_id": 1405,
+		"roles": {
+			"Support": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Fallacy of No Return",
+							"sonata": "Rejuvenating Glow",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Aero%", "Aero%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "CR=CD>ATK%>ER:140%>ATK>Lib%>HA%>Skill%",
+				"url": "https://tethys.gg/resonators/1405?role=Support"
+			},
+			"Sub DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Impermanence Heron",
+							"sonata": "Moonlit Clouds",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Aero%", "Aero%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": null,
+				"url": "https://tethys.gg/resonators/1405?role=Sub+DPS"
+			}
+		}
+	},
+	"Jingran": {
+		"character_id": 1212,
+		"roles": {
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "44111",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Myriad Snare: Rustfire Chassis",
+							"sonata": "Lamp of Nether Road",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CD/CR", "CD", "HP%", "HP%", "HP%"]
+				},
+				"substats_priority": "ER:120%>CR=CD>HA%>ATK%>ATK>HP%",
+				"url": "https://tethys.gg/resonators/1212?role=Main+DPS"
+			}
+		}
+	},
+	"Jinhsi": {
+		"character_id": 1304,
+		"roles": {
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Jué",
+							"sonata": "Celestial Light",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Spectro%", "Spectro%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:110-130%>CR=CD>ATK%>Skill%>ATK>Lib%",
+				"url": "https://tethys.gg/resonators/1304?role=Main+DPS"
+			}
+		}
+	},
+	"Jiyan": {
+		"character_id": 1404,
+		"roles": {
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Feilian Beringal",
+							"sonata": "Sierra Gale",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Aero%", "Aero%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:~125%>CR=CD>ATK%>HA%>ATK",
+				"url": "https://tethys.gg/resonators/1404?role=Main+DPS"
+			}
+		}
+	},
+	"Lucilla": {
+		"character_id": 1109,
+		"roles": {
+			"Chafe sDPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Glommoth",
+							"sonata": "Wishes of Quiet Snowfall",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Impermanence Heron",
+							"sonata": "Moonlit Clouds",
+							"value": "ALT"
+						}
+					],
+					"main_stats": ["CR/CD", "Glacio%", "Glacio%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "CR=CD>ATK%>BA%>ATK",
+				"url": "https://tethys.gg/resonators/1109?role=Chafe+sDPS"
+			},
+			"Echo sDPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Impermanence Heron",
+							"sonata": "Moonlit Clouds",
+							"value": "BIS"
+						},
+						{
+							"variant": "3+2",
+							"name": "Voidwing Moth",
+							"sonata": "Dream of the Lost\nReel of Spliced Memories",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Glacio%", "Glacio%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "CR=CD>ATK%>ATK>BA%",
+				"url": "https://tethys.gg/resonators/1109?role=Echo+sDPS"
+			}
+		}
+	},
+	"Lucy": {
+		"character_id": 1511,
+		"roles": {
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "1+2+2",
+							"name": "Reminiscence - Nightmare: Adam Smasher",
+							"sonata": "Shadow of Shattered Dreams\nELE/ELE",
+							"value": "BIS"
+						},
+						{
+							"variant": "1+2+2",
+							"name": "Reminiscence - Nightmare: Adam Smasher",
+							"sonata": "Shadow of Shattered Dreams\nELE/ATK",
+							"value": "ALT"
+						},
+						{
+							"variant": "1+2+2",
+							"name": "Reminiscence - Nightmare: Adam Smasher",
+							"sonata": "Shadow of Shattered Dreams\nATK/ATK",
+							"value": "ALT"
+						}
+					],
+					"main_stats": ["CR/CD", "Spectro%", "Spectro%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:120%>CR=CD>ATK%>HA%>ATK",
+				"url": "https://tethys.gg/resonators/1511?role=Main+DPS"
+			}
+		}
+	},
+	"Lupa": {
+		"character_id": 1207,
+		"roles": {
+			"Hybrid": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Lioness of Glory",
+							"sonata": "Flaming Clawprint",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Fusion%", "Fusion%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:125%>CR=CD>ATK%>Lib%>ATK",
+				"url": "https://tethys.gg/resonators/1207?role=Hybrid"
+			}
+		}
+	},
+	"Luuk Herssen": {
+		"character_id": 1510,
+		"roles": {
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Twin Nova: Nebulous Cannon",
+							"sonata": "Rite of Gilded Revelation",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Spectro%", "Spectro%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:120%>CR=CD>ATK%>BA%>ATK",
+				"url": "https://tethys.gg/resonators/1510?role=Main+DPS"
+			}
+		}
+	},
+	"Lynae": {
+		"character_id": 1509,
+		"roles": {
+			"Sub DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Hyvatia",
+							"sonata": "Pact of Neonlight Leap",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Impermanence Heron",
+							"sonata": "Moonlit Clouds",
+							"value": "ALT"
+						}
+					],
+					"main_stats": ["CR/CD", "Spectro%", "Spectro%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:122%>CR=CD>ATK%>ATK>BA%",
+				"url": "https://tethys.gg/resonators/1509?role=Sub+DPS"
+			}
+		}
+	},
+	"Mortefi": {
+		"character_id": 1204,
+		"roles": {
+			"Sub DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Hecate",
+							"sonata": "Empyrean Anthem",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Impermanence Heron",
+							"sonata": "Moonlit Clouds",
+							"value": "ALT"
+						}
+					],
+					"main_stats": ["CR/CD", "Fusion%", "Fusion%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "CR=CD>ER:105-120%>ATK%>Lib%>ATK",
+				"url": "https://tethys.gg/resonators/1204?role=Sub+DPS"
+			}
+		}
+	},
+	"Mornye": {
+		"character_id": 1209,
+		"roles": {
+			"Support": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Reactor Husk",
+							"sonata": "Halo of Starry Radiance",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Fallacy of No Return",
+							"sonata": "Rejuvenating Glow",
+							"value": "ALT"
+						}
+					],
+					"main_stats": ["DEF%", "ER", "ER/Fusion%", "DEF%", "DEF%"]
+				},
+				"substats_priority": "ER:260%>Lib%=CD>DEF%>ATK%>DEF>ATK",
+				"url": "https://tethys.gg/resonators/1209?role=Support"
+			}
+		}
+	},
+	"Phoebe": {
+		"character_id": 1506,
+		"roles": {
+			"Sub DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Impermanence Heron",
+							"sonata": "Moonlit Clouds",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Nightmare: Mourning Aix",
+							"sonata": "Eternal Radiance",
+							"value": "ALT"
+						}
+					],
+					"main_stats": ["CD", "Spectro%", "Spectro%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:120%>CR=CD>ATK%>ATK>HA%>Lib%=BA%",
+				"url": "https://tethys.gg/resonators/1506?role=Sub+DPS"
+			},
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Nightmare: Mourning Aix",
+							"sonata": "Eternal Radiance",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CD", "Spectro%", "Spectro%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": null,
+				"url": "https://tethys.gg/resonators/1506?role=Main+DPS"
+			}
+		}
+	},
+	"Phrolova": {
+		"character_id": 1608,
+		"roles": {
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "3+2",
+							"name": "Nightmare: Hecate",
+							"sonata": "Dream of the Lost\nHavoc Eclipse/Midnight Veil",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Havoc%", "Havoc%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "CR=CD>ATK%>Skill%=ATK",
+				"url": "https://tethys.gg/resonators/1608?role=Main+DPS"
+			}
+		}
+	},
+	"Qingxiao": {
+		"character_id": 1413,
+		"roles": {
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "44111",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Calamity Effigy",
+							"sonata": "Heart of Evil's Purge",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR", "CD", "ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:125%>CR=CD>ATK%>ATK>HA%>Lib%",
+				"url": "https://tethys.gg/resonators/1413?role=Main+DPS"
+			}
+		}
+	},
+	"Qiuyuan": {
+		"character_id": 1411,
+		"roles": {
+			"Sub DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "3+2",
+							"name": "Reminiscence: Fenrico",
+							"sonata": "Law of Harmony\nSierra Gale/Windward Pilgrimage/Lingering Tunes",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Impermanence Heron",
+							"sonata": "Moonlit Clouds",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Aero%", "Aero%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:130%>CR=CD>ATK%>HA%>ATK",
+				"url": "https://tethys.gg/resonators/1411?role=Sub+DPS"
+			}
+		}
+	},
+	"Rebecca": {
+		"character_id": 1308,
+		"roles": {
+			"Sub DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "1+2+2",
+							"name": "Reminiscence - Nightmare: Adam Smasher",
+							"sonata": "Shadow of Shattered Dreams\nELE/ATK",
+							"value": "BIS"
+						},
+						{
+							"variant": "1+2+2",
+							"name": "Reminiscence - Nightmare: Adam Smasher",
+							"sonata": "Shadow of Shattered Dreams\nATK/ATK",
+							"value": "ALT"
+						},
+						{
+							"variant": "4",
+							"name": "Bell-Borne Geochelone",
+							"sonata": "Moonlit Clouds",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Electro%", "Electro%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:120%>CR=CD>ATK%>BA%>ATK",
+				"url": "https://tethys.gg/resonators/1308?role=Sub+DPS"
+			}
+		}
+	},
+	"Roccia": {
+		"character_id": 1606,
+		"roles": {
+			"Sub DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Nightmare: Impermanence Heron",
+							"sonata": "Midnight Veil",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Impermanence Heron",
+							"sonata": "Moonlit Clouds",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Havoc%", "Havoc%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:~110%>CR:70%>CD>ATK%>HA%=ATK",
+				"url": "https://tethys.gg/resonators/1606?role=Sub+DPS"
+			}
+		}
+	},
+	"Rover: Aero": {
+		"character_id": 1406,
+		"roles": {
+			"Support": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Reminiscence: Fleurdelys",
+							"sonata": "Windward Pilgrimage",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Bell-Borne Geochelone",
+							"sonata": "Rejuvenating Glow",
+							"value": "ALT"
+						},
+						{
+							"variant": "4",
+							"name": "Fallacy of No Return",
+							"sonata": "Rejuvenating Glow",
+							"value": "ALT"
+						}
+					],
+					"main_stats": ["CR/CD", "Aero%", "Aero%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:120%>CR=CD>ATK%>Skill%>ATK",
+				"url": "https://tethys.gg/resonators/1406?role=Support"
+			},
+			"Sub DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Reminiscence: Fleurdelys",
+							"sonata": "Gusts of Welkin",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Reminiscence: Fleurdelys",
+							"sonata": "Windward Pilgrimage",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Aero%", "Aero%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": null,
+				"url": "https://tethys.gg/resonators/1406?role=Sub+DPS"
+			}
+		}
+	},
+	"Rover: Havoc": {
+		"character_id": 1604,
+		"roles": {
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Nightmare: Crownless",
+							"sonata": "Havoc Eclipse",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Havoc%", "Havoc%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "CR=CD>ER:115-130%>ATK%>ATK",
+				"url": "https://tethys.gg/resonators/1604?role=Main+DPS"
+			}
+		}
+	},
+	"Rover: Spectro": {
+		"character_id": 1501,
+		"roles": {
+			"Support": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Fallacy of No Return",
+							"sonata": "Rejuvenating Glow",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Spectro%", "Spectro%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:~130%>CR=CD>Skill%=ATK%>ATK>Lib%",
+				"url": "https://tethys.gg/resonators/1501?role=Support"
+			},
+			"DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Nightmare: Mourning Aix",
+							"sonata": "Eternal Radiance",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Impermanence Heron",
+							"sonata": "Moonlit Clouds",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Spectro%", "Spectro%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": null,
+				"url": "https://tethys.gg/resonators/1501?role=DPS"
+			}
+		}
+	},
+	"Sanhua": {
+		"character_id": 1102,
+		"roles": {
+			"Sub DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Impermanence Heron",
+							"sonata": "Moonlit Clouds",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Glacio%", "Glacio%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "CR=CD>ATK%>ER:~110%>ATK>Lib%",
+				"url": "https://tethys.gg/resonators/1102?role=Sub+DPS"
+			}
+		}
+	},
+	"Shorekeeper": {
+		"character_id": 1505,
+		"roles": {
+			"Support": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Fallacy of No Return",
+							"sonata": "Rejuvenating Glow",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Bell-Borne Geochelone",
+							"sonata": "Rejuvenating Glow",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["HP%/CD", "ER", "ER/Spectro%", "HP%", "HP%"]
+				},
+				"substats_priority": "ER:230-250%>HP%>CD>Lib%>HP",
+				"url": "https://tethys.gg/resonators/1505?role=Support"
+			}
+		}
+	},
+	"Sigrika": {
+		"character_id": 1412,
+		"roles": {
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Nameless Explorer",
+							"sonata": "Sound of True Name",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "ATK%", "ER/Aero%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:120%-150%>CR=CD>ATK%>ATK",
+				"url": "https://tethys.gg/resonators/1412?role=Main+DPS"
+			}
+		}
+	},
+	"Suisui": {
+		"character_id": 1110,
+		"roles": {
+			"Support": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Forbidden Bastion",
+							"sonata": "Song of Feathered Trace",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["HP%/CD", "ER", "ER/HP%", "HP%", "HP%"]
+				},
+				"substats_priority": "ER:260%>CD>CR>HP%>BA%",
+				"url": "https://tethys.gg/resonators/1110?role=Support"
+			}
+		}
+	},
+	"Verina": {
+		"character_id": 1503,
+		"roles": {
+			"Support": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Fallacy of No Return",
+							"sonata": "Rejuvenating Glow",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Bell-Borne Geochelone",
+							"sonata": "Rejuvenating Glow",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["Heal%/ATK%", "ER", "ER", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:200-210%>ATK%>ATK",
+				"url": "https://tethys.gg/resonators/1503?role=Support"
+			}
+		}
+	},
+	"Xiangli Yao": {
+		"character_id": 1305,
+		"roles": {
+			"DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Nightmare: Thundering Mephis",
+							"sonata": "Void Thunder",
+							"value": "BIS"
+						},
+						{
+							"variant": "2+2",
+							"name": "Nightmare: Thundering Mephis",
+							"sonata": "Void Thunder\nLingering Tunes",
+							"value": "ALT"
+						}
+					],
+					"main_stats": ["CR/CD", "Electro%", "Electro%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:~120%>CR>CD>ATK%>Lib%=ATK",
+				"url": "https://tethys.gg/resonators/1305?role=DPS"
+			}
+		}
+	},
+	"Yangyang: Xuanling": {
+		"character_id": 1610,
+		"roles": {
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Thousand-Puppet Pavilion",
+							"sonata": "Song of Feathered Trace",
+							"value": "BIS"
+						}
+					],
+					"main_stats": ["CR/CD", "Havoc%", "Havoc%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:120%>CR=CD>HA%>ATK%>ATK",
+				"url": "https://tethys.gg/resonators/1610?role=Main+DPS"
+			}
+		}
+	},
+	"Yinlin": {
+		"character_id": 1302,
+		"roles": {
+			"Sub DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Hecate",
+							"sonata": "Empyrean Anthem",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Impermanence Heron",
+							"sonata": "Moonlit Clouds",
+							"value": "ALT"
+						}
+					],
+					"main_stats": ["CR/CD", "Electro%", "Electro%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:~120%>CR=CD>ATK%>Skill%>ATK",
+				"url": "https://tethys.gg/resonators/1302?role=Sub+DPS"
+			}
+		}
+	},
+	"Zani": {
+		"character_id": 1507,
+		"roles": {
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Capitaneus",
+							"sonata": "Eternal Radiance",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Nightmare: Mourning Aix",
+							"sonata": "Eternal Radiance",
+							"value": "ALT"
+						}
+					],
+					"main_stats": ["CR/CD", "Spectro%", "Spectro%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:110-120%>CR=CD>ATK%>HA%>ATK",
+				"url": "https://tethys.gg/resonators/1507?role=Main+DPS"
+			}
+		}
+	},
+	"Zhezhi": {
+		"character_id": 1105,
+		"roles": {
+			"Sub DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Nightmare: Lampylumen Myriad",
+							"sonata": "Empyrean Anthem",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Impermanence Heron",
+							"sonata": "Moonlit Clouds",
+							"value": "ALT"
+						}
+					],
+					"main_stats": ["CR/CD", "Glacio%", "Glacio%/ATK%", "ATK%", "ATK%"]
+				},
+				"substats_priority": "ER:125%>CR=CD>ATK%>BA%>ATK",
+				"url": "https://tethys.gg/resonators/1105?role=Sub+DPS"
+			}
+		}
+	}
 }

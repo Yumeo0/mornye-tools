@@ -17,10 +17,12 @@ import { ensureCoreReady } from "@/lib/calc/core";
 
 /**
  * Evaluate a translated runtime. Returns `null` when the core cannot produce a
- * score (the caller shows an actionable error instead).
+ * score (the caller shows an actionable error instead). Pass the companion
+ * runtimes so team effects are included in the baseline.
  */
 export async function evaluateRuntime(
 	runtime: ResRuntime,
+	runtimesById: Record<string, ResRuntime> = {},
 ): Promise<EvaluationSummary | null> {
 	await ensureCoreReady();
 	return runEvaluationSummary({
@@ -28,6 +30,6 @@ export async function evaluateRuntime(
 		memberId: teamMemberId(runtime.id),
 		runtime,
 		enemy: DEF_ENEMY_PROF,
-		runtimesById: {},
+		runtimesById,
 	});
 }

@@ -16,11 +16,18 @@ import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { CharactersTab } from "@/components/tabs/CharactersTab";
 import { EchoesTab } from "@/components/tabs/EchoesTab";
+import { OptimizerTab } from "@/components/tabs/OptimizerTab";
 import { SettingsTab } from "@/components/tabs/SettingsTab";
 import { WeaponsTab } from "@/components/tabs/WeaponsTab";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OCR_CONFIG from "@/configs/ocr.json";
+import {
+	persistedReady,
+	reviveBoolean,
+	reviveString,
+	usePersistedState,
+} from "@/lib/persisted";
 import {
 	blockingErrors,
 	getStatus,
@@ -28,6 +35,17 @@ import {
 	resumeSniffer,
 	type SnifferStatus,
 } from "@/lib/sniffer";
+
+const TAB_VALUES = new Set([
+	"characters",
+	"echoes",
+	"weapons",
+	"optimizer",
+	"settings",
+]);
+
+const reviveTab = (value: unknown): string =>
+	TAB_VALUES.has(reviveString(value)) ? reviveString(value) : "characters";
 
 interface ScanRegions {
 	echo_upgrade: { x: number; y: number; width: number; height: number };
@@ -185,8 +203,27 @@ function SnifferIndicator({ compact }: { compact: boolean }) {
 }
 
 export default function Settings() {
-	const [tab, setTab] = useState("characters");
-	const [sidebarOpen, setSidebarOpen] = useState(true);
+	// The last tab and sidebar state survive restarts, like every tab's own
+	// filter settings.
+	const [tab, setTab] = usePersistedState("app.tab", "characters", reviveTab);
+	const [sidebarOpen, setSidebarOpen] = usePersistedState(
+		"app.sidebarOpen",
+		true,
+		(value) => reviveBoolean(value, true),
+	);
+	// Hold the tab content until the persisted state has been read (the shell
+	// renders once `ready` flips below).
+	const [ready, setReady] = useState(false);
+
+	useEffect(() => {
+		let cancelled = false;
+		void persistedReady().then(() => {
+			if (!cancelled) setReady(true);
+		});
+		return () => {
+			cancelled = true;
+		};
+	}, []);
 
 	// Initialize scan regions and overlay state on app start
 	useEffect(() => {
@@ -266,6 +303,16 @@ export default function Settings() {
 		};
 	}, []);
 
+	// Hold the shell content until the persisted state has been read so
+	// restored values never flash the defaults first.
+	if (!ready) {
+		return (
+			<div className="flex h-screen flex-col overflow-hidden bg-background">
+				<TitleBar />
+			</div>
+		);
+	}
+
 	return (
 		<div className="flex h-screen flex-col overflow-hidden bg-background">
 			<TitleBar />
@@ -333,6 +380,18 @@ export default function Settings() {
 							/>
 							{sidebarOpen && "Weapons"}
 						</TabsTrigger>
+						<TabsTrigger
+							value="optimizer"
+							title="Optimizer"
+							className={`h-auto flex-none gap-3 py-2.5 text-base ${sidebarOpen ? "px-3 justify-start" : "px-0 group-data-[orientation=vertical]/tabs:justify-center"}`}
+						>
+							<img
+								src="/optimizer.png"
+								alt=""
+								className="size-7 shrink-0 object-contain"
+							/>
+							{sidebarOpen && "Optimizer"}
+						</TabsTrigger>
 					</div>
 					<div className="flex shrink-0 justify-center">
 						<SnifferIndicator compact={!sidebarOpen} />
@@ -370,6 +429,14 @@ export default function Settings() {
 						className="flex min-h-0 flex-1 flex-col"
 					>
 						<WeaponsTab />
+					</TabsContent>
+
+					<TabsContent
+						value="optimizer"
+						keepMounted
+						className="flex min-h-0 flex-1 flex-col"
+					>
+						<OptimizerTab active={tab === "optimizer"} />
 					</TabsContent>
 
 					<TabsContent

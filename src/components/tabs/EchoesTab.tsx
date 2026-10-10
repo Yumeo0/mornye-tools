@@ -33,6 +33,13 @@ import {
 	statLabel,
 } from "@/lib/account";
 import {
+	reviveBoolean,
+	reviveNumberArray,
+	reviveString,
+	reviveStringArray,
+	usePersistedState,
+} from "@/lib/persisted";
+import {
 	type CharacterInfo,
 	calculateRating,
 	findEchoById,
@@ -120,6 +127,40 @@ const EMPTY_FILTERS: Filters = {
 	character: [],
 };
 
+const SORT_KEYS = new Set<string>([
+	"none",
+	"relevance",
+	"level",
+	"cost",
+	"set",
+	"name",
+	"character",
+]);
+
+// Saved filters are coerced onto the current shape so stale persisted data
+// (older keys, wrong types) cannot break the tab.
+function reviveEchoFilters(value: unknown): Filters {
+	if (typeof value !== "object" || value === null) return EMPTY_FILTERS;
+	const raw = value as Partial<Filters>;
+	return {
+		search: reviveString(raw.search),
+		minLevel:
+			typeof raw.minLevel === "number"
+				? Math.min(25, Math.max(0, Math.round(raw.minLevel)))
+				: 0,
+		cost: reviveNumberArray(raw.cost),
+		set: reviveStringArray(raw.set),
+		mainStat: reviveString(raw.mainStat, "any"),
+		substat: reviveStringArray(raw.substat),
+		character: reviveStringArray(raw.character),
+	};
+}
+
+const reviveEchoSort = (value: unknown): SortKey => {
+	const key = reviveString(value);
+	return SORT_KEYS.has(key) ? (key as SortKey) : "none";
+};
+
 function matchesFilters(echo: Echo, filters: Filters): boolean {
 	if (
 		filters.search &&
@@ -175,17 +216,33 @@ export function EchoesTab() {
 	const { snapshot, error } = useAccountSnapshot();
 	const echoes = snapshot.echoes;
 	const [actionError, setActionError] = useState<string | null>(null);
-	const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
-	const [sortBy, setSortBy] = useState<SortKey>("none");
-	const [sortAsc, setSortAsc] = useState(false);
+	const [filters, setFilters] = usePersistedState(
+		"echoes.filters",
+		EMPTY_FILTERS,
+		reviveEchoFilters,
+	);
+	const [sortBy, setSortBy] = usePersistedState(
+		"echoes.sortBy",
+		"none",
+		reviveEchoSort,
+	);
+	const [sortAsc, setSortAsc] = usePersistedState(
+		"echoes.sortAsc",
+		false,
+		reviveBoolean,
+	);
 	// Character used for the relevance sort (required)
-	const [ratingCharacterId, setRatingCharacterId] = useState<string>("");
+	const [ratingCharacterId, setRatingCharacterId] = usePersistedState(
+		"echoes.ratingCharacter",
+		"",
+		reviveString,
+	);
 
 	useEffect(() => {
 		if (!ratingCharacterId && snapshot.resonators.length > 0) {
 			setRatingCharacterId(String(snapshot.resonators[0].id));
 		}
-	}, [ratingCharacterId, snapshot.resonators]);
+	}, [ratingCharacterId, snapshot.resonators, setRatingCharacterId]);
 
 	const characterOptions: FilterOption[] = useMemo(
 		() => characterFilterOptions(snapshot.resonators),

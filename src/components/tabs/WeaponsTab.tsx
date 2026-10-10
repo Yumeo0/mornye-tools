@@ -1,5 +1,5 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
 	characterFilterOptions,
 	FilterIconButton,
@@ -17,6 +17,12 @@ import {
 	weaponsById,
 } from "@/components/weapon/WeaponCard";
 import type { Weapon } from "@/lib/account";
+import {
+	reviveBoolean,
+	reviveString,
+	reviveStringArray,
+	usePersistedState,
+} from "@/lib/persisted";
 import { rarityTextClass } from "@/lib/rarity";
 import { useAccountSnapshot } from "@/lib/useAccountSnapshot";
 
@@ -54,6 +60,39 @@ const EMPTY_WEAPON_FILTERS: WeaponFilters = {
 	type: [],
 	rarity: [],
 	character: [],
+};
+
+const WEAPON_SORT_KEYS = new Set<string>([
+	"none",
+	"level",
+	"rarity",
+	"name",
+	"type",
+	"character",
+]);
+
+// Saved filters are coerced onto the current shape so stale persisted data
+// cannot break the tab.
+function reviveWeaponFilters(value: unknown): WeaponFilters {
+	if (typeof value !== "object" || value === null) {
+		return EMPTY_WEAPON_FILTERS;
+	}
+	const raw = value as Partial<WeaponFilters>;
+	return {
+		search: reviveString(raw.search),
+		minLevel:
+			typeof raw.minLevel === "number"
+				? Math.max(MIN_WEAPON_LEVEL, Math.round(raw.minLevel))
+				: MIN_WEAPON_LEVEL,
+		type: reviveStringArray(raw.type),
+		rarity: reviveStringArray(raw.rarity),
+		character: reviveStringArray(raw.character),
+	};
+}
+
+const reviveWeaponSort = (value: unknown): WeaponSortKey => {
+	const key = reviveString(value);
+	return WEAPON_SORT_KEYS.has(key) ? (key as WeaponSortKey) : "rarity";
 };
 
 function matchesWeaponFilters(weapon: Weapon, filters: WeaponFilters): boolean {
@@ -120,11 +159,23 @@ const weaponSortOptions: {
 export function WeaponsTab() {
 	const { snapshot, error } = useAccountSnapshot();
 	const weapons = snapshot.weapons;
-	const [filters, setFilters] = useState<WeaponFilters>(EMPTY_WEAPON_FILTERS);
+	const [filters, setFilters] = usePersistedState(
+		"weapons.filters",
+		EMPTY_WEAPON_FILTERS,
+		reviveWeaponFilters,
+	);
 	// Rarity descending: signature weapons first, like the in-game list
 	const DEFAULT_SORT: WeaponSortKey = "rarity";
-	const [sortBy, setSortBy] = useState<WeaponSortKey>(DEFAULT_SORT);
-	const [sortAsc, setSortAsc] = useState(false);
+	const [sortBy, setSortBy] = usePersistedState(
+		"weapons.sortBy",
+		DEFAULT_SORT,
+		reviveWeaponSort,
+	);
+	const [sortAsc, setSortAsc] = usePersistedState(
+		"weapons.sortAsc",
+		false,
+		reviveBoolean,
+	);
 
 	const characterOptions: FilterOption[] = useMemo(
 		() => characterFilterOptions(snapshot.resonators),

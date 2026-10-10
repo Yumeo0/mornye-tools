@@ -2,7 +2,8 @@
 //
 // The core (`@wuwacalc/core`) is framework-free; this module installs the two
 // host seams it expects (worker factory, game-data source) and loads the
-// catalogs from the locally synced `public/calc-data`.
+// catalogs from the locally synced `public/data` (the core's default `/data`
+// path, so calculation workers resolve the same data without extra config).
 
 import {
 	type CoreWorkerRole,
@@ -43,7 +44,7 @@ export function ensureCoreReady(): Promise<void> {
 			}
 			return factory();
 		},
-		gameData: createFetchGameDataSource({ baseUrl: "/calc-data" }),
+		gameData: createFetchGameDataSource({ baseUrl: "/data" }),
 		shouldRetainGameData: () => true,
 	});
 	const promise = initGameData({ mode: "live" })

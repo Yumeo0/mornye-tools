@@ -7,7 +7,7 @@
 // optional extra.
 
 import { spawnSync } from "node:child_process";
-import { existsSync } from "node:fs";
+import { cpSync, existsSync, rmSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -51,6 +51,24 @@ if (!existsSync(coreDist)) {
 		"[build-calc-core] build finished but packages/core/dist is missing",
 	);
 	process.exit(1);
+}
+
+// `file:` dependencies are installed as hardlinked copies (not symlinks), so
+// files added to the built dist after `bun install` are missing from
+// node_modules. Replace the installed dist with the freshly built one.
+const installedDist = join(
+	repoRoot,
+	"node_modules",
+	"@wuwacalc",
+	"core",
+	"dist",
+);
+if (existsSync(installedDist)) {
+	console.log(
+		"[build-calc-core] syncing dist into node_modules/@wuwacalc/core",
+	);
+	rmSync(installedDist, { recursive: true, force: true });
+	cpSync(coreDist, installedDist, { recursive: true });
 }
 
 console.log("[build-calc-core] @wuwacalc/core built");

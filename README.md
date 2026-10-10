@@ -29,7 +29,7 @@ Prerequisites:
 
 ```sh
 bun install
-bun run dev      # predev: builds @wuwacalc/core + syncs public/calc-data
+bun run dev      # predev: builds @wuwacalc/core + syncs public/data
 bun run build    # tsc + vite
 bun test ./src   # translation tests
 ```

@@ -1,6 +1,7 @@
 // Copy the calculator core's live game data into the app's (gitignored)
-// `public/calc-data` so `createFetchGameDataSource({ baseUrl: '/calc-data' })`
-// can load it without depending on the submodule at runtime.
+// `public/data` so the core's default game-data source (`/data`) can load it
+// without depending on the submodule at runtime. Workers use the same default
+// source, so evaluation and optimizer workers resolve the same files.
 //
 // Wired into `predev`/`prebuild`. Missing data is a hard error: the Account
 // evaluation must not silently run against an empty catalog.
@@ -12,7 +13,7 @@ import { fileURLToPath } from "node:url";
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = dirname(here);
 const source = join(repoRoot, "thewuwacalculator", "public", "data", "live");
-const target = join(repoRoot, "public", "calc-data", "live");
+const target = join(repoRoot, "public", "data", "live");
 
 if (!existsSync(source)) {
 	console.error(
@@ -36,7 +37,7 @@ const iconsSource = join(
 	"weapons",
 	"icons",
 );
-const iconsTarget = join(repoRoot, "public", "calc-data", "weapon-icons");
+const iconsTarget = join(repoRoot, "public", "data", "weapon-icons");
 
 if (existsSync(iconsSource)) {
 	rmSync(iconsTarget, { recursive: true, force: true });

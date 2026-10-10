@@ -24,6 +24,12 @@ export default defineConfig(async () => ({
 		},
 	},
 
+	// The calculator core's worker entries rely on dynamic imports, so worker
+	// bundles must use ES modules (matching the calculator's own vite config).
+	worker: {
+		format: "es",
+	},
+
 	// Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
 	//
 	// 1. prevent Vite from obscuring rust errors

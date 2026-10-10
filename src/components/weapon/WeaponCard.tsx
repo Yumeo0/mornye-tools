@@ -48,9 +48,9 @@ export const WEAPON_TYPE_ICONS: Record<number, string> = {
 	5: "/wuwa-assets/UI/UIResources/Common/Image/Com/Icon/T_ComIconRectifier.png",
 };
 
-/** Icons are synced by `scripts/sync-calc-data.mjs` into `public/calc-data`. */
+/** Icons are synced by `scripts/sync-calc-data.mjs` into `public/data`. */
 export function weaponIconUrl(itemId: number): string {
-	return `/calc-data/weapon-icons/${itemId}.webp`;
+	return `/data/weapon-icons/${itemId}.webp`;
 }
 
 export function WeaponCard({ weapon }: { weapon: Weapon }) {

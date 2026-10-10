@@ -21,6 +21,13 @@ import {
 	echoesForResonator,
 	weaponForResonator,
 } from "@/lib/account";
+import {
+	reviveBoolean,
+	reviveNumberArray,
+	reviveString,
+	reviveStringArray,
+	usePersistedState,
+} from "@/lib/persisted";
 import { qualityGradient, rarityTextClass } from "@/lib/rarity";
 import {
 	isExcludedCharacter,
@@ -236,6 +243,47 @@ const DEFAULT_FILTERS: CharacterFilters = {
 	chainRange: CHAIN_RANGE,
 };
 
+const CHARACTER_SORT_KEYS = new Set<string>([
+	"name",
+	"level",
+	"chain",
+	"rarity",
+	"echoes",
+]);
+
+// Saved filters are coerced onto the current shape so stale persisted data
+// cannot break the tab.
+function reviveCharacterFilters(value: unknown): CharacterFilters {
+	if (typeof value !== "object" || value === null) return DEFAULT_FILTERS;
+	const raw = value as Partial<CharacterFilters>;
+	const range = (
+		saved: unknown,
+		fallback: [number, number],
+	): [number, number] =>
+		Array.isArray(saved) &&
+		saved.length === 2 &&
+		saved.every((entry) => typeof entry === "number")
+			? [saved[0], saved[1]]
+			: fallback;
+	return {
+		search: reviveString(raw.search),
+		elements: reviveStringArray(raw.elements),
+		weaponTypes: reviveStringArray(raw.weaponTypes),
+		rarity: reviveNumberArray(raw.rarity),
+		ownedOnly: reviveBoolean(raw.ownedOnly),
+		levelRange: range(raw.levelRange, LEVEL_RANGE),
+		chainRange: range(raw.chainRange, CHAIN_RANGE),
+	};
+}
+
+const reviveCharacterSort = (value: unknown): CharacterSortKey => {
+	const key = reviveString(value);
+	return CHARACTER_SORT_KEYS.has(key) ? (key as CharacterSortKey) : "name";
+};
+
+const reviveCharacterId = (value: unknown): number | null =>
+	typeof value === "number" && Number.isFinite(value) ? value : null;
+
 function matchesCharacterFilters(
 	character: CharacterEntry,
 	account: CardAccount | undefined,
@@ -341,7 +389,7 @@ function sortCharacters(
 }
 
 function weaponIconUrl(itemId: number): string {
-	return `/calc-data/weapon-icons/${itemId}.webp`;
+	return `/data/weapon-icons/${itemId}.webp`;
 }
 
 /** Resonance chain progress: per-node in-game icons, lit up to the owned chain. */
@@ -835,13 +883,25 @@ function CharacterCard({
 
 export function CharactersTab() {
 	const { snapshot, error } = useAccountSnapshot();
-	const [filters, setFilters] = useState<CharacterFilters>(DEFAULT_FILTERS);
-	const [sortKey, setSortKey] = useState<CharacterSortKey>("name");
-	const [sortDesc, setSortDesc] = useState(
-		CHARACTER_SORT_OPTIONS[0].desc ?? false,
+	const [filters, setFilters] = usePersistedState(
+		"characters.filters",
+		DEFAULT_FILTERS,
+		reviveCharacterFilters,
 	);
-	const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(
+	const [sortKey, setSortKey] = usePersistedState(
+		"characters.sortKey",
+		"name",
+		reviveCharacterSort,
+	);
+	const [sortDesc, setSortDesc] = usePersistedState(
+		"characters.sortDesc",
+		CHARACTER_SORT_OPTIONS[0].desc ?? false,
+		reviveBoolean,
+	);
+	const [selectedCharacterId, setSelectedCharacterId] = usePersistedState(
+		"characters.selectedCharacterId",
 		null,
+		reviveCharacterId,
 	);
 
 	// All characters plus any captured resonator missing from the static data.

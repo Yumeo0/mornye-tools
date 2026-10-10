@@ -18,6 +18,10 @@ pub(crate) fn load_json_resource<T: serde::de::DeserializeOwned>(
     }
     if let Ok(resource_dir) = app_handle.path().resource_dir() {
         candidates.push(resource_dir.join("src/configs").join(file_name));
+        // Resources outside the Tauri crate are bundled under `_up_/`.
+        candidates.push(resource_dir.join("_up_/src/configs").join(file_name));
+        candidates.push(resource_dir.join("configs").join(file_name));
+        candidates.push(resource_dir.join(file_name));
     }
 
     for path in candidates {

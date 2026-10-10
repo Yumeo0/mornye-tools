@@ -1,0 +1,7 @@
+{
+	"aliases": {
+		"9990": "1501",
+		"9991": "1502"
+	},
+	"note": "Legacy Rover role ids -> calculator catalog ids. Current Rover ids match the catalog identity and need no alias. Unknown ids are surfaced as visible errors, never substituted."
+}

@@ -1,0 +1,7 @@
+{
+  "game_version": "3.7.0",
+  "resource_version": "3.7.8",
+  "source": "wuwa-protos",
+  "generated_by": "scripts/update-wuwa-protos.ps1",
+  "note": "Pinned protocol artifacts (protos.proto, packetIds.json) used by the vendored spectrum crate at src-tauri/crates/spectrum. Refresh with scripts/update-wuwa-protos.ps1."
+}

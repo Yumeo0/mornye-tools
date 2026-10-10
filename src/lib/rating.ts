@@ -32,7 +32,32 @@ export interface EchoSet {
 export interface Echo {
 	echo_name: string;
 	echo_id: number;
+	monster_id?: number | null;
 	echo_sets: EchoSet[];
+}
+
+// Calculator id (`MonsterId`) -> catalog entry, with every possible set merged.
+const echoByMonsterId = new Map<number, Echo>();
+for (const echo of echoData as Echo[]) {
+	if (echo.monster_id == null) continue;
+	const existing = echoByMonsterId.get(echo.monster_id);
+	if (!existing) {
+		echoByMonsterId.set(echo.monster_id, {
+			...echo,
+			echo_sets: [...(echo.echo_sets ?? [])],
+		});
+		continue;
+	}
+	for (const set of echo.echo_sets ?? []) {
+		if (!existing.echo_sets.some((s) => s.id === set.id)) {
+			existing.echo_sets.push(set);
+		}
+	}
+}
+
+/** Id-based catalog lookup used by the account-based Inventory tab. */
+export function findEchoById(monsterId: number): Echo | undefined {
+	return echoByMonsterId.get(monsterId);
 }
 
 interface BuildSet {

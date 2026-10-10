@@ -6,7 +6,18 @@
 		"useIgnoreFile": true
 	},
 	"files": {
-		"ignoreUnknown": false
+		"ignoreUnknown": false,
+		"includes": [
+			"**",
+			"!thewuwacalculator",
+			"!data",
+			"!public",
+			"!dist",
+			"!node_modules",
+			"!src-tauri/target",
+			"!src-tauri/crates/spectrum",
+			"!samples"
+		]
 	},
 	"formatter": {
 		"enabled": true,

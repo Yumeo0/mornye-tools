@@ -1,0 +1,1738 @@
+[
+	{
+		"item_id": 21010074,
+		"name": "Autumntrace",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010074_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "critRate",
+			"value": 450,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21020074,
+		"name": "Lumingloss",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020074_UI.png",
+		"base_atk": 31,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 8.1,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21030074,
+		"name": "Thunderbolt",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030074_UI.png",
+		"base_atk": 31,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 8.1,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21040074,
+		"name": "Stonard",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040074_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "critRate",
+			"value": 450,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21050074,
+		"name": "Augment",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050074_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "critRate",
+			"value": 450,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21010024,
+		"name": "Discord",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010024_UI.png",
+		"base_atk": 27,
+		"secondary": {
+			"key": "energyRegen",
+			"value": 1152,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21020024,
+		"name": "Overture",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020024_UI.png",
+		"base_atk": 27,
+		"secondary": {
+			"key": "energyRegen",
+			"value": 1152,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21030024,
+		"name": "Cadenza",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030024_UI.png",
+		"base_atk": 27,
+		"secondary": {
+			"key": "energyRegen",
+			"value": 1152,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21040024,
+		"name": "Marcato",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040024_UI.png",
+		"base_atk": 27,
+		"secondary": {
+			"key": "energyRegen",
+			"value": 1152,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21050024,
+		"name": "Variation",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050024_UI.png",
+		"base_atk": 27,
+		"secondary": {
+			"key": "energyRegen",
+			"value": 1152,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21010013,
+		"name": "Broadblade of Night",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 3,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010013_UI.png",
+		"base_atk": 26,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 5.4,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21020013,
+		"name": "Sword of Night",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 3,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020013_UI.png",
+		"base_atk": 26,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 5.4,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21030013,
+		"name": "Pistols of Night",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 3,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030013_UI.png",
+		"base_atk": 26,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 5.4,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21040013,
+		"name": "Gauntlets of Night",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 3,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040013_UI.png",
+		"base_atk": 26,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 5.4,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21050013,
+		"name": "Rectifier of Night",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 3,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050013_UI.png",
+		"base_atk": 26,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 5.4,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21010012,
+		"name": "Tyro Broadblade",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 2,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010012_UI.png",
+		"base_atk": 22,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 3.3,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21020012,
+		"name": "Tyro Sword",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 2,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020012_UI.png",
+		"base_atk": 22,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 3.3,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21030012,
+		"name": "Tyro Pistols",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 2,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030012_UI.png",
+		"base_atk": 22,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 3.3,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21040012,
+		"name": "Tyro Gauntlets",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 2,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040012_UI.png",
+		"base_atk": 22,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 3.3,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21050012,
+		"name": "Tyro Rectifier",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 2,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050012_UI.png",
+		"base_atk": 22,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 3.3,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21010011,
+		"name": "Training Broadblade",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 1,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010011_UI.png",
+		"base_atk": 20,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 2.55,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21020011,
+		"name": "Training Sword",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 1,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020011_UI.png",
+		"base_atk": 20,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 2.55,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21030011,
+		"name": "Training Pistols",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 1,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030011_UI.png",
+		"base_atk": 20,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 2.55,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21040011,
+		"name": "Training Gauntlets",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 1,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040011_UI.png",
+		"base_atk": 20,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 2.55,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21050011,
+		"name": "Training Rectifier",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 1,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050011_UI.png",
+		"base_atk": 20,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 2.55,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21010023,
+		"name": "Originite: Type I",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 3,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010023_UI.png",
+		"base_atk": 24,
+		"secondary": {
+			"key": "defPercent",
+			"value": 8.55,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21020023,
+		"name": "Originite: Type II",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 3,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020023_UI.png",
+		"base_atk": 26,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 5.4,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21030023,
+		"name": "Originite: Type III",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 3,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030023_UI.png",
+		"base_atk": 26,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 5.4,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21040023,
+		"name": "Originite: Type IV",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 3,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040023_UI.png",
+		"base_atk": 24,
+		"secondary": {
+			"key": "critDmg",
+			"value": 900,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21050023,
+		"name": "Originite: Type V",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 3,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050023_UI.png",
+		"base_atk": 24,
+		"secondary": {
+			"key": "hpPercent",
+			"value": 6.75,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21010034,
+		"name": "Broadblade#41",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010034_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "energyRegen",
+			"value": 720,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21020034,
+		"name": "Sword#18",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020034_UI.png",
+		"base_atk": 31,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 8.1,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21030034,
+		"name": "Pistols#26",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030034_UI.png",
+		"base_atk": 31,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 8.1,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21040034,
+		"name": "Gauntlets#21D",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040034_UI.png",
+		"base_atk": 31,
+		"secondary": {
+			"key": "energyRegen",
+			"value": 864,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21050034,
+		"name": "Rectifier#25",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050034_UI.png",
+		"base_atk": 27,
+		"secondary": {
+			"key": "energyRegen",
+			"value": 1152,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21010044,
+		"name": "Dauntless Evernight",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010044_UI.png",
+		"base_atk": 27,
+		"secondary": {
+			"key": "defPercent",
+			"value": 13.68,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21020044,
+		"name": "Commando of Conviction",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020044_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 6.75,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21030044,
+		"name": "Undying Flame",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030044_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 6.75,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21040044,
+		"name": "Amity Accord",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040044_UI.png",
+		"base_atk": 27,
+		"secondary": {
+			"key": "defPercent",
+			"value": 13.68,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21050044,
+		"name": "Jinzhou Keeper",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050044_UI.png",
+		"base_atk": 31,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 8.1,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21010043,
+		"name": "Broadblade of Voyager",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 3,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010043_UI.png",
+		"base_atk": 24,
+		"secondary": {
+			"key": "energyRegen",
+			"value": 720,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21020043,
+		"name": "Sword of Voyager",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 3,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020043_UI.png",
+		"base_atk": 24,
+		"secondary": {
+			"key": "energyRegen",
+			"value": 720,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21030043,
+		"name": "Pistols of Voyager",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 3,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030043_UI.png",
+		"base_atk": 24,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 6.75,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21040043,
+		"name": "Gauntlets of Voyager",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 3,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040043_UI.png",
+		"base_atk": 26,
+		"secondary": {
+			"key": "defPercent",
+			"value": 6.84,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21050043,
+		"name": "Rectifier of Voyager",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 3,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050043_UI.png",
+		"base_atk": 24,
+		"secondary": {
+			"key": "energyRegen",
+			"value": 720,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21010053,
+		"name": "Guardian Broadblade",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 3,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010053_UI.png",
+		"base_atk": 26,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 5.4,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21020053,
+		"name": "Guardian Sword",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 3,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020053_UI.png",
+		"base_atk": 24,
+		"secondary": {
+			"key": "hpPercent",
+			"value": 6.75,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21030053,
+		"name": "Guardian Pistols",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 3,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030053_UI.png",
+		"base_atk": 24,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 6.75,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21040053,
+		"name": "Guardian Gauntlets",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 3,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040053_UI.png",
+		"base_atk": 24,
+		"secondary": {
+			"key": "defPercent",
+			"value": 8.55,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21050053,
+		"name": "Guardian Rectifier",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 3,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050053_UI.png",
+		"base_atk": 26,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 5.4,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21010064,
+		"name": "Helios Cleaver",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010064_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 6.75,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21020064,
+		"name": "Lunar Cutter",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020064_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 6.75,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21030064,
+		"name": "Novaburst",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030064_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 6.75,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21040064,
+		"name": "Hollow Mirage",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040064_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 6.75,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21050064,
+		"name": "Comet Flare",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050064_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "hpPercent",
+			"value": 6.75,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21010015,
+		"name": "Lustrous Razor",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010015_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 8.1,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21020015,
+		"name": "Emerald of Genesis",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020015_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critRate",
+			"value": 540,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21030015,
+		"name": "Static Mist",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030015_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critRate",
+			"value": 540,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21040015,
+		"name": "Abyss Surges",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040015_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 8.1,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21050015,
+		"name": "Cosmic Ripples",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050015_UI.png",
+		"base_atk": 40,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 12.0,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21010016,
+		"name": "Verdant Summit",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010016_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critDmg",
+			"value": 1080,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21050016,
+		"name": "Stringmaster",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050016_UI.png",
+		"base_atk": 40,
+		"secondary": {
+			"key": "critRate",
+			"value": 800,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21010026,
+		"name": "Ages of Harvest",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010026_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critRate",
+			"value": 540,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21020016,
+		"name": "Blazing Brilliance",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020016_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critDmg",
+			"value": 1080,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21010063,
+		"name": "Beguiling Melody",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 3,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010063_UI.png",
+		"base_atk": 24,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 6.75,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21050026,
+		"name": "Rime-Draped Sprouts",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050026_UI.png",
+		"base_atk": 40,
+		"secondary": {
+			"key": "critDmg",
+			"value": 1600,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21040016,
+		"name": "Verity's Handle",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040016_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critRate",
+			"value": 540,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21050036,
+		"name": "Stellar Symphony",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050027_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "energyRegen",
+			"value": 1712,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21010084,
+		"name": "Waning Redshift",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon80/T_IconWeapon80_21010014_UI.png",
+		"base_atk": 37,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 4.05,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21020084,
+		"name": "Endless Collapse",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon80/T_IconWeapon80_21020014_UI.png",
+		"base_atk": 37,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 4.05,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21030084,
+		"name": "Relativistic Jet",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon80/T_IconWeapon80_21030014_UI.png",
+		"base_atk": 37,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 4.05,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21040084,
+		"name": "Celestial Spiral",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon80/T_IconWeapon80_21040074_UI.png",
+		"base_atk": 37,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 4.05,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21050084,
+		"name": "Fusion Accretion",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon80/T_IconWeapon80_21050014_UI.png",
+		"base_atk": 37,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 4.05,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21020017,
+		"name": "Somnoire Anchor",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020019_UI.png",
+		"base_atk": 37,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 4.05,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21020026,
+		"name": "Red Spring",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020017_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critRate",
+			"value": 540,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21050017,
+		"name": "Call of the Abyss",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050017_UI.png",
+		"base_atk": 27,
+		"secondary": {
+			"key": "energyRegen",
+			"value": 1152,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21010094,
+		"name": "Meditations on Mercy",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010094_UI.png",
+		"base_atk": 37,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 4.05,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21020094,
+		"name": "Fables of Wisdom",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020094_UI.png",
+		"base_atk": 37,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 4.05,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21030094,
+		"name": "Romance in Farewell",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030094_UI.png",
+		"base_atk": 37,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 4.05,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21040094,
+		"name": "Legend of Drunken Hero",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040094_UI.png",
+		"base_atk": 37,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 4.05,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21050094,
+		"name": "Waltz in Masquerade",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050094_UI.png",
+		"base_atk": 37,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 4.05,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21040026,
+		"name": "Tragicomedy",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040018_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critRate",
+			"value": 540,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21030016,
+		"name": "The Last Dance",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030017_UI.png",
+		"base_atk": 40,
+		"secondary": {
+			"key": "critDmg",
+			"value": 1600,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21020036,
+		"name": "Unflickering Valor",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020025_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "energyRegen",
+			"value": 1712,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21050046,
+		"name": "Luminous Hymn",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050029_UI.png",
+		"base_atk": 40,
+		"secondary": {
+			"key": "critRate",
+			"value": 800,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21050027,
+		"name": "Ocean's Gift",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050036_UI.png",
+		"base_atk": 37,
+		"secondary": {
+			"key": "atkPercent",
+			"value": 4.05,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21050056,
+		"name": "Whispers of Sirens",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050030_UI.png",
+		"base_atk": 40,
+		"secondary": {
+			"key": "critDmg",
+			"value": 1600,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21020046,
+		"name": "Bloodpact's Pledge",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020026_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "energyRegen",
+			"value": 864,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21040036,
+		"name": "Blazing Justice",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040019_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critDmg",
+			"value": 1080,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21030026,
+		"name": "Woodland Aria",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030026_UI.png",
+		"base_atk": 40,
+		"secondary": {
+			"key": "critRate",
+			"value": 800,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21020056,
+		"name": "Defier's Thorn",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020056_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "hpPercent",
+			"value": 16.05,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21010036,
+		"name": "Wildfire Mark",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010036_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critDmg",
+			"value": 1080,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21050066,
+		"name": "Lethean Elegy",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050066_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critRate",
+			"value": 540,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21040046,
+		"name": "Moongazer's Sigil",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040046_UI.png",
+		"base_atk": 40,
+		"secondary": {
+			"key": "critRate",
+			"value": 800,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21010046,
+		"name": "Thunderflare Dominion",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010046_UI.png",
+		"base_atk": 54,
+		"secondary": {
+			"key": "critRate",
+			"value": 270,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21010104,
+		"name": "Aureate Zenith",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010094_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "critDmg",
+			"value": 900,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21020104,
+		"name": "Feather Edge",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020094_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "critRate",
+			"value": 450,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21030104,
+		"name": "Solar Flame",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030094_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "critRate",
+			"value": 450,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21040104,
+		"name": "Aether Strike",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040094_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "critDmg",
+			"value": 900,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21050104,
+		"name": "Radiant Dawn",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 4,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050094_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "critDmg",
+			"value": 900,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21030036,
+		"name": "Lux & Umbra",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030036_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critDmg",
+			"value": 1080,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21020066,
+		"name": "Emerald Sentence",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020066_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critRate",
+			"value": 540,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21010056,
+		"name": "Kumokiri",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010056_UI.png",
+		"base_atk": 40,
+		"secondary": {
+			"key": "critRate",
+			"value": 800,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21030046,
+		"name": "Spectrum Blaster",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030046_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critRate",
+			"value": 540,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21010066,
+		"name": "Starfield Calibrator",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010066_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "energyRegen",
+			"value": 1712,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21010045,
+		"name": "Radiance Cleaver",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010045_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critDmg",
+			"value": 1080,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21020045,
+		"name": "Laser Shearer",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020045_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "energyRegen",
+			"value": 864,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21030045,
+		"name": "Phasic Homogenizer",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030045_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critDmg",
+			"value": 1080,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21040045,
+		"name": "Pulsation Bracer",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040045_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critRate",
+			"value": 540,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21050045,
+		"name": "Boson Astrolabe",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050045_UI.png",
+		"base_atk": 42,
+		"secondary": {
+			"key": "energyRegen",
+			"value": 864,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21020076,
+		"name": "Everbright Polestar",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020076_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critRate",
+			"value": 540,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21040056,
+		"name": "Daybreaker's Spine",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040056_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critRate",
+			"value": 540,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21040066,
+		"name": "Solsworn Ciphers",
+		"type": 4,
+		"type_name": "Gauntlets",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040066_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critDmg",
+			"value": 1080,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21050076,
+		"name": "Forged Dwarf Star",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050076_UI.png",
+		"base_atk": 40,
+		"secondary": {
+			"key": "critRate",
+			"value": 800,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21020086,
+		"name": "Frostburn",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020086_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critRate",
+			"value": 540,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21030056,
+		"name": "Spectral Trigger",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030056_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critDmg",
+			"value": 1080,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21030066,
+		"name": "Skull Thrasher",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030066_UI.png",
+		"base_atk": 40,
+		"secondary": {
+			"key": "critDmg",
+			"value": 1600,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21050086,
+		"name": "Freeze Frame",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050086_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critRate",
+			"value": 540,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21020096,
+		"name": "Azure Oath",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020096_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critRate",
+			"value": 540,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21050096,
+		"name": "Firstlight's Herald",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050096_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "energyRegen",
+			"value": 1712,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21010076,
+		"name": "Thousandfold Deliverance",
+		"type": 1,
+		"type_name": "Broadblade",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010076_UI.png",
+		"base_atk": 33,
+		"secondary": {
+			"key": "hpPercent",
+			"value": 16.05,
+			"is_ratio": true
+		}
+	},
+	{
+		"item_id": 21020106,
+		"name": "Glint of Clouds",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020106_UI.png",
+		"base_atk": 40,
+		"secondary": {
+			"key": "critRate",
+			"value": 800,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21020107,
+		"name": "Unspoken Rue",
+		"type": 2,
+		"type_name": "Sword",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020107_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critRate",
+			"value": 540,
+			"is_ratio": false
+		}
+	},
+	{
+		"item_id": 21050116,
+		"name": "Blooming Jadehaven",
+		"type": 5,
+		"type_name": "Rectifier",
+		"rarity": 5,
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050116_UI.png",
+		"base_atk": 47,
+		"secondary": {
+			"key": "critRate",
+			"value": 540,
+			"is_ratio": false
+		}
+	}
+]

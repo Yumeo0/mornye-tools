@@ -8,6 +8,7 @@
     "opener:default",
     "process:default",
     "store:default",
+    "mcp-bridge:default",
     "core:window:allow-set-ignore-cursor-events",
     "core:window:allow-show",
     "core:window:allow-hide",

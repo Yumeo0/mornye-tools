@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 data/__pycache__
+
+# Bundled game key (never committed) and calculator runtime data
+src-tauri/keys/client_private_key.pem
+public/calc-data/

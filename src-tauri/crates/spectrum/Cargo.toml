@@ -1,0 +1,31 @@
+[package]
+name = "spectrum"
+version = "0.4.0"
+edition = "2024"
+build = "build.rs"
+
+[features]
+default = []
+serde = ["dep:serde"]
+serde-skip-none = ["serde", "dep:serde_with"]
+
+[dependencies]
+aes = "0.8.4"
+byteorder = "1.5.0"
+cipher = { version = "0.4.4", features = ["alloc", "block-padding"] }
+crc32fast = "1.4.2"
+etherparse = "0.18.0"
+kcp = "0.6.0"
+miniz_oxide = "0.8.9"
+num_enum = "0.7.4"
+prost = "0.14.1"
+rsa = { version = "0.9.8", features = ["pem"] }
+serde = { version = "1.0.219", features = ["derive"], optional = true }
+serde_with = { version = "3.14.0", optional = true }
+strum_macros = "0.27.1"
+thiserror = "2.0.12"
+
+[build-dependencies]
+quote = "1.0.40"
+prost-build = "0.14.1"
+serde_json = { version = "1.0.140" }

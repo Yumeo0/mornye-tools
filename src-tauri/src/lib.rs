@@ -3,14 +3,16 @@ use image::DynamicImage;
 use serde::{Deserialize, Serialize};
 use std::sync::Mutex;
 use tauri::Emitter;
+use tauri::Manager;
 use tauri::{AppHandle, State};
 use xcap::Monitor;
 
+pub mod account;
 pub mod config;
 pub mod echo;
-pub mod inventory;
 pub mod ocr;
 pub mod scan_region;
+pub mod sniffer;
 mod stats;
 #[cfg(test)]
 mod tests;
@@ -35,9 +37,6 @@ pub struct AppState {
     pub last_scan_result: Mutex<Option<bool>>,
     pub last_stats_data: Mutex<Option<StatsData>>,
     pub show_scan_region: Mutex<bool>,
-    pub inventory_scanning: std::sync::atomic::AtomicBool,
-    pub inventory_cancel: std::sync::atomic::AtomicBool,
-    pub inventory_preview: Mutex<bool>,
 }
 
 #[tauri::command]
@@ -225,7 +224,7 @@ fn scan_stats_data(
         if digits.is_empty() {
             String::new()
         } else {
-            format!("+{}", inventory::sanitize_level_digits(&digits))
+            format!("+{}", stats::sanitize_level_digits(&digits))
         }
     } else {
         String::new()
@@ -312,30 +311,22 @@ fn get_show_scan_region(state: State<AppState>) -> Result<bool, String> {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
+    // MCP bridge for AI automation (debug builds only)
+    let builder = tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_process::init())
-        .plugin(tauri_plugin_store::Builder::new().build())
-        .plugin(
-            tauri_plugin_global_shortcut::Builder::new()
-                .with_handler(|app, _shortcut, event| {
-                    // Stop the inventory scan while the game window is focused
-                    if event.state == tauri_plugin_global_shortcut::ShortcutState::Pressed {
-                        use tauri::Manager;
-                        let state = app.state::<AppState>();
-                        state
-                            .inventory_cancel
-                            .store(true, std::sync::atomic::Ordering::SeqCst);
-                    }
-                })
-                .build(),
-        )
+        .plugin(tauri_plugin_store::Builder::new().build());
+    #[cfg(debug_assertions)]
+    let builder = builder.plugin(tauri_plugin_mcp_bridge::init());
+    builder
         .setup(|app| {
-            #[cfg(desktop)]
-            {
-                use tauri_plugin_global_shortcut::GlobalShortcutExt;
-                app.global_shortcut().register("CmdOrCtrl+Shift+S")?;
-            }
+            let data_dir = app.path().app_data_dir()?;
+            std::fs::create_dir_all(&data_dir).ok();
+
+            app.manage(account::AccountState::new(data_dir.clone()));
+            let sniffer_state = sniffer::SnifferState::new(app.handle(), data_dir);
+            app.manage(sniffer_state);
+            sniffer::start(app.handle());
             Ok(())
         })
         .manage(AppState::default())
@@ -350,18 +341,16 @@ pub fn run() {
             set_show_scan_region,
             get_show_scan_region,
             scan_region_for_text,
-            inventory::scan_echo_inventory,
-            inventory::scan_current_echo,
-            inventory::stop_echo_inventory,
-            inventory::test_inventory_scroll,
-            inventory::set_inventory_preview,
-            inventory::get_inventory_preview,
-            inventory::get_inventory_config,
-            inventory::get_saved_echoes,
-            inventory::clear_saved_echoes,
-            inventory::delete_saved_echo,
-            inventory::set_echo_equipped_by,
-            inventory::save_echo
+            account::account_get_snapshot,
+            account::account_get_echoes,
+            account::account_set_equipped_override,
+            account::account_clear_echo_override,
+            sniffer::sniffer_get_status,
+            sniffer::sniffer_pause,
+            sniffer::sniffer_resume,
+            sniffer::sniffer_set_session_key,
+            sniffer::sniffer_clear_session_key,
+            sniffer::sniffer_import_pcap,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

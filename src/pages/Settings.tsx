@@ -7,18 +7,27 @@ import {
 	Minus,
 	PanelLeftClose,
 	PanelLeftOpen,
+	Pause,
+	Play,
 	Square,
 	X,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { CharactersTab } from "@/components/tabs/CharactersTab";
-import { InventoryTab } from "@/components/tabs/InventoryTab";
-import { ScannerTab } from "@/components/tabs/ScannerTab";
+import { EchoesTab } from "@/components/tabs/EchoesTab";
 import { SettingsTab } from "@/components/tabs/SettingsTab";
+import { WeaponsTab } from "@/components/tabs/WeaponsTab";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OCR_CONFIG from "@/configs/ocr.json";
+import {
+	blockingErrors,
+	getStatus,
+	pauseSniffer,
+	resumeSniffer,
+	type SnifferStatus,
+} from "@/lib/sniffer";
 
 interface ScanRegions {
 	echo_upgrade: { x: number; y: number; width: number; height: number };
@@ -76,6 +85,102 @@ function TitleBar() {
 				<X className="size-4" />
 			</WindowButton>
 		</div>
+	);
+}
+
+/**
+ * Compact account-sync indicator for the sidebar footer: a state dot plus a
+ * click-to-pause/resume control. Details live in Settings -> Packet capture.
+ */
+function SnifferIndicator({ compact }: { compact: boolean }) {
+	const [status, setStatus] = useState<SnifferStatus | null>(null);
+	const [busy, setBusy] = useState(false);
+
+	useEffect(() => {
+		let cancelled = false;
+		const poll = async () => {
+			try {
+				const next = await getStatus();
+				if (!cancelled) setStatus(next);
+			} catch {
+				// Sniffer status is best-effort in the sidebar.
+			}
+		};
+		poll();
+		const timer = setInterval(poll, 2000);
+		return () => {
+			cancelled = true;
+			clearInterval(timer);
+		};
+	}, []);
+
+	const toggle = async () => {
+		if (!status || busy) return;
+		setBusy(true);
+		try {
+			if (status.paused) {
+				await resumeSniffer();
+			} else {
+				await pauseSniffer();
+			}
+			setStatus(await getStatus());
+		} catch {
+			// Ignore transient failures; the next poll re-reads the state.
+		} finally {
+			setBusy(false);
+		}
+	};
+
+	const problem = status
+		? (blockingErrors(status)[0] ?? status.last_error)
+		: null;
+	const [label, dotClass] = !status
+		? ["starting…", "bg-muted-foreground/50"]
+		: problem
+			? ["sync error", "bg-destructive"]
+			: status.paused
+				? ["paused", "bg-amber-400"]
+				: status.capturing
+					? ["capturing", "bg-emerald-400"]
+					: status.game_process_found
+						? ["game found", "bg-sky-400"]
+						: ["armed", "bg-muted-foreground/50"];
+
+	const title = !status
+		? "Account sync: starting…"
+		: [
+				`Account sync: ${label}`,
+				problem,
+				status.paused ? "click to resume" : "click to pause",
+			]
+				.filter(Boolean)
+				.join(" · ");
+
+	return (
+		<button
+			type="button"
+			onClick={toggle}
+			disabled={!status || busy}
+			title={title}
+			className={`flex h-9 shrink-0 items-center rounded-md text-muted-foreground transition-colors hover:bg-muted/70 hover:text-foreground ${
+				compact ? "w-9 justify-center p-0" : "w-full gap-2 px-2"
+			}`}
+		>
+			<span className={`size-2 shrink-0 rounded-full ${dotClass}`} />
+			{!compact && (
+				<>
+					<span className="min-w-0 flex-1 truncate text-left text-[11px]">
+						{label}
+					</span>
+					{status &&
+						(status.paused ? (
+							<Play className="size-3.5 shrink-0" />
+						) : (
+							<Pause className="size-3.5 shrink-0" />
+						))}
+				</>
+			)}
+		</button>
 	);
 }
 
@@ -217,17 +322,20 @@ export default function Settings() {
 							{sidebarOpen && "Echoes"}
 						</TabsTrigger>
 						<TabsTrigger
-							value="scanner"
-							title="Scanner"
+							value="weapons"
+							title="Weapons"
 							className={`h-auto flex-none gap-3 py-2.5 text-base ${sidebarOpen ? "px-3 justify-start" : "px-0 group-data-[orientation=vertical]/tabs:justify-center"}`}
 						>
 							<img
-								src="/camera.webp"
+								src="/weapons.png"
 								alt=""
 								className="size-7 shrink-0 object-contain"
 							/>
-							{sidebarOpen && "Scanner"}
+							{sidebarOpen && "Weapons"}
 						</TabsTrigger>
+					</div>
+					<div className="flex shrink-0 justify-center">
+						<SnifferIndicator compact={!sidebarOpen} />
 					</div>
 					<TabsTrigger
 						value="settings"
@@ -251,17 +359,17 @@ export default function Settings() {
 					<TabsContent
 						value="echoes"
 						keepMounted
-						className="flex min-h-0 flex-1 flex-col space-y-6 overflow-y-auto"
+						className="flex min-h-0 flex-1 flex-col"
 					>
-						<InventoryTab onOpenScanner={() => setTab("scanner")} />
+						<EchoesTab />
 					</TabsContent>
 
 					<TabsContent
-						value="scanner"
+						value="weapons"
 						keepMounted
-						className="min-h-0 flex-1 space-y-6 overflow-y-auto"
+						className="flex min-h-0 flex-1 flex-col"
 					>
-						<ScannerTab />
+						<WeaponsTab />
 					</TabsContent>
 
 					<TabsContent

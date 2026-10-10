@@ -196,6 +196,7 @@ def compile_echo_data():
 		
 		monster_name_id = phantom_item.get("MonsterName")
 		echo_id = phantom_item.get("ItemId")
+		monster_id = phantom_item.get("MonsterId")
 		
 		# Skip if no valid ID
 		if not monster_name_id or not echo_id:
@@ -228,6 +229,7 @@ def compile_echo_data():
 		echo_entry = {
 			"echo_name": echo_name,
 			"echo_id": echo_id,
+			"monster_id": monster_id,
 			"echo_cost": echo_cost,
 			"icon_head": icon_head,
 			"icon_middle": icon_middle,

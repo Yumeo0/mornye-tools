@@ -15,6 +15,9 @@ pub struct EchoSet {
 pub struct Echo {
     pub echo_name: String,
     pub echo_id: u32,
+    /// Calculator catalog id (`MonsterId`) used by `@wuwacalc/core`.
+    #[serde(default)]
+    pub monster_id: Option<i64>,
     pub echo_sets: Vec<EchoSet>,
 }
 

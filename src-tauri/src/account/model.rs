@@ -1,0 +1,194 @@
+//! Unified, game-ID-based account model.
+//!
+//! This is the single structured store fed exclusively by the packet sniffer
+//! (`sniffer::extract`). Names are presentation only; identity is always a game
+//! id (role id, incr id, item id, monster id, set id).
+
+use serde::{Deserialize, Serialize};
+
+/// Current schema version of `account.json`.
+pub const STORE_VERSION: u32 = 1;
+
+/// Stat key in the calculator's echo scope. Values carried by [`EchoProp`] use
+/// display units (percent -> value/100, flat -> raw).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum StatKey {
+    HpFlat,
+    HpPercent,
+    AtkFlat,
+    AtkPercent,
+    DefFlat,
+    DefPercent,
+    CritRate,
+    CritDmg,
+    EnergyRegen,
+    BasicAtk,
+    HeavyAtk,
+    ResonanceSkill,
+    ResonanceLiberation,
+    HealingBonus,
+    Aero,
+    Glacio,
+    Electro,
+    Fusion,
+    Spectro,
+    Havoc,
+}
+
+impl StatKey {
+    /// Whether the stat is expressed as a percentage in the calculator core.
+    pub fn is_percent(self) -> bool {
+        matches!(
+            self,
+            StatKey::HpPercent
+                | StatKey::AtkPercent
+                | StatKey::DefPercent
+                | StatKey::CritRate
+                | StatKey::CritDmg
+                | StatKey::EnergyRegen
+                | StatKey::BasicAtk
+                | StatKey::HeavyAtk
+                | StatKey::ResonanceSkill
+                | StatKey::ResonanceLiberation
+                | StatKey::HealingBonus
+                | StatKey::Aero
+                | StatKey::Glacio
+                | StatKey::Electro
+                | StatKey::Fusion
+                | StatKey::Spectro
+                | StatKey::Havoc
+        )
+    }
+}
+
+/// One echo main/sub property with both the lossless raw game value and the
+/// calculator display value.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct EchoProp {
+    /// Game property id (`PhantomPropId`).
+    pub prop_id: i64,
+    pub key: StatKey,
+    /// Raw game value (percent props are fixed-point x100).
+    pub raw: i64,
+    /// Calculator display unit (percent -> raw/100, flat -> raw).
+    pub value: f64,
+}
+
+/// A skill node level carried by a resonator.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SkillNode {
+    pub id: i64,
+    pub level: i32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PlayerInfo {
+    pub player_id: i64,
+    pub name: String,
+    pub level: i32,
+    pub world_level: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub signature: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Resonator {
+    pub id: i64,
+    #[serde(default)]
+    pub name: String,
+    pub level: i32,
+    pub breakthrough: i32,
+    /// Resonant chain / sequence level (0..=6).
+    pub chain: i32,
+    #[serde(default)]
+    pub skills: Vec<SkillNode>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Weapon {
+    pub incr_id: i64,
+    pub item_id: i64,
+    pub level: i32,
+    pub breach: i32,
+    pub rank: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub equipped_by: Option<i64>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Echo {
+    /// Game instance id (stable identity).
+    pub incr_id: i64,
+    /// Inventory `ItemId` (packet payload).
+    pub item_id: i64,
+    /// Calculator id (`MonsterId`).
+    pub monster_id: i64,
+    /// `FetterGroupId` (sonata set id).
+    pub set_id: i32,
+    pub level: i32,
+    #[serde(default)]
+    pub main_props: Vec<EchoProp>,
+    #[serde(default)]
+    pub sub_props: Vec<EchoProp>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub equipped_by: Option<i64>,
+    /// Slot index within the equipped set; `0` is the main echo.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub slot: Option<u8>,
+}
+
+/// The full account store persisted to `account.json`.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AccountSnapshot {
+    pub version: u32,
+    pub updated_at: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub player: Option<PlayerInfo>,
+    #[serde(default)]
+    pub resonators: Vec<Resonator>,
+    #[serde(default)]
+    pub weapons: Vec<Weapon>,
+    #[serde(default)]
+    pub echoes: Vec<Echo>,
+}
+
+impl Default for AccountSnapshot {
+    fn default() -> Self {
+        Self {
+            version: STORE_VERSION,
+            updated_at: String::new(),
+            player: None,
+            resonators: Vec::new(),
+            weapons: Vec::new(),
+            echoes: Vec::new(),
+        }
+    }
+}
+
+/// A user adjustment that must always win over packet data.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct EchoOverride {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub equipped_by: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub slot: Option<u8>,
+}
+
+/// The user-writable overrides file. This is the only account data the UI may
+/// change directly.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Overrides {
+    /// `incr_id` (string key) -> override.
+    #[serde(default)]
+    pub echoes: std::collections::BTreeMap<String, EchoOverride>,
+}

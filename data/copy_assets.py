@@ -27,7 +27,16 @@ ASSET_FOLDERS = [
 	"IconRoleHeadCircle256",
 	"IconRolePile",
 	"PixActivity",
-	
+
+	# Resonance chain node icons
+	"IconDevice",
+
+	# Weapon type glyphs
+	"Com/Icon",
+
+	# Quality gradients (card bottom overlays)
+	"ImgQuality",
+
 	# Element assets
 	"IconElement128",
 	"IconElementRound",

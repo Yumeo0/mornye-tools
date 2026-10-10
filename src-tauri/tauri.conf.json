@@ -10,6 +10,7 @@
     "frontendDist": "../dist"
   },
   "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
         "label": "settings",
@@ -51,7 +52,9 @@
       "icons/icon.ico"
     ],
     "resources": [
-      "tessdata/*"
+      "tessdata/*",
+      "keys/client_private_key.pem",
+      "../src/configs/*"
     ]
   }
 }

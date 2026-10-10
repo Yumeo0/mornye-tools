@@ -243,3 +243,32 @@ pub(crate) fn parse_stats(text: &str, stats_config: &StatsConfig, is_main_stat: 
         .collect::<Vec<_>>()
         .join("\n")
 }
+
+/// Sanitize OCR digits for an echo level: strip leading characters until the
+/// value fits the valid 0..=25 range (OCR often misreads the leading "+").
+pub(crate) fn sanitize_level_digits(digits: &str) -> String {
+    let mut digits = digits;
+    while digits.len() > 1 && digits.parse::<u32>().is_ok_and(|v| v > 25) {
+        digits = &digits[1..];
+    }
+    match digits.parse::<u32>() {
+        Ok(v) if v <= 25 => digits.to_string(),
+        _ => String::new(),
+    }
+}
+
+#[cfg(test)]
+mod level_tests {
+    use super::sanitize_level_digits;
+
+    #[test]
+    fn sanitize_level_digits_strips_ocr_prefix() {
+        assert_eq!(sanitize_level_digits("425"), "25");
+        assert_eq!(sanitize_level_digits("25"), "25");
+        assert_eq!(sanitize_level_digits("5"), "5");
+        assert_eq!(sanitize_level_digits("0"), "0");
+        assert_eq!(sanitize_level_digits("420"), "20");
+        assert_eq!(sanitize_level_digits(""), "");
+        assert_eq!(sanitize_level_digits("abc"), "");
+    }
+}

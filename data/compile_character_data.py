@@ -13,6 +13,7 @@ roleinfo_path = BASE_PATH / "BinData/role/roleinfo.json"
 rolequalityinfo_path = BASE_PATH / "BinData/role/rolequalityinfo.json"
 propertyindex_path = BASE_PATH / "BinData/property/propertyindex.json"
 elementinfo_path = BASE_PATH / "BinData/element_info/elementinfo.json"
+resonantchain_path = BASE_PATH / "BinData/resonate_chain/resonantchain.json"
 
 # Output path
 output_path = Path("../src/configs/character_data.json")
@@ -103,15 +104,60 @@ def get_element_name(element_id):
 	return element_map.get(element_id, "Unknown")
 
 def get_weapon_type_name(weapon_type):
-	"""Get weapon type name from weapon type ID."""
+	"""Get weapon type name from weapon type ID.
+
+	Game/calculator weapon type ids: 1 Broadblade, 2 Sword, 3 Pistols,
+	4 Gauntlets, 5 Rectifier.
+	"""
 	weapon_map = {
-		1: "Sword",
-		2: "Broadblade",
+		1: "Broadblade",
+		2: "Sword",
 		3: "Pistols",
 		4: "Gauntlets",
 		5: "Rectifier"
 	}
 	return weapon_map.get(weapon_type, "Unknown")
+
+# Weapon type id -> in-game weapon glyph (Common/Image/Com/Icon)
+WEAPON_TYPE_ICON_FILES = {
+	1: "T_ComIconBroadblade.png",
+	2: "T_ComIconSword.png",
+	3: "T_ComIconPistols.png",
+	4: "T_ComIconGauntlets.png",
+	5: "T_ComIconRectifier.png",
+}
+
+def get_weapon_type_icon(weapon_type_id):
+	"""Get the weapon type icon path for a weapon type id."""
+	file = WEAPON_TYPE_ICON_FILES.get(weapon_type_id)
+	if not file:
+		return None
+	return fix_file_path_capitalization(
+		f"/wuwa-assets/UI/UIResources/Common/Image/Com/Icon/{file}"
+	)
+
+# Resonance chain data: GroupId -> nodes sorted by GroupIndex, each with
+# NodeIcon (per-node IconDevice image) and NodeName (MultiText id)
+def build_chain_data(resonantchain_data, multitext_data):
+	"""Group chain nodes by GroupId, sorted by GroupIndex."""
+	chains = {}
+	for node in resonantchain_data:
+		group_id = node.get("GroupId")
+		if group_id is None:
+			continue
+		chains.setdefault(group_id, []).append(node)
+	for group_id in chains:
+		chains[group_id].sort(key=lambda node: node.get("GroupIndex") or 0)
+	return chains
+
+def get_chain_info(role, chains, multitext_data):
+	"""Get resonance chain node icons and names for a role."""
+	group_id = role.get("ResonantChainGroupId")
+	nodes = chains.get(group_id, [])
+	return {
+		"icons": [convert_unreal_path_to_relative(node.get("NodeIcon")) for node in nodes],
+		"names": [get_text_from_id(node.get("NodeName"), multitext_data) for node in nodes],
+	}
 
 def get_element_icons(element_id, elementinfo_data):
 	"""Get element icon paths from element info data."""
@@ -138,13 +184,17 @@ def compile_character_data():
 	rolequalityinfo_data = load_json(rolequalityinfo_path)
 	property_data = load_json(propertyindex_path)
 	elementinfo_data = load_json(elementinfo_path)
-	
+	resonantchain_data = load_json(resonantchain_path)
+
 	# Check if all files loaded successfully
 	if not all([multitext_data, roleinfo_data, property_data, elementinfo_data]):
 		print("Error: Failed to load one or more required files")
 		return
-	
+
 	print(f"Found {len(roleinfo_data)} role entries")
+
+	# Resonance chain nodes grouped by GroupId
+	chains = build_chain_data(resonantchain_data or [], multitext_data)
 	
 	# Compile character data
 	character_list = []
@@ -186,6 +236,12 @@ def compile_character_data():
 		
 		# Get weapon type
 		weapon_type = get_weapon_type_name(role.get("WeaponType"))
+
+		# Get weapon type icon
+		weapon_type_icon = get_weapon_type_icon(role.get("WeaponType"))
+
+		# Get resonance chain node icons/names
+		chain_info = get_chain_info(role, chains, multitext_data)
 		
 		# Get quality/rarity
 		quality_id = role.get("QualityId")
@@ -212,6 +268,9 @@ def compile_character_data():
 			"element_icon_128_pure": element_icons["icon_128_pure"],
 			"weapon_type": weapon_type,
 			"weapon_type_id": role.get("WeaponType"),
+			"weapon_type_icon": weapon_type_icon,
+			"chain_icons": chain_info["icons"],
+			"chain_names": chain_info["names"],
 			"rarity": quality_id,
 			"icon_head_80": icon_head_80,
 			"icon_head_150": icon_head_150,

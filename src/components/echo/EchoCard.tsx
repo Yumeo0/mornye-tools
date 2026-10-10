@@ -1,23 +1,13 @@
 import type { ReactNode } from "react";
+import { type Echo, formatStatValue, statLabel } from "@/lib/account";
 import {
 	isExcludedCharacter,
 	maxSubStatValue,
-	parseStatLines,
 	statIconAsset,
 	subStatRollColor,
 } from "@/lib/stats";
 import characterData from "../../configs/character_data.json";
 import echoData from "../../configs/echo_data.json";
-
-export interface InventoryEcho {
-	echo_name: string;
-	level: string;
-	main_stats: string;
-	sub_stats: string;
-	equippedBy?: string;
-	/** Sonata set name, detected by matching the set icon during scanning */
-	echoSet?: string;
-}
 
 export interface CharacterEntry {
 	character_id: number;
@@ -25,14 +15,22 @@ export interface CharacterEntry {
 	icon_head_256: string;
 }
 
-interface EchoEntry {
-	echo_name: string;
-	echo_cost?: number;
-	icon_middle?: string;
-	echo_sets?: { id: number; name: string; icon: string }[];
+interface EchoSetEntry {
+	id: number;
+	name: string;
+	icon: string;
 }
 
-// Deduplicate characters, drop excluded forms, and sort by name
+interface EchoEntry {
+	echo_name: string;
+	echo_id: number;
+	monster_id?: number | null;
+	echo_cost?: number;
+	icon_middle?: string;
+	echo_sets?: EchoSetEntry[];
+}
+
+/** Deduplicate characters, drop excluded forms, and sort by name. */
 export const allCharacters: CharacterEntry[] = [
 	...new Map(
 		(characterData as CharacterEntry[])
@@ -41,22 +39,18 @@ export const allCharacters: CharacterEntry[] = [
 	).values(),
 ].sort((a, b) => a.character_name.localeCompare(b.character_name));
 
-const charactersByLowerName = new Map(
-	allCharacters.map((character) => [
-		character.character_name.toLowerCase(),
-		character,
-	]),
+export const charactersById = new Map(
+	allCharacters.map((character) => [character.character_id, character]),
 );
 
-// The echo data contains duplicate entries per name with different set lists
-// (the same echo appears in multiple sonata groups), so merge the sets of all
-// entries with the same name
-const echoesByLowerName = new Map<string, EchoEntry>();
+// Catalog entries by calculator id (`MonsterId`). Entries may repeat per set;
+// merge them so each echo exposes every possible sonata.
+const echoesByMonsterId = new Map<number, EchoEntry>();
 for (const echo of echoData as EchoEntry[]) {
-	const key = echo.echo_name.toLowerCase();
-	const existing = echoesByLowerName.get(key);
+	if (echo.monster_id == null) continue;
+	const existing = echoesByMonsterId.get(echo.monster_id);
 	if (!existing) {
-		echoesByLowerName.set(key, {
+		echoesByMonsterId.set(echo.monster_id, {
 			...echo,
 			echo_sets: [...(echo.echo_sets ?? [])],
 		});
@@ -69,7 +63,7 @@ for (const echo of echoData as EchoEntry[]) {
 	}
 }
 
-// The sonata icon assets only ship in the IconElementAttri128 resolution
+/** The sonata icon assets only ship in the IconElementAttri128 resolution. */
 export function sonataIcon128(icon: string): string {
 	return icon.replace(
 		"IconElementAttri/T_IconElementAttri",
@@ -77,60 +71,59 @@ export function sonataIcon128(icon: string): string {
 	);
 }
 
-export function echoKey(echo: InventoryEcho): string {
-	return [
-		echo.echo_name,
-		echo.echoSet ?? "",
-		echo.level,
-		echo.main_stats,
-		echo.sub_stats,
-		echo.equippedBy ?? "",
-	].join("|");
+export function echoKey(echo: Echo): string {
+	return `incr:${echo.incrId}`;
 }
 
-export function echoImage(name: string): string | undefined {
-	return echoesByLowerName.get(name.toLowerCase())?.icon_middle;
+export function echoName(echo: Echo): string {
+	return (
+		echoesByMonsterId.get(echo.monsterId)?.echo_name ?? `Echo ${echo.monsterId}`
+	);
 }
 
-export function echoSet(echo: InventoryEcho) {
-	const sets = echoesByLowerName.get(echo.echo_name.toLowerCase())?.echo_sets;
+export function echoImage(echo: Echo): string | undefined {
+	return echoesByMonsterId.get(echo.monsterId)?.icon_middle;
+}
+
+export function echoCost(echo: Echo): number | undefined {
+	return echoesByMonsterId.get(echo.monsterId)?.echo_cost;
+}
+
+/** The sonata set of the echo instance (`set_id`), falling back to the first. */
+export function echoSet(echo: Echo): EchoSetEntry | undefined {
+	const sets = echoesByMonsterId.get(echo.monsterId)?.echo_sets;
 	if (!sets?.length) return undefined;
-	// Prefer the set detected by the scanner, fall back to the first one
-	return sets.find((set) => set.name === echo.echoSet) ?? sets[0];
+	return sets.find((set) => set.id === echo.setId) ?? sets[0];
 }
 
-export function echoCost(name: string): number | undefined {
-	return echoesByLowerName.get(name.toLowerCase())?.echo_cost;
-}
-
-// "Equipped by Phrolova" -> character entry
-export function equippedCharacter(equippedBy: string | undefined) {
-	const match = equippedBy?.match(/Equipped by (.+)/i);
-	if (!match) return undefined;
-	return charactersByLowerName.get(match[1].trim().toLowerCase());
+export function equippedCharacter(
+	equippedBy: number | null | undefined,
+): CharacterEntry | undefined {
+	if (equippedBy == null) return undefined;
+	return charactersById.get(equippedBy);
 }
 
 function StatRow({
-	name,
+	label,
 	value,
 	muted,
 }: {
-	name: string;
+	label: string;
 	value: string;
 	muted?: boolean;
 }) {
-	const icon = statIconAsset(name);
+	const icon = statIconAsset(label);
 	const numeric = muted && value ? Number.parseFloat(value) : null;
-	const maxValue = muted ? maxSubStatValue(name) : null;
+	const maxValue = muted ? maxSubStatValue(label) : null;
 	const rollColor =
 		numeric !== null && maxValue ? subStatRollColor(numeric, maxValue) : null;
 	return (
-		<div className="flex min-w-0 items-center gap-1.5" title={name}>
+		<div className="flex min-w-0 items-center gap-1.5" title={label}>
 			{icon && <img src={icon} alt="" className="size-3 shrink-0" />}
 			<span
 				className={`flex-1 truncate text-[11px] ${muted ? "text-muted-foreground" : ""}`}
 			>
-				{name}
+				{label}
 			</span>
 			{value && (
 				<span
@@ -149,14 +142,13 @@ export function EchoCard({
 	actions,
 	footer,
 }: {
-	echo: InventoryEcho;
+	echo: Echo;
 	actions?: ReactNode;
 	footer?: ReactNode;
 }) {
-	const image = echoImage(echo.echo_name);
+	const image = echoImage(echo);
 	const set = echoSet(echo);
-	const mainLines = parseStatLines(echo.main_stats);
-	const subLines = parseStatLines(echo.sub_stats);
+	const name = echoName(echo);
 	return (
 		<div className="flex h-full flex-col bg-muted/50 p-2.5 text-sm">
 			<div className="flex gap-2.5">
@@ -164,7 +156,7 @@ export function EchoCard({
 					{image ? (
 						<img
 							src={image}
-							alt={echo.echo_name}
+							alt={name}
 							className="size-12 object-contain bg-black/30"
 						/>
 					) : (
@@ -181,11 +173,11 @@ export function EchoCard({
 				</div>
 				<div className="min-w-0 flex-1">
 					<div className="flex items-center justify-between gap-1.5">
-						<span className="truncate font-medium" title={echo.echo_name}>
-							{echo.echo_name}
+						<span className="truncate font-medium" title={name}>
+							{name}
 						</span>
 						<span className="text-xs font-bold text-yellow-400">
-							{echo.level}
+							+{echo.level}
 						</span>
 					</div>
 					{set && (
@@ -202,15 +194,24 @@ export function EchoCard({
 				)}
 			</div>
 			<div className="mt-2 space-y-0.5">
-				{mainLines.map((line) => (
-					<StatRow key={line.name} {...line} />
+				{echo.mainProps.map((prop) => (
+					<StatRow
+						key={`${prop.propId}-${prop.key}`}
+						label={statLabel(prop.key)}
+						value={formatStatValue(prop.key, prop.value)}
+					/>
 				))}
 			</div>
-			{subLines.length > 0 && (
+			{echo.subProps.length > 0 && (
 				<div className="mt-1 space-y-0.5 border-t pt-1">
-					{subLines.map((line, index) => (
-						// biome-ignore lint/suspicious/noArrayIndexKey: substat lines can repeat the same stat
-						<StatRow key={`${line.name}-${index}`} {...line} muted />
+					{echo.subProps.map((prop, index) => (
+						<StatRow
+							// biome-ignore lint/suspicious/noArrayIndexKey: substat lines can repeat the same stat
+							key={`${prop.propId}-${prop.key}-${index}`}
+							label={statLabel(prop.key)}
+							value={formatStatValue(prop.key, prop.value)}
+							muted
+						/>
 					))}
 				</div>
 			)}

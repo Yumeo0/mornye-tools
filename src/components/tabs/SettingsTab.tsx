@@ -1,8 +1,16 @@
 import { invoke } from "@tauri-apps/api/core";
 import { getAllWindows } from "@tauri-apps/api/window";
 import { Store } from "@tauri-apps/plugin-store";
-import { Bug, Monitor, ScanSearch, ScanText } from "lucide-react";
-import { useEffect, useState } from "react";
+import {
+	Activity,
+	Bug,
+	KeyRound,
+	Monitor,
+	Pause,
+	Play,
+	ScanText,
+} from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -15,6 +23,15 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import OCR_CONFIG from "@/configs/ocr.json";
+import {
+	clearSessionKey,
+	getStatus,
+	importPcap,
+	pauseSniffer,
+	resumeSniffer,
+	type SnifferStatus,
+	setSessionKey,
+} from "@/lib/sniffer";
 
 interface ScanRegion {
 	x: number;
@@ -31,14 +48,175 @@ interface ScanRegions {
 	sub_stats: ScanRegion;
 }
 
+function CaptureCard() {
+	const [status, setStatus] = useState<SnifferStatus | null>(null);
+	const [keyInput, setKeyInput] = useState("");
+	const [keyOpen, setKeyOpen] = useState(false);
+	const [keyMessage, setKeyMessage] = useState<string | null>(null);
+
+	const refresh = useCallback(
+		() =>
+			getStatus()
+				.then(setStatus)
+				.catch(() => undefined),
+		[],
+	);
+
+	useEffect(() => {
+		refresh();
+		const timer = setInterval(refresh, 2000);
+		return () => clearInterval(timer);
+	}, [refresh]);
+
+	const togglePause = async () => {
+		if (!status) return;
+		if (status.paused) {
+			await resumeSniffer();
+		} else {
+			await pauseSniffer();
+		}
+		await refresh();
+	};
+
+	const applyKey = async () => {
+		try {
+			await setSessionKey(keyInput);
+			setKeyMessage("Session key set.");
+			setKeyInput("");
+			await refresh();
+		} catch (error) {
+			setKeyMessage(String(error));
+		}
+	};
+
+	const clearKey = async () => {
+		try {
+			await clearSessionKey();
+			setKeyMessage("Session key cleared.");
+			await refresh();
+		} catch (error) {
+			setKeyMessage(String(error));
+		}
+	};
+
+	const statusLine = !status
+		? "starting…"
+		: [
+				status.paused ? "paused" : status.capturing ? "capturing" : "armed",
+				status.game_process_found ? "game process found" : "waiting for game",
+				status.npcap_available ? "capture available" : "capture unavailable",
+				status.session_key_cached
+					? "session key cached"
+					: "waiting for session key",
+			].join(" · ");
+
+	return (
+		<Card>
+			<CardContent className="space-y-4">
+				<div className="space-y-0.5">
+					<Label className="flex items-center gap-2 text-base font-medium">
+						<Activity className="size-4" /> Packet capture
+					</Label>
+					<p className="text-xs text-muted-foreground">
+						Runs by design; the account is filled passively from the game's own
+						traffic. Pause only stops reading frames.
+					</p>
+				</div>
+
+				<p className="text-xs text-muted-foreground">{statusLine}</p>
+
+				<div className="grid grid-cols-2 gap-3 text-xs sm:grid-cols-4">
+					<div>
+						<p className="text-muted-foreground">RSA key</p>
+						<p>{status?.rsa_key_fingerprint ?? "—"}</p>
+					</div>
+					<div>
+						<p className="text-muted-foreground">Elevated</p>
+						<p>{status?.is_elevated ? "yes" : "no"}</p>
+					</div>
+					<div>
+						<p className="text-muted-foreground">Packets seen</p>
+						<p>{status?.packets_seen ?? 0}</p>
+					</div>
+					<div>
+						<p className="text-muted-foreground">Inventory tables</p>
+						<p>{status?.tables_loaded ? "loaded" : "missing"}</p>
+					</div>
+				</div>
+
+				{status?.last_error && (
+					<p className="rounded-md bg-destructive/10 p-2 text-[11px] text-destructive">
+						{status.last_error}
+					</p>
+				)}
+
+				<div className="flex flex-wrap items-center gap-2">
+					<Button variant="default" size="sm" onClick={togglePause}>
+						{status?.paused ? (
+							<>
+								<Play className="mr-1 size-3.5" /> Resume
+							</>
+						) : (
+							<>
+								<Pause className="mr-1 size-3.5" /> Pause
+							</>
+						)}
+					</Button>
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={() => setKeyOpen((open) => !open)}
+					>
+						<KeyRound className="mr-1 size-3.5" />
+						{keyOpen ? "Hide session key" : "Session key"}
+					</Button>
+				</div>
+
+				{keyOpen && (
+					<div className="space-y-2 rounded-md bg-muted/50 p-3">
+						<Label className="text-xs font-medium">
+							Paste a 64-hex session key (recovery for a cleared cache)
+						</Label>
+						<div className="flex gap-2">
+							<Input
+								value={keyInput}
+								onChange={(e) => setKeyInput(e.target.value)}
+								placeholder="64 hex chars"
+								className="font-mono text-xs"
+							/>
+							<Button size="sm" onClick={applyKey} disabled={!keyInput.trim()}>
+								Use
+							</Button>
+							<Button size="sm" variant="outline" onClick={clearKey}>
+								Clear
+							</Button>
+						</div>
+						{keyMessage && (
+							<p className="text-[11px] text-muted-foreground">{keyMessage}</p>
+						)}
+					</div>
+				)}
+
+				{status && status.log.length > 0 && (
+					<details className="rounded-md bg-muted/50 p-2">
+						<summary className="cursor-pointer text-xs text-muted-foreground">
+							Capture log
+						</summary>
+						<pre className="mt-2 max-h-40 overflow-y-auto whitespace-pre-wrap font-mono text-[10px] text-muted-foreground">
+							{status.log.slice(-40).join("\n")}
+						</pre>
+					</details>
+				)}
+			</CardContent>
+		</Card>
+	);
+}
+
 export function SettingsTab() {
 	const [showScanRegion, setShowScanRegion] = useState(false);
 	const [selectedResolution, setSelectedResolution] = useState<string>("");
 	const [showDebugSection, setShowDebugSection] = useState(false);
 	const [overlayEnabled, setOverlayEnabled] = useState(false);
-	const [preview, setPreview] = useState(false);
-	const [countdown, setCountdown] = useState<number | null>(null);
-	const [scrollStatus, setScrollStatus] = useState<string | null>(null);
 	const [debugRegion, setDebugRegion] = useState<ScanRegion>({
 		x: 130,
 		y: 65,
@@ -47,6 +225,8 @@ export function SettingsTab() {
 	});
 	const [debugOcrText, setDebugOcrText] = useState<string | null>(null);
 	const [isDebugScanning, setIsDebugScanning] = useState(false);
+	const [pcapPath, setPcapPath] = useState("");
+	const [pcapStatus, setPcapStatus] = useState<string | null>(null);
 
 	const applyResolutionConfig = async (resolution: string) => {
 		const config =
@@ -103,7 +283,7 @@ export function SettingsTab() {
 					await applyResolutionConfig(savedResolution);
 				}
 			} catch (error) {
-				console.error("[OcrTab] Failed to load saved resolution:", error);
+				console.error("[SettingsTab] Failed to load saved resolution:", error);
 			}
 
 			// Load overlay enabled state (window visibility is handled on app start)
@@ -116,11 +296,6 @@ export function SettingsTab() {
 			} catch (error) {
 				console.error("[SettingsTab] Failed to load overlay state:", error);
 			}
-
-			// Load inventory region preview state
-			invoke<boolean>("get_inventory_preview")
-				.then(setPreview)
-				.catch(console.error);
 		};
 
 		initOcrSettings();
@@ -173,36 +348,6 @@ export function SettingsTab() {
 		}
 	};
 
-	const togglePreview = async () => {
-		try {
-			await invoke("set_inventory_preview", { show: !preview });
-			setPreview(!preview);
-		} catch (error) {
-			console.error("[SettingsTab] Failed to toggle region preview:", error);
-		}
-	};
-
-	const testScroll = () => {
-		if (countdown !== null) return;
-		setScrollStatus(null);
-		let remaining = 5;
-		setCountdown(remaining);
-		const interval = setInterval(() => {
-			remaining -= 1;
-			if (remaining <= 0) {
-				clearInterval(interval);
-				setCountdown(null);
-				invoke<string>("test_inventory_scroll")
-					.then(setScrollStatus)
-					.catch((error) =>
-						console.error("[SettingsTab] Test scroll failed:", error),
-					);
-			} else {
-				setCountdown(remaining);
-			}
-		}, 1000);
-	};
-
 	const performDebugScan = async () => {
 		setIsDebugScanning(true);
 		setDebugOcrText(null);
@@ -219,8 +364,21 @@ export function SettingsTab() {
 		}
 	};
 
+	const runImport = async () => {
+		if (!pcapPath.trim()) return;
+		setPcapStatus("Importing…");
+		try {
+			const decoded = await importPcap(pcapPath.trim());
+			setPcapStatus(`Decoded ${decoded} game packets.`);
+		} catch (error) {
+			setPcapStatus(String(error));
+		}
+	};
+
 	return (
 		<div className="space-y-6">
+			<CaptureCard />
+
 			<Card>
 				<CardContent className="space-y-4">
 					<div className="space-y-0.5">
@@ -405,46 +563,33 @@ export function SettingsTab() {
 							<Separator />
 
 							<div className="space-y-2">
-								<Label className="flex items-center gap-2 text-sm font-medium">
-									<ScanSearch className="size-3.5" /> Inventory Scan Debug
+								<Label className="text-sm font-medium">
+									Offline packet import (.pcap / .pcapng)
 								</Label>
-
-								<div className="space-y-2 rounded-md bg-background p-3">
+								<p className="text-xs text-muted-foreground">
+									Test tool: feeds a saved capture through the same extractor as
+									live capture. It is not a substitute for always-on sniffing.
+								</p>
+								<div className="flex gap-2">
+									<Input
+										value={pcapPath}
+										onChange={(e) => setPcapPath(e.target.value)}
+										placeholder="C:\\path\\to\\capture.pcapng"
+										className="font-mono text-xs"
+									/>
 									<Button
-										onClick={togglePreview}
-										variant={preview ? "default" : "outline"}
-										className="w-full"
-									>
-										{preview ? "Hide Region Preview" : "Preview Region Layout"}
-									</Button>
-									<p className="text-xs text-muted-foreground">
-										Shows the inventory scan regions on the overlay: green boxes
-										= clicked grid cells, yellow boxes = OCR regions, blue box =
-										ownership counter.
-									</p>
-								</div>
-
-								<div className="space-y-2 rounded-md bg-background p-3">
-									<Button
-										onClick={testScroll}
 										variant="outline"
-										className="w-full"
-										disabled={countdown !== null}
+										onClick={runImport}
+										disabled={!pcapPath.trim()}
 									>
-										{countdown !== null
-											? `Scrolling in ${countdown}...`
-											: "Test Scroll"}
+										Import
 									</Button>
-									<p className="text-xs text-muted-foreground">
-										Moves to the center of the last grid element, holds left
-										click, drags up smoothly, stays at the end position for 0.5
-										seconds and releases — the same motion the scan uses to
-										advance pages.
-									</p>
-									{scrollStatus && (
-										<p className="text-sm text-green-400">{scrollStatus}</p>
-									)}
 								</div>
+								{pcapStatus && (
+									<p className="text-[11px] text-muted-foreground">
+										{pcapStatus}
+									</p>
+								)}
 							</div>
 						</div>
 					)}

@@ -42,7 +42,7 @@ def convert_unreal_path_to_relative(unreal_path):
 	Example:
 	/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_YZ_33020_UI.T_IconMonsterGoods160_YZ_33020_UI
 	becomes:
-	/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_YZ_33020_UI.png
+	/wuwa-assets/UI/UIResources/Common/Image/IconMonsterGoods160/T_IconMonsterGoods160_YZ_33020_UI.webp
 	"""
 	if not unreal_path:
 		return None
@@ -54,8 +54,8 @@ def convert_unreal_path_to_relative(unreal_path):
 	if "." in unreal_path:
 		unreal_path = unreal_path.rsplit(".", 1)[0]
 	
-	# Add .png extension
-	unreal_path = f"{unreal_path}.png"
+	# Add .webp extension (published format; sources stay .png on disk)
+	unreal_path = f"{unreal_path}.webp"
 	
 	# Convert to relative path format
 	return f"/wuwa-assets/{unreal_path}"

@@ -5,7 +5,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010074_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010074_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "critRate",
@@ -19,7 +19,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020074_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020074_UI.webp",
 		"base_atk": 31,
 		"secondary": {
 			"key": "atkPercent",
@@ -33,7 +33,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030074_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030074_UI.webp",
 		"base_atk": 31,
 		"secondary": {
 			"key": "atkPercent",
@@ -47,7 +47,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040074_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040074_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "critRate",
@@ -61,7 +61,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050074_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050074_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "critRate",
@@ -75,7 +75,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010024_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010024_UI.webp",
 		"base_atk": 27,
 		"secondary": {
 			"key": "energyRegen",
@@ -89,7 +89,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020024_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020024_UI.webp",
 		"base_atk": 27,
 		"secondary": {
 			"key": "energyRegen",
@@ -103,7 +103,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030024_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030024_UI.webp",
 		"base_atk": 27,
 		"secondary": {
 			"key": "energyRegen",
@@ -117,7 +117,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040024_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040024_UI.webp",
 		"base_atk": 27,
 		"secondary": {
 			"key": "energyRegen",
@@ -131,7 +131,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050024_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050024_UI.webp",
 		"base_atk": 27,
 		"secondary": {
 			"key": "energyRegen",
@@ -145,7 +145,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 3,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010013_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010013_UI.webp",
 		"base_atk": 26,
 		"secondary": {
 			"key": "atkPercent",
@@ -159,7 +159,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 3,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020013_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020013_UI.webp",
 		"base_atk": 26,
 		"secondary": {
 			"key": "atkPercent",
@@ -173,7 +173,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 3,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030013_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030013_UI.webp",
 		"base_atk": 26,
 		"secondary": {
 			"key": "atkPercent",
@@ -187,7 +187,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 3,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040013_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040013_UI.webp",
 		"base_atk": 26,
 		"secondary": {
 			"key": "atkPercent",
@@ -201,7 +201,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 3,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050013_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050013_UI.webp",
 		"base_atk": 26,
 		"secondary": {
 			"key": "atkPercent",
@@ -215,7 +215,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 2,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010012_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010012_UI.webp",
 		"base_atk": 22,
 		"secondary": {
 			"key": "atkPercent",
@@ -229,7 +229,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 2,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020012_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020012_UI.webp",
 		"base_atk": 22,
 		"secondary": {
 			"key": "atkPercent",
@@ -243,7 +243,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 2,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030012_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030012_UI.webp",
 		"base_atk": 22,
 		"secondary": {
 			"key": "atkPercent",
@@ -257,7 +257,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 2,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040012_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040012_UI.webp",
 		"base_atk": 22,
 		"secondary": {
 			"key": "atkPercent",
@@ -271,7 +271,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 2,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050012_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050012_UI.webp",
 		"base_atk": 22,
 		"secondary": {
 			"key": "atkPercent",
@@ -285,7 +285,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 1,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010011_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010011_UI.webp",
 		"base_atk": 20,
 		"secondary": {
 			"key": "atkPercent",
@@ -299,7 +299,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 1,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020011_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020011_UI.webp",
 		"base_atk": 20,
 		"secondary": {
 			"key": "atkPercent",
@@ -313,7 +313,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 1,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030011_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030011_UI.webp",
 		"base_atk": 20,
 		"secondary": {
 			"key": "atkPercent",
@@ -327,7 +327,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 1,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040011_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040011_UI.webp",
 		"base_atk": 20,
 		"secondary": {
 			"key": "atkPercent",
@@ -341,7 +341,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 1,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050011_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050011_UI.webp",
 		"base_atk": 20,
 		"secondary": {
 			"key": "atkPercent",
@@ -355,7 +355,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 3,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010023_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010023_UI.webp",
 		"base_atk": 24,
 		"secondary": {
 			"key": "defPercent",
@@ -369,7 +369,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 3,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020023_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020023_UI.webp",
 		"base_atk": 26,
 		"secondary": {
 			"key": "atkPercent",
@@ -383,7 +383,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 3,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030023_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030023_UI.webp",
 		"base_atk": 26,
 		"secondary": {
 			"key": "atkPercent",
@@ -397,7 +397,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 3,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040023_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040023_UI.webp",
 		"base_atk": 24,
 		"secondary": {
 			"key": "critDmg",
@@ -411,7 +411,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 3,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050023_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050023_UI.webp",
 		"base_atk": 24,
 		"secondary": {
 			"key": "hpPercent",
@@ -425,7 +425,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010034_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010034_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "energyRegen",
@@ -439,7 +439,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020034_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020034_UI.webp",
 		"base_atk": 31,
 		"secondary": {
 			"key": "atkPercent",
@@ -453,7 +453,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030034_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030034_UI.webp",
 		"base_atk": 31,
 		"secondary": {
 			"key": "atkPercent",
@@ -467,7 +467,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040034_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040034_UI.webp",
 		"base_atk": 31,
 		"secondary": {
 			"key": "energyRegen",
@@ -481,7 +481,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050034_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050034_UI.webp",
 		"base_atk": 27,
 		"secondary": {
 			"key": "energyRegen",
@@ -495,7 +495,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010044_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010044_UI.webp",
 		"base_atk": 27,
 		"secondary": {
 			"key": "defPercent",
@@ -509,7 +509,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020044_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020044_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "atkPercent",
@@ -523,7 +523,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030044_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030044_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "atkPercent",
@@ -537,7 +537,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040044_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040044_UI.webp",
 		"base_atk": 27,
 		"secondary": {
 			"key": "defPercent",
@@ -551,7 +551,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050044_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050044_UI.webp",
 		"base_atk": 31,
 		"secondary": {
 			"key": "atkPercent",
@@ -565,7 +565,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 3,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010043_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010043_UI.webp",
 		"base_atk": 24,
 		"secondary": {
 			"key": "energyRegen",
@@ -579,7 +579,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 3,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020043_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020043_UI.webp",
 		"base_atk": 24,
 		"secondary": {
 			"key": "energyRegen",
@@ -593,7 +593,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 3,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030043_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030043_UI.webp",
 		"base_atk": 24,
 		"secondary": {
 			"key": "atkPercent",
@@ -607,7 +607,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 3,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040043_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040043_UI.webp",
 		"base_atk": 26,
 		"secondary": {
 			"key": "defPercent",
@@ -621,7 +621,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 3,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050043_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050043_UI.webp",
 		"base_atk": 24,
 		"secondary": {
 			"key": "energyRegen",
@@ -635,7 +635,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 3,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010053_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010053_UI.webp",
 		"base_atk": 26,
 		"secondary": {
 			"key": "atkPercent",
@@ -649,7 +649,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 3,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020053_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020053_UI.webp",
 		"base_atk": 24,
 		"secondary": {
 			"key": "hpPercent",
@@ -663,7 +663,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 3,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030053_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030053_UI.webp",
 		"base_atk": 24,
 		"secondary": {
 			"key": "atkPercent",
@@ -677,7 +677,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 3,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040053_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040053_UI.webp",
 		"base_atk": 24,
 		"secondary": {
 			"key": "defPercent",
@@ -691,7 +691,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 3,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050053_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050053_UI.webp",
 		"base_atk": 26,
 		"secondary": {
 			"key": "atkPercent",
@@ -705,7 +705,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010064_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010064_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "atkPercent",
@@ -719,7 +719,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020064_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020064_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "atkPercent",
@@ -733,7 +733,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030064_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030064_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "atkPercent",
@@ -747,7 +747,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040064_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040064_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "atkPercent",
@@ -761,7 +761,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050064_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050064_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "hpPercent",
@@ -775,7 +775,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010015_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010015_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "atkPercent",
@@ -789,7 +789,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020015_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020015_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critRate",
@@ -803,7 +803,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030015_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030015_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critRate",
@@ -817,7 +817,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040015_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040015_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "atkPercent",
@@ -831,7 +831,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050015_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050015_UI.webp",
 		"base_atk": 40,
 		"secondary": {
 			"key": "atkPercent",
@@ -845,7 +845,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010016_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010016_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critDmg",
@@ -859,7 +859,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050016_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050016_UI.webp",
 		"base_atk": 40,
 		"secondary": {
 			"key": "critRate",
@@ -873,7 +873,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010026_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010026_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critRate",
@@ -887,7 +887,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020016_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020016_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critDmg",
@@ -901,7 +901,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 3,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010063_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010063_UI.webp",
 		"base_atk": 24,
 		"secondary": {
 			"key": "atkPercent",
@@ -915,7 +915,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050026_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050026_UI.webp",
 		"base_atk": 40,
 		"secondary": {
 			"key": "critDmg",
@@ -929,7 +929,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040016_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040016_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critRate",
@@ -943,7 +943,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050027_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050027_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "energyRegen",
@@ -957,7 +957,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon80/T_IconWeapon80_21010014_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon80/T_IconWeapon80_21010014_UI.webp",
 		"base_atk": 37,
 		"secondary": {
 			"key": "atkPercent",
@@ -971,7 +971,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon80/T_IconWeapon80_21020014_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon80/T_IconWeapon80_21020014_UI.webp",
 		"base_atk": 37,
 		"secondary": {
 			"key": "atkPercent",
@@ -985,7 +985,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon80/T_IconWeapon80_21030014_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon80/T_IconWeapon80_21030014_UI.webp",
 		"base_atk": 37,
 		"secondary": {
 			"key": "atkPercent",
@@ -999,7 +999,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon80/T_IconWeapon80_21040074_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon80/T_IconWeapon80_21040074_UI.webp",
 		"base_atk": 37,
 		"secondary": {
 			"key": "atkPercent",
@@ -1013,7 +1013,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon80/T_IconWeapon80_21050014_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon80/T_IconWeapon80_21050014_UI.webp",
 		"base_atk": 37,
 		"secondary": {
 			"key": "atkPercent",
@@ -1027,7 +1027,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020019_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020019_UI.webp",
 		"base_atk": 37,
 		"secondary": {
 			"key": "atkPercent",
@@ -1041,7 +1041,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020017_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020017_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critRate",
@@ -1055,7 +1055,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050017_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050017_UI.webp",
 		"base_atk": 27,
 		"secondary": {
 			"key": "energyRegen",
@@ -1069,7 +1069,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010094_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010094_UI.webp",
 		"base_atk": 37,
 		"secondary": {
 			"key": "atkPercent",
@@ -1083,7 +1083,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020094_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020094_UI.webp",
 		"base_atk": 37,
 		"secondary": {
 			"key": "atkPercent",
@@ -1097,7 +1097,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030094_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030094_UI.webp",
 		"base_atk": 37,
 		"secondary": {
 			"key": "atkPercent",
@@ -1111,7 +1111,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040094_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040094_UI.webp",
 		"base_atk": 37,
 		"secondary": {
 			"key": "atkPercent",
@@ -1125,7 +1125,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050094_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050094_UI.webp",
 		"base_atk": 37,
 		"secondary": {
 			"key": "atkPercent",
@@ -1139,7 +1139,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040018_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040018_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critRate",
@@ -1153,7 +1153,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030017_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030017_UI.webp",
 		"base_atk": 40,
 		"secondary": {
 			"key": "critDmg",
@@ -1167,7 +1167,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020025_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020025_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "energyRegen",
@@ -1181,7 +1181,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050029_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050029_UI.webp",
 		"base_atk": 40,
 		"secondary": {
 			"key": "critRate",
@@ -1195,7 +1195,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050036_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050036_UI.webp",
 		"base_atk": 37,
 		"secondary": {
 			"key": "atkPercent",
@@ -1209,7 +1209,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050030_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050030_UI.webp",
 		"base_atk": 40,
 		"secondary": {
 			"key": "critDmg",
@@ -1223,7 +1223,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020026_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020026_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "energyRegen",
@@ -1237,7 +1237,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040019_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040019_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critDmg",
@@ -1251,7 +1251,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030026_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030026_UI.webp",
 		"base_atk": 40,
 		"secondary": {
 			"key": "critRate",
@@ -1265,7 +1265,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020056_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020056_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "hpPercent",
@@ -1279,7 +1279,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010036_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010036_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critDmg",
@@ -1293,7 +1293,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050066_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050066_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critRate",
@@ -1307,7 +1307,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040046_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040046_UI.webp",
 		"base_atk": 40,
 		"secondary": {
 			"key": "critRate",
@@ -1321,7 +1321,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010046_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010046_UI.webp",
 		"base_atk": 54,
 		"secondary": {
 			"key": "critRate",
@@ -1335,7 +1335,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010094_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010094_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "critDmg",
@@ -1349,7 +1349,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020094_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020094_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "critRate",
@@ -1363,7 +1363,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030094_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030094_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "critRate",
@@ -1377,7 +1377,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040094_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040094_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "critDmg",
@@ -1391,7 +1391,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 4,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050094_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050094_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "critDmg",
@@ -1405,7 +1405,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030036_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030036_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critDmg",
@@ -1419,7 +1419,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020066_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020066_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critRate",
@@ -1433,7 +1433,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010056_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010056_UI.webp",
 		"base_atk": 40,
 		"secondary": {
 			"key": "critRate",
@@ -1447,7 +1447,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030046_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030046_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critRate",
@@ -1461,7 +1461,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010066_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010066_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "energyRegen",
@@ -1475,7 +1475,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010045_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010045_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critDmg",
@@ -1489,7 +1489,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020045_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020045_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "energyRegen",
@@ -1503,7 +1503,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030045_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030045_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critDmg",
@@ -1517,7 +1517,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040045_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040045_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critRate",
@@ -1531,7 +1531,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050045_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050045_UI.webp",
 		"base_atk": 42,
 		"secondary": {
 			"key": "energyRegen",
@@ -1545,7 +1545,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020076_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020076_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critRate",
@@ -1559,7 +1559,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040056_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040056_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critRate",
@@ -1573,7 +1573,7 @@
 		"type": 4,
 		"type_name": "Gauntlets",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040066_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21040066_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critDmg",
@@ -1587,7 +1587,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050076_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050076_UI.webp",
 		"base_atk": 40,
 		"secondary": {
 			"key": "critRate",
@@ -1601,7 +1601,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020086_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020086_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critRate",
@@ -1615,7 +1615,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030056_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030056_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critDmg",
@@ -1629,7 +1629,7 @@
 		"type": 3,
 		"type_name": "Pistols",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030066_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21030066_UI.webp",
 		"base_atk": 40,
 		"secondary": {
 			"key": "critDmg",
@@ -1643,7 +1643,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050086_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050086_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critRate",
@@ -1657,7 +1657,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020096_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020096_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critRate",
@@ -1671,7 +1671,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050096_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050096_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "energyRegen",
@@ -1685,7 +1685,7 @@
 		"type": 1,
 		"type_name": "Broadblade",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010076_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21010076_UI.webp",
 		"base_atk": 33,
 		"secondary": {
 			"key": "hpPercent",
@@ -1699,7 +1699,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020106_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020106_UI.webp",
 		"base_atk": 40,
 		"secondary": {
 			"key": "critRate",
@@ -1713,7 +1713,7 @@
 		"type": 2,
 		"type_name": "Sword",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020107_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21020107_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critRate",
@@ -1727,7 +1727,7 @@
 		"type": 5,
 		"type_name": "Rectifier",
 		"rarity": 5,
-		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050116_UI.png",
+		"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconWeapon160/T_IconWeapon160_21050116_UI.webp",
 		"base_atk": 47,
 		"secondary": {
 			"key": "critRate",

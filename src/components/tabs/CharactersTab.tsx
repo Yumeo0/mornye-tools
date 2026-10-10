@@ -70,7 +70,7 @@ interface EchoEntry {
 	echo_sets?: { name: string; icon: string }[];
 }
 
-interface CharacterEntry {
+export interface CharacterEntry {
 	id: number;
 	name: string;
 	image: string;
@@ -104,7 +104,7 @@ interface CardWeapon {
 	name: string | null;
 }
 
-interface CardAccount {
+export interface CardAccount {
 	level: number;
 	chain: number;
 	echoCount: number;
@@ -166,7 +166,7 @@ const MAIN_STAT_SLOTS = [
 ];
 
 // All characters (deduplicated, special forms excluded), sorted by name.
-const allCharacters: CharacterEntry[] = (() => {
+export const allCharacters: CharacterEntry[] = (() => {
 	const seen = new Set<number>();
 	const list: CharacterEntry[] = [];
 	for (const character of characterData as {
@@ -199,7 +199,7 @@ const allCharacters: CharacterEntry[] = (() => {
 })();
 
 // Distinct element / weapon-type filter options derived from the catalog
-const elementOptions = (() => {
+export const elementOptions = (() => {
 	const map = new Map<string, string | null>();
 	for (const character of allCharacters) {
 		if (character.element && !map.has(character.element)) {
@@ -209,7 +209,7 @@ const elementOptions = (() => {
 	return [...map].map(([value, icon]) => ({ value, icon }));
 })();
 
-const weaponTypeOptions = (() => {
+export const weaponTypeOptions = (() => {
 	const map = new Map<string, string | null>();
 	for (const character of allCharacters) {
 		if (character.weaponType && !map.has(character.weaponType)) {
@@ -220,7 +220,7 @@ const weaponTypeOptions = (() => {
 })();
 
 // Character list filters, one input type per facet
-interface CharacterFilters {
+export interface CharacterFilters {
 	search: string;
 	elements: string[];
 	weaponTypes: string[];
@@ -230,10 +230,10 @@ interface CharacterFilters {
 	chainRange: [number, number];
 }
 
-const LEVEL_RANGE: [number, number] = [1, 90];
-const CHAIN_RANGE: [number, number] = [0, 6];
+export const LEVEL_RANGE: [number, number] = [1, 90];
+export const CHAIN_RANGE: [number, number] = [0, 6];
 
-const DEFAULT_FILTERS: CharacterFilters = {
+export const DEFAULT_FILTERS: CharacterFilters = {
 	search: "",
 	elements: [],
 	weaponTypes: [],
@@ -253,7 +253,7 @@ const CHARACTER_SORT_KEYS = new Set<string>([
 
 // Saved filters are coerced onto the current shape so stale persisted data
 // cannot break the tab.
-function reviveCharacterFilters(value: unknown): CharacterFilters {
+export function reviveCharacterFilters(value: unknown): CharacterFilters {
 	if (typeof value !== "object" || value === null) return DEFAULT_FILTERS;
 	const raw = value as Partial<CharacterFilters>;
 	const range = (
@@ -276,7 +276,7 @@ function reviveCharacterFilters(value: unknown): CharacterFilters {
 	};
 }
 
-const reviveCharacterSort = (value: unknown): CharacterSortKey => {
+export const reviveCharacterSort = (value: unknown): CharacterSortKey => {
 	const key = reviveString(value);
 	return CHARACTER_SORT_KEYS.has(key) ? (key as CharacterSortKey) : "name";
 };
@@ -284,7 +284,7 @@ const reviveCharacterSort = (value: unknown): CharacterSortKey => {
 const reviveCharacterId = (value: unknown): number | null =>
 	typeof value === "number" && Number.isFinite(value) ? value : null;
 
-function matchesCharacterFilters(
+export function matchesCharacterFilters(
 	character: CharacterEntry,
 	account: CardAccount | undefined,
 	filters: CharacterFilters,
@@ -339,10 +339,10 @@ function matchesCharacterFilters(
 	return true;
 }
 
-type CharacterSortKey = "name" | "level" | "chain" | "rarity" | "echoes";
+export type CharacterSortKey = "name" | "level" | "chain" | "rarity" | "echoes";
 
 // `desc` is the natural default direction per key
-const CHARACTER_SORT_OPTIONS: {
+export const CHARACTER_SORT_OPTIONS: {
 	value: CharacterSortKey;
 	label: string;
 	desc: boolean;
@@ -354,7 +354,7 @@ const CHARACTER_SORT_OPTIONS: {
 	{ value: "echoes", label: "Echoes", desc: true },
 ];
 
-function sortCharacters(
+export function sortCharacters(
 	list: CharacterEntry[],
 	accounts: Map<number, CardAccount>,
 	key: CharacterSortKey,
@@ -437,7 +437,7 @@ function ChainNodes({
 }
 
 /** Labeled dual-thumb range filter (level / chain). */
-function RangeFilter({
+export function RangeFilter({
 	label,
 	min,
 	max,

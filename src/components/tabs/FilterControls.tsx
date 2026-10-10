@@ -76,7 +76,9 @@ export function FilterSelect({
 							className="size-3.5 shrink-0 object-contain"
 						/>
 					)}
-					{selected?.label ?? value}
+					<span className="min-w-0 flex-1 truncate text-left">
+						{selected?.label ?? value}
+					</span>
 				</SelectTrigger>
 				<SelectContent>
 					{options.map((option) => (

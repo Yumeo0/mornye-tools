@@ -8,7 +8,7 @@ Produces `src/configs/weapon_data.json`:
         "name": "Emerald of Genesis",
         "type": 1,                 // 1 Broadblade .. 5 Rectifier
         "rarity": 4,
-        "icon": "/wuwa-assets/...png",
+        "icon": "/wuwa-assets/...webp",
         "base_atk": 33,            // level-1 base ATK
         "secondary": { "key": "critRate", "value": 4.5, "is_ratio": true }
       }, ...
@@ -81,11 +81,18 @@ def fix_file_path_capitalization(relative_path):
 		return None
 	fs_path = ASSETS_PATH / relative_path.replace("/wuwa-assets/", "")
 	parent_dir = fs_path.parent
-	filename = fs_path.name
+	stem = fs_path.stem
+	# Compare stems only: the published extension (.webp) differs from the
+	# source files on disk (.png).
 	if parent_dir.exists():
 		for file in parent_dir.iterdir():
-			if file.is_file() and file.name.lower() == filename.lower():
-				return relative_path.rsplit("/", 1)[0] + "/" + file.name
+			if file.is_file() and file.stem.lower() == stem.lower():
+				return (
+					relative_path.rsplit("/", 1)[0]
+					+ "/"
+					+ file.stem
+					+ Path(relative_path).suffix
+				)
 	return relative_path
 
 
@@ -95,7 +102,7 @@ def convert_unreal_path_to_relative(unreal_path):
 	unreal_path = unreal_path.replace("/Game/Aki/", "")
 	if "." in unreal_path:
 		unreal_path = unreal_path.rsplit(".", 1)[0]
-	unreal_path = f"{unreal_path}.png"
+	unreal_path = f"{unreal_path}.webp"
 	return fix_file_path_capitalization(f"/wuwa-assets/{unreal_path}")
 
 

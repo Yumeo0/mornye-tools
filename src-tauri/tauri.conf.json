@@ -20,7 +20,8 @@
         "height": 720,
         "visible": true,
         "decorations": false,
-        "resizable": true
+        "resizable": true,
+        "dragDropEnabled": false
       },
       {
         "label": "overlay",

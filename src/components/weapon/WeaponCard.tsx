@@ -41,11 +41,11 @@ export function weaponRarityClass(
 
 // Weapon type id -> in-game glyph (Common/Image/Com/Icon)
 export const WEAPON_TYPE_ICONS: Record<number, string> = {
-	1: "/wuwa-assets/UI/UIResources/Common/Image/Com/Icon/T_ComIconBroadblade.png",
-	2: "/wuwa-assets/UI/UIResources/Common/Image/Com/Icon/T_ComIconSword.png",
-	3: "/wuwa-assets/UI/UIResources/Common/Image/Com/Icon/T_ComIconPistols.png",
-	4: "/wuwa-assets/UI/UIResources/Common/Image/Com/Icon/T_ComIconGauntlets.png",
-	5: "/wuwa-assets/UI/UIResources/Common/Image/Com/Icon/T_ComIconRectifier.png",
+	1: "/wuwa-assets/UI/UIResources/Common/Image/Com/Icon/T_ComIconBroadblade.webp",
+	2: "/wuwa-assets/UI/UIResources/Common/Image/Com/Icon/T_ComIconSword.webp",
+	3: "/wuwa-assets/UI/UIResources/Common/Image/Com/Icon/T_ComIconPistols.webp",
+	4: "/wuwa-assets/UI/UIResources/Common/Image/Com/Icon/T_ComIconGauntlets.webp",
+	5: "/wuwa-assets/UI/UIResources/Common/Image/Com/Icon/T_ComIconRectifier.webp",
 };
 
 /** Icons are synced by `scripts/sync-calc-data.mjs` into `public/data`. */

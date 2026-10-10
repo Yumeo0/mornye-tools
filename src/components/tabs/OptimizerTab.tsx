@@ -5,6 +5,7 @@
 // search itself stay in `@wuwacalc/core` (see `src/lib/calc/optimizer.ts`).
 
 import { listResRttn } from "@wuwacalc/core/data/catalog/gameDataService";
+import { getResSeedBy } from "@wuwacalc/core/data/catalog/resonatorSeedService";
 import { DEF_ENEMY_PROF } from "@wuwacalc/core/domain/entities/enemy";
 import type {
 	EchoInstance,
@@ -21,9 +22,19 @@ import type {
 	OptResultEntry,
 	OptResultStats,
 } from "@wuwacalc/core/engine/optimizer/types";
-import { ChevronDown, ChevronRight, Play, Square } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+	ChevronDown,
+	ChevronRight,
+	Pencil,
+	Play,
+	Square,
+	UserRound,
+	X,
+} from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import {
+	allCharacters,
 	charactersById,
 	EchoCard,
 	echoCost,
@@ -31,11 +42,13 @@ import {
 	echoName,
 	sonataIcon128,
 } from "@/components/echo/EchoCard";
+import { CharacterPickerDialog } from "@/components/tabs/CharacterPickerDialog";
 import {
 	type FilterOption,
 	FilterSelect,
 	MultiFilterSelect,
 } from "@/components/tabs/FilterControls";
+import { LoadoutEffectsPanel } from "@/components/tabs/LoadoutEffectsPanel";
 import { CardBadge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,6 +59,8 @@ import {
 	SelectTrigger,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { weaponIconUrl, weaponsById } from "@/components/weapon/WeaponCard";
 import { type Echo, STAT_LABELS, type StatKey } from "@/lib/account";
 import { ensureCoreReady, isCoreReady } from "@/lib/calc/core";
 import {
@@ -62,6 +77,11 @@ import {
 } from "@/lib/calc/optimizer";
 import {
 	type AccountTranslation,
+	buildOptimizerRuntime,
+	EMPTY_OPTIMIZER_OVERRIDES,
+	hasOptimizerOverrides,
+	makeUnownedBuild,
+	type OptimizerOverrides,
 	type TranslatedBuild,
 	type TranslationError,
 	toEchoInstance,
@@ -74,6 +94,7 @@ import {
 } from "@/lib/persisted";
 import { statIconAsset } from "@/lib/stats";
 import { useAccountSnapshot } from "@/lib/useAccountSnapshot";
+import { cn } from "@/lib/utils";
 import echoData from "../../configs/echo_data.json";
 
 const DEFAULT_RESULTS_LIMIT = 128;
@@ -97,8 +118,6 @@ const EQUIPPED_OPTIONS: FilterOption[] = [
 	{ value: "exclude-others", label: "Exclude other resonators" },
 	{ value: "exclude-all", label: "Exclude all equipped" },
 ];
-
-const MAX_ECHO_LEVEL = 25;
 
 interface OptimizerFilters {
 	equipped: EquippedMode;
@@ -215,6 +234,385 @@ const reviveEngine = (value: unknown): "gpu" | "cpu" => {
 	return hasWebGpu() ? "gpu" : "cpu";
 };
 
+const MAX_ECHO_LEVEL = 25;
+const MAX_RESONATOR_LEVEL = 90;
+
+const chainOptions: FilterOption[] = [0, 1, 2, 3, 4, 5, 6].map((chain) => ({
+	value: String(chain),
+	label: String(chain),
+}));
+
+const weaponRankOptions: FilterOption[] = [1, 2, 3, 4, 5].map((rank) => ({
+	value: String(rank),
+	label: `R${rank}`,
+}));
+
+function clampLoadoutNumber(value: number, min: number, max: number): number {
+	return Math.min(max, Math.max(min, Math.round(value)));
+}
+
+function reviveControls(
+	value: unknown,
+): Record<string, boolean | number | string> | null {
+	if (typeof value !== "object" || value === null) return null;
+	const out: Record<string, boolean | number | string> = {};
+	for (const [key, raw] of Object.entries(value as Record<string, unknown>)) {
+		if (
+			typeof raw === "boolean" ||
+			typeof raw === "number" ||
+			typeof raw === "string"
+		) {
+			out[key] = raw;
+		}
+	}
+	return Object.keys(out).length > 0 ? out : null;
+}
+
+function reviveOverrides(value: unknown): Record<string, OptimizerOverrides> {
+	if (typeof value !== "object" || value === null) return {};
+	const out: Record<string, OptimizerOverrides> = {};
+	for (const [key, raw] of Object.entries(value as Record<string, unknown>)) {
+		if (typeof raw !== "object" || raw === null) continue;
+		const entry = raw as Partial<OptimizerOverrides>;
+		const next: OptimizerOverrides = {
+			level: typeof entry.level === "number" ? entry.level : null,
+			chain: typeof entry.chain === "number" ? entry.chain : null,
+			weaponItemId:
+				typeof entry.weaponItemId === "number" ? entry.weaponItemId : null,
+			weaponLevel:
+				typeof entry.weaponLevel === "number" ? entry.weaponLevel : null,
+			weaponRank:
+				typeof entry.weaponRank === "number" ? entry.weaponRank : null,
+			controls: reviveControls((raw as { controls?: unknown }).controls),
+		};
+		if (hasOptimizerOverrides(next)) out[key] = next;
+	}
+	return out;
+}
+
+/** Field label in the loadout editor; the amber `*` marks a saved-data edit. */
+function LoadoutLabel({
+	label,
+	edited,
+	owned,
+}: {
+	label: string;
+	edited: boolean;
+	owned: boolean;
+}) {
+	return (
+		<span
+			className={`text-[10px] leading-none ${
+				edited ? "font-semibold text-foreground" : "text-muted-foreground"
+			}`}
+		>
+			{label}
+			{edited && owned && (
+				<span className="ml-0.5 text-amber-400" title="Changed from saved data">
+					*
+				</span>
+			)}
+		</span>
+	);
+}
+
+/**
+ * Edit dialog for one optimizer slot: level, chain and weapon, with every
+ * deviation from the captured account data marked by an amber `*` (and an
+ * overall amber dot on the slot's select trigger).
+ */
+function LoadoutDialog({
+	build,
+	owned,
+	ownedWeaponItemIds,
+	override,
+	baselineRuntime,
+	onPatch,
+	onClose,
+}: {
+	build: TranslatedBuild;
+	owned: boolean;
+	ownedWeaponItemIds: Set<number>;
+	override: OptimizerOverrides;
+	/** Same runtime without control overrides; anchors the effects tab. */
+	baselineRuntime: ResRuntime | null;
+	onPatch: (patch: Partial<OptimizerOverrides>) => void;
+	onClose: () => void;
+}) {
+	useEffect(() => {
+		const onKey = (event: KeyboardEvent) => {
+			if (event.key === "Escape") onClose();
+		};
+		window.addEventListener("keydown", onKey);
+		return () => window.removeEventListener("keydown", onKey);
+	}, [onClose]);
+
+	const [tab, setTab] = useState<"loadout" | "effects">("loadout");
+
+	const savedWeapon = build.weapon;
+	const savedWeaponItemId = savedWeapon ? Number(savedWeapon.id) : null;
+	const shownLevel = override.level ?? build.resonator.level;
+	const shownChain = override.chain ?? build.resonator.chain;
+	const shownWeaponLevel =
+		override.weaponLevel ?? savedWeapon?.level ?? MAX_RESONATOR_LEVEL;
+	const shownWeaponRank = override.weaponRank ?? savedWeapon?.rank ?? 1;
+
+	// Weapon options for this character, filtered to its weapon type.
+	const weaponOptions: FilterOption[] = useMemo(() => {
+		const weaponType = getResSeedBy(build.roleId)?.weaponType;
+		return [...weaponsById.values()]
+			.filter((weapon) => weaponType == null || weapon.type === weaponType)
+			.sort((a, b) => b.rarity - a.rarity || a.name.localeCompare(b.name))
+			.map((weapon) => ({
+				value: String(weapon.item_id),
+				label:
+					weapon.name +
+					(ownedWeaponItemIds.has(weapon.item_id) ? "" : " · not owned"),
+				icon: weaponIconUrl(weapon.item_id),
+			}));
+	}, [build.roleId, ownedWeaponItemIds]);
+
+	const savedWeaponName = savedWeapon
+		? (weaponsById.get(savedWeaponItemId ?? 0)?.name ?? savedWeapon.id)
+		: null;
+	const savedWeaponOption: FilterOption = {
+		value: "saved",
+		label: savedWeaponName
+			? owned
+				? `Saved · ${savedWeaponName}`
+				: `Default · ${savedWeaponName}`
+			: owned
+				? "None equipped (default)"
+				: "Default weapon",
+		icon:
+			savedWeaponItemId != null ? weaponIconUrl(savedWeaponItemId) : undefined,
+	};
+	const weaponSelectValue =
+		override.weaponItemId != null ? String(override.weaponItemId) : "saved";
+
+	const clearWeaponPatch = {
+		weaponItemId: null,
+		weaponLevel: null,
+		weaponRank: null,
+	} as const;
+
+	// Portaled so the dialog's own tab list cannot pick up the app shell's
+	// vertical `group/tabs` context (its orientation variants are global).
+	return createPortal(
+		<div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+			<button
+				type="button"
+				aria-label="Close"
+				title="Close"
+				className="absolute inset-0 cursor-default bg-black/60"
+				onClick={onClose}
+			/>
+			<div className="bg-card text-card-foreground ring-foreground/20 relative flex h-160 max-h-[85vh] w-full max-w-2xl flex-col gap-4 p-4 shadow-2xl ring-1">
+				<header className="flex shrink-0 items-center gap-3">
+					{roleIcon(build) ? (
+						<img
+							src={roleIcon(build)}
+							alt=""
+							className="size-10 shrink-0 object-contain"
+						/>
+					) : null}
+					<div className="min-w-0 flex-1">
+						<p className="truncate text-sm font-semibold">{roleLabel(build)}</p>
+						{!owned && (
+							<span
+								className="text-[10px] text-amber-400"
+								title="No saved data for this character; defaults are used until you edit"
+							>
+								Not owned
+							</span>
+						)}
+					</div>
+					<Button
+						variant="ghost"
+						size="icon-sm"
+						title="Close"
+						onClick={onClose}
+					>
+						<X className="size-4" />
+					</Button>
+				</header>
+
+				<Tabs
+					value={tab}
+					onValueChange={(value) =>
+						setTab(value === "effects" ? "effects" : "loadout")
+					}
+					className="min-h-0 flex-1"
+				>
+					<TabsList variant="line" className="shrink-0 self-start">
+						<TabsTrigger value="loadout">Loadout</TabsTrigger>
+						<TabsTrigger value="effects">Effects</TabsTrigger>
+					</TabsList>
+
+					<TabsContent value="loadout" className="min-h-0 overflow-y-auto py-4">
+						<div className="grid grid-cols-2 gap-x-4 gap-y-3">
+							<div className="flex flex-col gap-1">
+								<LoadoutLabel
+									label="Level"
+									edited={override.level != null}
+									owned={owned}
+								/>
+								<Input
+									type="number"
+									min={1}
+									max={MAX_RESONATOR_LEVEL}
+									value={String(shownLevel)}
+									onChange={(event) => {
+										const next = Number.parseInt(event.target.value, 10);
+										if (!Number.isFinite(next)) return;
+										const level = clampLoadoutNumber(
+											next,
+											1,
+											MAX_RESONATOR_LEVEL,
+										);
+										onPatch({
+											level: level === build.resonator.level ? null : level,
+										});
+									}}
+									className="h-7 px-1.5 text-xs"
+								/>
+							</div>
+							<div className="flex flex-col gap-1">
+								<LoadoutLabel
+									label="Chain"
+									edited={override.chain != null}
+									owned={owned}
+								/>
+								<FilterSelect
+									label=""
+									value={String(shownChain)}
+									options={chainOptions}
+									onChange={(value) => {
+										const chain = Number.parseInt(value, 10);
+										if (!Number.isFinite(chain)) return;
+										onPatch({
+											chain: chain === build.resonator.chain ? null : chain,
+										});
+									}}
+								/>
+							</div>
+							<div className="col-span-2 flex flex-col gap-1">
+								<LoadoutLabel
+									label="Weapon"
+									edited={override.weaponItemId != null}
+									owned={owned}
+								/>
+								<FilterSelect
+									label=""
+									value={weaponSelectValue}
+									options={[savedWeaponOption, ...weaponOptions]}
+									onChange={(value) => {
+										if (value === "saved") {
+											onPatch({ ...clearWeaponPatch });
+											return;
+										}
+										const itemId = Number.parseInt(value, 10);
+										if (!Number.isFinite(itemId)) return;
+										onPatch(
+											itemId === savedWeaponItemId
+												? { ...clearWeaponPatch }
+												: { weaponItemId: itemId },
+										);
+									}}
+								/>
+							</div>
+							<div className="flex flex-col gap-1">
+								<LoadoutLabel
+									label="Weapon Level"
+									edited={override.weaponLevel != null}
+									owned={owned}
+								/>
+								<Input
+									type="number"
+									min={1}
+									max={MAX_RESONATOR_LEVEL}
+									value={String(shownWeaponLevel)}
+									onChange={(event) => {
+										const next = Number.parseInt(event.target.value, 10);
+										if (!Number.isFinite(next)) return;
+										const level = clampLoadoutNumber(
+											next,
+											1,
+											MAX_RESONATOR_LEVEL,
+										);
+										const savedLevel =
+											savedWeapon?.level ?? MAX_RESONATOR_LEVEL;
+										onPatch({
+											weaponLevel: level === savedLevel ? null : level,
+										});
+									}}
+									className="h-7 px-1.5 text-xs"
+								/>
+							</div>
+							<div className="flex flex-col gap-1">
+								<LoadoutLabel
+									label="Rank"
+									edited={override.weaponRank != null}
+									owned={owned}
+								/>
+								<FilterSelect
+									label=""
+									value={String(shownWeaponRank)}
+									options={weaponRankOptions}
+									onChange={(value) => {
+										const rank = Number.parseInt(value, 10);
+										if (!Number.isFinite(rank)) return;
+										const savedRank = savedWeapon?.rank ?? 1;
+										onPatch({ weaponRank: rank === savedRank ? null : rank });
+									}}
+								/>
+							</div>
+						</div>
+					</TabsContent>
+
+					<TabsContent value="effects" className="flex min-h-0 flex-col">
+						<div className="min-h-0 flex-1 overflow-y-auto pr-1">
+							<LoadoutEffectsPanel
+								roleId={build.roleId}
+								runtime={build.runtime}
+								baseline={baselineRuntime}
+								controls={override.controls}
+								onChange={(controls) => onPatch({ controls })}
+							/>
+						</div>
+					</TabsContent>
+				</Tabs>
+
+				<footer className="flex shrink-0 items-center justify-end gap-2">
+					{hasOptimizerOverrides(override) && (
+						<Button
+							variant="ghost"
+							size="sm"
+							title={
+								owned ? "Revert all edits to the saved data" : "Reset all edits"
+							}
+							onClick={() =>
+								onPatch({
+									...clearWeaponPatch,
+									level: null,
+									chain: null,
+									controls: null,
+								})
+							}
+						>
+							Revert
+						</Button>
+					)}
+					<Button size="sm" onClick={onClose}>
+						Done
+					</Button>
+				</footer>
+			</div>
+		</div>,
+		document.body,
+	);
+}
+
 function hasWebGpu(): boolean {
 	return (
 		typeof navigator !== "undefined" &&
@@ -251,73 +649,6 @@ function formatMs(ms: number): string {
 
 function statPercent(value: number): string {
 	return `${value.toFixed(1)}%`;
-}
-
-function RoleSelect({
-	label,
-	value,
-	onChange,
-	builds,
-	disabledRoleIds,
-	allowNone,
-}: {
-	label: string;
-	value: string;
-	onChange: (value: string) => void;
-	builds: TranslatedBuild[];
-	disabledRoleIds: string[];
-	allowNone: boolean;
-}) {
-	const selected = builds.find((build) => build.roleId === value);
-	return (
-		<div className="flex min-w-0 flex-col gap-1">
-			<span className="text-[10px] leading-none text-muted-foreground">
-				{label}
-			</span>
-			<Select
-				value={value === "" ? null : value}
-				onValueChange={(next) =>
-					onChange(typeof next === "string" && next !== "__none" ? next : "")
-				}
-			>
-				<SelectTrigger size="sm" className="w-full">
-					{selected && roleIcon(selected) ? (
-						<img
-							src={roleIcon(selected)}
-							alt=""
-							className="size-4 shrink-0 object-contain"
-						/>
-					) : null}
-					<span className="truncate">
-						{selected
-							? roleLabel(selected)
-							: allowNone
-								? "None"
-								: "Select resonator"}
-					</span>
-				</SelectTrigger>
-				<SelectContent>
-					{allowNone && <SelectItem value="__none">None</SelectItem>}
-					{builds.map((build) => (
-						<SelectItem
-							key={build.roleId}
-							value={build.roleId}
-							disabled={disabledRoleIds.includes(build.roleId)}
-						>
-							{roleIcon(build) ? (
-								<img
-									src={roleIcon(build)}
-									alt=""
-									className="size-4 shrink-0 object-contain"
-								/>
-							) : null}
-							{roleLabel(build)}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
-		</div>
-	);
 }
 
 function StatChips({ stats }: { stats: OptResultStats }) {
@@ -496,6 +827,125 @@ function ResultRow({
 	);
 }
 
+type SlotKey = "target" | "mateOne" | "mateTwo";
+
+const SLOT_LABELS: Record<SlotKey, string> = {
+	target: "Target",
+	mateOne: "Teammate 1",
+	mateTwo: "Teammate 2",
+};
+
+/**
+ * One team slot in the optimizer: a character box instead of a dropdown.
+ * Clicking opens the character picker, the pencil opens the loadout editor,
+ * and dragging a box onto another swaps the two slots.
+ */
+function CharacterSlotBox({
+	label,
+	build,
+	summary,
+	owned,
+	modified,
+	dragActive,
+	dragOver,
+	onOpenPicker,
+	onOpenEditor,
+	onDragStart,
+	onDragOver,
+	onDragLeave,
+	onDrop,
+	onDragEnd,
+}: {
+	label: string;
+	build?: TranslatedBuild;
+	summary: string;
+	owned: boolean;
+	modified: boolean;
+	dragActive: boolean;
+	dragOver: boolean;
+	onOpenPicker: () => void;
+	onOpenEditor: () => void;
+	onDragStart: (event: React.DragEvent) => void;
+	onDragOver: (event: React.DragEvent) => void;
+	onDragLeave: () => void;
+	onDrop: (event: React.DragEvent) => void;
+	onDragEnd: () => void;
+}) {
+	const empty = !build;
+	return (
+		<fieldset
+			aria-label={`${label} slot`}
+			draggable={!empty}
+			onDragStart={empty ? undefined : onDragStart}
+			onDragOver={onDragOver}
+			onDragLeave={onDragLeave}
+			onDrop={onDrop}
+			onDragEnd={onDragEnd}
+			className={cn(
+				"bg-card text-card-foreground ring-foreground/10 relative flex min-h-14 min-w-0 items-center gap-2 p-2 ring-1",
+				!empty && "cursor-grab active:cursor-grabbing",
+				empty && "border border-dashed border-border bg-transparent",
+				dragOver && dragActive && "ring-2 ring-primary",
+			)}
+		>
+			<button
+				type="button"
+				title={empty ? `Choose ${label.toLowerCase()}` : "Choose character"}
+				onClick={onOpenPicker}
+				className="flex min-w-0 flex-1 items-center gap-2.5 text-left"
+			>
+				<span className="relative shrink-0">
+					{build && roleIcon(build) ? (
+						<img
+							src={roleIcon(build)}
+							alt=""
+							className="size-10 object-contain"
+						/>
+					) : empty ? (
+						<UserRound className="size-7 text-muted-foreground" />
+					) : (
+						<span className="size-10 bg-black/30" />
+					)}
+					{modified && build && (
+						<span
+							className="absolute -top-1 -left-1 size-2.5 rounded-full bg-amber-400 ring-2 ring-card"
+							title="Edited from saved data"
+						/>
+					)}
+				</span>
+				<span className="min-w-0 flex-1">
+					<span className="block truncate text-sm font-medium">
+						{build ? roleLabel(build) : `Select ${label.toLowerCase()}`}
+					</span>
+					{build && (
+						<span className="flex items-center gap-1.5 text-[10px] leading-none text-muted-foreground">
+							{summary && <span className="truncate">{summary}</span>}
+							{!owned && (
+								<span
+									className="shrink-0 text-amber-400"
+									title="No saved data; defaults are used"
+								>
+									not owned
+								</span>
+							)}
+						</span>
+					)}
+				</span>
+			</button>
+			{!empty && (
+				<Button
+					variant="ghost"
+					size="icon-sm"
+					title="Edit loadout (level, chain, weapon)"
+					onClick={onOpenEditor}
+				>
+					<Pencil className="size-3.5" />
+				</Button>
+			)}
+		</fieldset>
+	);
+}
+
 export function OptimizerTab({ active }: { active: boolean }) {
 	const { snapshot } = useAccountSnapshot();
 	const [coreReady, setCoreReady] = useState(() => isCoreReady());
@@ -521,10 +971,40 @@ export function OptimizerTab({ active }: { active: boolean }) {
 		[coreReady, snapshot],
 	);
 	const builds = translation.builds;
-	const buildsByRoleId = useMemo(
-		() => new Map(builds.map((build) => [build.roleId, build])),
+	// Per-character loadout edits (level / chain / weapon), keyed by role id.
+	const [overrides, setOverrides] = usePersistedState<
+		Record<string, OptimizerOverrides>
+	>("optimizer.overrides", {}, reviveOverrides);
+	const ownedRoleIds = useMemo(
+		() => new Set(builds.map((build) => build.roleId)),
 		[builds],
 	);
+
+	// Every catalog character is selectable; owned resonators come from the
+	// snapshot, everything else gets a default (unowned) build.
+	const allBuilds: TranslatedBuild[] = useMemo(() => {
+		if (!coreReady) return [];
+		const list = [...builds];
+		for (const character of allCharacters) {
+			const roleId = String(character.character_id);
+			if (ownedRoleIds.has(roleId)) continue;
+			const unowned = makeUnownedBuild(roleId, character.character_name);
+			if (unowned) list.push(unowned);
+		}
+		return list.sort((a, b) => roleLabel(a).localeCompare(roleLabel(b)));
+	}, [coreReady, builds, ownedRoleIds]);
+
+	// Builds with the saved-data/override runtime applied.
+	const buildsByRoleId = useMemo(() => {
+		const map = new Map<string, TranslatedBuild>();
+		for (const build of allBuilds) {
+			map.set(build.roleId, {
+				...build,
+				runtime: buildOptimizerRuntime(build, overrides[build.roleId]),
+			});
+		}
+		return map;
+	}, [allBuilds, overrides]);
 
 	const [targetRoleId, setTargetRoleId] = usePersistedState(
 		"optimizer.targetRoleId",
@@ -547,18 +1027,42 @@ export function OptimizerTab({ active }: { active: boolean }) {
 		reviveOptimizerFilters,
 	);
 
+	// Pick the first build once when nothing is selected yet; afterwards an
+	// empty target slot is a deliberate choice (e.g. dragged away) and only a
+	// stale selection heals back to a default.
+	const defaultedTargetRef = useRef(false);
 	useEffect(() => {
-		if (builds.length === 0) return;
-		if (!targetRoleId || !buildsByRoleId.has(targetRoleId)) {
-			setTargetRoleId(builds[0].roleId);
+		if (allBuilds.length === 0) return;
+		if (!defaultedTargetRef.current) {
+			defaultedTargetRef.current = true;
+			if (!targetRoleId) setTargetRoleId(allBuilds[0].roleId);
+			return;
 		}
-	}, [builds, buildsByRoleId, targetRoleId, setTargetRoleId]);
+		if (targetRoleId && !buildsByRoleId.has(targetRoleId)) {
+			setTargetRoleId(allBuilds[0].roleId);
+		}
+	}, [allBuilds, buildsByRoleId, targetRoleId, setTargetRoleId]);
 
-	// The target cannot also fill a teammate slot.
+	// The target cannot also fill a teammate slot, and stale selections
+	// (characters that left the catalog) clear themselves. The validity check
+	// only runs once the character list is actually loaded, otherwise it would
+	// wipe restored slots during startup.
 	useEffect(() => {
 		if (mateOne && mateOne === targetRoleId) setMateOne("");
 		if (mateTwo && mateTwo === targetRoleId) setMateTwo("");
-	}, [targetRoleId, mateOne, mateTwo, setMateOne, setMateTwo]);
+		if (allBuilds.length > 0) {
+			if (mateOne && !buildsByRoleId.has(mateOne)) setMateOne("");
+			if (mateTwo && !buildsByRoleId.has(mateTwo)) setMateTwo("");
+		}
+	}, [
+		allBuilds,
+		targetRoleId,
+		mateOne,
+		mateTwo,
+		buildsByRoleId,
+		setMateOne,
+		setMateTwo,
+	]);
 
 	const rotations: RotDef[] = useMemo(() => {
 		if (!coreReady || !targetRoleId) return [];
@@ -780,6 +1284,159 @@ export function OptimizerTab({ active }: { active: boolean }) {
 		}));
 	}, [targetBuild, companionRuntimes, setFilters]);
 
+	// --- Loadout editor: saved data + per-character overrides -----------------
+
+	// Which role slot's edit dialog is open (transient, not persisted).
+	const [editingSlot, setEditingSlot] = useState<SlotKey | null>(null);
+	// Which slot's character picker is open, plus drag-and-drop state for
+	// swapping slots.
+	const [pickingSlot, setPickingSlot] = useState<SlotKey | null>(null);
+	const [dragSlot, setDragSlot] = useState<SlotKey | null>(null);
+	const [dragOverSlot, setDragOverSlot] = useState<SlotKey | null>(null);
+	const editingRoleId = editingSlot
+		? editingSlot === "target"
+			? targetRoleId
+			: editingSlot === "mateOne"
+				? mateOne
+				: mateTwo
+		: null;
+	const editingBuild = editingRoleId
+		? buildsByRoleId.get(editingRoleId)
+		: undefined;
+	const editingOverride = editingRoleId
+		? (overrides[editingRoleId] ?? EMPTY_OPTIMIZER_OVERRIDES)
+		: EMPTY_OPTIMIZER_OVERRIDES;
+	// Effect edits are stored as deviations from this runtime: the same loadout
+	// choices (level/chain/weapon) with every effect control back at default.
+	const editingBaselineRuntime = useMemo(() => {
+		if (!editingBuild) return null;
+		const original = allBuilds.find(
+			(build) => build.roleId === editingBuild.roleId,
+		);
+		if (!original) return editingBuild.runtime;
+		return buildOptimizerRuntime(original, {
+			...(overrides[editingBuild.roleId] ?? EMPTY_OPTIMIZER_OVERRIDES),
+			controls: null,
+		});
+	}, [allBuilds, editingBuild, overrides]);
+	const ownedWeaponItemIds = useMemo(
+		() => new Set(snapshot.weapons.map((weapon) => weapon.itemId)),
+		[snapshot.weapons],
+	);
+
+	// --- Slot boxes: read/write accessors + drag-and-drop swaps ---------------
+
+	const slotRoleIds: Record<SlotKey, string> = useMemo(
+		() => ({ target: targetRoleId, mateOne, mateTwo }),
+		[targetRoleId, mateOne, mateTwo],
+	);
+	const setSlotRoleId = useCallback(
+		(slot: SlotKey, roleId: string) => {
+			if (slot === "target") setTargetRoleId(roleId);
+			else if (slot === "mateOne") setMateOne(roleId);
+			else setMateTwo(roleId);
+		},
+		[setTargetRoleId, setMateOne, setMateTwo],
+	);
+	const swapSlots = useCallback(
+		(a: SlotKey, b: SlotKey) => {
+			const roleA = slotRoleIds[a];
+			const roleB = slotRoleIds[b];
+			setSlotRoleId(a, roleB);
+			setSlotRoleId(b, roleA);
+		},
+		// slotRoleIds is memoized on the current ids: the swap always uses the
+		// values visible when the drop happened.
+		[slotRoleIds, setSlotRoleId],
+	);
+
+	// Compact per-slot summary: effective level/chain/weapon (override-aware).
+	const slotSummary = useCallback(
+		(roleId: string): string => {
+			const build = buildsByRoleId.get(roleId);
+			if (!build) return "";
+			const slotOverride = overrides[roleId] ?? EMPTY_OPTIMIZER_OVERRIDES;
+			const level = slotOverride.level ?? build.resonator.level;
+			const chain = slotOverride.chain ?? build.resonator.chain;
+			const weapon =
+				slotOverride.weaponItemId != null
+					? (weaponsById.get(slotOverride.weaponItemId)?.name ?? null)
+					: build.weapon
+						? (weaponsById.get(Number(build.weapon.id))?.name ?? null)
+						: null;
+			return weapon
+				? `Lv ${level} · C${chain} · ${weapon}`
+				: `Lv ${level} · C${chain}`;
+		},
+		[buildsByRoleId, overrides],
+	);
+
+	const renderSlot = (slot: SlotKey) => {
+		const roleId = slotRoleIds[slot];
+		const build = roleId ? buildsByRoleId.get(roleId) : undefined;
+		return (
+			<div key={slot} className="flex min-w-0 flex-col gap-1">
+				<span className="text-[10px] leading-none text-muted-foreground">
+					{SLOT_LABELS[slot]}
+				</span>
+				<CharacterSlotBox
+					label={SLOT_LABELS[slot]}
+					build={build}
+					summary={roleId ? slotSummary(roleId) : ""}
+					owned={roleId != null && ownedRoleIds.has(roleId)}
+					modified={hasOptimizerOverrides(overrides[roleId])}
+					dragActive={dragSlot != null && dragSlot !== slot}
+					dragOver={
+						dragOverSlot === slot && dragSlot != null && dragSlot !== slot
+					}
+					onOpenPicker={() => setPickingSlot(slot)}
+					onOpenEditor={() => setEditingSlot(slot)}
+					onDragStart={(event) => {
+						setDragSlot(slot);
+						event.dataTransfer.setData("text/plain", slot);
+						event.dataTransfer.effectAllowed = "move";
+					}}
+					onDragOver={(event) => {
+						event.preventDefault();
+						event.dataTransfer.dropEffect = "move";
+						if (dragSlot && dragSlot !== slot) setDragOverSlot(slot);
+					}}
+					onDragLeave={() =>
+						setDragOverSlot((current) => (current === slot ? null : current))
+					}
+					onDrop={(event) => {
+						event.preventDefault();
+						if (dragSlot && dragSlot !== slot) swapSlots(dragSlot, slot);
+						setDragSlot(null);
+						setDragOverSlot(null);
+					}}
+					onDragEnd={() => {
+						setDragSlot(null);
+						setDragOverSlot(null);
+					}}
+				/>
+			</div>
+		);
+	};
+
+	// Write one override patch for a role; fields set back to the saved value
+	// become null again, and a fully-cleared override removes itself.
+	const patchRole = useCallback(
+		(roleId: string, patch: Partial<OptimizerOverrides>) => {
+			setOverrides((prev) => {
+				const current = prev[roleId] ?? EMPTY_OPTIMIZER_OVERRIDES;
+				const next = { ...current, ...patch };
+				if (!hasOptimizerOverrides(next)) {
+					return Object.fromEntries(
+						Object.entries(prev).filter(([key]) => key !== roleId),
+					);
+				}
+				return { ...prev, [roleId]: next };
+			});
+		},
+		[setOverrides],
+	);
+
 	const canRun =
 		coreReady &&
 		hasTarget &&
@@ -886,30 +1543,9 @@ export function OptimizerTab({ active }: { active: boolean }) {
 		<div className="flex min-h-0 flex-1 flex-col gap-4">
 			<section className="bg-card text-card-foreground ring-foreground/10 flex shrink-0 flex-col gap-4 p-4 ring-1">
 				<div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 xl:grid-cols-4">
-					<RoleSelect
-						label="Target"
-						value={targetRoleId}
-						onChange={setTargetRoleId}
-						builds={builds}
-						disabledRoleIds={[]}
-						allowNone={false}
-					/>
-					<RoleSelect
-						label="Teammate 1"
-						value={mateOne}
-						onChange={setMateOne}
-						builds={builds}
-						disabledRoleIds={[targetRoleId, mateTwo]}
-						allowNone
-					/>
-					<RoleSelect
-						label="Teammate 2"
-						value={mateTwo}
-						onChange={setMateTwo}
-						builds={builds}
-						disabledRoleIds={[targetRoleId, mateOne]}
-						allowNone
-					/>
+					{renderSlot("target")}
+					{renderSlot("mateOne")}
+					{renderSlot("mateTwo")}
 					<div className="flex min-w-0 flex-col gap-1">
 						<span className="text-[10px] leading-none text-muted-foreground">
 							Rotation
@@ -1138,9 +1774,9 @@ export function OptimizerTab({ active }: { active: boolean }) {
 				{runError && <p className="text-xs text-destructive">{runError}</p>}
 				{snapshot.resonators.length === 0 && (
 					<p className="text-[11px] text-muted-foreground">
-						No account data captured yet. Open the game with the sniffer running
-						(Character / Echo / Weapon menus once) so the optimizer has a roster
-						and inventory.
+						No account data captured yet. Unowned characters run with default
+						builds (level 90, no echoes); open the game with the sniffer running
+						to search real inventories.
 					</p>
 				)}
 				{snapshot.resonators.length > 0 && inventory.length === 0 && (
@@ -1232,9 +1868,38 @@ export function OptimizerTab({ active }: { active: boolean }) {
 			<p className="flex shrink-0 items-center gap-1 pb-2 text-[10px] text-muted-foreground">
 				<ChevronRight className="size-3" />
 				Enemy: Lv. 100 Calamity, Tower of Adversity rules (all RES 20%). Only
-				the target's five echoes change; teammates, weapon and rotation stay
-				fixed.
+				the target's five echoes change; teammates and rotation stay fixed.
 			</p>
+
+			{editingSlot && editingBuild && (
+				<LoadoutDialog
+					build={editingBuild}
+					owned={ownedRoleIds.has(editingBuild.roleId)}
+					ownedWeaponItemIds={ownedWeaponItemIds}
+					override={editingOverride}
+					baselineRuntime={editingBaselineRuntime}
+					onPatch={(patch) => patchRole(editingBuild.roleId, patch)}
+					onClose={() => setEditingSlot(null)}
+				/>
+			)}
+
+			{pickingSlot && (
+				<CharacterPickerDialog
+					title={`Select ${SLOT_LABELS[pickingSlot]}`}
+					currentRoleId={slotRoleIds[pickingSlot]}
+					assignmentLabels={Object.fromEntries(
+						(["target", "mateOne", "mateTwo"] as SlotKey[])
+							.filter((slot) => slot !== pickingSlot && slotRoleIds[slot])
+							.map((slot) => [slotRoleIds[slot], SLOT_LABELS[slot]]),
+					)}
+					allowNone={pickingSlot !== "target"}
+					onPick={(roleId) => {
+						setSlotRoleId(pickingSlot, roleId ?? "");
+						setPickingSlot(null);
+					}}
+					onClose={() => setPickingSlot(null)}
+				/>
+			)}
 		</div>
 	);
 }

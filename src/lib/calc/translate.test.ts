@@ -5,9 +5,14 @@
 
 import { describe, expect, test } from "bun:test";
 
+import type { ResRuntime } from "@wuwacalc/core/domain/entities/runtime";
+
 import { type Echo, formatStatValue, type StatKey } from "@/lib/account";
 import {
 	aliasRoleId,
+	applyControlOverrides,
+	EMPTY_OPTIMIZER_OVERRIDES,
+	hasOptimizerOverrides,
 	toEchoInstance,
 	toWeaponState,
 } from "@/lib/calc/translate";
@@ -83,6 +88,37 @@ describe("toWeaponState", () => {
 		});
 		expect(state).toBeNull();
 		expect(error?.kind).toBe("weapon");
+	});
+});
+
+describe("optimizer overrides", () => {
+	test("only counts non-empty control edits as overrides", () => {
+		expect(hasOptimizerOverrides(EMPTY_OPTIMIZER_OVERRIDES)).toBe(false);
+		expect(
+			hasOptimizerOverrides({
+				...EMPTY_OPTIMIZER_OVERRIDES,
+				controls: {},
+			}),
+		).toBe(false);
+		expect(
+			hasOptimizerOverrides({
+				...EMPTY_OPTIMIZER_OVERRIDES,
+				controls: { "resonator:1:mode:value": "b" },
+			}),
+		).toBe(true);
+	});
+
+	test("merges control edits over the built runtime", () => {
+		const runtime = {
+			state: { controls: { a: true, b: 2 } },
+		} as unknown as ResRuntime;
+		const next = applyControlOverrides(runtime, { b: 3, c: "on" });
+		expect(next.state.controls).toEqual({ a: true, b: 3, c: "on" });
+		// The input runtime is not mutated.
+		expect(runtime.state.controls).toEqual({ a: true, b: 2 });
+		// No controls or no actual change return the same object.
+		expect(applyControlOverrides(runtime, null)).toBe(runtime);
+		expect(applyControlOverrides(runtime, { a: true })).toBe(runtime);
 	});
 });
 

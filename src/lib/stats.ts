@@ -109,7 +109,7 @@ const STAT_ASSETS: Record<string, string> = {
 export function statIconAsset(name: string): string | undefined {
 	const file = STAT_ASSETS[name];
 	if (!file) return undefined;
-	return `/wuwa-assets/UI/UIResources/Common/Image/IconAttribute/T_Iconproperty${file}_UI.png`;
+	return `/wuwa-assets/UI/UIResources/Common/Image/IconAttribute/T_Iconproperty${file}_UI.webp`;
 }
 
 export interface ParsedStatLine {

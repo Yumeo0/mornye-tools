@@ -14,11 +14,11 @@ export function rarityTextClass(rarity: number | undefined): string {
 
 // In-game quality gradients (ImgQuality): rarity-tinted bottom overlay
 const QUALITY_GRADIENTS: Record<number, string> = {
-	5: "/wuwa-assets/UI/UIResources/Common/Image/ImgQuality/T_QualityGold.png",
-	4: "/wuwa-assets/UI/UIResources/Common/Image/ImgQuality/T_QualityPurple.png",
-	3: "/wuwa-assets/UI/UIResources/Common/Image/ImgQuality/T_QualityBlue.png",
-	2: "/wuwa-assets/UI/UIResources/Common/Image/ImgQuality/T_QualityGreen.png",
-	1: "/wuwa-assets/UI/UIResources/Common/Image/ImgQuality/T_QualityGrey.png",
+	5: "/wuwa-assets/UI/UIResources/Common/Image/ImgQuality/T_QualityGold.webp",
+	4: "/wuwa-assets/UI/UIResources/Common/Image/ImgQuality/T_QualityPurple.webp",
+	3: "/wuwa-assets/UI/UIResources/Common/Image/ImgQuality/T_QualityBlue.webp",
+	2: "/wuwa-assets/UI/UIResources/Common/Image/ImgQuality/T_QualityGreen.webp",
+	1: "/wuwa-assets/UI/UIResources/Common/Image/ImgQuality/T_QualityGrey.webp",
 };
 
 export function qualityGradient(rarity: number | undefined): string {

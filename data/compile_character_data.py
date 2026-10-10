@@ -43,7 +43,7 @@ def convert_unreal_path_to_relative(unreal_path):
 	Example:
 	/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_1_UI.T_IconRoleHead256_1_UI
 	becomes:
-	/wuwa-assets/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_1_UI.png
+	/wuwa-assets/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_1_UI.webp
 	"""
 	if not unreal_path:
 		return None
@@ -55,8 +55,8 @@ def convert_unreal_path_to_relative(unreal_path):
 	if "." in unreal_path:
 		unreal_path = unreal_path.rsplit(".", 1)[0]
 	
-	# Add .png extension
-	unreal_path = f"{unreal_path}.png"
+	# Add .webp extension (published format; sources stay .png on disk)
+	unreal_path = f"{unreal_path}.webp"
 	
 	# Convert to relative path format
 	relative_path = f"/wuwa-assets/{unreal_path}"
@@ -76,16 +76,18 @@ def fix_file_path_capitalization(relative_path):
 	# Convert web path to filesystem path
 	fs_path = ASSETS_PATH / relative_path.replace("/wuwa-assets/", "")
 	parent_dir = fs_path.parent
-	filename = fs_path.name
+	stem = fs_path.stem
 	
-	# Always do case-insensitive search to find the correct capitalization
+	# Always do case-insensitive search to find the correct capitalization.
+	# Compare file stems only: the published extension (.webp) differs from
+	# the source files on disk (.png).
 	if parent_dir.exists():
 		# Look for files with matching name (case-insensitive)
 		for file in parent_dir.iterdir():
-			if file.is_file() and file.name.lower() == filename.lower():
+			if file.is_file() and file.stem.lower() == stem.lower():
 				# Found a match - use the actual filename from disk
-				corrected_relative = relative_path.rsplit("/", 1)[0] + "/" + file.name
-				return corrected_relative
+				corrected_relative = relative_path.rsplit("/", 1)[0] + "/" + file.stem
+				return corrected_relative + Path(relative_path).suffix
 	
 	# If no match found, return original path
 	return relative_path
@@ -120,11 +122,11 @@ def get_weapon_type_name(weapon_type):
 
 # Weapon type id -> in-game weapon glyph (Common/Image/Com/Icon)
 WEAPON_TYPE_ICON_FILES = {
-	1: "T_ComIconBroadblade.png",
-	2: "T_ComIconSword.png",
-	3: "T_ComIconPistols.png",
-	4: "T_ComIconGauntlets.png",
-	5: "T_ComIconRectifier.png",
+	1: "T_ComIconBroadblade.webp",
+	2: "T_ComIconSword.webp",
+	3: "T_ComIconPistols.webp",
+	4: "T_ComIconGauntlets.webp",
+	5: "T_ComIconRectifier.webp",
 }
 
 def get_weapon_type_icon(weapon_type_id):

@@ -362,7 +362,7 @@ export default function Settings() {
 							className={`h-auto flex-none gap-3 py-2.5 text-base ${sidebarOpen ? "px-3 justify-start" : "px-0 group-data-[orientation=vertical]/tabs:justify-center"}`}
 						>
 							<img
-								src="/echoes.webp"
+								src="/characters/echo.png"
 								alt=""
 								className="size-7 shrink-0 object-contain"
 							/>
@@ -374,7 +374,7 @@ export default function Settings() {
 							className={`h-auto flex-none gap-3 py-2.5 text-base ${sidebarOpen ? "px-3 justify-start" : "px-0 group-data-[orientation=vertical]/tabs:justify-center"}`}
 						>
 							<img
-								src="/weapons.png"
+								src="/weapons.webp"
 								alt=""
 								className="size-7 shrink-0 object-contain"
 							/>
@@ -386,7 +386,7 @@ export default function Settings() {
 							className={`h-auto flex-none gap-3 py-2.5 text-base ${sidebarOpen ? "px-3 justify-start" : "px-0 group-data-[orientation=vertical]/tabs:justify-center"}`}
 						>
 							<img
-								src="/optimizer.png"
+								src="/optimizer.webp"
 								alt=""
 								className="size-7 shrink-0 object-contain"
 							/>

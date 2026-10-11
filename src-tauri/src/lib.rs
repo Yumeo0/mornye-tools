@@ -1,15 +1,14 @@
-use image::imageops::crop_imm;
-use image::DynamicImage;
 use serde::{Deserialize, Serialize};
 use std::sync::Mutex;
 use tauri::Emitter;
 use tauri::Manager;
 use tauri::{AppHandle, State};
-use xcap::Monitor;
 
 pub mod account;
+pub mod capture;
 pub mod config;
 pub mod echo;
+pub mod input;
 pub mod ocr;
 pub mod scan_region;
 pub mod sniffer;
@@ -17,6 +16,7 @@ mod stats;
 #[cfg(test)]
 mod tests;
 
+use crate::capture::{capture_game_window, crop_region, CaptureOrigin};
 use crate::ocr::perform_ocr_on_image;
 use crate::scan_region::{ScanRegion, ScanRegions};
 use crate::stats::parse_stats;
@@ -30,6 +30,15 @@ pub struct StatsData {
     pub sub_stats: String,
 }
 
+/// Result of the overlay trigger scan: whether the echo upgrade panel is open
+/// and which echo name it shows.
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct EchoNameScan {
+    pub panel_open: bool,
+    pub name: String,
+}
+
 #[derive(Default)]
 pub struct AppState {
     pub scan_region: Mutex<Option<ScanRegion>>,
@@ -37,6 +46,33 @@ pub struct AppState {
     pub last_scan_result: Mutex<Option<bool>>,
     pub last_stats_data: Mutex<Option<StatsData>>,
     pub show_scan_region: Mutex<bool>,
+    /// Where the last captured game window sat on screen, so the overlay can
+    /// draw the scan-region outline relative to the window.
+    pub capture_origin: Mutex<Option<CaptureOrigin>>,
+}
+
+/// Publish the game window origin when it changes; the overlay listens for
+/// this to redraw the scan-region outline when the window moves.
+fn update_capture_origin(
+    app_handle: &AppHandle,
+    state: &AppState,
+    origin: CaptureOrigin,
+) -> Result<(), String> {
+    let mut current = state.capture_origin.lock().map_err(|e| e.to_string())?;
+    if *current == Some(origin) {
+        return Ok(());
+    }
+    *current = Some(origin);
+
+    app_handle
+        .emit("capture-origin-changed", origin)
+        .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+fn get_capture_origin(state: State<AppState>) -> Result<Option<CaptureOrigin>, String> {
+    let origin = state.capture_origin.lock().map_err(|e| e.to_string())?;
+    Ok(*origin)
 }
 
 #[tauri::command]
@@ -95,29 +131,31 @@ async fn scan_for_text(
     let app_handle_clone = app_handle.clone();
 
     // Run the heavy OCR work on a blocking thread pool
-    let result =
-        tokio::task::spawn_blocking(move || -> Result<(bool, Option<StatsData>), String> {
-            // Capture the primary monitor
-            let monitors = Monitor::all().map_err(|e| e.to_string())?;
-            let monitor = monitors.first().ok_or("No monitor found")?;
+    let result = tokio::task::spawn_blocking(
+        move || -> Result<(bool, Option<StatsData>, Option<CaptureOrigin>), String> {
+            // Window-only capture: when the game window is unavailable there
+            // is nothing to OCR, so the scan reports "not found" instead of
+            // falling back to the desktop.
+            let (screenshot, origin) = match capture_game_window() {
+                Ok(captured) => captured,
+                Err(error) => {
+                    eprintln!("OCR scan skipped: {error}");
+                    return Ok((false, None, None));
+                }
+            };
 
-            // Capture the screen
-            let screenshot = DynamicImage::ImageRgba8(
-                monitor.capture_image().map_err(|e| e.to_string())?,
-            );
-
-            // Crop to the specified region
-            let cropped =
-                crop_imm(&screenshot, region.x, region.y, region.width, region.height).to_image();
-
-            let cropped_dynamic = DynamicImage::ImageRgba8(cropped);
+            // Crop to the specified region (relative to the game window)
+            let cropped = match crop_region(&screenshot, &region) {
+                Ok(cropped) => cropped,
+                Err(error) => {
+                    eprintln!("OCR scan skipped: {error}");
+                    return Ok((false, None, None));
+                }
+            };
 
             // Perform OCR with preprocessing
-            let text = perform_ocr_on_image(
-                &cropped_dynamic,
-                &app_handle_clone,
-                region.color_filter().as_ref(),
-            )?;
+            let text =
+                perform_ocr_on_image(&cropped, &app_handle_clone, region.color_filter().as_ref())?;
 
             // Check if "Echo Upgrade" is found (case-insensitive)
             let found = text.to_lowercase().contains("echo upgrade");
@@ -133,17 +171,26 @@ async fn scan_for_text(
                 None
             };
 
-            Ok((found, stats_data))
-        })
-        .await
-        .map_err(|e| format!("Task join error: {}", e))??;
+            Ok((found, stats_data, Some(origin)))
+        },
+    )
+    .await
+    .map_err(|e| format!("Task join error: {}", e))??;
 
-    let (found, stats_data) = result;
+    let (found, stats_data, origin) = result;
 
     // Store the result
     {
         let mut last_result = state.last_scan_result.lock().map_err(|e| e.to_string())?;
         *last_result = Some(found);
+    }
+
+    // Remember where the captured window sits so the overlay can place the
+    // scan-region outline relative to it.
+    if let Some(origin) = origin {
+        if let Err(error) = update_capture_origin(&app_handle, &state, origin) {
+            eprintln!("Failed to publish capture origin: {error}");
+        }
     }
 
     // Store and emit stats data
@@ -168,6 +215,100 @@ async fn scan_for_text(
     Ok(found)
 }
 
+/// Clean OCR output from the echo name region and snap it to the catalog name
+/// when possible, so change detection compares stable names.
+fn resolve_echo_name(app_handle: &AppHandle, raw: &str) -> String {
+    let cleaned = raw
+        .lines()
+        .map(|line| line.trim())
+        .filter(|line| !line.is_empty())
+        .collect::<Vec<_>>()
+        .join(" ")
+        .trim()
+        .to_string();
+    if cleaned.is_empty() {
+        return cleaned;
+    }
+
+    match echo::load_echo_data(app_handle) {
+        Ok(echoes) => echo::match_echo_name(&cleaned, &echoes).unwrap_or(cleaned),
+        Err(_) => cleaned,
+    }
+}
+
+/// Overlay trigger scan: is the echo upgrade panel open, and which echo name
+/// is shown? Used to decide when to re-lock the echo (see [`press_echo_lock`]).
+/// The stats-only OCR fallback stays in [`scan_for_text`].
+#[tauri::command]
+async fn scan_echo_name(
+    state: State<'_, AppState>,
+    app_handle: tauri::AppHandle,
+) -> Result<EchoNameScan, String> {
+    let regions = {
+        let regions = state.scan_regions.lock().map_err(|e| e.to_string())?;
+        regions
+            .clone()
+            .ok_or_else(|| "No scan regions set".to_string())?
+    };
+
+    let app_handle_clone = app_handle.clone();
+    let (panel_open, name, origin) = tokio::task::spawn_blocking(
+        move || -> Result<(bool, String, Option<CaptureOrigin>), String> {
+            // Window-only capture: no game window means nothing to scan.
+            let (screenshot, origin) = match capture_game_window() {
+                Ok(captured) => captured,
+                Err(_) => return Ok((false, String::new(), None)),
+            };
+
+            let title = crop_region(&screenshot, &regions.echo_upgrade)
+                .and_then(|crop| {
+                    perform_ocr_on_image(
+                        &crop,
+                        &app_handle_clone,
+                        regions.echo_upgrade.color_filter().as_ref(),
+                    )
+                })
+                .unwrap_or_default();
+            if !title.to_lowercase().contains("echo upgrade") {
+                return Ok((false, String::new(), Some(origin)));
+            }
+
+            let raw = crop_region(&screenshot, &regions.echo_name)
+                .and_then(|crop| {
+                    perform_ocr_on_image(
+                        &crop,
+                        &app_handle_clone,
+                        regions.echo_name.color_filter().as_ref(),
+                    )
+                })
+                .unwrap_or_default();
+
+            Ok((
+                true,
+                resolve_echo_name(&app_handle_clone, &raw),
+                Some(origin),
+            ))
+        },
+    )
+    .await
+    .map_err(|e| format!("Task join error: {}", e))??;
+
+    if let Some(origin) = origin {
+        if let Err(error) = update_capture_origin(&app_handle, &state, origin) {
+            eprintln!("Failed to publish capture origin: {error}");
+        }
+    }
+
+    Ok(EchoNameScan { panel_open, name })
+}
+
+/// Press the game's echo lock key twice, so the client emits an
+/// `ItemLockRequest` carrying the displayed echo's id.
+#[tauri::command]
+fn press_echo_lock() -> Result<(), String> {
+    input::press_echo_lock_key()
+}
+
 /// OCR all detail regions of an open echo and parse them into StatsData.
 fn scan_stats_data(
     screenshot: &image::DynamicImage,
@@ -177,42 +318,18 @@ fn scan_stats_data(
     let stats_config = config::load_stats_config(app_handle)?;
 
     let ocr = |region: &ScanRegion| -> String {
-        let cropped = crop_imm(
-            screenshot,
-            region.x,
-            region.y,
-            region.width,
-            region.height,
-        )
-        .to_image();
-        perform_ocr_on_image(
-            &image::DynamicImage::ImageRgba8(cropped),
-            app_handle,
-            region.color_filter().as_ref(),
-        )
-        .unwrap_or_else(|_| String::new())
+        let cropped = match crop_region(screenshot, region) {
+            Ok(cropped) => cropped,
+            Err(error) => {
+                eprintln!("Stats region skipped: {error}");
+                return String::new();
+            }
+        };
+        perform_ocr_on_image(&cropped, app_handle, region.color_filter().as_ref())
+            .unwrap_or_else(|_| String::new())
     };
 
-    // Clean echo name - remove extra whitespace and trim
-    let cleaned_echo_name = ocr(&regions.echo_name)
-        .lines()
-        .map(|line| line.trim())
-        .filter(|line| !line.is_empty())
-        .collect::<Vec<_>>()
-        .join(" ")
-        .trim()
-        .to_string();
-
-    // Try to match with known echoes
-    let echo_name = if !cleaned_echo_name.is_empty() {
-        if let Ok(echoes) = echo::load_echo_data(app_handle) {
-            echo::match_echo_name(&cleaned_echo_name, &echoes).unwrap_or(cleaned_echo_name)
-        } else {
-            cleaned_echo_name
-        }
-    } else {
-        cleaned_echo_name
-    };
+    let echo_name = resolve_echo_name(app_handle, &ocr(&regions.echo_name));
 
     // Scan level (e.g. "+25") - keep only digits and sanitize, since OCR
     // frequently misreads the leading "+" as a "4" (e.g. "+25" -> "425")
@@ -257,33 +374,35 @@ fn get_last_stats_data(state: State<AppState>) -> Result<Option<StatsData>, Stri
 #[tauri::command]
 async fn scan_region_for_text(
     app_handle: tauri::AppHandle,
+    state: State<'_, AppState>,
     region: ScanRegion,
 ) -> Result<String, String> {
     // Run the heavy OCR work on a blocking thread pool. Running it inline on the
     // IPC handler thread (main thread) overflows the stack.
-    tauri::async_runtime::spawn_blocking(move || {
-        // Capture the primary monitor
-        let monitors = Monitor::all().map_err(|e| e.to_string())?;
-        let monitor = monitors.first().ok_or("No monitor found")?;
+    let app_handle_clone = app_handle.clone();
+    let (text, origin) =
+        tauri::async_runtime::spawn_blocking(move || -> Result<(String, CaptureOrigin), String> {
+            // Window-only capture; errors (no game window, minimized, blank)
+            // surface to the caller so the debug scan shows a clear message.
+            let (screenshot, origin) = capture_game_window()?;
 
-        // Capture the screen
-        let screenshot = monitor.capture_image().map_err(|e| e.to_string())?;
+            // Crop to the specified region (relative to the game window)
+            let cropped = crop_region(&screenshot, &region)?;
 
-        // Crop to the specified region
-        let cropped =
-            crop_imm(&screenshot, region.x, region.y, region.width, region.height).to_image();
+            // Perform OCR with preprocessing
+            let text =
+                perform_ocr_on_image(&cropped, &app_handle_clone, region.color_filter().as_ref())?;
 
-        let cropped_dynamic = image::DynamicImage::ImageRgba8(cropped);
+            Ok((text, origin))
+        })
+        .await
+        .map_err(|e| format!("Task join error: {}", e))??;
 
-        // Perform OCR with preprocessing
-        perform_ocr_on_image(
-            &cropped_dynamic,
-            &app_handle,
-            region.color_filter().as_ref(),
-        )
-    })
-    .await
-    .map_err(|e| format!("Task join error: {}", e))?
+    if let Err(error) = update_capture_origin(&app_handle, &state, origin) {
+        eprintln!("Failed to publish capture origin: {error}");
+    }
+
+    Ok(text)
 }
 
 #[tauri::command]
@@ -341,6 +460,9 @@ pub fn run() {
             set_show_scan_region,
             get_show_scan_region,
             scan_region_for_text,
+            get_capture_origin,
+            scan_echo_name,
+            press_echo_lock,
             account::account_get_snapshot,
             account::account_get_echoes,
             account::account_set_equipped_override,

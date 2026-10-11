@@ -14,12 +14,12 @@ use tauri::AppHandle;
 #[cfg(target_os = "linux")]
 mod linux;
 #[cfg(target_os = "linux")]
-pub use linux::{game_processes, is_elevated, npcap_available, open_error, open_socket, process_alive, run, udp_ports};
+pub use linux::{capture_available, game_processes, is_elevated, open_error, open_socket, process_alive, run, udp_ports};
 
 #[cfg(windows)]
 mod windows;
 #[cfg(windows)]
-pub use windows::{game_processes, is_elevated, npcap_available, open_error, open_socket, process_alive, run, udp_ports};
+pub use windows::{capture_available, game_processes, is_elevated, open_error, open_socket, process_alive, run, udp_ports};
 
 #[cfg(not(any(target_os = "linux", windows)))]
 compile_error!("live capture is implemented for Linux and Windows only");

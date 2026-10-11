@@ -7,7 +7,6 @@ use std::collections::HashMap;
 use std::io::Cursor;
 use std::path::PathBuf;
 use xberg::{extract, ExtractInput, ExtractionConfig, OcrConfig, TesseractConfig};
-use xcap::Monitor;
 
 pub(crate) fn test_ocr(img: &DynamicImage, filter: Option<&ColorFilter>) -> String {
     let processed = preprocess_image(img, filter);
@@ -298,12 +297,52 @@ fn calibrate_inventory_regions() {
 }
 
 #[test]
+fn crop_region_enforces_window_bounds() {
+    use image::GenericImageView;
+
+    let frame = DynamicImage::ImageRgba8(image::RgbaImage::new(100, 80));
+    let region = |x, y, width, height| ScanRegion {
+        x,
+        y,
+        width,
+        height,
+        text_color: None,
+        tolerance: None,
+    };
+
+    let cropped = crate::capture::crop_region(&frame, &region(10, 10, 50, 40)).unwrap();
+    assert_eq!(cropped.dimensions(), (50, 40));
+
+    // A region touching the bottom-right edge still fits.
+    assert!(crate::capture::crop_region(&frame, &region(60, 40, 40, 40)).is_ok());
+
+    // One pixel past the edge is rejected instead of panicking.
+    assert!(crate::capture::crop_region(&frame, &region(61, 0, 40, 10)).is_err());
+    assert!(crate::capture::crop_region(&frame, &region(0, 41, 10, 40)).is_err());
+}
+
+#[test]
+fn blank_frame_detection() {
+    assert!(crate::capture::is_blank(&image::RgbaImage::new(64, 64)));
+
+    let mut frame = image::RgbaImage::new(64, 64);
+    frame.put_pixel(32, 32, image::Rgba([200, 200, 200, 255]));
+    assert!(!crate::capture::is_blank(&frame));
+}
+
+#[test]
 fn scan_live_region_like_sync_command() {
-    // Mimic scan_region_for_text: capture screen, crop, OCR
-    let monitors = Monitor::all().unwrap();
-    let monitor = monitors.first().unwrap();
-    let screenshot = monitor.capture_image().unwrap();
-    println!("Captured: {}x{}", screenshot.width(), screenshot.height());
+    // Mimic scan_region_for_text: capture the game window, crop, OCR
+    let (screenshot, _origin) = match crate::capture::capture_game_window() {
+        Ok(captured) => captured,
+        Err(error) => {
+            eprintln!("skipping: {error}");
+            return;
+        }
+    };
+    use image::GenericImageView;
+    let (width, height) = screenshot.dimensions();
+    println!("Captured game window: {width}x{height}");
 
     let region = ScanRegion {
         x: 130,
@@ -313,11 +352,7 @@ fn scan_live_region_like_sync_command() {
         text_color: None,
         tolerance: None,
     };
-    let cropped =
-        crop_imm(&screenshot, region.x, region.y, region.width, region.height).to_image();
-    let text = test_ocr(
-        &DynamicImage::ImageRgba8(cropped),
-        region.color_filter().as_ref(),
-    );
+    let cropped = crate::capture::crop_region(&screenshot, &region).unwrap();
+    let text = test_ocr(&cropped, region.color_filter().as_ref());
     println!("LIVE OCR TEXT:\n{text}\n===");
 }

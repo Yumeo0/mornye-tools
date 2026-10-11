@@ -104,7 +104,7 @@ function CaptureCard() {
 		: [
 				status.paused ? "paused" : status.capturing ? "capturing" : "armed",
 				status.game_process_found ? "game process found" : "waiting for game",
-				status.npcap_available ? "capture available" : "capture unavailable",
+				status.capture_available ? "capture available" : "capture unavailable",
 				status.session_key_cached
 					? "session key cached"
 					: "waiting for session key",
@@ -408,7 +408,9 @@ export function SettingsTab() {
 							<ScanText className="size-4" /> OCR Text Detection
 						</Label>
 						<p className="text-xs text-muted-foreground">
-							Picks the scan regions matching your screen resolution
+							Reads the echo name to detect changes. The exact echo is then read
+							from the game's lock request (the lock key is pressed twice); OCR
+							stats stay as a fallback.
 						</p>
 					</div>
 					<div className="space-y-2">
@@ -461,8 +463,8 @@ export function SettingsTab() {
 										Manual Region Configuration
 									</Label>
 									<p className="text-xs text-muted-foreground">
-										Test a custom region without saving it to the main
-										configuration
+										Test a custom region (relative to the game window) without
+										saving it to the main configuration
 									</p>
 									<div className="grid grid-cols-2 gap-4">
 										<div className="space-y-2">

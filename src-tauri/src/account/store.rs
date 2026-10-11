@@ -49,6 +49,15 @@ impl AccountStore {
         &self.snapshot
     }
 
+    /// Look up one echo by its instance id (`incr_id`).
+    pub fn echo(&self, incr_id: i64) -> Option<Echo> {
+        self.snapshot
+            .echoes
+            .iter()
+            .find(|echo| echo.incr_id == incr_id)
+            .cloned()
+    }
+
     /// Replace the player info.
     pub fn upsert_player(&mut self, mut player: PlayerInfo) {
         if let Some(existing) = self.snapshot.player.as_ref() {

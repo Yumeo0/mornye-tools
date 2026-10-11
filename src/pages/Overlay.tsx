@@ -7,12 +7,26 @@ import {
 	cursorPosition,
 	getCurrentWindow,
 } from "@tauri-apps/api/window";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { Echo } from "@/lib/account";
 import {
-	type CharacterInfo,
+	type EchoTargetState,
+	evaluateEchoTarget,
+	INITIAL_ECHO_TARGET,
+	markRefetched,
+	NAME_SCAN_INTERVAL_MS,
+	pressEchoLock,
+	scanEchoName,
+} from "@/lib/echoTarget";
+import {
+	type OcrStatsData,
+	type OverlayEchoView,
+	viewFromEcho,
+	viewFromOcr,
+} from "@/lib/overlayEcho";
+import {
 	calculateRating,
-	findEcho,
 	getMaxStatValue,
 	getRelevantCharacters,
 	getStatProgress,
@@ -28,32 +42,31 @@ interface ScanRegion {
 	height: number;
 }
 
-interface StatsData {
-	echo_name: string;
-	level: string;
-	main_stats: string;
-	sub_stats: string;
+interface CaptureOrigin {
+	x: number;
+	y: number;
 }
 
 // Set overlay to ignore cursor events so you can click through it
 await getCurrentWindow().setIgnoreCursorEvents(true);
 
-// Update relevant characters based on the scanned echo's sonata sets
-function getRelevantCharactersForStatsData(data: StatsData | null) {
-	if (!data?.echo_name) return [];
-	const echo = findEcho(data.echo_name);
-	if (!echo) return [];
-	return getRelevantCharacters(echo.echo_sets.map((set) => set.name));
-}
+/** Closed scans before the panel counts as closed (OCR flicker guard). */
+const PANEL_CLOSE_TICKS = 2;
+/** Run the OCR stats fallback every Nth name-scan tick while it is needed. */
+const STATS_EVERY_TICKS = 2;
 
 function Overlay() {
-	const [textFound, setTextFound] = useState<boolean>(false);
 	const [scanRegion, setScanRegion] = useState<ScanRegion | null>(null);
 	const [showScanRegion, setShowScanRegion] = useState(false);
-	const [statsData, setStatsData] = useState<StatsData | null>(null);
-	const [relevantCharacters, setRelevantCharacters] = useState<CharacterInfo[]>(
-		[],
+	// Origin of the captured game window; scan regions are window-relative
+	const [captureOrigin, setCaptureOrigin] = useState<CaptureOrigin | null>(
+		null,
 	);
+	// Exact echo from the game (lock-request packet path)
+	const [exactEcho, setExactEcho] = useState<Echo | null>(null);
+	// OCR stats fallback, used until an exact echo is available
+	const [ocrStats, setOcrStats] = useState<OcrStatsData | null>(null);
+	const [panelOpen, setPanelOpen] = useState(false);
 	// Character whose preferred stats are highlighted; null = top ranked
 	const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(
 		null,
@@ -61,15 +74,26 @@ function Overlay() {
 	// Ratio of physical screen pixels to overlay CSS pixels
 	const [displayScale, setDisplayScale] = useState(1);
 	const cardRef = useRef<HTMLDivElement | null>(null);
-	const isScanningRef = useRef(false);
-	// Echo name of the last stats event, used to detect echo changes
-	const lastEchoNameRef = useRef<string | null>(null);
+	const busyRef = useRef(false);
+	const exactEchoRef = useRef<Echo | null>(null);
+	const targetRef = useRef<EchoTargetState>(INITIAL_ECHO_TARGET);
+	const closedTicksRef = useRef(0);
+	const tickRef = useRef(0);
+	const lastEchoKeyRef = useRef<string | null>(null);
+
+	// Single view model for both sources; null hides the card.
+	const view: OverlayEchoView | null = useMemo(() => {
+		if (!panelOpen) return null;
+		if (exactEcho) return viewFromEcho(exactEcho);
+		if (ocrStats) return viewFromOcr(ocrStats);
+		return null;
+	}, [panelOpen, exactEcho, ocrStats]);
 
 	// The overlay window is click-through so the game stays playable. To allow
 	// clicking the stats card we poll the global cursor position and disable
 	// click-through only while the cursor hovers over the card.
 	useEffect(() => {
-		if (!textFound || !statsData) return;
+		if (!view) return;
 
 		const win = getCurrentWindow();
 		let disposed = false;
@@ -129,24 +153,20 @@ function Overlay() {
 			window.removeEventListener("mousemove", onMouseMove);
 			setIgnoring(true);
 		};
-	}, [textFound, statsData]);
+	}, [view]);
 
 	useEffect(() => {
-		// Listen for OCR results from the backend
-		const unlistenOcr = listen<boolean>("ocr-result", (event) => {
-			setTextFound(event.payload);
+		// Exact echo: the game answered a lock request with the echo's id.
+		const unlistenEcho = listen<Echo>("echo-detected", (event) => {
+			exactEchoRef.current = event.payload;
+			setExactEcho(event.payload);
+			closedTicksRef.current = 0;
+			setPanelOpen(true);
 		});
 
-		// Listen for stats data from the backend
-		const unlistenStats = listen<StatsData | null>("stats-data", (event) => {
-			setStatsData(event.payload);
-			setRelevantCharacters(getRelevantCharactersForStatsData(event.payload));
-			// Only reset the selection when a different echo is scanned; the
-			// backend emits stats-data on every scan tick (every 2 seconds)
-			if ((event.payload?.echo_name ?? null) !== lastEchoNameRef.current) {
-				lastEchoNameRef.current = event.payload?.echo_name ?? null;
-				setSelectedCharacterId(null);
-			}
+		// OCR stats fallback (`scan_for_text`).
+		const unlistenStats = listen<OcrStatsData | null>("stats-data", (event) => {
+			setOcrStats(event.payload);
 		});
 
 		// Listen for scan region changes so the outline follows live edits
@@ -154,6 +174,15 @@ function Overlay() {
 			"scan-region-changed",
 			(event) => {
 				setScanRegion(event.payload);
+			},
+		);
+
+		// Listen for game window origin changes so the outline stays anchored
+		// to the window the regions are relative to
+		const unlistenCaptureOrigin = listen<CaptureOrigin | null>(
+			"capture-origin-changed",
+			(event) => {
+				setCaptureOrigin(event.payload);
 			},
 		);
 
@@ -172,23 +201,6 @@ function Overlay() {
 			},
 		);
 
-		// Load last scan result on mount
-		invoke<boolean | null>("get_last_scan_result")
-			.then((result) => {
-				if (result !== null) {
-					setTextFound(result);
-				}
-			})
-			.catch(console.error);
-
-		// Load last stats data on mount
-		invoke<StatsData | null>("get_last_stats_data")
-			.then((data) => {
-				setStatsData(data);
-				setRelevantCharacters(getRelevantCharactersForStatsData(data));
-			})
-			.catch(console.error);
-
 		// Load scan region
 		invoke<ScanRegion | null>("get_scan_region")
 			.then((region) => {
@@ -196,10 +208,24 @@ function Overlay() {
 			})
 			.catch(console.error);
 
+		// Load the captured game window origin
+		invoke<CaptureOrigin | null>("get_capture_origin")
+			.then((origin) => {
+				setCaptureOrigin(origin);
+			})
+			.catch(console.error);
+
 		// Load show scan region state
 		invoke<boolean>("get_show_scan_region")
 			.then((show) => {
 				setShowScanRegion(show);
+			})
+			.catch(console.error);
+
+		// Load the last OCR fallback data on mount
+		invoke<OcrStatsData | null>("get_last_stats_data")
+			.then((data) => {
+				setOcrStats(data);
 			})
 			.catch(console.error);
 
@@ -219,42 +245,127 @@ function Overlay() {
 		updateDisplayScale();
 		window.addEventListener("resize", updateDisplayScale);
 
-		// Set up interval for continuous scanning
-		const scanInterval = setInterval(async () => {
-			if (isScanningRef.current) return;
-			isScanningRef.current = true;
+		// One scan tick: read the echo name, ask the game for the exact echo
+		// when it changed, and keep the OCR stats fallback warm.
+		const runScan = async () => {
+			if (busyRef.current) return;
+			busyRef.current = true;
 			try {
-				await invoke("scan_for_text");
+				const scan = await scanEchoName();
+				const evaluation = evaluateEchoTarget(
+					targetRef.current,
+					scan,
+					Date.now(),
+				);
+				let target = evaluation.state;
+
+				if (scan.panelOpen) {
+					closedTicksRef.current = 0;
+				} else {
+					closedTicksRef.current += 1;
+				}
+				const panelClosed =
+					!scan.panelOpen && closedTicksRef.current >= PANEL_CLOSE_TICKS;
+				setPanelOpen(!panelClosed);
+
+				if (panelClosed) {
+					exactEchoRef.current = null;
+					setExactEcho(null);
+					setOcrStats(null);
+				} else if (evaluation.changed) {
+					// A different echo is on screen; the previous exact echo
+					// no longer applies.
+					exactEchoRef.current = null;
+					setExactEcho(null);
+					setOcrStats(null);
+				}
+
+				// Lock + re-lock so the client reports the echo's id. The key
+				// is posted straight to the game window, so it works without
+				// focus; failures are retried on the next tick.
+				if (evaluation.attempt) {
+					try {
+						await pressEchoLock();
+						target = markRefetched(target);
+					} catch (error) {
+						console.error("Echo lock press failed:", error);
+					}
+				}
+				targetRef.current = target;
+
+				// OCR stats fallback: only while the panel is open and no
+				// exact echo is available yet.
+				tickRef.current += 1;
+				const due = tickRef.current % STATS_EVERY_TICKS === 0;
+				if (
+					!panelClosed &&
+					!exactEchoRef.current &&
+					(due || evaluation.changed)
+				) {
+					try {
+						await invoke("scan_for_text");
+					} catch (error) {
+						console.error("OCR scan error:", error);
+					}
+				}
 			} catch (error) {
-				console.error("Scan error:", error);
+				console.error("Echo name scan failed:", error);
 			} finally {
-				isScanningRef.current = false;
+				busyRef.current = false;
 			}
-		}, 2000); // Scan every 2 seconds
+		};
+
+		const scanInterval = setInterval(runScan, NAME_SCAN_INTERVAL_MS);
+		runScan();
 
 		return () => {
-			unlistenOcr.then((fn) => fn());
+			unlistenEcho.then((fn) => fn());
 			unlistenStats.then((fn) => fn());
 			unlistenScanRegion.then((fn) => fn());
+			unlistenCaptureOrigin.then((fn) => fn());
 			unlistenShowRegion.then((fn) => fn());
 			window.removeEventListener("resize", updateDisplayScale);
 			clearInterval(scanInterval);
 		};
 	}, []);
 
-	// Parse stats with scores
-	const parsedMainStats =
-		statsData?.main_stats.split("\n").filter((s) => s.trim()) || [];
-	const parsedSubStats =
-		statsData?.sub_stats.split("\n").filter((s) => s.trim()) || [];
+	// Reset the highlighted character when a different echo appears.
+	useEffect(() => {
+		const key = exactEcho
+			? `id:${exactEcho.incrId}`
+			: (ocrStats?.echo_name ?? null);
+		if (key !== lastEchoKeyRef.current) {
+			lastEchoKeyRef.current = key;
+			setSelectedCharacterId(null);
+		}
+	}, [exactEcho, ocrStats]);
 
-	// Rank the relevant characters by how well the scanned echo fits them
-	const rankedCharacters = relevantCharacters
-		.map((character) => ({
-			character,
-			rating: calculateRating(character, parsedMainStats, parsedSubStats),
-		}))
-		.sort((a, b) => b.rating - a.rating);
+	const mainStats = view?.mainStats ?? [];
+	const subStats = view?.subStats ?? [];
+
+	// Rank the relevant characters by how well the echoed echo fits them
+	const relevantCharacters = useMemo(
+		() =>
+			view && view.setNames.length > 0
+				? getRelevantCharacters(view.setNames)
+				: [],
+		[view],
+	);
+
+	const rankedCharacters = useMemo(
+		() =>
+			relevantCharacters
+				.map((character) => ({
+					character,
+					rating: calculateRating(
+						character,
+						view?.mainStats ?? [],
+						view?.subStats ?? [],
+					),
+				}))
+				.sort((a, b) => b.rating - a.rating),
+		[relevantCharacters, view],
+	);
 
 	// Character whose preferred stats are highlighted by the stars
 	const activeCharacter =
@@ -296,8 +407,10 @@ function Overlay() {
 				<div
 					style={{
 						position: "absolute",
-						left: `${scanRegion.x * displayScale}px`,
-						top: `${scanRegion.y * displayScale}px`,
+						// Regions are relative to the game window; add the window
+						// origin to place the outline on screen
+						left: `${((captureOrigin?.x ?? 0) + scanRegion.x) * displayScale}px`,
+						top: `${((captureOrigin?.y ?? 0) + scanRegion.y) * displayScale}px`,
 						width: `${scanRegion.width * displayScale}px`,
 						height: `${scanRegion.height * displayScale}px`,
 						border: "3px solid rgba(147, 51, 234, 0.9)",
@@ -318,18 +431,35 @@ function Overlay() {
 				}}
 			>
 				{/* Stats Display */}
-				{textFound && statsData && (
+				{view && (
 					<div ref={cardRef}>
 						<Card
 							className="min-w-112.5 bg-card/95 backdrop-blur-sm shadow-2xl border-2"
 							style={{ pointerEvents: "auto" }}
 						>
 							{/* Echo Name Header */}
-							{statsData.echo_name && (
-								<CardHeader className="border-b pb-4">
-									<CardTitle className="text-xl text-center">
-										{statsData.echo_name}
+							{view.name && (
+								<CardHeader className="border-b pb-3">
+									<CardTitle className="flex items-center justify-center gap-2 text-xl">
+										<span className="truncate">{view.name}</span>
+										{view.level && (
+											<span className="text-base font-bold text-yellow-400">
+												{view.level}
+											</span>
+										)}
 									</CardTitle>
+									<p
+										className={cn(
+											"text-center text-[10px] font-medium uppercase tracking-wide",
+											view.source === "packet"
+												? "text-emerald-400"
+												: "text-amber-400",
+										)}
+									>
+										{view.source === "packet"
+											? "Exact echo"
+											: "OCR (unverified)"}
+									</p>
 								</CardHeader>
 							)}
 
@@ -340,7 +470,7 @@ function Overlay() {
 										Main Stats
 									</h3>
 									<div className="space-y-1">
-										{parsedMainStats.map((stat) => {
+										{mainStats.map((stat) => {
 											const parsed = parseStatValue(stat);
 											const statName = parsed
 												? normalizeStatName(parsed.name)
@@ -370,7 +500,7 @@ function Overlay() {
 										Sub Stats
 									</h3>
 									<div className="space-y-2">
-										{parsedSubStats.map((stat) => {
+										{subStats.map((stat) => {
 											const parsed = parseStatValue(stat);
 											if (!parsed) {
 												return (

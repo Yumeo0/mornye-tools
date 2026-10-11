@@ -9,9 +9,14 @@ Two data paths, deliberately separate:
   game-ID-based store (`account.json`) with the player profile, resonators,
   weapons and echoes. The in-app calculator (`@wuwacalc/core`) evaluates the
   captured builds. There is no OCR fallback and no legacy migration.
-- **Overlay (OCR detail scan)** - the existing screen scanner reads the echo
-  upgrade panel and renders a stats card on the transparent overlay. It never
-  touches `account.json`.
+- **Overlay (echo scan)** - the game-window scanner reads the echo upgrade
+  panel, but only the echo *name*, and only to notice changes. When the name
+  changes (or stays unreadable for a second) the app presses the game's lock
+  key twice; the client then sends an `ItemLockRequest` with the echo's id and
+  the overlay renders that exact echo from the captured account data. Stats
+  OCR is kept as a clearly labelled fallback for when no id arrives. Capture
+  only ever reads the Wuthering Waves window, never the desktop, and the
+  overlay never touches `account.json`.
 
 ## Development
 
@@ -45,12 +50,12 @@ cargo test
 ## Packet capture
 
 Capture is on by design. It arms on start, polls for the game process, reads
-frames through Npcap (`wpcap.dll`, Windows) or `AF_PACKET` (Linux), and decodes
-them with the vendored `spectrum` crate. The only user control is a runtime
-Pause/Resume toggle; the session key cache survives restarts.
+IPv4 frames with a raw `SIO_RCVALL` socket (Windows) or `AF_PACKET` (Linux),
+and decodes them with the vendored `spectrum` crate. The only user control is a
+runtime Pause/Resume toggle; the session key cache survives restarts.
 
-- Npcap must be installed (with WinPcap API-compatible mode) and the app is best
-  run as Administrator on Windows. Linux needs
+- Windows: the app must run elevated - raw capture needs Administrator rights and
+  fails with `WSAEACCES` otherwise. Linux needs
   `setcap cap_net_raw,cap_net_admin+eip` on the binary.
 - Because capture is passive, open the Character / Echo / Weapon menus once (or
   let the game request them on login) so the notifies arrive.

@@ -166,7 +166,7 @@ pub fn open_error(e: io::Error) -> String {
 }
 
 /// Npcap is Windows-only; on Linux this reports whether raw capture is usable.
-pub fn npcap_available() -> bool {
+pub fn capture_available() -> bool {
     open_socket().is_ok()
 }
 

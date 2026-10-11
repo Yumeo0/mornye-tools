@@ -43,6 +43,9 @@ pub const WEAPON_RESON_UP_RESPONSE: u16 = 24490;
 pub const EQUIP_TAKE_ON_RESPONSE: u16 = 28184;
 pub const EQUIP_TAKE_ON_NOTIFY: u16 = 28760;
 pub const PLAYER_BASIC_INFO_GET_RESPONSE: u16 = 22549;
+/// Client request sent when an item is locked/unlocked. The overlay triggers
+/// it on purpose (lock + re-lock) to learn which echo is on screen.
+pub const PB_ITEM_LOCK_REQUEST: u16 = 25683;
 
 #[derive(Deserialize, Default)]
 struct EchoCatalogEntry {
@@ -159,6 +162,8 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
     };
 
     let mut sections: Vec<&'static str> = Vec::new();
+    // Echo referenced by a lock request; emitted once the store lock is free.
+    let mut locked_echo: Option<Echo> = None;
 
     match gp.msg_id {
         PB_GET_ROLE_LIST_RESPONSE | PB_GET_ROLE_LIST_NOTIFY => {
@@ -431,10 +436,24 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
                 }
             }
         }
+        PB_ITEM_LOCK_REQUEST => {
+            // Lock/unlock of an item; for echoes this is the overlay asking
+            // which echo is on screen. Non-echo items simply resolve to None.
+            if let Ok(msg) = gp.parse_proto::<pb::ItemLockRequest>() {
+                if msg.incr_id != 0 {
+                    locked_echo = store.echo(msg.incr_id as i64);
+                }
+            }
+        }
         _ => {}
     }
 
     drop(store);
+
+    if let Some(echo) = locked_echo {
+        crate::account::emit_echo_detected(app, &echo);
+    }
+
     if !sections.is_empty() {
         mark_pending(app, &sections);
     }

@@ -48,6 +48,16 @@ pub fn emit_updated(app: &AppHandle, sections: &[&str]) {
     );
 }
 
+/// Event carrying the echo referenced by a lock request (`ItemLockRequest`).
+/// The overlay presses the lock key on purpose to identify the on-screen echo
+/// exactly, without OCR.
+pub const ECHO_DETECTED_EVENT: &str = "echo-detected";
+
+/// Emit the exact echo the game just locked/unlocked.
+pub fn emit_echo_detected(app: &AppHandle, echo: &Echo) {
+    let _ = app.emit(ECHO_DETECTED_EVENT, echo);
+}
+
 #[tauri::command]
 pub fn account_get_snapshot(state: State<AccountState>) -> Result<AccountSnapshot, String> {
     let store = state.store.lock().map_err(|e| e.to_string())?;

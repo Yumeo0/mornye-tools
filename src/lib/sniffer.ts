@@ -6,7 +6,7 @@ export interface SnifferStatus {
 	paused: boolean;
 	capturing: boolean;
 	game_process_found: boolean;
-	npcap_available: boolean;
+	capture_available: boolean;
 	is_elevated: boolean;
 	session_key_cached: boolean;
 	rsa_key_path: string | null;
@@ -54,9 +54,9 @@ export function blockingErrors(status: SnifferStatus | null): string[] {
 				: "Bundled RSA key is missing. Account sync is disabled until keys/client_private_key.pem is provided.",
 		);
 	}
-	if (!status.npcap_available) {
+	if (!status.capture_available) {
 		errors.push(
-			"Packet capture is unavailable. Install Npcap (with WinPcap API-compatible mode) and run as Administrator.",
+			"Packet capture is unavailable. Raw capture needs Administrator privileges - start the app elevated (Run as administrator).",
 		);
 	}
 	return errors;

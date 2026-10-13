@@ -55,7 +55,8 @@
     "resources": [
       "tessdata/*",
       "keys/client_private_key.pem",
-      "../src/configs/*"
+      "../src/configs/*",
+      "../public/sort_icon.png"
     ]
   }
 }

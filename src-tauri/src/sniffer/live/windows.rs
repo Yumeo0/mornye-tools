@@ -312,7 +312,9 @@ unsafe fn open_one(addr: u32) -> io::Result<SOCKET> {
         return Err(e);
     }
 
-    // Grow the receive buffer and wake up periodically to honour the stop flag.
+    // Grow the receive buffer; the short timeout keeps the drain loop in
+    // `run` responsive to the stop flag while recv-blocking only when the
+    // socket is actually empty.
     let rcvbuf: u32 = 8 * 1024 * 1024;
     unsafe {
         setsockopt(
@@ -323,7 +325,7 @@ unsafe fn open_one(addr: u32) -> io::Result<SOCKET> {
             std::mem::size_of::<u32>() as i32,
         );
     }
-    let rcvtimeo: u32 = 250;
+    let rcvtimeo: u32 = 50;
     unsafe {
         setsockopt(
             s,
@@ -424,24 +426,34 @@ pub fn run(
 
         for i in 0..readfds.fd_count as usize {
             let s = readfds.fd_array[i];
-            let n = unsafe { recv(s, buf.as_mut_ptr(), buf.len() as i32, 0) };
-            if n <= 0 {
-                continue;
-            }
-            let ip = &buf[..n as usize];
-            if ip.is_empty() || ip[0] >> 4 != 4 {
-                continue;
-            }
+            // Drain the socket until it runs empty (bounded, so the stop flag
+            // and the port refresh stay responsive). Reading only one
+            // datagram per select round lets the kernel buffer overflow
+            // during login bursts, and a single lost frame permanently
+            // stalls the passive KCP mirror - the echoes from every later
+            // `PhantomItemResponse` chunk would be missing.
+            let mut drained = 0u32;
+            while drained < 512 {
+                let n = unsafe { recv(s, buf.as_mut_ptr(), buf.len() as i32, 0) };
+                if n <= 0 {
+                    break; // empty (SO_RCVTIMEO) or transient error
+                }
+                drained += 1;
+                let ip = &buf[..n as usize];
+                if ip.is_empty() || ip[0] >> 4 != 4 {
+                    continue;
+                }
 
-            // Bare IPv4 datagram -> synthetic Ethernet frame for the pipeline.
-            let mut frame = Vec::with_capacity(SYNTH_ETH.len() + ip.len());
-            frame.extend_from_slice(&SYNTH_ETH);
-            frame.extend_from_slice(ip);
+                // Bare IPv4 datagram -> synthetic Ethernet frame for the pipeline.
+                let mut frame = Vec::with_capacity(SYNTH_ETH.len() + ip.len());
+                frame.extend_from_slice(&SYNTH_ETH);
+                frame.extend_from_slice(ip);
 
-            // Userspace pre-filter: only the game's own ports or the known
-            // server ranges; everything else is dropped before the sniffer.
-            if super::keep_frame(&ports, &frame) {
-                super::handle_frame(&app, &mut sniffer, &frame);
+                // Userspace pre-filter: only the game's own ports or the known
+                // server ranges; everything else is dropped before the sniffer.
+                if super::keep_frame(&ports, &frame) {
+                    super::handle_frame(&app, &mut sniffer, &frame);
+                }
             }
         }
     }

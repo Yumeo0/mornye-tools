@@ -73,12 +73,25 @@ export interface Echo {
 	monsterId: number;
 	setId: number;
 	level: number;
+	/** Item mark state: 0 = none, 1 = locked, 2 = discard-marked. */
+	funcValue: number;
+	/**
+	 * How many identical echoes this entry represents (`StackCount`); the
+	 * game stacks duplicates and splits the stack when one copy is operated
+	 * on. Always >= 1.
+	 */
+	stackCount: number;
 	mainProps: EchoProp[];
 	subProps: EchoProp[];
 	equippedBy?: number | null;
 	/** 0 = main echo. */
 	slot?: number | null;
+	/** Origin of the echo; manual entries are user-owned and removable. */
+	source: EchoSource;
 }
+
+/** Where an echo came from: the packet sniffer or a manual entry. */
+export type EchoSource = "sniffer" | "manual";
 
 export interface AccountSnapshot {
 	version: number;
@@ -144,6 +157,11 @@ const PERCENT_STATS = new Set<StatKey>([
 	"havoc",
 ]);
 
+/** Whether a stat key is expressed as a percentage. */
+export function isPercentStat(key: StatKey): boolean {
+	return PERCENT_STATS.has(key);
+}
+
 /** Empty account used until the first packet batch lands. */
 export const EMPTY_ACCOUNT: AccountSnapshot = {
 	version: 1,
@@ -160,6 +178,16 @@ export async function getSnapshot(): Promise<AccountSnapshot> {
 
 export async function getEchoes(): Promise<Echo[]> {
 	return invoke<Echo[]>("account_get_echoes");
+}
+
+/** Add an echo entered by hand; the backend assigns the synthetic instance id. */
+export async function addManualEcho(echo: Echo): Promise<Echo> {
+	return invoke<Echo>("account_add_manual_echo", { echo });
+}
+
+/** Remove a manually added echo. */
+export async function removeManualEcho(incrId: number): Promise<void> {
+	await invoke("account_remove_manual_echo", { incr_id: incrId });
 }
 
 export async function setEquippedOverride(

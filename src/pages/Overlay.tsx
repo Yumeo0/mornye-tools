@@ -7,29 +7,36 @@ import {
 	cursorPosition,
 	getCurrentWindow,
 } from "@tauri-apps/api/window";
+import { Store } from "@tauri-apps/plugin-store";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { SubStatRollBar } from "@/components/echo/SubStatRollBar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Echo } from "@/lib/account";
 import {
+	type EchoPanelScan,
 	type EchoTargetState,
 	evaluateEchoTarget,
 	INITIAL_ECHO_TARGET,
 	markRefetched,
-	NAME_SCAN_INTERVAL_MS,
-	pressEchoLock,
-	scanEchoName,
+	PANEL_SCAN_INTERVAL_MS,
+	pressEchoDiscard,
+	pressEchoToggle,
+	registerFailedAttempt,
+	scanEchoPanel,
 } from "@/lib/echoTarget";
 import {
+	type EchoSplitPayload,
 	type OcrStatsData,
 	type OverlayEchoView,
+	retargetPendingDiscard,
+	splitFollowTarget,
 	viewFromEcho,
 	viewFromOcr,
 } from "@/lib/overlayEcho";
 import {
 	calculateRating,
-	getMaxStatValue,
 	getRelevantCharacters,
-	getStatProgress,
+	maxPossibleRating,
 	parseStatValue,
 } from "@/lib/rating";
 import { normalizeStatName } from "@/lib/stats";
@@ -47,13 +54,53 @@ interface CaptureOrigin {
 	y: number;
 }
 
-// Set overlay to ignore cursor events so you can click through it
-await getCurrentWindow().setIgnoreCursorEvents(true);
+/** Last presses seen by the menu debug panel, keyed by the press kind. */
+type MenuDebugPressLog = Partial<
+	Record<"identify" | "discard", { at: number; ok: boolean }>
+>;
 
-/** Closed scans before the panel counts as closed (OCR flicker guard). */
+/** Live menu-detection snapshot for the overlay's debug panel. */
+interface MenuDebugInfo {
+	scan: EchoPanelScan;
+	/** The flicker guard says the panel is closed (the card is hidden). */
+	panelClosed: boolean;
+	/** Consecutive closed scans; the card holds through a single one. */
+	closedTicks: number;
+	/** The trigger rules still owe the current echo an identification. */
+	needsRefetch: boolean;
+	/** Consecutive failed identification presses in this panel session. */
+	failures: number;
+	/** Last time the trigger rules wanted to press (0 = never). */
+	lastAttemptAt: number;
+	/** Echo queued for the assistant's discard, if any. */
+	pendingDiscard: number | null;
+	lastPresses: MenuDebugPressLog;
+}
+
+// Set overlay to ignore cursor events so you can click through it. A failure
+// must not take this module down: a rejected top-level await would leave the
+// whole overlay blank until the app restarts. The cursor-over-card poll
+// re-applies the setting anyway.
+try {
+	await getCurrentWindow().setIgnoreCursorEvents(true);
+} catch (error) {
+	console.error("Failed to set ignore cursor events:", error);
+}
+
+/**
+ * Closed scans before the panel counts as closed. A single unreadable scan is
+ * treated as a flicker for both the card and the trigger rules, so it neither
+ * hides the card nor resets the identified echo. The upgrade/tuning screens
+ * are detected via the "Tuning Successful" region.
+ */
 const PANEL_CLOSE_TICKS = 2;
 /** Run the OCR stats fallback every Nth name-scan tick while it is needed. */
 const STATS_EVERY_TICKS = 2;
+/**
+ * Fallback for the Echo Upgrade Assistant when no "Tuning Successful" screen
+ * follows an update packet: the queued discard fires anyway after this long.
+ */
+const DISCARD_SCREEN_TIMEOUT_MS = 4000;
 
 function Overlay() {
 	const [scanRegion, setScanRegion] = useState<ScanRegion | null>(null);
@@ -67,6 +114,9 @@ function Overlay() {
 	// OCR stats fallback, used until an exact echo is available
 	const [ocrStats, setOcrStats] = useState<OcrStatsData | null>(null);
 	const [panelOpen, setPanelOpen] = useState(false);
+	// Menu-detection debug panel (toggled from the settings Debug section)
+	const [showMenuDebug, setShowMenuDebug] = useState(false);
+	const [menuDebug, setMenuDebug] = useState<MenuDebugInfo | null>(null);
 	// Character whose preferred stats are highlighted; null = top ranked
 	const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(
 		null,
@@ -80,6 +130,16 @@ function Overlay() {
 	const closedTicksRef = useRef(0);
 	const tickRef = useRef(0);
 	const lastEchoKeyRef = useRef<string | null>(null);
+	const showMenuDebugRef = useRef(false);
+	const lastPressesRef = useRef<MenuDebugPressLog>({});
+	// Echo Upgrade Assistant: echo queued for an automatic discard mark.
+	const pendingDiscardRef = useRef<number | null>(null);
+	// The echo's mark when the discard was queued; player input cancels it.
+	const pendingDiscardFuncRef = useRef<number | null>(null);
+	// Whether the "Tuning Successful" screen was seen for the queued discard.
+	const discardSawTuningRef = useRef(false);
+	// When the discard was queued (fallback when no tuning screen appears).
+	const discardQueuedAtRef = useRef(0);
 
 	// Single view model for both sources; null hides the card.
 	const view: OverlayEchoView | null = useMemo(() => {
@@ -157,12 +217,85 @@ function Overlay() {
 
 	useEffect(() => {
 		// Exact echo: the game answered a lock request with the echo's id.
+		// The notify also fires for marks made outside the upgrade panel (the
+		// player locking an echo in the inventory, say); those must not pop
+		// the card. A notify only feeds the display while the scan still sees
+		// the panel open - its own identification round trip or a manual mark
+		// in the panel - so the card never flashes over another screen.
 		const unlistenEcho = listen<Echo>("echo-detected", (event) => {
+			if (closedTicksRef.current >= PANEL_CLOSE_TICKS) return;
 			exactEchoRef.current = event.payload;
 			setExactEcho(event.payload);
-			closedTicksRef.current = 0;
 			setPanelOpen(true);
 		});
+
+		// Echo Upgrade Assistant: after an upgrade, an echo that can no longer
+		// reach the configured rating on any relevant character is queued for
+		// an automatic discard mark (applied once the upgrade screen clears).
+		const queueAssistantDiscard = async (echo: Echo) => {
+			try {
+				const store = await Store.load("settings.json");
+				const enabled = await store.get<boolean>("upgradeAssistantEnabled");
+				if (enabled !== true) return;
+				const threshold =
+					(await store.get<number>("upgradeAssistantThreshold")) ?? 75;
+				const echoView = viewFromEcho(echo);
+				const relevant = getRelevantCharacters(echoView.setNames);
+				if (relevant.length === 0) return;
+				const best = Math.max(
+					...relevant.map((character) =>
+						maxPossibleRating(character, echoView.subStats),
+					),
+				);
+				if (best >= threshold) return;
+				// 2 = already marked for discard.
+				if (echo.funcValue === 2) return;
+				pendingDiscardRef.current = echo.incrId;
+				pendingDiscardFuncRef.current = echo.funcValue;
+				// The discard key is swallowed while the "Tuning Successful"
+				// screen is up, so wait for it to be seen and cleared.
+				discardSawTuningRef.current = false;
+				discardQueuedAtRef.current = Date.now();
+			} catch (error) {
+				console.error("Upgrade assistant failed:", error);
+			}
+		};
+
+		// In-place echo update (e.g. an upgrade added substats): refresh the
+		// card when the update is for the echo already on screen.
+		const unlistenEchoUpdated = listen<Echo>("echo-updated", (event) => {
+			const current = exactEchoRef.current;
+			if (current && current.incrId === event.payload.incrId) {
+				exactEchoRef.current = event.payload;
+				setExactEcho(event.payload);
+				void queueAssistantDiscard(event.payload);
+			}
+		});
+
+		// Stack split: upgrading one copy of a stack moves it to a new
+		// instance id while the tracked id becomes the unleveled remainder.
+		// The card (and any queued assistant discard) must follow the
+		// operated half - that is the echo now on screen.
+		const unlistenEchoSplit = listen<EchoSplitPayload>(
+			"echo-split",
+			(event) => {
+				if (closedTicksRef.current >= PANEL_CLOSE_TICKS) return;
+				const split = event.payload;
+				const follow = splitFollowTarget(exactEchoRef.current, split);
+				if (!follow) return;
+				exactEchoRef.current = follow;
+				setExactEcho(follow);
+				const pending = retargetPendingDiscard(
+					pendingDiscardRef.current,
+					split,
+				);
+				if (pending !== pendingDiscardRef.current) {
+					pendingDiscardRef.current = pending;
+					pendingDiscardFuncRef.current = follow.funcValue;
+				}
+				void queueAssistantDiscard(follow);
+			},
+		);
 
 		// OCR stats fallback (`scan_for_text`).
 		const unlistenStats = listen<OcrStatsData | null>("stats-data", (event) => {
@@ -198,6 +331,27 @@ function Overlay() {
 						setScanRegion(region);
 					})
 					.catch(console.error);
+			},
+		);
+
+		// Menu-detection debug panel: the settings window persists the choice
+		// and relays live toggles; the stored value is also read here so the
+		// panel survives an app restart.
+		Store.load("settings.json")
+			.then(async (store) => {
+				const saved = await store.get<boolean>("showMenuDebug");
+				if (saved === true) {
+					showMenuDebugRef.current = true;
+					setShowMenuDebug(true);
+				}
+			})
+			.catch(console.error);
+
+		const unlistenMenuDebug = listen<boolean>(
+			"show-menu-debug-changed",
+			(event) => {
+				showMenuDebugRef.current = event.payload;
+				setShowMenuDebug(event.payload);
 			},
 		);
 
@@ -251,13 +405,7 @@ function Overlay() {
 			if (busyRef.current) return;
 			busyRef.current = true;
 			try {
-				const scan = await scanEchoName();
-				const evaluation = evaluateEchoTarget(
-					targetRef.current,
-					scan,
-					Date.now(),
-				);
-				let target = evaluation.state;
+				const scan = await scanEchoPanel();
 
 				if (scan.panelOpen) {
 					closedTicksRef.current = 0;
@@ -266,32 +414,122 @@ function Overlay() {
 				}
 				const panelClosed =
 					!scan.panelOpen && closedTicksRef.current >= PANEL_CLOSE_TICKS;
+
+				// A single unreadable scan is a flicker, not a closed panel:
+				// feed the trigger rules an open panel then, so the target is
+				// not reset and no re-identification press fires on recovery
+				// (e.g. the moment the tuning banner gives way to the panel).
+				const evaluation = evaluateEchoTarget(
+					targetRef.current,
+					panelClosed ? scan : { ...scan, panelOpen: true },
+					Date.now(),
+				);
+				let target = evaluation.state;
+
 				setPanelOpen(!panelClosed);
 
 				if (panelClosed) {
 					exactEchoRef.current = null;
 					setExactEcho(null);
 					setOcrStats(null);
+					pendingDiscardRef.current = null;
 				} else if (evaluation.changed) {
 					// A different echo is on screen; the previous exact echo
 					// no longer applies.
 					exactEchoRef.current = null;
 					setExactEcho(null);
 					setOcrStats(null);
+					pendingDiscardRef.current = null;
 				}
 
-				// Lock + re-lock so the client reports the echo's id. The key
-				// is posted straight to the game window, so it works without
-				// focus; failures are retried on the next tick.
-				if (evaluation.attempt) {
+				// Identify the echo and restore its mark state. The key is
+				// posted straight to the game window, so it works without
+				// focus; failures are retried on the next tick. Presses are
+				// only allowed while the scan genuinely reports the panel open:
+				// the flicker-tolerant scan above may keep the card state
+				// through a single unreadable tick, but a press in any other
+				// screen (echo inventory, equip menu) would toggle whatever is
+				// selected there.
+				if (evaluation.attempt && scan.panelOpen && !scan.sortIconVisible) {
 					try {
-						await pressEchoLock();
+						await pressEchoToggle();
 						target = markRefetched(target);
+						lastPressesRef.current.identify = {
+							at: Date.now(),
+							ok: true,
+						};
 					} catch (error) {
-						console.error("Echo lock press failed:", error);
+						console.error("Echo mark press failed:", error);
+						target = registerFailedAttempt(target);
+						lastPressesRef.current.identify = {
+							at: Date.now(),
+							ok: false,
+						};
 					}
 				}
 				targetRef.current = target;
+
+				// Echo Upgrade Assistant: a queued discard waits out the
+				// "Tuning Successful" screen (the discard key is swallowed
+				// while it is up), then fires only while the upgrade panel is
+				// verifiably showing - in any other screen (echo inventory,
+				// equip menu) the key would act on whatever is selected. If no
+				// screen follows the update packet, the wait times out.
+				if (pendingDiscardRef.current !== null) {
+					if (scan.tuningSuccessful) {
+						discardSawTuningRef.current = true;
+					}
+					const echo = exactEchoRef.current;
+					const screenCleared =
+						discardSawTuningRef.current ||
+						Date.now() - discardQueuedAtRef.current >=
+							DISCARD_SCREEN_TIMEOUT_MS;
+					if (
+						scan.panelOpen &&
+						!scan.tuningSuccessful &&
+						!scan.sortIconVisible &&
+						screenCleared &&
+						echo?.incrId === pendingDiscardRef.current
+					) {
+						if (echo.funcValue !== pendingDiscardFuncRef.current) {
+							// The player marked the echo after the assistant
+							// queued it (locking it back, say); their input wins
+							// and the discard is cancelled.
+							pendingDiscardRef.current = null;
+						} else {
+							const incrId = pendingDiscardRef.current;
+							pendingDiscardRef.current = null;
+							try {
+								await pressEchoDiscard();
+								lastPressesRef.current.discard = {
+									at: Date.now(),
+									ok: true,
+								};
+							} catch (error) {
+								console.error("Auto-discard press failed:", error);
+								pendingDiscardRef.current = incrId;
+								lastPressesRef.current.discard = {
+									at: Date.now(),
+									ok: false,
+								};
+							}
+						}
+					}
+				}
+
+				// Menu-detection debug snapshot (only while the panel is on).
+				if (showMenuDebugRef.current) {
+					setMenuDebug({
+						scan,
+						panelClosed,
+						closedTicks: closedTicksRef.current,
+						needsRefetch: target.needsRefetch,
+						failures: target.failures,
+						lastAttemptAt: target.lastAttemptAt,
+						pendingDiscard: pendingDiscardRef.current,
+						lastPresses: { ...lastPressesRef.current },
+					});
+				}
 
 				// OCR stats fallback: only while the panel is open and no
 				// exact echo is available yet.
@@ -299,6 +537,7 @@ function Overlay() {
 				const due = tickRef.current % STATS_EVERY_TICKS === 0;
 				if (
 					!panelClosed &&
+					!scan.tuningSuccessful &&
 					!exactEchoRef.current &&
 					(due || evaluation.changed)
 				) {
@@ -315,15 +554,18 @@ function Overlay() {
 			}
 		};
 
-		const scanInterval = setInterval(runScan, NAME_SCAN_INTERVAL_MS);
+		const scanInterval = setInterval(runScan, PANEL_SCAN_INTERVAL_MS);
 		runScan();
 
 		return () => {
 			unlistenEcho.then((fn) => fn());
+			unlistenEchoUpdated.then((fn) => fn());
+			unlistenEchoSplit.then((fn) => fn());
 			unlistenStats.then((fn) => fn());
 			unlistenScanRegion.then((fn) => fn());
 			unlistenCaptureOrigin.then((fn) => fn());
 			unlistenShowRegion.then((fn) => fn());
+			unlistenMenuDebug.then((fn) => fn());
 			window.removeEventListener("resize", updateDisplayScale);
 			clearInterval(scanInterval);
 		};
@@ -357,11 +599,7 @@ function Overlay() {
 			relevantCharacters
 				.map((character) => ({
 					character,
-					rating: calculateRating(
-						character,
-						view?.mainStats ?? [],
-						view?.subStats ?? [],
-					),
+					rating: calculateRating(character, view?.subStats ?? []),
 				}))
 				.sort((a, b) => b.rating - a.rating),
 		[relevantCharacters, view],
@@ -390,6 +628,28 @@ function Overlay() {
 			? activeCharacter.stats.subs.flat().map(normalizeStatName)
 			: [],
 	);
+
+	// Menu-detection debug strings
+	const debugMenuLabel = !menuDebug
+		? ""
+		: menuDebug.scan.tuningSuccessful
+			? menuDebug.scan.waitingForBanner
+				? "Tuning banner animating in"
+				: "Tuning Successful screen"
+			: menuDebug.scan.panelOpen
+				? "Echo Upgrade panel"
+				: "Other screen - no Echo Upgrade panel";
+	const debugMenuColor = menuDebug?.scan.tuningSuccessful
+		? "text-amber-400"
+		: menuDebug?.scan.panelOpen
+			? "text-emerald-400"
+			: "text-zinc-400";
+	const debugAgo = (at: number) =>
+		`${((Date.now() - at) / 1000).toFixed(1)}s ago`;
+	const debugPress = (kind: "identify" | "discard") => {
+		const press = menuDebug?.lastPresses[kind];
+		return press ? `${debugAgo(press.at)}${press.ok ? "" : " (failed)"}` : "-";
+	};
 
 	return (
 		<div
@@ -420,6 +680,70 @@ function Overlay() {
 						zIndex: 1,
 					}}
 				/>
+			)}
+
+			{/* Menu-detection debug panel (toggled in the settings Debug section) */}
+			{showMenuDebug && menuDebug && (
+				<div
+					style={{ pointerEvents: "none" }}
+					className="fixed bottom-4 left-4 z-50 w-96 space-y-1.5 rounded-md border border-white/10 bg-black/80 p-3 font-mono text-[11px] leading-snug text-zinc-200 shadow-2xl backdrop-blur-sm"
+				>
+					<div className="text-[10px] uppercase tracking-wider text-zinc-500">
+						Menu detection
+					</div>
+					<div className={cn("font-bold", debugMenuColor)}>
+						{debugMenuLabel}
+					</div>
+					<div className="grid grid-cols-[auto_1fr] gap-x-3">
+						<span className="text-zinc-500">title</span>
+						<span className="break-all">
+							{menuDebug.scan.titleText.trim() || "(no text)"}
+						</span>
+						<span className="text-zinc-500">banner</span>
+						<span className="break-all">
+							{menuDebug.scan.bannerText.trim() || "(not read)"}
+						</span>
+						<span className="text-zinc-500">flags</span>
+						<span>
+							panel {menuDebug.scan.panelOpen ? "yes" : "no"} · tuning{" "}
+							{menuDebug.scan.tuningSuccessful ? "yes" : "no"} · waiting{" "}
+							{menuDebug.scan.waitingForBanner ? "yes" : "no"}
+						</span>
+						<span className="text-zinc-500">sortIcon</span>
+						<span>
+							{menuDebug.scan.sortIconVisible ? "yes" : "no"}{" "}
+							{menuDebug.scan.sortIconScore === null
+								? "(no template)"
+								: `(${menuDebug.scan.sortIconScore.toFixed(2)})`}
+						</span>
+						<span className="text-zinc-500">card</span>
+						<span>
+							{menuDebug.panelClosed
+								? `hidden (closed ${menuDebug.closedTicks} scans)`
+								: "shown"}
+						</span>
+						<span className="text-zinc-500">trigger</span>
+						<span>
+							refetch {menuDebug.needsRefetch ? "needed" : "no"}
+							{menuDebug.failures > 0 ? ` (${menuDebug.failures} failed)` : ""}{" "}
+							· wanted{" "}
+							{menuDebug.lastAttemptAt
+								? debugAgo(menuDebug.lastAttemptAt)
+								: "-"}
+						</span>
+						<span className="text-zinc-500">presses</span>
+						<span>
+							identify {debugPress("identify")} · discard{" "}
+							{debugPress("discard")}
+						</span>
+						<span className="text-zinc-500">queue</span>
+						<span>
+							{menuDebug.pendingDiscard === null
+								? "none"
+								: `echo ${menuDebug.pendingDiscard}`}
+						</span>
+					</div>
+				</div>
 			)}
 
 			<div
@@ -512,33 +836,6 @@ function Overlay() {
 
 											const statName = normalizeStatName(parsed.name);
 											const isPreferred = preferredSubStats.has(statName);
-											const maxValue = getMaxStatValue(parsed.name, false);
-											if (!maxValue) {
-												return (
-													<div key={`sub-${stat}`} className="space-y-1">
-														<div className="flex justify-between items-center text-xs">
-															<div className="flex items-center gap-2">
-																{isPreferred && (
-																	<HugeiconsIcon
-																		icon={StarIcon}
-																		className="w-3 h-3 text-yellow-400"
-																	/>
-																)}
-																<span>{parsed.name}</span>
-															</div>
-															<span className="font-bold">
-																{parsed.value}
-																{parsed.hasPercent ? "%" : ""}
-															</span>
-														</div>
-													</div>
-												);
-											}
-
-											const { percentage, color } = getStatProgress(
-												parsed.value,
-												maxValue,
-											);
 
 											return (
 												<div key={`sub-${stat}`} className="space-y-1">
@@ -557,15 +854,11 @@ function Overlay() {
 															{parsed.hasPercent ? "%" : ""}
 														</span>
 													</div>
-													<div className="h-2 bg-black/30 rounded-full overflow-hidden">
-														<div
-															className="h-full transition-all duration-300"
-															style={{
-																width: `${percentage}%`,
-																backgroundColor: color,
-															}}
-														/>
-													</div>
+													<SubStatRollBar
+														statName={parsed.name}
+														value={parsed.value}
+														className="h-1.5"
+													/>
 												</div>
 											);
 										})}

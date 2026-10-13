@@ -10,6 +10,7 @@ function Slider({
 	step = 1,
 	value,
 	onValueChange,
+	disabled,
 }: {
 	className?: string;
 	thumbClassName?: string;
@@ -18,6 +19,7 @@ function Slider({
 	step?: number;
 	value: number[];
 	onValueChange: (value: number[]) => void;
+	disabled?: boolean;
 }) {
 	return (
 		<SliderPrimitive.Root
@@ -26,6 +28,7 @@ function Slider({
 			min={min}
 			max={max}
 			step={step}
+			disabled={disabled}
 			className={cn(
 				"flex w-full touch-none items-center select-none",
 				className,

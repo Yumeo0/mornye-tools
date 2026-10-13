@@ -1365,8 +1365,8 @@ export function OptimizerTab({ active }: { active: boolean }) {
 						? (weaponsById.get(Number(build.weapon.id))?.name ?? null)
 						: null;
 			return weapon
-				? `Lv ${level} · C${chain} · ${weapon}`
-				: `Lv ${level} · C${chain}`;
+				? `Lvl ${level} · C${chain} · ${weapon}`
+				: `Lvl ${level} · C${chain}`;
 		},
 		[buildsByRoleId, overrides],
 	);
@@ -1599,7 +1599,7 @@ export function OptimizerTab({ active }: { active: boolean }) {
 							<span
 								className={`text-[10px] leading-none ${filters.minLevel > 0 ? "font-semibold text-foreground" : "text-muted-foreground"}`}
 							>
-								Min Lv +{filters.minLevel}
+								Min Lvl +{filters.minLevel}
 							</span>
 							<Slider
 								min={0}
@@ -1867,7 +1867,7 @@ export function OptimizerTab({ active }: { active: boolean }) {
 
 			<p className="flex shrink-0 items-center gap-1 pb-2 text-[10px] text-muted-foreground">
 				<ChevronRight className="size-3" />
-				Enemy: Lv. 100 Calamity, Tower of Adversity rules (all RES 20%). Only
+				Enemy: Lvl. 100 Calamity, Tower of Adversity rules (all RES 20%). Only
 				the target's five echoes change; teammates and rotation stay fixed.
 			</p>
 

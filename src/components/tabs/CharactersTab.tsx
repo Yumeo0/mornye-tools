@@ -19,6 +19,8 @@ import { weaponName } from "@/components/weapon/WeaponCard";
 import {
 	type Echo,
 	echoesForResonator,
+	formatStatValue,
+	statLabel,
 	weaponForResonator,
 } from "@/lib/account";
 import {
@@ -29,6 +31,7 @@ import {
 	usePersistedState,
 } from "@/lib/persisted";
 import { qualityGradient, rarityTextClass } from "@/lib/rarity";
+import { rollValueForWantedSubstats } from "@/lib/rating";
 import {
 	isExcludedCharacter,
 	parseSubstatTiers,
@@ -348,7 +351,7 @@ export const CHARACTER_SORT_OPTIONS: {
 	desc: boolean;
 }[] = [
 	{ value: "name", label: "Name", desc: false },
-	{ value: "level", label: "Lv", desc: true },
+	{ value: "level", label: "Lvl", desc: true },
 	{ value: "chain", label: "Chain", desc: true },
 	{ value: "rarity", label: "Rarity", desc: true },
 	{ value: "echoes", label: "Echoes", desc: true },
@@ -670,6 +673,26 @@ function BuildDetail({
 		? build?.roles[roleNames[0]]?.substats_priority
 		: null;
 
+	// Wanted substats of the selected role: each equipped echo shows this
+	// character's own roll value, not the best across relevant characters.
+	const wantedSubstats = useMemo(() => {
+		const priority = guide?.substats_priority ?? firstRolePriority ?? null;
+		return parseSubstatTiers(priority)
+			.flat()
+			.map((stat) => stat.name);
+	}, [guide, firstRolePriority]);
+
+	const echoRollValue = (echo: Echo): number | null =>
+		wantedSubstats.length === 0
+			? null
+			: rollValueForWantedSubstats(
+					wantedSubstats,
+					echo.subProps.map(
+						(prop) =>
+							`${statLabel(prop.key)} ${formatStatValue(prop.key, prop.value)}`,
+					),
+				);
+
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center gap-4">
@@ -720,7 +743,7 @@ function BuildDetail({
 					<div className="mt-1.5 flex items-center gap-3 text-sm">
 						{account ? (
 							<>
-								<span className="font-medium">Lv {account.level}</span>
+								<span className="font-medium">Lvl {account.level}</span>
 								<ChainNodes
 									chain={account.chain}
 									icons={character.chainIcons ?? []}
@@ -764,7 +787,11 @@ function BuildDetail({
 						</Label>
 						<div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
 							{echoes.map((echo) => (
-								<EchoCard key={echo.incrId} echo={echo} />
+								<EchoCard
+									key={echo.incrId}
+									echo={echo}
+									rollValue={echoRollValue(echo)}
+								/>
 							))}
 						</div>
 					</CardContent>
@@ -843,7 +870,7 @@ function CharacterCard({
 					<img
 						src={weaponIconUrl(account.weapon.itemId)}
 						alt={account.weapon.name ?? undefined}
-						title={`${account.weapon.name} · Lv ${account.weapon.level} · Rank ${account.weapon.rank}`}
+						title={`${account.weapon.name} · Lvl ${account.weapon.level} · Rank ${account.weapon.rank}`}
 						className="size-9 object-contain drop-shadow-md"
 					/>
 				)}
@@ -863,7 +890,7 @@ function CharacterCard({
 						</div>
 						<div className="flex flex-wrap items-center justify-center gap-1">
 							<CardBadge title={`Level ${account.level}`}>
-								Lv {account.level}
+								Lvl {account.level}
 							</CardBadge>
 							<CardBadge title="Echoes equipped">
 								<img
@@ -1112,7 +1139,7 @@ export function CharactersTab() {
 					<div className="flex w-full flex-wrap items-end gap-x-6 gap-y-2 border-t pt-2">
 						<div className="w-48">
 							<RangeFilter
-								label="Lv"
+								label="Lvl"
 								min={LEVEL_RANGE[0]}
 								max={LEVEL_RANGE[1]}
 								value={filters.levelRange}

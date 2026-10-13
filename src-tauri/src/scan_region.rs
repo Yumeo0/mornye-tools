@@ -51,6 +51,14 @@ pub struct ScanRegions {
     pub level: Option<ScanRegion>,
     pub main_stats: ScanRegion,
     pub sub_stats: ScanRegion,
+    /// "Tuning Successful" banner; read to tell an open panel whose title is
+    /// covered by the tuning screen apart from a closed panel.
+    #[serde(default)]
+    pub tuning_successful: Option<ScanRegion>,
+    /// The list sort icon shown by some screens (upgrade fodder selection,
+    /// echo bags). While it is visible the overlay must not press any keys.
+    #[serde(default)]
+    pub sort_icon: Option<ScanRegion>,
 }
 
 pub(crate) fn color_filter_image(img: &DynamicImage, filter: &ColorFilter) -> GrayImage {

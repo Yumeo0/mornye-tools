@@ -120,7 +120,7 @@ export function WeaponCard({ weapon }: { weapon: Weapon }) {
 				</p>
 				<div className="flex flex-wrap items-center justify-center gap-1">
 					<CardBadge title={`Weapon level ${weapon.level}`}>
-						Lv {weapon.level}
+						Lvl {weapon.level}
 					</CardBadge>
 					<CardBadge title="Resonance rank">Rank {weapon.rank}</CardBadge>
 				</div>

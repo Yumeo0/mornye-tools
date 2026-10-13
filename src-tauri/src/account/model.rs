@@ -121,6 +121,17 @@ pub struct Weapon {
     pub equipped_by: Option<i64>,
 }
 
+/// Where an echo came from: the packet sniffer or a manual entry.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum EchoSource {
+    /// Captured from the game's traffic (the default for existing stores).
+    #[default]
+    Sniffer,
+    /// Entered by hand in the UI; user-owned and removable.
+    Manual,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Echo {
@@ -133,6 +144,17 @@ pub struct Echo {
     /// `FetterGroupId` (sonata set id).
     pub set_id: i32,
     pub level: i32,
+    /// Item mark state (`PhantomItem.FuncValue`): 0 = none, 1 = locked,
+    /// 2 = discard-marked.
+    #[serde(default)]
+    pub func_value: i32,
+    /// How many identical echoes this entry represents
+    /// (`PhantomItem.StackCount`). The game stacks duplicates of the same
+    /// species into one inventory entry and splits the stack when one copy is
+    /// operated on (level-up, equip, polish). Always >= 1; stores written
+    /// before stacking was captured default to 1.
+    #[serde(default = "default_stack_count")]
+    pub stack_count: i32,
     #[serde(default)]
     pub main_props: Vec<EchoProp>,
     #[serde(default)]
@@ -142,6 +164,19 @@ pub struct Echo {
     /// Slot index within the equipped set; `0` is the main echo.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slot: Option<u8>,
+    /// Where the echo came from; manual entries are user-owned.
+    #[serde(default)]
+    pub source: EchoSource,
+}
+
+impl Echo {
+    /// `func_value` of an echo marked for discard.
+    pub const FUNC_VALUE_DISCARD: i32 = 2;
+}
+
+/// Legacy `account.json` entries predate stack capture and mean "one echo".
+fn default_stack_count() -> i32 {
+    1
 }
 
 /// The full account store persisted to `account.json`.

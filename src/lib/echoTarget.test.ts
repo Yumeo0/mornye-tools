@@ -1,125 +1,162 @@
 // Trigger rules for the exact-echo path: when the overlay asks the game to
-// re-lock the displayed echo. Pure timing logic, no Tauri involved.
+// identify the echo shown in the upgrade panel. The panel opening is the
+// re-fetch signal; the echo name is never read.
 
 import { describe, expect, test } from "bun:test";
 
 import {
+	type EchoPanelScan,
 	type EchoTargetState,
 	evaluateEchoTarget,
 	INITIAL_ECHO_TARGET,
+	MAX_FAILED_ATTEMPTS,
 	markRefetched,
-	NAME_MISSING_MS,
 	PRESS_ATTEMPT_INTERVAL_MS,
+	registerFailedAttempt,
 } from "@/lib/echoTarget";
 
-const SCAN_MS = 1000;
 // Realistic wall-clock base: `lastAttemptAt` starts at 0, i.e. long ago.
 const BASE = 1_000_000;
 
 function evaluate(
 	state: EchoTargetState,
 	panelOpen: boolean,
-	name: string,
 	now: number,
+	overrides: Partial<EchoPanelScan> = {},
 ) {
-	return evaluateEchoTarget(state, { panelOpen, name }, now);
+	return evaluateEchoTarget(
+		state,
+		{
+			panelOpen,
+			tuningSuccessful: false,
+			waitingForBanner: false,
+			titleText: "",
+			bannerText: "",
+			sortIconVisible: false,
+			sortIconScore: null,
+			...overrides,
+		},
+		now,
+	);
 }
 
 describe("evaluateEchoTarget", () => {
-	test("closed panel resets the trigger state", () => {
+	test("a closed panel resets the trigger state", () => {
 		const state: EchoTargetState = {
 			panelOpen: true,
-			name: "Hecate",
-			missingSince: null,
 			needsRefetch: true,
 			lastAttemptAt: BASE,
+			failures: 0,
 		};
-		const result = evaluate(state, false, "", BASE + SCAN_MS);
+		const result = evaluate(state, false, BASE + 500);
 		expect(result.state).toEqual(INITIAL_ECHO_TARGET);
 		expect(result.attempt).toBe(false);
 		expect(result.changed).toBe(false);
 	});
 
-	test("first readable name refetches once", () => {
-		const first = evaluate(INITIAL_ECHO_TARGET, true, "Hecate", BASE);
+	test("opening the panel refetches once", () => {
+		const first = evaluate(INITIAL_ECHO_TARGET, true, BASE);
 		expect(first.changed).toBe(true);
 		expect(first.attempt).toBe(true);
 
-		// After the press succeeds, the same name needs no further refetch.
+		// After the press succeeds, staying open needs no further refetch.
 		const pressed = markRefetched(first.state);
-		const second = evaluate(pressed, true, "Hecate", BASE + SCAN_MS);
+		const second = evaluate(pressed, true, BASE + 500);
 		expect(second.changed).toBe(false);
 		expect(second.attempt).toBe(false);
 	});
 
-	test("a changed name refetches again after the throttle window", () => {
-		const first = evaluate(INITIAL_ECHO_TARGET, true, "Hecate", BASE);
-		const changed = evaluate(first.state, true, "Mourning Aix", BASE + SCAN_MS);
-		expect(changed.changed).toBe(true);
-		expect(changed.attempt).toBe(true);
+	test("the tuning-success banner holds the state and skips presses", () => {
+		const state: EchoTargetState = {
+			panelOpen: true,
+			needsRefetch: false,
+			lastAttemptAt: BASE,
+			failures: 0,
+		};
+		const tuning = evaluate(state, true, BASE + 500, {
+			tuningSuccessful: true,
+		});
+		expect(tuning.attempt).toBe(false);
+		expect(tuning.changed).toBe(false);
+		expect(tuning.state.panelOpen).toBe(true);
 
-		// Another change one tick later: detected, but throttled.
-		const tooSoon = evaluate(
-			changed.state,
-			true,
-			"Mech Abomination",
-			BASE + SCAN_MS + 1,
-		);
-		expect(tooSoon.changed).toBe(true);
-		expect(tooSoon.attempt).toBe(false);
-
-		const later = evaluate(
-			tooSoon.state,
-			true,
-			"Mech Abomination",
-			BASE + SCAN_MS + PRESS_ATTEMPT_INTERVAL_MS,
-		);
-		expect(later.attempt).toBe(true);
-	});
-
-	test("a name that stays unreadable for a second refetches", () => {
-		const first = evaluate(INITIAL_ECHO_TARGET, true, "", BASE);
-		expect(first.attempt).toBe(false);
-
-		const stillMissing = evaluate(
-			first.state,
-			true,
-			"",
-			BASE + NAME_MISSING_MS / 2,
-		);
-		expect(stillMissing.attempt).toBe(false);
-
-		const expired = evaluate(
-			stillMissing.state,
-			true,
-			"",
-			BASE + NAME_MISSING_MS,
-		);
-		expect(expired.attempt).toBe(true);
+		// The banner clears with the panel still open: no new refetch.
+		const cleared = evaluate(tuning.state, true, BASE + 10 * 500);
+		expect(cleared.attempt).toBe(false);
+		expect(cleared.changed).toBe(false);
 	});
 
 	test("a failed press stays pending and is retried after the throttle", () => {
-		const first = evaluate(INITIAL_ECHO_TARGET, true, "Hecate", BASE);
+		const first = evaluate(INITIAL_ECHO_TARGET, true, BASE);
 		expect(first.attempt).toBe(true);
 
 		// The press failed (IPC error): needsRefetch stays set, retries are
 		// throttled.
-		const tooSoon = evaluate(first.state, true, "Hecate", BASE + 1);
+		const tooSoon = evaluate(first.state, true, BASE + 1);
 		expect(tooSoon.attempt).toBe(false);
 
-		const retry = evaluate(
-			first.state,
-			true,
-			"Hecate",
-			BASE + PRESS_ATTEMPT_INTERVAL_MS,
-		);
+		const retry = evaluate(first.state, true, BASE + PRESS_ATTEMPT_INTERVAL_MS);
 		expect(retry.attempt).toBe(true);
 
 		// Once the press succeeds the echo is resolved.
 		const done = markRefetched(retry.state);
-		expect(done.needsRefetch).toBe(false);
-
-		const settled = evaluate(done, true, "Hecate", BASE + 10 * SCAN_MS);
+		const settled = evaluate(done, true, BASE + 10 * 500);
 		expect(settled.attempt).toBe(false);
+	});
+
+	test("closing and reopening the panel refetches again", () => {
+		const open = evaluate(INITIAL_ECHO_TARGET, true, BASE);
+		const pressed = markRefetched(open.state);
+
+		const closed = evaluate(pressed, false, BASE + 500);
+		expect(closed.state).toEqual(INITIAL_ECHO_TARGET);
+
+		const reopened = evaluate(
+			closed.state,
+			true,
+			BASE + PRESS_ATTEMPT_INTERVAL_MS,
+		);
+		expect(reopened.changed).toBe(true);
+		expect(reopened.attempt).toBe(true);
+	});
+
+	test("the sort-icon screen holds the state and skips presses", () => {
+		const state: EchoTargetState = {
+			panelOpen: true,
+			needsRefetch: true,
+			lastAttemptAt: 0,
+			failures: 0,
+		};
+		const held = evaluate(state, true, BASE + PRESS_ATTEMPT_INTERVAL_MS, {
+			sortIconVisible: true,
+		});
+		expect(held.attempt).toBe(false);
+		expect(held.changed).toBe(false);
+		expect(held.state.panelOpen).toBe(true);
+
+		// The screen closes with the panel still open: the pending refetch
+		// resumes (subject to the throttle).
+		const resumed = evaluate(
+			held.state,
+			true,
+			BASE + 2 * PRESS_ATTEMPT_INTERVAL_MS,
+		);
+		expect(resumed.attempt).toBe(true);
+	});
+
+	test("failed presses stop retrying after the cap", () => {
+		let state = evaluate(INITIAL_ECHO_TARGET, true, BASE).state;
+		expect(state.needsRefetch).toBe(true);
+
+		for (let i = 0; i < MAX_FAILED_ATTEMPTS - 1; i++) {
+			state = registerFailedAttempt(state);
+		}
+		expect(state.needsRefetch).toBe(true);
+
+		state = registerFailedAttempt(state);
+		expect(state.needsRefetch).toBe(false);
+
+		const after = evaluate(state, true, BASE + 10 * PRESS_ATTEMPT_INTERVAL_MS);
+		expect(after.attempt).toBe(false);
 	});
 });

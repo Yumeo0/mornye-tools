@@ -292,7 +292,7 @@ export function CharacterPickerDialog({
 					<div className="flex flex-wrap items-end gap-x-4 gap-y-2 border-t pt-2">
 						<div className="w-40">
 							<RangeFilter
-								label="Lv"
+								label="Lvl"
 								min={LEVEL_RANGE[0]}
 								max={LEVEL_RANGE[1]}
 								value={filters.levelRange}
@@ -415,7 +415,7 @@ export function CharacterPickerDialog({
 									</span>
 									<span className="text-[10px] leading-none text-muted-foreground">
 										{account
-											? `Lv ${account.level} · C${account.chain}`
+											? `Lvl ${account.level} · C${account.chain}`
 											: "not owned"}
 									</span>
 									{inSlot && (

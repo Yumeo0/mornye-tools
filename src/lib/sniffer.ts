@@ -15,6 +15,18 @@ export interface SnifferStatus {
 	rsa_key_error: string | null;
 	tables_loaded: boolean;
 	packets_seen: number;
+	/** Frames handed to the sniffer after the port pre-filter. */
+	frames_fed: number;
+	/** Frames rejected before decoding (CRC, size, KCP errors). */
+	frame_errors: number;
+	/** Frame errors from a stale KCP conversation (missed handshake). */
+	conv_mismatches: number;
+	/** Game packets that failed CRC/decryption/decompression. */
+	packet_errors: number;
+	/** Handled messages whose proto payload failed to decode. */
+	decode_failures: number;
+	/** Frames keep arriving but nothing decodes: the KCP mirror lost a segment. */
+	stream_stalled: boolean;
 	last_error: string | null;
 	log: string[];
 }

@@ -40,6 +40,20 @@
 				"height": 280,
 				"textColor": "#ced5d8",
 				"tolerance": 60
+			},
+			"tuningSuccessful": {
+				"x": 1050,
+				"y": 440,
+				"width": 460,
+				"height": 68,
+				"textColor": "#f4eafd",
+				"tolerance": 60
+			},
+			"sortIcon": {
+				"x": 2422,
+				"y": 1284,
+				"width": 82,
+				"height": 82
 			}
 		}
 	}

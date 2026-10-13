@@ -10,6 +10,7 @@ import {
 	parseSubstatTiers,
 	sonataNames,
 	splitStatCodes,
+	subStatRoll,
 } from "@/lib/stats";
 
 export interface CharacterInfo {
@@ -134,23 +135,6 @@ export function getMaxStatValue(
 		return stats[statKey as keyof typeof stats].max;
 	}
 	return null;
-}
-
-// Percentage of the max roll and the color used by the overlay
-export function getStatProgress(
-	value: number,
-	maxValue: number,
-): { percentage: number; color: string } {
-	const percentage = Math.min((value / maxValue) * 100, 100);
-	let color: string;
-	if (percentage >= 85)
-		color = "#10b981"; // green-500
-	else if (percentage >= 70)
-		color = "#3b82f6"; // blue-500
-	else if (percentage >= 50)
-		color = "#f59e0b"; // amber-500
-	else color = "#ef4444"; // red-500
-	return { percentage, color };
 }
 
 // Find the echo matching an OCR'd echo name (case-insensitive, exact matches
@@ -294,48 +278,117 @@ export function getCharacterInfo(
 	return null;
 }
 
-// Calculate the echo rating for a character (0-100)
-export function calculateRating(
-	character: CharacterInfo,
-	parsedMainStats: string[],
+/** Maximum roll points a substat can contribute: 8 percent tiers at 1 point
+ * each, or 4 flat tiers at 2 points each. */
+const MAX_ROLL_POINTS = 8;
+
+/** Substats an echo can have (revealed at +5/+10/+15/+20/+25). */
+export const MAX_SUBSTATS = 5;
+
+// Deduplicated, normalized substats a character wants.
+function wantedSubstatNames(character: CharacterInfo): string[] {
+	return [...new Set(character.stats.subs.flat().map(normalizeStatName))];
+}
+
+// Split the echo's substat lines into normalized name + value pairs.
+function echoSubstatEntries(
+	parsedSubStats: string[],
+): Array<{ name: string; value: number }> {
+	const entries: Array<{ name: string; value: number }> = [];
+	for (const stat of parsedSubStats) {
+		const parsed = parseStatValue(stat);
+		if (!parsed) continue;
+		entries.push({ name: normalizeStatName(parsed.name), value: parsed.value });
+	}
+	return entries;
+}
+
+/**
+ * Presence share of one wanted substat: the even split of 100 across the
+ * character's wanted stats, minus what that stat's best rolls can add. With
+ * five wanted stats that is 12% on the piece plus 1% per roll tier.
+ */
+function presenceShare(wantedCount: number): number {
+	return (wantedCount > 0 ? 100 / wantedCount : 0) - MAX_ROLL_POINTS;
+}
+
+/**
+ * Roll value of one wanted substat: the presence share plus one point per roll
+ * tier (two per tier for flat stats, whose four tiers still cap at 8 points).
+ */
+function statRollValue(
+	name: string,
+	entries: Array<{ value: number }>,
+	presence: number,
+): number {
+	const rollPoints = Math.min(
+		entries.reduce((sum, entry) => {
+			const roll = subStatRoll(name, entry.value);
+			return sum + (roll ? roll.tier * (MAX_ROLL_POINTS / roll.tierCount) : 0);
+		}, 0),
+		MAX_ROLL_POINTS,
+	);
+	return presence + rollPoints;
+}
+
+/**
+ * Roll value of an echo for an explicit list of wanted substats (0-100).
+ * `calculateRating` is the per-character wrapper; the character detail uses
+ * this directly so each role's own priority applies.
+ */
+export function rollValueForWantedSubstats(
+	wantedSubstats: string[],
 	parsedSubStats: string[],
 ): number {
-	const mainStatString = parsedMainStats[0];
-	if (!mainStatString) return 0;
+	const wanted = [...new Set(wantedSubstats.map(normalizeStatName))];
+	const presence = presenceShare(wanted.length);
+	const entries = echoSubstatEntries(parsedSubStats);
 
-	// Parse main stat name
-	const mainMatch = mainStatString.match(/^(.+?)\s+\d/);
-	if (!mainMatch) return 0;
-	const mainStatName = normalizeStatName(mainMatch[1]);
-
-	// Get echo sub stat names
-	const echoSubNames = parsedSubStats
-		.map((stat) => {
-			const parsed = parseStatValue(stat);
-			return parsed ? normalizeStatName(parsed.name) : "";
-		})
-		.filter(Boolean);
-
-	// Calculate main stat score
-	let mainScore = 0;
-	const all4cost = character.stats["4cost"].flat();
-	const all3cost = character.stats["3cost"].flat();
-	const all1cost = character.stats["1cost"].flat();
-
-	if (all4cost.some((s) => normalizeStatName(s) === mainStatName)) {
-		mainScore = 40;
-	} else if (all3cost.some((s) => normalizeStatName(s) === mainStatName)) {
-		mainScore = 30;
-	} else if (all1cost.some((s) => normalizeStatName(s) === mainStatName)) {
-		mainScore = 20;
+	let total = 0;
+	for (const name of wanted) {
+		const matching = entries.filter((entry) => entry.name === name);
+		if (matching.length === 0) continue;
+		total += statRollValue(name, matching, presence);
 	}
+	return Math.round(Math.min(Math.max(total, 0), 100));
+}
 
-	// Calculate sub stat score
-	const preferredSubs = character.stats.subs.flat().map(normalizeStatName);
-	const subMatches = preferredSubs.filter((pref) =>
-		echoSubNames.includes(pref),
-	).length;
-	const subScore = (subMatches / Math.max(preferredSubs.length, 1)) * 60;
+// Calculate the roll value of an echo for a character (0-100).
+export function calculateRating(
+	character: CharacterInfo,
+	parsedSubStats: string[],
+): number {
+	return rollValueForWantedSubstats(
+		character.stats.subs.flat().map(normalizeStatName),
+		parsedSubStats,
+	);
+}
 
-	return Math.round(mainScore + subScore);
+/**
+ * Best roll value the echo can still reach for a character: the substats that
+ * are not revealed yet are assumed to roll missing wanted stats at max tiers.
+ * Equal to `calculateRating` once all five substats are revealed.
+ */
+export function maxPossibleRating(
+	character: CharacterInfo,
+	parsedSubStats: string[],
+): number {
+	const wanted = wantedSubstatNames(character);
+	const presence = presenceShare(wanted.length);
+	const entries = echoSubstatEntries(parsedSubStats);
+
+	let total = 0;
+	let missingWanted = 0;
+	for (const name of wanted) {
+		const matching = entries.filter((entry) => entry.name === name);
+		if (matching.length === 0) {
+			missingWanted += 1;
+			continue;
+		}
+		total += statRollValue(name, matching, presence);
+	}
+	const remainingSlots = Math.max(0, MAX_SUBSTATS - entries.length);
+	total +=
+		Math.min(remainingSlots, missingWanted) * (presence + MAX_ROLL_POINTS);
+	return Math.round(Math.min(Math.max(total, 0), 100));
 }

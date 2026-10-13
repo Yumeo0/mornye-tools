@@ -1,8 +1,10 @@
 import type { ReactNode } from "react";
+import { SubStatRollBar } from "@/components/echo/SubStatRollBar";
 import { type Echo, formatStatValue, statLabel } from "@/lib/account";
 import {
 	isExcludedCharacter,
 	maxSubStatValue,
+	ratingColor,
 	statIconAsset,
 	subStatRollColor,
 } from "@/lib/stats";
@@ -21,7 +23,7 @@ interface EchoSetEntry {
 	icon: string;
 }
 
-interface EchoEntry {
+export interface EchoEntry {
 	echo_name: string;
 	echo_id: number;
 	monster_id?: number | null;
@@ -63,6 +65,11 @@ for (const echo of echoData as EchoEntry[]) {
 	}
 }
 
+/** Every echo species (merged across sets), sorted by name. */
+export const allEchoSpecies: EchoEntry[] = [...echoesByMonsterId.values()].sort(
+	(a, b) => a.echo_name.localeCompare(b.echo_name),
+);
+
 /** The sonata icon assets only ship in the IconElementAttri128 resolution. */
 export function sonataIcon128(icon: string): string {
 	return icon.replace(
@@ -96,6 +103,34 @@ export function echoSet(echo: Echo): EchoSetEntry | undefined {
 	return sets.find((set) => set.id === echo.setId) ?? sets[0];
 }
 
+/** Plain-text summary of an echo, used by the right-click "copy info" menu. */
+export function echoInfoText(
+	echo: Echo,
+	roll?: { rating: number; character: { character_name: string } } | null,
+): string {
+	const name = echoName(echo);
+	const set = echoSet(echo);
+	const stack = echo.stackCount > 1 ? ` ×${echo.stackCount}` : "";
+	const lines = [
+		`${name} +${echo.level}${stack}${set ? ` · ${set.name}` : ""}`,
+	];
+	const format = (props: Echo["mainProps"]) =>
+		props
+			.map(
+				(prop) =>
+					`${statLabel(prop.key)} ${formatStatValue(prop.key, prop.value)}`,
+			)
+			.join(" / ");
+	const mains = format(echo.mainProps);
+	if (mains) lines.push(`Main: ${mains}`);
+	const subs = format(echo.subProps);
+	if (subs) lines.push(`Subs: ${subs}`);
+	if (roll) {
+		lines.push(`RV ${roll.rating}% (${roll.character.character_name})`);
+	}
+	return lines.join("\n");
+}
+
 export function equippedCharacter(
 	equippedBy: number | null | undefined,
 ): CharacterEntry | undefined {
@@ -118,20 +153,30 @@ function StatRow({
 	const rollColor =
 		numeric !== null && maxValue ? subStatRollColor(numeric, maxValue) : null;
 	return (
-		<div className="flex min-w-0 items-center gap-1.5" title={label}>
-			{icon && <img src={icon} alt="" className="size-3 shrink-0" />}
-			<span
-				className={`flex-1 truncate text-[11px] ${muted ? "text-muted-foreground" : ""}`}
-			>
-				{label}
-			</span>
-			{value && (
+		<div className="min-w-0" title={label}>
+			<div className="flex items-center gap-1.5">
+				{icon && <img src={icon} alt="" className="size-3 shrink-0" />}
 				<span
-					className="text-[11px] font-semibold"
-					style={rollColor ? { color: rollColor } : undefined}
+					className={`flex-1 truncate text-[11px] ${muted ? "text-muted-foreground" : ""}`}
 				>
-					{value}
+					{label}
 				</span>
+				{value && (
+					<span
+						className="text-[11px] font-semibold"
+						style={rollColor ? { color: rollColor } : undefined}
+					>
+						{value}
+					</span>
+				)}
+			</div>
+			{numeric !== null && (
+				<SubStatRollBar
+					statName={label}
+					value={numeric}
+					className="mt-0.5 h-1"
+					revealOnHover
+				/>
 			)}
 		</div>
 	);
@@ -139,10 +184,16 @@ function StatRow({
 
 export function EchoCard({
 	echo,
+	rollValue,
+	rollCharacter,
 	actions,
 	footer,
 }: {
 	echo: Echo;
+	/** Best rating among relevant characters (0-100); hidden when null. */
+	rollValue?: number | null;
+	/** Character the roll value is for; shown as a small portrait. */
+	rollCharacter?: { name: string; icon: string } | null;
 	actions?: ReactNode;
 	footer?: ReactNode;
 }) {
@@ -150,7 +201,7 @@ export function EchoCard({
 	const set = echoSet(echo);
 	const name = echoName(echo);
 	return (
-		<div className="flex h-full flex-col bg-muted/50 p-2.5 text-sm">
+		<div className="group/card flex h-full flex-col bg-muted/50 p-2.5 text-sm">
 			<div className="flex gap-2.5">
 				<div className="relative shrink-0">
 					{image ? (
@@ -176,18 +227,38 @@ export function EchoCard({
 						<span className="truncate font-medium" title={name}>
 							{name}
 						</span>
-						<span className="text-xs font-bold text-yellow-400">
-							+{echo.level}
+						<span className="flex shrink-0 items-center gap-1">
+							{echo.stackCount > 1 && (
+								<span
+									className="border border-sky-400/40 bg-sky-400/10 px-1 text-[10px] font-bold text-sky-300"
+									title={`Stack of ${echo.stackCount} identical echoes`}
+								>
+									×{echo.stackCount}
+								</span>
+							)}
+							<span className="text-xs font-bold text-yellow-400">
+								+{echo.level}
+							</span>
 						</span>
 					</div>
-					{set && (
-						<span
-							className="block truncate text-[11px] text-muted-foreground"
-							title={set.name}
-						>
-							{set.name}
-						</span>
-					)}
+					<div className="flex items-center gap-1.5">
+						{set && (
+							<span
+								className="min-w-0 flex-1 truncate text-[11px] text-muted-foreground"
+								title={set.name}
+							>
+								{set.name}
+							</span>
+						)}
+						{echo.source === "manual" && (
+							<span
+								className="shrink-0 border border-amber-400/40 bg-amber-400/10 px-1 text-[9px] font-bold tracking-wide text-amber-300 uppercase"
+								title="Added by hand"
+							>
+								Manual
+							</span>
+						)}
+					</div>
 				</div>
 				{actions && (
 					<div className="flex shrink-0 items-start gap-1">{actions}</div>
@@ -213,6 +284,31 @@ export function EchoCard({
 							muted
 						/>
 					))}
+				</div>
+			)}
+			{rollValue != null && (
+				<div
+					className="mt-2 flex items-center justify-end gap-1.5 border-t pt-1.5"
+					title={
+						rollCharacter
+							? `Roll value — best on ${rollCharacter.name}`
+							: "Roll value"
+					}
+				>
+					{rollCharacter && (
+						<img
+							src={rollCharacter.icon}
+							alt={rollCharacter.name}
+							title={rollCharacter.name}
+							className="size-5 shrink-0 object-contain"
+						/>
+					)}
+					<span
+						className="text-xs font-bold leading-none"
+						style={{ color: ratingColor(rollValue) }}
+					>
+						RV {rollValue}%
+					</span>
 				</div>
 			)}
 			{footer && (

@@ -51,6 +51,8 @@ export function isExcludedCharacter(characterId: number): boolean {
 interface StatRangeJson {
 	min: number;
 	max: number;
+	/** Possible substat roll values, ascending (8, or 4 for flat ATK/DEF). */
+	rolls?: number[];
 }
 
 interface StatsJson {
@@ -63,6 +65,47 @@ export function normalizeStatName(stat: string): string {
 	return stat.replace(/\./g, "").replace(/\s+/g, " ").trim().toLowerCase();
 }
 
+/** Possible roll values of a substat, ascending; null when unknown. */
+export function subStatRolls(statName: string): number[] | null {
+	const stats = (statsJson as StatsJson).sub;
+	const key = Object.keys(stats).find(
+		(k) => normalizeStatName(k) === normalizeStatName(statName),
+	);
+	const rolls = key ? stats[key].rolls : undefined;
+	return rolls && rolls.length > 0 ? rolls : null;
+}
+
+export interface SubStatRoll {
+	/** 1-based tier the value landed on. */
+	tier: number;
+	/** Number of possible roll values for this stat. */
+	tierCount: number;
+	/** The roll values, ascending. */
+	rolls: number[];
+}
+
+/**
+ * Match a substat value to its roll tier; the nearest tier wins so small
+ * rounding differences (OCR, lower-rarity ranges) still land on a bar.
+ */
+export function subStatRoll(
+	statName: string,
+	value: number,
+): SubStatRoll | null {
+	const rolls = subStatRolls(statName);
+	if (!rolls) return null;
+	let tier = 1;
+	let bestDistance = Math.abs(rolls[0] - value);
+	for (let index = 1; index < rolls.length; index++) {
+		const distance = Math.abs(rolls[index] - value);
+		if (distance < bestDistance) {
+			bestDistance = distance;
+			tier = index + 1;
+		}
+	}
+	return { tier, tierCount: rolls.length, rolls };
+}
+
 // Max possible substat roll for a stat name, or null if unknown
 export function maxSubStatValue(statName: string): number | null {
 	const stats = (statsJson as StatsJson).sub;
@@ -72,14 +115,18 @@ export function maxSubStatValue(statName: string): number | null {
 	return key ? stats[key].max : null;
 }
 
-// Color a substat roll by how close it is to the max possible roll
-// (same colors as the overlay's progress bars)
-export function subStatRollColor(value: number, maxValue: number): string {
-	const percentage = Math.min((value / maxValue) * 100, 100);
+// Color a 0-100 percentage by how close it is to the maximum (shared
+// thresholds for ratings, roll bars and value colors)
+export function ratingColor(percentage: number): string {
 	if (percentage >= 85) return "#10b981"; // green-500
 	if (percentage >= 70) return "#3b82f6"; // blue-500
 	if (percentage >= 50) return "#f59e0b"; // amber-500
 	return "#ef4444"; // red-500
+}
+
+// Color a substat roll by how close it is to the max possible roll
+export function subStatRollColor(value: number, maxValue: number): string {
+	return ratingColor(Math.min((value / maxValue) * 100, 100));
 }
 
 // Local game asset icons (IconAttribute folder) keyed by full stat name

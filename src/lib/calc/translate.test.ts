@@ -57,6 +57,7 @@ function makeEcho(overrides: Partial<Echo> = {}): Echo {
 		],
 		equippedBy: 1503,
 		slot: 0,
+		source: "sniffer",
 		...overrides,
 	};
 }

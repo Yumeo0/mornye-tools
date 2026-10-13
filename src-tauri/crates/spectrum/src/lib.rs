@@ -20,6 +20,9 @@ pub mod game;
 pub use crate::crypto::CryptoError;
 pub use crate::kcp::KcpError;
 pub use crate::network::NetworkPacketError;
+/// Re-exported so consumers can write generic helpers over
+/// [`GamePacket::parse_proto`] without depending on a matching prost version.
+pub use prost;
 
 const PORT_RANGES: &[(u16, u16)] = &[(13100, 13200), (23100, 23200)];
 

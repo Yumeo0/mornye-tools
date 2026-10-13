@@ -11,10 +11,12 @@ use serde::Deserialize;
 use spectrum::game::proto as pb;
 use tauri::{AppHandle, Manager};
 
-use crate::account::model::{Echo, EchoProp, PlayerInfo, Resonator, SkillNode, StatKey, Weapon};
+use crate::account::model::{
+    Echo, EchoProp, EchoSource, PlayerInfo, Resonator, SkillNode, StatKey, Weapon,
+};
 use crate::account::store::AccountStore;
 use crate::account::AccountState;
-use crate::sniffer::SnifferState;
+use crate::sniffer::{FuncValueChange, SnifferState};
 
 // Message ids from `data/wuwa-protos/packetIds.json`.
 pub const PB_GET_ROLE_LIST_RESPONSE: u16 = 25557;
@@ -33,6 +35,14 @@ pub const PHANTOM_ITEM_ADD_NOTIFY: u16 = 17848;
 pub const PHANTOM_ITEM_REMOVE_NOTIFY: u16 = 29775;
 pub const PHANTOM_EQUIP_INFO_NOTIFY: u16 = 15372;
 pub const PHANTOM_LEVEL_UP_RESPONSE: u16 = 22489;
+/// Equipping one echo; splits its stack when it was part of one.
+pub const PHANTOM_PUT_ON_RESPONSE: u16 = 16317;
+/// The "auto equip" recommendation; may split and merge several stacks.
+pub const PHANTOM_AUTO_PUT_RESPONSE: u16 = 19223;
+/// Stat re-roll of an echo; splits its stack when it was part of one.
+pub const PHANTOM_POLISH_RESPONSE: u16 = 16484;
+/// Applying a saved echo loadout; may split and merge several stacks.
+pub const USE_PHANTOM_EQUIP_GROUP_RESPONSE: u16 = 21750;
 pub const WEAPON_ITEM_RESPONSE: u16 = 27089;
 pub const WEAPON_ALL_INFO_NOTIFY: u16 = 19780;
 pub const WEAPON_ADD_NOTIFY: u16 = 18560;
@@ -43,9 +53,53 @@ pub const WEAPON_RESON_UP_RESPONSE: u16 = 24490;
 pub const EQUIP_TAKE_ON_RESPONSE: u16 = 28184;
 pub const EQUIP_TAKE_ON_NOTIFY: u16 = 28760;
 pub const PLAYER_BASIC_INFO_GET_RESPONSE: u16 = 22549;
-/// Client request sent when an item is locked/unlocked. The overlay triggers
-/// it on purpose (lock + re-lock) to learn which echo is on screen.
-pub const PB_ITEM_LOCK_REQUEST: u16 = 25683;
+/// Server push for an item's mark state (lock/discard) change. The overlay
+/// triggers it on purpose (see `press_echo_toggle`) to learn which echo is on
+/// screen and to keep every echo's `FuncValue` current.
+pub const ITEM_FUNC_VALUE_UPDATE_NOTIFY: u16 = 23784;
+
+/// Every message id [`handle_packet`] acts on. Anything else returns before
+/// the account store lock is taken: the vast majority of decoded traffic
+/// (combat, scene sync) never touches the store, and blocking the capture
+/// loop on that mutex risks overflowing the socket buffer - a single lost
+/// frame permanently stalls the passive KCP mirror.
+const HANDLED_MSG_IDS: &[u16] = &[
+    PB_GET_ROLE_LIST_RESPONSE,
+    PB_GET_ROLE_LIST_NOTIFY,
+    PB_ROLE_ACTIVE_NOTIFY,
+    PB_UP_LEVEL_ROLE_RESPONSE,
+    PB_ROLE_EXP_NOTIFY,
+    PB_ROLE_SKILL_LEVEL_NOTIFY,
+    PB_UP_LEVEL_SKILL_RESPONSE,
+    RESONANT_CHAIN_UNLOCK_RESPONSE,
+    ROLE_CHANGE_NOTIFY,
+    ROLE_SKILL_QUICK_LEVEL_UP_RESPONSE,
+    PHANTOM_ITEM_RESPONSE,
+    PHANTOM_ITEM_UPDATE_NOTIFY,
+    PHANTOM_ITEM_ADD_NOTIFY,
+    PHANTOM_ITEM_REMOVE_NOTIFY,
+    PHANTOM_EQUIP_INFO_NOTIFY,
+    PHANTOM_LEVEL_UP_RESPONSE,
+    PHANTOM_PUT_ON_RESPONSE,
+    PHANTOM_AUTO_PUT_RESPONSE,
+    PHANTOM_POLISH_RESPONSE,
+    USE_PHANTOM_EQUIP_GROUP_RESPONSE,
+    WEAPON_ITEM_RESPONSE,
+    WEAPON_ALL_INFO_NOTIFY,
+    WEAPON_ADD_NOTIFY,
+    WEAPON_ITEM_ADD_NOTIFY,
+    WEAPON_LEVEL_UP_RESPONSE,
+    WEAPON_BREACH_RESPONSE,
+    WEAPON_RESON_UP_RESPONSE,
+    EQUIP_TAKE_ON_RESPONSE,
+    EQUIP_TAKE_ON_NOTIFY,
+    PLAYER_BASIC_INFO_GET_RESPONSE,
+    ITEM_FUNC_VALUE_UPDATE_NOTIFY,
+];
+
+fn is_handled(msg_id: u16) -> bool {
+    HANDLED_MSG_IDS.contains(&msg_id)
+}
 
 #[derive(Deserialize, Default)]
 struct EchoCatalogEntry {
@@ -131,6 +185,10 @@ impl ExtractTables {
             monster_id: self.monster_id(item.id as i64).unwrap_or(0),
             set_id: item.fetter_group_id,
             level: item.phantom_level,
+            func_value: item.func_value,
+            // The game stacks identical echoes into one entry; a packet that
+            // omits the field (0) means a single echo.
+            stack_count: item.stack_count.max(1),
             main_props: item
                 .phantom_main_prop
                 .iter()
@@ -143,6 +201,7 @@ impl ExtractTables {
                 .collect(),
             equipped_by: None,
             slot: None,
+            source: EchoSource::Sniffer,
         }
     }
 
@@ -154,6 +213,12 @@ impl ExtractTables {
 /// Handle one decoded game packet, updating the account store and marking the
 /// changed sections for the debounced `account-updated` event.
 pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
+    // High-frequency traffic (combat, scene sync) never touches the store;
+    // skip it before taking the lock so the capture loop stays responsive.
+    if !is_handled(gp.msg_id) {
+        return;
+    }
+
     let tables = app.state::<SnifferState>().extract_tables();
     let account = app.state::<AccountState>();
     let mut store = match account.store.lock() {
@@ -162,20 +227,32 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
     };
 
     let mut sections: Vec<&'static str> = Vec::new();
-    // Echo referenced by a lock request; emitted once the store lock is free.
-    let mut locked_echo: Option<Echo> = None;
+    // Echo mark change from an `ItemFuncValueUpdateNotify`: recorded for the
+    // overlay's toggle (it needs the pre-press value) and emitted once the
+    // store lock is free.
+    let mut func_value_change: Option<FuncValueChange> = None;
+    let mut detected_echo: Option<Echo> = None;
+    // A mark update for an instance the store has never seen; logged once the
+    // lock is free (the identification round trip cannot restore its mark).
+    let mut unknown_func_value_id: Option<i64> = None;
+    // Echoes whose stats changed in place (upgrades, tuning); the overlay
+    // refreshes its card from these without another key-press round-trip.
+    let mut updated_echoes: Vec<Echo> = Vec::new();
+    // Both halves of a stack split from a level-up/polish response; the
+    // overlay follows the operated half (it may have a new instance id).
+    let mut split_event: Option<(Echo, Option<Echo>)> = None;
 
     match gp.msg_id {
         PB_GET_ROLE_LIST_RESPONSE | PB_GET_ROLE_LIST_NOTIFY => {
             if gp.msg_id == PB_GET_ROLE_LIST_RESPONSE {
-                if let Ok(msg) = gp.parse_proto::<pb::PbGetRoleListResponse>() {
+                if let Some(msg) = parse_msg::<pb::PbGetRoleListResponse>(app, gp) {
                     let list: Vec<Resonator> = msg.role_list.iter().map(role_to_resonator).collect();
                     if !list.is_empty() {
                         store.upsert_resonators(list);
                         sections.push("resonators");
                     }
                 }
-            } else if let Ok(msg) = gp.parse_proto::<pb::PbGetRoleListNotify>() {
+            } else if let Some(msg) = parse_msg::<pb::PbGetRoleListNotify>(app, gp) {
                 let list: Vec<Resonator> = msg.role_list.iter().map(role_to_resonator).collect();
                 if !list.is_empty() {
                     store.upsert_resonators(list);
@@ -184,7 +261,7 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
             }
         }
         PB_ROLE_ACTIVE_NOTIFY => {
-            if let Ok(msg) = gp.parse_proto::<pb::PbRoleActiveNotify>() {
+            if let Some(msg) = parse_msg::<pb::PbRoleActiveNotify>(app, gp) {
                 if let Some(role) = msg.role.as_ref() {
                     store.upsert_resonators(vec![role_to_resonator(role)]);
                     sections.push("resonators");
@@ -192,7 +269,7 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
             }
         }
         PB_UP_LEVEL_ROLE_RESPONSE => {
-            if let Ok(msg) = gp.parse_proto::<pb::PbUpLevelRoleResponse>() {
+            if let Some(msg) = parse_msg::<pb::PbUpLevelRoleResponse>(app, gp) {
                 if msg.code == pb::ErrorCode::Success as i32
                     && store.patch_resonator_level(msg.role_id as i64, msg.level)
                 {
@@ -201,14 +278,14 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
             }
         }
         PB_ROLE_EXP_NOTIFY => {
-            if let Ok(msg) = gp.parse_proto::<pb::PbRoleExpNotify>() {
+            if let Some(msg) = parse_msg::<pb::PbRoleExpNotify>(app, gp) {
                 if store.patch_resonator_level(msg.role_id as i64, msg.level) {
                     sections.push("resonators");
                 }
             }
         }
         PB_ROLE_SKILL_LEVEL_NOTIFY => {
-            if let Ok(msg) = gp.parse_proto::<pb::PbRoleSkillLevelNotify>() {
+            if let Some(msg) = parse_msg::<pb::PbRoleSkillLevelNotify>(app, gp) {
                 if let Some(skill) = msg.skill_info.as_ref() {
                     if store.merge_resonator_skill(
                         msg.role_id as i64,
@@ -221,7 +298,7 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
             }
         }
         PB_UP_LEVEL_SKILL_RESPONSE => {
-            if let Ok(msg) = gp.parse_proto::<pb::PbUpLevelSkillResponse>() {
+            if let Some(msg) = parse_msg::<pb::PbUpLevelSkillResponse>(app, gp) {
                 if msg.code == pb::ErrorCode::Success as i32 {
                     if let Some(skill) = msg.skill_info.as_ref() {
                         if store.merge_resonator_skill(
@@ -236,7 +313,7 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
             }
         }
         RESONANT_CHAIN_UNLOCK_RESPONSE => {
-            if let Ok(msg) = gp.parse_proto::<pb::ResonantChainUnlockResponse>() {
+            if let Some(msg) = parse_msg::<pb::ResonantChainUnlockResponse>(app, gp) {
                 if msg.err_code == pb::ErrorCode::Success as i32
                     && store.raise_resonator_chain(
                         msg.role_id as i64,
@@ -248,7 +325,7 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
             }
         }
         ROLE_CHANGE_NOTIFY => {
-            if let Ok(msg) = gp.parse_proto::<pb::RoleChangeNotify>() {
+            if let Some(msg) = parse_msg::<pb::RoleChangeNotify>(app, gp) {
                 if let Some(role) = msg.role_info.as_ref() {
                     store.upsert_resonators(vec![role_to_resonator(role)]);
                     sections.push("resonators");
@@ -256,7 +333,7 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
             }
         }
         ROLE_SKILL_QUICK_LEVEL_UP_RESPONSE => {
-            if let Ok(msg) = gp.parse_proto::<pb::RoleSkillQuickLevelUpResponse>() {
+            if let Some(msg) = parse_msg::<pb::RoleSkillQuickLevelUpResponse>(app, gp) {
                 if msg.error_code == pb::ErrorCode::Success as i32 {
                     if let Some(role) = msg.role_info.as_ref() {
                         store.upsert_resonators(vec![role_to_resonator(role)]);
@@ -266,7 +343,7 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
             }
         }
         PHANTOM_ITEM_RESPONSE => {
-            if let Ok(msg) = gp.parse_proto::<pb::PhantomItemResponse>() {
+            if let Some(msg) = parse_msg::<pb::PhantomItemResponse>(app, gp) {
                 let echoes: Vec<Echo> = msg
                     .phantom_item_list
                     .iter()
@@ -276,36 +353,28 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
                     store.upsert_echoes(echoes);
                     sections.push("echoes");
                 }
-                for equip in &msg.equip_info {
-                    store.apply_equip_info(
-                        equip.role_id as i64,
-                        &equip
-                            .phantom_item_incr_id
-                            .iter()
-                            .map(|v| *v as i64)
-                            .collect::<Vec<_>>(),
-                    );
-                }
-                if !msg.equip_info.is_empty() {
+                if apply_equip_list(&mut store, &msg.equip_info) {
                     sections.push("echoes");
                 }
             }
         }
         PHANTOM_ITEM_UPDATE_NOTIFY => {
-            if let Ok(msg) = gp.parse_proto::<pb::PhantomItemUpdateNotify>() {
+            if let Some(msg) = parse_msg::<pb::PhantomItemUpdateNotify>(app, gp) {
                 let echoes: Vec<Echo> = msg
                     .update_info
                     .iter()
                     .map(|i| tables.echo_from_item(i))
                     .collect();
                 if !echoes.is_empty() {
+                    let incr_ids: Vec<i64> = echoes.iter().map(|e| e.incr_id).collect();
                     store.upsert_echoes(echoes);
+                    updated_echoes.extend(incr_ids.into_iter().filter_map(|id| store.echo(id)));
                     sections.push("echoes");
                 }
             }
         }
         PHANTOM_ITEM_ADD_NOTIFY => {
-            if let Ok(msg) = gp.parse_proto::<pb::PhantomItemAddNotify>() {
+            if let Some(msg) = parse_msg::<pb::PhantomItemAddNotify>(app, gp) {
                 let echoes: Vec<Echo> = msg
                     .phantom_item_list
                     .iter()
@@ -318,40 +387,113 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
             }
         }
         PHANTOM_ITEM_REMOVE_NOTIFY => {
-            if let Ok(msg) = gp.parse_proto::<pb::PhantomItemRemoveNotify>() {
+            if let Some(msg) = parse_msg::<pb::PhantomItemRemoveNotify>(app, gp) {
                 // Removal is not part of the model; ignore.
                 let _ = msg;
             }
         }
         PHANTOM_LEVEL_UP_RESPONSE => {
-            if let Ok(msg) = gp.parse_proto::<pb::PhantomLevelUpResponse>() {
+            if let Some(msg) = parse_msg::<pb::PhantomLevelUpResponse>(app, gp) {
                 if msg.error_code == pb::ErrorCode::Success as i32 {
-                    if let Some(item) = msg.update_info.as_ref() {
-                        store.upsert_echoes(vec![tables.echo_from_item(item)]);
+                    // Leveling an echo that sits in a stack splits the stack;
+                    // both halves must be upserted or the remainder's count
+                    // (and possibly its new instance id) goes stale.
+                    let (changed, updated, split) = apply_update_with_split(
+                        &tables,
+                        &mut store,
+                        msg.update_info.as_ref(),
+                        msg.stack_split_info.as_ref(),
+                        std::iter::empty(),
+                    );
+                    if changed {
+                        sections.push("echoes");
+                    }
+                    updated_echoes.extend(updated);
+                    split_event = split;
+                }
+            }
+        }
+        PHANTOM_POLISH_RESPONSE => {
+            if let Some(msg) = parse_msg::<pb::PhantomPolishResponse>(app, gp) {
+                if msg.error_code == pb::ErrorCode::Success as i32 {
+                    let (changed, updated, split) = apply_update_with_split(
+                        &tables,
+                        &mut store,
+                        msg.update_info.as_ref(),
+                        msg.stack_split_info.as_ref(),
+                        msg.stack_merge_infos.iter(),
+                    );
+                    if changed {
+                        sections.push("echoes");
+                    }
+                    updated_echoes.extend(updated);
+                    split_event = split;
+                }
+            }
+        }
+        PHANTOM_PUT_ON_RESPONSE => {
+            if let Some(msg) = parse_msg::<pb::PhantomPutOnResponse>(app, gp) {
+                if msg.error_code == pb::ErrorCode::Success as i32 {
+                    let mut changed = apply_stack_ops(
+                        &tables,
+                        &mut store,
+                        msg.stack_split_infos.iter(),
+                        msg.stack_merge_infos.iter(),
+                    );
+                    if apply_equip_list(&mut store, &msg.equip_info_list) {
+                        changed = true;
+                    }
+                    if changed {
+                        sections.push("echoes");
+                    }
+                }
+            }
+        }
+        PHANTOM_AUTO_PUT_RESPONSE => {
+            if let Some(msg) = parse_msg::<pb::PhantomAutoPutResponse>(app, gp) {
+                if msg.error_code == pb::ErrorCode::Success as i32 {
+                    let mut changed = apply_stack_ops(
+                        &tables,
+                        &mut store,
+                        msg.stack_split_infos.iter(),
+                        msg.stack_merge_infos.iter(),
+                    );
+                    if apply_equip_list(&mut store, &msg.equip_info_list) {
+                        changed = true;
+                    }
+                    if changed {
+                        sections.push("echoes");
+                    }
+                }
+            }
+        }
+        USE_PHANTOM_EQUIP_GROUP_RESPONSE => {
+            if let Some(msg) = parse_msg::<pb::UsePhantomEquipGroupResponse>(app, gp) {
+                if msg.error_code == pb::ErrorCode::Success as i32 {
+                    let mut changed = apply_stack_ops(
+                        &tables,
+                        &mut store,
+                        msg.stack_split_infos.iter(),
+                        msg.stack_merge_infos.iter(),
+                    );
+                    if apply_equip_list(&mut store, &msg.equip_info_list) {
+                        changed = true;
+                    }
+                    if changed {
                         sections.push("echoes");
                     }
                 }
             }
         }
         PHANTOM_EQUIP_INFO_NOTIFY => {
-            if let Ok(msg) = gp.parse_proto::<pb::PhantomEquipInfoNotify>() {
-                for equip in &msg.equip_info {
-                    store.apply_equip_info(
-                        equip.role_id as i64,
-                        &equip
-                            .phantom_item_incr_id
-                            .iter()
-                            .map(|v| *v as i64)
-                            .collect::<Vec<_>>(),
-                    );
-                }
-                if !msg.equip_info.is_empty() {
+            if let Some(msg) = parse_msg::<pb::PhantomEquipInfoNotify>(app, gp) {
+                if apply_equip_list(&mut store, &msg.equip_info) {
                     sections.push("echoes");
                 }
             }
         }
         WEAPON_ITEM_RESPONSE => {
-            if let Ok(msg) = gp.parse_proto::<pb::WeaponItemResponse>() {
+            if let Some(msg) = parse_msg::<pb::WeaponItemResponse>(app, gp) {
                 let weapons: Vec<Weapon> = msg.weapon_item_list.iter().map(weapon_item).collect();
                 if !weapons.is_empty() {
                     store.upsert_weapons(weapons);
@@ -360,7 +502,7 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
             }
         }
         WEAPON_ALL_INFO_NOTIFY => {
-            if let Ok(msg) = gp.parse_proto::<pb::WeaponAllInfoNotify>() {
+            if let Some(msg) = parse_msg::<pb::WeaponAllInfoNotify>(app, gp) {
                 let weapons: Vec<Weapon> = msg.all_weapon.iter().map(one_weapon_item).collect();
                 if !weapons.is_empty() {
                     store.upsert_weapons(weapons);
@@ -369,7 +511,7 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
             }
         }
         WEAPON_ADD_NOTIFY => {
-            if let Ok(msg) = gp.parse_proto::<pb::WeaponAddNotify>() {
+            if let Some(msg) = parse_msg::<pb::WeaponAddNotify>(app, gp) {
                 if let Some(info) = msg.weapon_info.as_ref() {
                     store.upsert_weapons(vec![one_weapon_item(info)]);
                     sections.push("weapons");
@@ -377,7 +519,7 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
             }
         }
         WEAPON_ITEM_ADD_NOTIFY => {
-            if let Ok(msg) = gp.parse_proto::<pb::WeaponItemAddNotify>() {
+            if let Some(msg) = parse_msg::<pb::WeaponItemAddNotify>(app, gp) {
                 let weapons: Vec<Weapon> = msg.weapon_item_list.iter().map(weapon_item).collect();
                 if !weapons.is_empty() {
                     store.upsert_weapons(weapons);
@@ -386,7 +528,7 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
             }
         }
         WEAPON_LEVEL_UP_RESPONSE => {
-            if let Ok(msg) = gp.parse_proto::<pb::WeaponLevelUpResponse>() {
+            if let Some(msg) = parse_msg::<pb::WeaponLevelUpResponse>(app, gp) {
                 if msg.error_code == pb::ErrorCode::Success as i32
                     && store.patch_weapon(msg.inc_id as i64, Some(msg.weapon_level), None, None)
                 {
@@ -395,7 +537,7 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
             }
         }
         WEAPON_BREACH_RESPONSE => {
-            if let Ok(msg) = gp.parse_proto::<pb::WeaponBreachResponse>() {
+            if let Some(msg) = parse_msg::<pb::WeaponBreachResponse>(app, gp) {
                 if msg.error_code == pb::ErrorCode::Success as i32
                     && store.patch_weapon(msg.inc_id as i64, None, Some(msg.weapon_breach), None)
                 {
@@ -404,7 +546,7 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
             }
         }
         WEAPON_RESON_UP_RESPONSE => {
-            if let Ok(msg) = gp.parse_proto::<pb::WeaponResonUpResponse>() {
+            if let Some(msg) = parse_msg::<pb::WeaponResonUpResponse>(app, gp) {
                 if msg.error_code == pb::ErrorCode::Success as i32
                     && store.patch_weapon(msg.inc_id as i64, None, None, Some(msg.reaon_level))
                 {
@@ -413,7 +555,7 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
             }
         }
         EQUIP_TAKE_ON_RESPONSE => {
-            if let Ok(msg) = gp.parse_proto::<pb::EquipTakeOnResponse>() {
+            if let Some(msg) = parse_msg::<pb::EquipTakeOnResponse>(app, gp) {
                 if msg.error_code == pb::ErrorCode::Success as i32
                     && apply_weapon_equip_data(&mut store, &msg.data_list)
                 {
@@ -422,26 +564,44 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
             }
         }
         EQUIP_TAKE_ON_NOTIFY => {
-            if let Ok(msg) = gp.parse_proto::<pb::EquipTakeOnNotify>() {
+            if let Some(msg) = parse_msg::<pb::EquipTakeOnNotify>(app, gp) {
                 if apply_weapon_equip_data(&mut store, &msg.data_list) {
                     sections.push("weapons");
                 }
             }
         }
         PLAYER_BASIC_INFO_GET_RESPONSE => {
-            if let Ok(msg) = gp.parse_proto::<pb::PlayerBasicInfoGetResponse>() {
+            if let Some(msg) = parse_msg::<pb::PlayerBasicInfoGetResponse>(app, gp) {
                 if let Some(details) = msg.info.as_ref() {
                     store.upsert_player(player_details(details));
                     sections.push("player");
                 }
             }
         }
-        PB_ITEM_LOCK_REQUEST => {
-            // Lock/unlock of an item; for echoes this is the overlay asking
-            // which echo is on screen. Non-echo items simply resolve to None.
-            if let Ok(msg) = gp.parse_proto::<pb::ItemLockRequest>() {
+        ITEM_FUNC_VALUE_UPDATE_NOTIFY => {
+            // Mark state (lock/discard) of an item changed; for echoes this is
+            // how the overlay learns which echo its key press toggled. Non-echo
+            // items simply resolve to None.
+            if let Some(msg) = parse_msg::<pb::ItemFuncValueUpdateNotify>(app, gp) {
                 if msg.incr_id != 0 {
-                    locked_echo = store.echo(msg.incr_id as i64);
+                    let incr_id = msg.incr_id as i64;
+                    if let Some(previous) = store.echo(incr_id).map(|e| e.func_value) {
+                        if let Some(echo) = store.set_echo_func_value(incr_id, msg.func_value) {
+                            sections.push("echoes");
+                            func_value_change = Some(FuncValueChange {
+                                incr_id,
+                                previous,
+                                current: msg.func_value,
+                            });
+                            detected_echo = Some(echo);
+                        }
+                    } else {
+                        // The store has never seen this instance (e.g. a
+                        // stack-split response was lost): the echo cannot be
+                        // rendered and the identifying key press that provoked
+                        // the notify will not get its mark restored.
+                        unknown_func_value_id = Some(incr_id);
+                    }
                 }
             }
         }
@@ -450,13 +610,155 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
 
     drop(store);
 
-    if let Some(echo) = locked_echo {
+    if let Some(change) = func_value_change {
+        app.state::<SnifferState>().record_func_value_change(change);
+    }
+
+    if let Some(incr_id) = unknown_func_value_id {
+        app.state::<SnifferState>()
+            .log(format!("func value update for unknown echo {incr_id} (ignored)"));
+    }
+
+    if !updated_echoes.is_empty() {
+        app.state::<SnifferState>().record_echo_update();
+    }
+    for echo in updated_echoes {
+        crate::account::emit_echo_updated(app, &echo);
+    }
+
+    if let Some((operated, remainder)) = split_event {
+        crate::account::emit_echo_split(app, &operated, remainder.as_ref());
+    }
+
+    if let Some(echo) = detected_echo {
         crate::account::emit_echo_detected(app, &echo);
     }
 
     if !sections.is_empty() {
         mark_pending(app, &sections);
     }
+}
+
+/// Parse a handled message's payload, making decode failures visible instead
+/// of silently dropping the whole message (e.g. when the pinned
+/// `protos.proto` drifts behind a game update, a failing
+/// `PhantomItemResponse` would otherwise lose echoes with no trace).
+fn parse_msg<T>(app: &AppHandle, gp: &spectrum::game::GamePacket) -> Option<T>
+where
+    T: spectrum::prost::Message + Default,
+{
+    match gp.parse_proto::<T>() {
+        Ok(msg) => Some(msg),
+        Err(e) => {
+            app.state::<SnifferState>()
+                .record_decode_failure(gp.msg_id, gp.get_msg_name(), &e.to_string());
+            None
+        }
+    }
+}
+
+/// Apply `RolePhantomEquipInfo` rows (per-role equipment snapshots). Returns
+/// whether any rows were present.
+fn apply_equip_list(store: &mut AccountStore, list: &[pb::RolePhantomEquipInfo]) -> bool {
+    if list.is_empty() {
+        return false;
+    }
+    for equip in list {
+        store.apply_equip_info(
+            equip.role_id as i64,
+            &equip
+                .phantom_item_incr_id
+                .iter()
+                .map(|v| *v as i64)
+                .collect::<Vec<_>>(),
+        );
+    }
+    true
+}
+
+/// Apply the stack split/merge rows carried by echo operation responses
+/// (level-up, equip, polish, loadout). Both halves of a split are full items
+/// and are upserted: the remainder keeps its shrunken `StackCount` (possibly
+/// under a new instance id) and the operated echo its own state. Ids absorbed
+/// by a merge are removed before the representative is upserted with the
+/// grown count. Returns whether the store changed.
+fn apply_stack_ops<'a>(
+    tables: &ExtractTables,
+    store: &mut AccountStore,
+    splits: impl Iterator<Item = &'a pb::PhantomStackSplitInfo>,
+    merges: impl Iterator<Item = &'a pb::PhantomStackMergeInfo>,
+) -> bool {
+    let mut echoes: Vec<Echo> = Vec::new();
+    let mut merged_ids: Vec<i64> = Vec::new();
+    for split in splits {
+        for item in split.operate_item.iter().chain(split.remainder_item.iter()) {
+            echoes.push(tables.echo_from_item(item));
+        }
+    }
+    for merge in merges {
+        for item in merge.representative_item.iter() {
+            echoes.push(tables.echo_from_item(item));
+        }
+        if merge.merged_incr_id != 0 {
+            merged_ids.push(merge.merged_incr_id as i64);
+        }
+    }
+    let mut changed = false;
+    // Removals run before the upsert so a degenerate payload naming the same
+    // id as both merged and representative still ends with it stored.
+    for id in merged_ids {
+        if store.remove_merged_echo(id) {
+            changed = true;
+        }
+    }
+    if !echoes.is_empty() {
+        store.upsert_echoes(echoes);
+        changed = true;
+    }
+    changed
+}
+
+/// Shared shape of `PhantomLevelUpResponse` / `PhantomPolishResponse`: upsert
+/// the operated item, then apply the stack operations that came with it.
+/// Returns whether the store changed, the echoes the overlay should refresh,
+/// and - when the operation split a stack - both halves as stored, so the
+/// overlay can follow the operated half under its (possibly new) instance id.
+/// When the response carries only the split, the operated half is the echo
+/// that was leveled/polished.
+fn apply_update_with_split<'a>(
+    tables: &ExtractTables,
+    store: &mut AccountStore,
+    update_info: Option<&pb::PhantomItem>,
+    split: Option<&'a pb::PhantomStackSplitInfo>,
+    merges: impl Iterator<Item = &'a pb::PhantomStackMergeInfo>,
+) -> (bool, Vec<Echo>, Option<(Echo, Option<Echo>)>) {
+    let mut updated = Vec::new();
+    if let Some(item) = update_info {
+        let echo = tables.echo_from_item(item);
+        let incr_id = echo.incr_id;
+        store.upsert_echoes(vec![echo]);
+        if let Some(stored) = store.echo(incr_id) {
+            updated.push(stored);
+        }
+    }
+    let changed =
+        apply_stack_ops(tables, store, split.into_iter(), merges) || update_info.is_some();
+    // Read the halves back from the store so equipment and overrides are
+    // already applied.
+    let mut split_halves = None;
+    if let Some(operate_item) = split.and_then(|s| s.operate_item.as_ref()) {
+        if let Some(operated) = store.echo(operate_item.incr_id as i64) {
+            if update_info.is_none() {
+                updated.push(operated.clone());
+            }
+            let remainder = split
+                .and_then(|s| s.remainder_item.as_ref())
+                .map(|i| i.incr_id as i64)
+                .and_then(|id| store.echo(id));
+            split_halves = Some((operated, remainder));
+        }
+    }
+    (changed, updated, split_halves)
 }
 
 /// Apply `EquipTakeOn*` rows: `EquipPos::Weapon` rows carry the equipped
@@ -566,6 +868,190 @@ pub fn stat_key_from_str(value: &str) -> Option<StatKey> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn handled_msg_ids_cover_every_const() {
+        // Guards the early-return in `handle_packet`: every message id with a
+        // match arm must be registered, or its packets are dropped unseen.
+        for id in [
+            PB_GET_ROLE_LIST_RESPONSE,
+            PB_GET_ROLE_LIST_NOTIFY,
+            PB_ROLE_ACTIVE_NOTIFY,
+            PB_UP_LEVEL_ROLE_RESPONSE,
+            PB_ROLE_EXP_NOTIFY,
+            PB_ROLE_SKILL_LEVEL_NOTIFY,
+            PB_UP_LEVEL_SKILL_RESPONSE,
+            RESONANT_CHAIN_UNLOCK_RESPONSE,
+            ROLE_CHANGE_NOTIFY,
+            ROLE_SKILL_QUICK_LEVEL_UP_RESPONSE,
+            PHANTOM_ITEM_RESPONSE,
+            PHANTOM_ITEM_UPDATE_NOTIFY,
+            PHANTOM_ITEM_ADD_NOTIFY,
+            PHANTOM_ITEM_REMOVE_NOTIFY,
+            PHANTOM_EQUIP_INFO_NOTIFY,
+            PHANTOM_LEVEL_UP_RESPONSE,
+            PHANTOM_PUT_ON_RESPONSE,
+            PHANTOM_AUTO_PUT_RESPONSE,
+            PHANTOM_POLISH_RESPONSE,
+            USE_PHANTOM_EQUIP_GROUP_RESPONSE,
+            WEAPON_ITEM_RESPONSE,
+            WEAPON_ALL_INFO_NOTIFY,
+            WEAPON_ADD_NOTIFY,
+            WEAPON_ITEM_ADD_NOTIFY,
+            WEAPON_LEVEL_UP_RESPONSE,
+            WEAPON_BREACH_RESPONSE,
+            WEAPON_RESON_UP_RESPONSE,
+            EQUIP_TAKE_ON_RESPONSE,
+            EQUIP_TAKE_ON_NOTIFY,
+            PLAYER_BASIC_INFO_GET_RESPONSE,
+            ITEM_FUNC_VALUE_UPDATE_NOTIFY,
+        ] {
+            assert!(
+                is_handled(id),
+                "message id {id} has a match arm but is missing from HANDLED_MSG_IDS"
+            );
+        }
+    }
+
+    #[test]
+    fn stack_count_normalizes_to_at_least_one() {
+        let tables = ExtractTables::default();
+        // A packet that omits `StackCount` (0) means a single echo.
+        let single = tables.echo_from_item(&pb::PhantomItem {
+            incr_id: 1,
+            stack_count: 0,
+            ..Default::default()
+        });
+        assert_eq!(single.stack_count, 1);
+        let stacked = tables.echo_from_item(&pb::PhantomItem {
+            incr_id: 2,
+            stack_count: 51,
+            ..Default::default()
+        });
+        assert_eq!(stacked.stack_count, 51);
+    }
+
+    #[test]
+    fn stack_ops_upsert_split_halves_and_drop_merged_ids() {
+        let dir = std::env::temp_dir().join(format!("mny-extract-stack-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        let mut store = AccountStore::load(dir.clone());
+        let tables = ExtractTables::default();
+
+        // A stack of 51 (id 100) and a loose echo (id 200).
+        store.upsert_echoes(vec![
+            tables.echo_from_item(&pb::PhantomItem {
+                incr_id: 100,
+                stack_count: 51,
+                ..Default::default()
+            }),
+            tables.echo_from_item(&pb::PhantomItem {
+                incr_id: 200,
+                ..Default::default()
+            }),
+        ]);
+
+        // Operating on one copy splits the stack: the operated echo stays at
+        // id 100 with count 1, the remainder moves to a new id with count 50.
+        let split = pb::PhantomStackSplitInfo {
+            operate_item: Some(pb::PhantomItem {
+                incr_id: 100,
+                phantom_level: 1,
+                stack_count: 1,
+                ..Default::default()
+            }),
+            operate_before_count: 51,
+            remainder_item: Some(pb::PhantomItem {
+                incr_id: 300,
+                stack_count: 50,
+                ..Default::default()
+            }),
+        };
+        assert!(apply_stack_ops(
+            &tables,
+            &mut store,
+            std::iter::once(&split),
+            std::iter::empty()
+        ));
+        assert_eq!(store.echo(100).unwrap().stack_count, 1);
+        assert_eq!(store.echo(100).unwrap().level, 1);
+        assert_eq!(store.echo(300).unwrap().stack_count, 50);
+
+        // Merging the loose echo into the remainder drops id 200 and grows
+        // the representative.
+        let merge = pb::PhantomStackMergeInfo {
+            merged_incr_id: 200,
+            representative_item: Some(pb::PhantomItem {
+                incr_id: 300,
+                stack_count: 51,
+                ..Default::default()
+            }),
+        };
+        assert!(apply_stack_ops(
+            &tables,
+            &mut store,
+            std::iter::empty(),
+            std::iter::once(&merge)
+        ));
+        assert!(store.echo(200).is_none());
+        assert_eq!(store.echo(300).unwrap().stack_count, 51);
+        assert_eq!(store.snapshot().echoes.len(), 2);
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn update_with_split_returns_both_halves_for_the_overlay() {
+        let dir = std::env::temp_dir().join(format!("mny-extract-split-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        let mut store = AccountStore::load(dir.clone());
+        let tables = ExtractTables::default();
+
+        // A stack of 51 (id 100); leveling one copy moves it to a new id and
+        // leaves the remainder under the old one.
+        store.upsert_echoes(vec![tables.echo_from_item(&pb::PhantomItem {
+            incr_id: 100,
+            stack_count: 51,
+            ..Default::default()
+        })]);
+        let split = pb::PhantomStackSplitInfo {
+            operate_item: Some(pb::PhantomItem {
+                incr_id: 500,
+                phantom_level: 1,
+                stack_count: 1,
+                ..Default::default()
+            }),
+            operate_before_count: 51,
+            remainder_item: Some(pb::PhantomItem {
+                incr_id: 100,
+                stack_count: 50,
+                ..Default::default()
+            }),
+        };
+
+        let (changed, updated, halves) = apply_update_with_split(
+            &tables,
+            &mut store,
+            None,
+            Some(&split),
+            std::iter::empty(),
+        );
+        assert!(changed);
+        // Without `UpdateInfo`, the operated half is the overlay's refresh
+        // target and the split payload.
+        assert_eq!(
+            updated.iter().map(|e| e.incr_id).collect::<Vec<_>>(),
+            vec![500]
+        );
+        let (operated, remainder) = halves.expect("split halves reported");
+        assert_eq!(operated.incr_id, 500);
+        assert_eq!(operated.level, 1);
+        let remainder = remainder.expect("remainder stored");
+        assert_eq!(remainder.incr_id, 100);
+        assert_eq!(remainder.stack_count, 50);
+        let _ = std::fs::remove_dir_all(&dir);
+    }
 
     #[test]
     fn percent_and_flat_scaling() {

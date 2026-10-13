@@ -53,6 +53,13 @@ interface ScanRegions {
 	level: { x: number; y: number; width: number; height: number };
 	main_stats: { x: number; y: number; width: number; height: number };
 	sub_stats: { x: number; y: number; width: number; height: number };
+	tuning_successful?: { x: number; y: number; width: number; height: number };
+	sort_icon?: {
+		x: number;
+		y: number;
+		width: number;
+		height: number;
+	} | null;
 }
 
 function WindowButton({
@@ -258,6 +265,8 @@ export default function Settings() {
 							level: config.level,
 							main_stats: config.mainStats,
 							sub_stats: config.subStats,
+							tuning_successful: config.tuningSuccessful,
+							sort_icon: config.sortIcon ?? null,
 						};
 						await invoke("set_scan_regions", { regions: scanRegions });
 					}
@@ -442,7 +451,7 @@ export default function Settings() {
 					<TabsContent
 						value="settings"
 						keepMounted
-						className="min-h-0 flex-1 space-y-6 overflow-y-auto"
+						className="flex min-h-0 flex-1 flex-col"
 					>
 						<SettingsTab />
 					</TabsContent>

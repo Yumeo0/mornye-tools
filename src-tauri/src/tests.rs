@@ -356,3 +356,48 @@ fn scan_live_region_like_sync_command() {
     let text = test_ocr(&cropped, region.color_filter().as_ref());
     println!("LIVE OCR TEXT:\n{text}\n===");
 }
+
+#[test]
+fn sort_icon_similarity_matches_the_icon_shape() {
+    use image::{Rgba, RgbaImage};
+
+    // A synthetic icon: dark round body with a bright glyph on transparency.
+    fn icon() -> RgbaImage {
+        let mut img = RgbaImage::new(48, 48);
+        for y in 0..48 {
+            for x in 0..48 {
+                let dx = x as i32 - 24;
+                let dy = y as i32 - 24;
+                let inside = dx * dx + dy * dy <= 20 * 20;
+                let glyph = (18..=30).contains(&x) && (14..=34).contains(&y);
+                let px = if !inside {
+                    Rgba([0, 0, 0, 0])
+                } else if glyph {
+                    Rgba([220, 220, 220, 255])
+                } else {
+                    Rgba([24, 26, 26, 255])
+                };
+                img.put_pixel(x, y, px);
+            }
+        }
+        img
+    }
+
+    let template = DynamicImage::ImageRgba8(icon());
+
+    // The icon on screen inside a slightly larger region, a few pixels off.
+    let mut screen = RgbaImage::from_pixel(60, 60, Rgba([180, 180, 180, 255]));
+    image::imageops::overlay(&mut screen, &icon(), 7, 6);
+    let visible =
+        crate::sort_icon_similarity_best(&DynamicImage::ImageRgba8(screen), &template);
+    assert!(visible > 0.97, "identical icon scored {visible}");
+
+    // A screen without the icon is clearly below the threshold.
+    let plain = DynamicImage::ImageRgba8(RgbaImage::from_pixel(
+        60,
+        60,
+        Rgba([180, 180, 180, 255]),
+    ));
+    let missing = crate::sort_icon_similarity_best(&plain, &template);
+    assert!(missing < 0.8, "plain background scored {missing}");
+}

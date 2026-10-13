@@ -1,9 +1,11 @@
-import { ArrowDown, ArrowUp, UserRound } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { ArrowDown, ArrowUp, Plus, UserRound } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AddEchoDialog } from "@/components/echo/AddEchoDialog";
 import {
 	charactersById,
 	EchoCard,
 	echoCost,
+	echoInfoText,
 	echoKey,
 	echoName,
 	echoSet,
@@ -16,6 +18,12 @@ import {
 	MultiFilterSelect,
 } from "@/components/tabs/FilterControls";
 import { Button } from "@/components/ui/button";
+import {
+	ContextMenu,
+	ContextMenuContent,
+	ContextMenuItem,
+	ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 import { Input } from "@/components/ui/input";
 import {
 	Select,
@@ -25,8 +33,10 @@ import {
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import {
+	addManualEcho,
 	type Echo,
 	formatStatValue,
+	removeManualEcho,
 	STAT_LABELS,
 	type StatKey,
 	setEquippedOverride,
@@ -43,7 +53,7 @@ import {
 	type CharacterInfo,
 	calculateRating,
 	findEchoById,
-	getCharacterInfo,
+	getRelevantCharacters,
 } from "@/lib/rating";
 import { statIconAsset } from "@/lib/stats";
 import { useAccountSnapshot } from "@/lib/useAccountSnapshot";
@@ -89,7 +99,7 @@ const mainStatOptions: FilterOption[] = statKeys.map((key) => ({
 
 type SortKey =
 	| "none"
-	| "relevance"
+	| "rollValue"
 	| "level"
 	| "cost"
 	| "set"
@@ -99,8 +109,8 @@ type SortKey =
 // `desc` is the natural default direction per key
 const ECHO_SORT_OPTIONS: { value: SortKey; label: string; desc: boolean }[] = [
 	{ value: "none", label: "Newest", desc: true },
-	{ value: "relevance", label: "Relevance", desc: true },
-	{ value: "level", label: "Lv", desc: true },
+	{ value: "rollValue", label: "Roll Value", desc: true },
+	{ value: "level", label: "Lvl", desc: true },
 	{ value: "cost", label: "Cost", desc: true },
 	{ value: "set", label: "Set", desc: false },
 	{ value: "name", label: "Name", desc: false },
@@ -129,7 +139,7 @@ const EMPTY_FILTERS: Filters = {
 
 const SORT_KEYS = new Set<string>([
 	"none",
-	"relevance",
+	"rollValue",
 	"level",
 	"cost",
 	"set",
@@ -216,6 +226,62 @@ export function EchoesTab() {
 	const { snapshot, error } = useAccountSnapshot();
 	const echoes = snapshot.echoes;
 	const [actionError, setActionError] = useState<string | null>(null);
+	const [toast, setToast] = useState<string | null>(null);
+	const [addOpen, setAddOpen] = useState(false);
+	const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	const showToast = useCallback((message: string) => {
+		setToast(message);
+		if (toastTimer.current) clearTimeout(toastTimer.current);
+		toastTimer.current = setTimeout(() => setToast(null), 1600);
+	}, []);
+
+	useEffect(
+		() => () => {
+			if (toastTimer.current) clearTimeout(toastTimer.current);
+		},
+		[],
+	);
+
+	const copyEchoInfo = useCallback(
+		(echo: Echo, roll?: { rating: number; character: CharacterInfo }) => {
+			navigator.clipboard
+				.writeText(echoInfoText(echo, roll))
+				.then(() => showToast("Echo info copied"))
+				.catch((error) => {
+					console.error("Copy failed:", error);
+					setActionError(String(error));
+				});
+		},
+		[showToast],
+	);
+
+	const addEcho = useCallback(
+		async (echo: Echo) => {
+			try {
+				await addManualEcho(echo);
+				setAddOpen(false);
+				showToast("Echo added");
+			} catch (error) {
+				console.error("Add echo failed:", error);
+				setActionError(String(error));
+			}
+		},
+		[showToast],
+	);
+
+	const removeEcho = useCallback(
+		async (incrId: number) => {
+			try {
+				await removeManualEcho(incrId);
+				showToast("Manual echo removed");
+			} catch (error) {
+				console.error("Remove echo failed:", error);
+				setActionError(String(error));
+			}
+		},
+		[showToast],
+	);
 	const [filters, setFilters] = usePersistedState(
 		"echoes.filters",
 		EMPTY_FILTERS,
@@ -231,18 +297,6 @@ export function EchoesTab() {
 		false,
 		reviveBoolean,
 	);
-	// Character used for the relevance sort (required)
-	const [ratingCharacterId, setRatingCharacterId] = usePersistedState(
-		"echoes.ratingCharacter",
-		"",
-		reviveString,
-	);
-
-	useEffect(() => {
-		if (!ratingCharacterId && snapshot.resonators.length > 0) {
-			setRatingCharacterId(String(snapshot.resonators[0].id));
-		}
-	}, [ratingCharacterId, snapshot.resonators, setRatingCharacterId]);
 
 	const characterOptions: FilterOption[] = useMemo(
 		() => characterFilterOptions(snapshot.resonators),
@@ -255,41 +309,46 @@ export function EchoesTab() {
 		sortBy !== "none" ||
 		sortAsc;
 
-	// Character-relevance rating per echo for the selected character (same
-	// percent as the overlay)
-	const ratingsByEcho = useMemo(() => {
-		const map = new Map<string, number>();
-		const characterInfoCache = new Map<number, CharacterInfo | null>();
-		const ratingCharacter = Number.parseInt(ratingCharacterId, 10);
-		if (Number.isNaN(ratingCharacter)) return map;
+	// Highest rating any relevant character gets from each echo (the same
+	// percent as the overlay), using the echo's own sonata set. The winning
+	// character is kept so the card can show whose value it is.
+	const rollByEcho = useMemo(() => {
+		const map = new Map<string, { rating: number; character: CharacterInfo }>();
+		const charactersCache = new Map<string, CharacterInfo[]>();
 		for (const echo of echoes) {
-			let info = characterInfoCache.get(echo.monsterId);
-			if (info === undefined) {
+			const cacheKey = `${echo.monsterId}:${echo.setId}`;
+			let characters = charactersCache.get(cacheKey);
+			if (characters === undefined) {
 				const entry = findEchoById(echo.monsterId);
-				info = entry
-					? getCharacterInfo(
-							ratingCharacter,
-							entry.echo_sets.map((set) => set.name),
-						)
-					: null;
-				characterInfoCache.set(echo.monsterId, info);
+				if (entry) {
+					const matching = entry.echo_sets.filter(
+						(set) => set.id === echo.setId,
+					);
+					const setNames = (
+						matching.length > 0 ? matching : entry.echo_sets
+					).map((set) => set.name);
+					characters = getRelevantCharacters(setNames);
+				} else {
+					characters = [];
+				}
+				charactersCache.set(cacheKey, characters);
 			}
-			if (!info) {
-				map.set(echoKey(echo), 0);
-				continue;
-			}
-			const mains = echo.mainProps.map(
-				(prop) =>
-					`${statLabel(prop.key)} ${formatStatValue(prop.key, prop.value)}`,
-			);
+			if (characters.length === 0) continue;
 			const subs = echo.subProps.map(
 				(prop) =>
 					`${statLabel(prop.key)} ${formatStatValue(prop.key, prop.value)}`,
 			);
-			map.set(echoKey(echo), calculateRating(info, mains, subs));
+			let best: { rating: number; character: CharacterInfo } | null = null;
+			for (const character of characters) {
+				const rating = calculateRating(character, subs);
+				if (best === null || rating > best.rating) {
+					best = { rating, character };
+				}
+			}
+			if (best) map.set(echoKey(echo), best);
 		}
 		return map;
-	}, [echoes, ratingCharacterId]);
+	}, [echoes]);
 
 	const sortedEchoes = useMemo(() => {
 		if (sortBy === "none") {
@@ -319,10 +378,10 @@ export function EchoesTab() {
 				case "set":
 					cmp = (echoSet(a)?.name ?? "").localeCompare(echoSet(b)?.name ?? "");
 					break;
-				case "relevance":
+				case "rollValue":
 					cmp =
-						(ratingsByEcho.get(echoKey(a)) ?? 0) -
-						(ratingsByEcho.get(echoKey(b)) ?? 0);
+						(rollByEcho.get(echoKey(a))?.rating ?? 0) -
+						(rollByEcho.get(echoKey(b))?.rating ?? 0);
 					break;
 				case "character":
 					cmp = (a.equippedBy ?? 0) - (b.equippedBy ?? 0);
@@ -331,7 +390,7 @@ export function EchoesTab() {
 			return cmp * dir;
 		});
 		return arr;
-	}, [filteredEchoes, sortBy, sortAsc, ratingsByEcho]);
+	}, [filteredEchoes, sortBy, sortAsc, rollByEcho]);
 
 	const setFilter = (key: keyof Filters, value: string | string[]) => {
 		setFilters((prev) => ({ ...prev, [key]: value }));
@@ -423,7 +482,7 @@ export function EchoesTab() {
 							<span
 								className={`text-[10px] leading-none ${filters.minLevel > 0 ? "font-semibold text-foreground" : "text-muted-foreground"}`}
 							>
-								Min Lv +{filters.minLevel}
+								Min Lvl +{filters.minLevel}
 							</span>
 							<Slider
 								min={0}
@@ -541,42 +600,15 @@ export function EchoesTab() {
 								</Button>
 							);
 						})}
-						{sortBy === "relevance" && (
-							<Select
-								value={ratingCharacterId}
-								onValueChange={(value) => setRatingCharacterId(value ?? "")}
-							>
-								<SelectTrigger
-									size="sm"
-									className="w-40"
-									title="Character for relevance"
-								>
-									{characterOptions.find(
-										(option) => option.value === ratingCharacterId,
-									)?.label ?? "Character"}
-								</SelectTrigger>
-								<SelectContent>
-									{characterOptions.map((option) => (
-										<SelectItem key={option.value} value={option.value}>
-											{option.icon && (
-												<img
-													src={option.icon}
-													alt=""
-													className="size-5 object-contain"
-												/>
-											)}
-											{option.label}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-						)}
 					</div>
 
 					<div className="ml-auto flex items-center gap-2">
 						<p className="text-xs text-muted-foreground">
 							Showing {filteredEchoes.length} of {echoes.length} echoes
 						</p>
+						<Button size="sm" onClick={() => setAddOpen(true)}>
+							<Plus className="mr-1 size-3.5" /> Add echo
+						</Button>
 						{hasActiveFilters && (
 							<Button
 								variant="ghost"
@@ -600,59 +632,101 @@ export function EchoesTab() {
 				</p>
 			) : (
 				<div className="min-h-0 flex-1 overflow-y-auto pr-1">
-					<div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+					<div className="grid auto-rows-fr gap-2 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
 						{sortedEchoes.map((echo, index) => {
 							const character = equippedCharacter(echo.equippedBy);
+							const roll = rollByEcho.get(echoKey(echo));
 							return (
-								<EchoCard
+								<ContextMenu
 									// biome-ignore lint/suspicious/noArrayIndexKey: the list can contain exact duplicate echoes
 									key={`${echoKey(echo)}-${index}`}
-									echo={echo}
-									actions={
-										<Select
-											value={equippedValue(echo)}
-											onValueChange={(value) =>
-												changeEquippedBy(echo, value ?? "unequipped")
+								>
+									<ContextMenuTrigger className="h-full">
+										<EchoCard
+											echo={echo}
+											rollValue={roll?.rating}
+											rollCharacter={
+												roll
+													? {
+															name: roll.character.character_name,
+															icon:
+																charactersById.get(roll.character.character_id)
+																	?.icon_head_256 ?? roll.character.icon_pile,
+														}
+													: null
 											}
-										>
-											<SelectTrigger
-												title={
-													charactersById.get(echo.equippedBy ?? -1)
-														?.character_name || "Not equipped"
-												}
-												className="size-8 w-8 justify-center p-0.5 [&>svg:last-child]:hidden"
-											>
-												{character ? (
-													<img
-														src={character.icon_head_256}
-														alt={character.character_name}
-														className="size-full object-contain"
-													/>
-												) : (
-													<UserRound className="size-4 text-muted-foreground" />
-												)}
-											</SelectTrigger>
-											<SelectContent>
-												<SelectItem value="unequipped">Not equipped</SelectItem>
-												{characterOptions.map((option) => (
-													<SelectItem key={option.value} value={option.value}>
-														{option.icon && (
+											actions={
+												<Select
+													value={equippedValue(echo)}
+													onValueChange={(value) =>
+														changeEquippedBy(echo, value ?? "unequipped")
+													}
+												>
+													<SelectTrigger
+														title={
+															charactersById.get(echo.equippedBy ?? -1)
+																?.character_name || "Not equipped"
+														}
+														className="size-8 w-8 justify-center p-0.5 [&>svg:last-child]:hidden"
+													>
+														{character ? (
 															<img
-																src={option.icon}
-																alt=""
-																className="size-5 object-contain"
+																src={character.icon_head_256}
+																alt={character.character_name}
+																className="size-full object-contain"
 															/>
+														) : (
+															<UserRound className="size-4 text-muted-foreground" />
 														)}
-														{option.label}
-													</SelectItem>
-												))}
-											</SelectContent>
-										</Select>
-									}
-								/>
+													</SelectTrigger>
+													<SelectContent>
+														<SelectItem value="unequipped">
+															Not equipped
+														</SelectItem>
+														{characterOptions.map((option) => (
+															<SelectItem
+																key={option.value}
+																value={option.value}
+															>
+																{option.icon && (
+																	<img
+																		src={option.icon}
+																		alt=""
+																		className="size-5 object-contain"
+																	/>
+																)}
+																{option.label}
+															</SelectItem>
+														))}
+													</SelectContent>
+												</Select>
+											}
+										/>
+									</ContextMenuTrigger>
+									<ContextMenuContent>
+										<ContextMenuItem onClick={() => copyEchoInfo(echo, roll)}>
+											Copy echo info
+										</ContextMenuItem>
+										{echo.source === "manual" && (
+											<ContextMenuItem onClick={() => removeEcho(echo.incrId)}>
+												Remove manual echo
+											</ContextMenuItem>
+										)}
+									</ContextMenuContent>
+								</ContextMenu>
 							);
 						})}
 					</div>
+				</div>
+			)}
+
+			{addOpen && (
+				<AddEchoDialog onClose={() => setAddOpen(false)} onAdded={addEcho} />
+			)}
+
+			{toast && (
+				<div className="bg-popover text-popover-foreground pointer-events-none fixed bottom-4 left-1/2 z-50 -translate-x-1/2 border px-3 py-1.5 text-xs shadow-md">
+					{toast}
 				</div>
 			)}
 

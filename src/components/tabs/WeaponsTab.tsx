@@ -149,7 +149,7 @@ const weaponSortOptions: {
 	desc: boolean;
 }[] = [
 	{ value: "none", label: "Newest", desc: true },
-	{ value: "level", label: "Lv", desc: true },
+	{ value: "level", label: "Lvl", desc: true },
 	{ value: "rarity", label: "Rarity", desc: true },
 	{ value: "name", label: "Name", desc: false },
 	{ value: "type", label: "Type", desc: false },
@@ -326,7 +326,7 @@ export function WeaponsTab() {
 							<span
 								className={`text-[10px] leading-none ${filters.minLevel > MIN_WEAPON_LEVEL ? "font-semibold text-foreground" : "text-muted-foreground"}`}
 							>
-								Min Lv {filters.minLevel}
+								Min Lvl {filters.minLevel}
 							</span>
 							<Slider
 								min={MIN_WEAPON_LEVEL}

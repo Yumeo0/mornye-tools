@@ -1,15 +1,16 @@
 //! `account.json` persistence, merge policy and overrides.
 //!
 //! Only [`AccountStore`] mutates the account snapshot. Packet extraction
-//! (`sniffer::extract`) is the sole production writer; the UI may only write
-//! `overrides.json` (equipped-by / slot adjustments).
+//! (`sniffer::extract`) is the sole production writer of captured data; the UI
+//! may only write `overrides.json` (equipped-by / slot adjustments) and manual
+//! echoes (`source: Manual`, synthetic negative instance ids).
 
 use std::fs;
 use std::path::{Path, PathBuf};
 
 use crate::account::model::{
-    AccountSnapshot, Echo, EchoOverride, Overrides, PlayerInfo, Resonator, SkillNode, Weapon,
-    STORE_VERSION,
+    AccountSnapshot, Echo, EchoOverride, EchoSource, Overrides, PlayerInfo, Resonator, SkillNode,
+    Weapon, STORE_VERSION,
 };
 
 const ACCOUNT_FILE: &str = "account.json";
@@ -253,6 +254,70 @@ impl AccountStore {
         self.apply_overrides();
     }
 
+    /// Patch a known echo's mark state (`FuncValue`: 0 = none, 1 = locked,
+    /// 2 = discard-marked) from an `ItemFuncValueUpdateNotify`. Returns the
+    /// updated echo; unknown echoes are ignored.
+    pub fn set_echo_func_value(&mut self, incr_id: i64, func_value: i32) -> Option<Echo> {
+        let echo = self
+            .snapshot
+            .echoes
+            .iter_mut()
+            .find(|e| e.incr_id == incr_id)?;
+        echo.func_value = func_value;
+        Some(echo.clone())
+    }
+
+    /// Drop one echo the game merged into a stack: a
+    /// `PhantomStackMergeInfo.MergedIncrId` no longer exists as its own
+    /// instance (its copies are now counted by the stack's representative).
+    /// Only sniffer echoes are ever dropped, and any override for the id is
+    /// discarded with it. Returns whether an echo was removed.
+    pub fn remove_merged_echo(&mut self, incr_id: i64) -> bool {
+        let before = self.snapshot.echoes.len();
+        self.snapshot
+            .echoes
+            .retain(|echo| !(echo.incr_id == incr_id && echo.source == EchoSource::Sniffer));
+        let removed = self.snapshot.echoes.len() != before;
+        if removed {
+            self.overrides.echoes.remove(&incr_id.to_string());
+        }
+        removed
+    }
+
+    /// Add an echo entered by hand. Manual entries get synthetic negative
+    /// instance ids, so the sniffer's game ids can never collide with them.
+    pub fn add_manual_echo(&mut self, mut echo: Echo) -> Echo {
+        let next_id = self
+            .snapshot
+            .echoes
+            .iter()
+            .filter(|existing| existing.incr_id < 0)
+            .map(|existing| existing.incr_id)
+            .min()
+            .unwrap_or(0)
+            - 1;
+        echo.incr_id = next_id;
+        echo.source = EchoSource::Manual;
+        echo.equipped_by = None;
+        echo.slot = None;
+        echo.func_value = 0;
+        echo.stack_count = 1;
+        echo.level = echo.level.clamp(0, 25);
+        echo.main_props.truncate(2);
+        echo.sub_props.truncate(5);
+        self.snapshot.echoes.push(echo.clone());
+        echo
+    }
+
+    /// Remove a manual echo by instance id; sniffer echoes are never removed.
+    pub fn remove_manual_echo(&mut self, incr_id: i64) -> bool {
+        let before = self.snapshot.echoes.len();
+        self.snapshot
+            .echoes
+            .retain(|echo| !(echo.incr_id == incr_id && echo.source == EchoSource::Manual));
+        self.snapshot.echoes.len() != before
+    }
+
     /// Apply the equip info from `PhantomEquipInfoNotify` / `RolePhantomEquipInfo`:
     /// each `incr_id` at `slot` (index 0 = main echo) belongs to `role_id`.
     pub fn apply_equip_info(&mut self, role_id: i64, incr_ids: &[i64]) {
@@ -321,11 +386,36 @@ impl AccountStore {
         }
     }
 
-    /// Persist `account.json` and `overrides.json` atomically. Returns the set
-    /// of sections written so callers can emit `account-updated`.
-    pub fn save(&mut self) -> Result<(), String> {
+    /// Clone the payload for a save. Serialisation and file writes happen in
+    /// [`PreparedSave::write`] after the caller released the store lock, so
+    /// the capture loop is never blocked on disk I/O.
+    pub fn prepare_save(&mut self) -> PreparedSave {
         self.snapshot.version = STORE_VERSION;
         self.snapshot.updated_at = now_iso8601();
+        PreparedSave {
+            dir: self.dir.clone(),
+            snapshot: self.snapshot.clone(),
+            overrides: self.overrides.clone(),
+        }
+    }
+
+    /// Persist `account.json` and `overrides.json` atomically.
+    pub fn save(&mut self) -> Result<(), String> {
+        self.prepare_save().write()
+    }
+}
+
+/// A detached copy of the store payload, taken under the store lock and
+/// written to disk after it is released.
+pub struct PreparedSave {
+    dir: PathBuf,
+    snapshot: AccountSnapshot,
+    overrides: Overrides,
+}
+
+impl PreparedSave {
+    /// Persist `account.json` and `overrides.json` atomically.
+    pub fn write(&self) -> Result<(), String> {
         atomic_write_json(&self.dir.join(ACCOUNT_FILE), &self.snapshot)?;
         atomic_write_json(&self.dir.join(OVERRIDES_FILE), &self.overrides)?;
         Ok(())
@@ -391,11 +481,60 @@ mod tests {
             monster_id: 390080007,
             set_id: 2,
             level: 25,
+            func_value: 0,
+            stack_count: 1,
             main_props: Vec::new(),
             sub_props: Vec::new(),
             equipped_by: None,
             slot: None,
+            source: EchoSource::Sniffer,
         }
+    }
+
+    #[test]
+    fn stack_merge_drops_merged_and_keeps_representative() {
+        let dir = temp_dir("stack-merge");
+        let mut store = AccountStore::load(dir.clone());
+        let mut representative = echo(10, 60000325);
+        representative.stack_count = 5;
+        store.upsert_echoes(vec![representative, echo(11, 60000325)]);
+        store.set_echo_override(11, Some(1503), Some(0));
+
+        // The game merges echo 11 into the stack represented by echo 10.
+        assert!(store.remove_merged_echo(11));
+        let mut grown = echo(10, 60000325);
+        grown.stack_count = 6;
+        store.upsert_echoes(vec![grown]);
+
+        assert_eq!(store.snapshot().echoes.len(), 1);
+        assert_eq!(store.snapshot().echoes[0].incr_id, 10);
+        assert_eq!(store.snapshot().echoes[0].stack_count, 6);
+        // The dead override went away with the echo.
+        assert!(store.overrides.echoes.get("11").is_none());
+        // Unknown and manual echoes are never dropped through this path.
+        assert!(!store.remove_merged_echo(99));
+        let added = store.add_manual_echo(echo(0, 60000325));
+        assert!(!store.remove_merged_echo(added.incr_id));
+        let _ = fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn legacy_echo_json_defaults_stack_count_to_one() {
+        // `account.json` entries written before stack capture have no
+        // `stackCount`; they must load as a single echo.
+        let json = r#"{
+            "incrId": 7,
+            "itemId": 60000325,
+            "monsterId": 390080007,
+            "setId": 2,
+            "level": 25,
+            "funcValue": 0,
+            "mainProps": [],
+            "subProps": []
+        }"#;
+        let echo: Echo = serde_json::from_str(json).unwrap();
+        assert_eq!(echo.stack_count, 1);
+        assert_eq!(echo.source, EchoSource::Sniffer);
     }
 
     #[test]
@@ -442,6 +581,57 @@ mod tests {
         let stored = &store.snapshot().echoes[0];
         assert_eq!(stored.equipped_by, Some(1503));
         assert_eq!(stored.slot, Some(0));
+        let _ = fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn manual_echoes_get_synthetic_ids_and_are_removable() {
+        let dir = temp_dir("manual-echoes");
+        let mut store = AccountStore::load(dir.clone());
+        store.upsert_echoes(vec![echo(7, 60000325)]);
+
+        let added = store.add_manual_echo(echo(0, 60000325));
+        assert!(added.incr_id < 0);
+        assert_eq!(added.source, EchoSource::Manual);
+        assert_eq!(store.snapshot().echoes.len(), 2);
+
+        let second = store.add_manual_echo(echo(0, 60000325));
+        assert!(second.incr_id < added.incr_id);
+
+        // Sniffer echoes cannot be removed through the manual path.
+        assert!(!store.remove_manual_echo(7));
+        assert!(store.remove_manual_echo(added.incr_id));
+        assert_eq!(store.snapshot().echoes.len(), 2);
+
+        // The source survives a save/reload round trip.
+        store.save().unwrap();
+        let reloaded = AccountStore::load(dir.clone());
+        let manual_count = reloaded
+            .snapshot()
+            .echoes
+            .iter()
+            .filter(|echo| echo.source == EchoSource::Manual)
+            .count();
+        assert_eq!(manual_count, 1);
+        let _ = fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn set_echo_func_value_patches_known_only() {
+        let dir = temp_dir("echo-func-value");
+        let mut store = AccountStore::load(dir.clone());
+        store.upsert_echoes(vec![echo(7, 60000325)]);
+
+        let updated = store.set_echo_func_value(7, 2).unwrap();
+        assert_eq!(updated.func_value, 2);
+        assert_eq!(store.snapshot().echoes[0].func_value, 2);
+
+        // A later full snapshot overwrites the mark state with the packet value.
+        store.upsert_echoes(vec![echo(7, 60000325)]);
+        assert_eq!(store.snapshot().echoes[0].func_value, 0);
+
+        // Unknown echoes are ignored.
+        assert!(store.set_echo_func_value(99, 1).is_none());
         let _ = fs::remove_dir_all(&dir);
     }
 
@@ -635,6 +825,23 @@ mod tests {
         let resonator = &store.snapshot().resonators[0];
         assert_eq!(resonator.chain, 6);
         assert_eq!(resonator.name, "Phrolova");
+        let _ = fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn prepared_save_detaches_from_the_store() {
+        let dir = temp_dir("prepared-save");
+        let mut store = AccountStore::load(dir.clone());
+        store.upsert_echoes(vec![echo(7, 60000325)]);
+        let prepared = store.prepare_save();
+        // Mutations after preparing must not leak into the detached payload.
+        store.upsert_echoes(vec![echo(8, 60000326)]);
+        prepared.write().unwrap();
+
+        let reloaded = AccountStore::load(dir.clone());
+        assert_eq!(reloaded.snapshot().echoes.len(), 1);
+        assert_eq!(reloaded.snapshot().echoes[0].incr_id, 7);
+        assert!(!reloaded.snapshot().updated_at.is_empty());
         let _ = fs::remove_dir_all(&dir);
     }
 

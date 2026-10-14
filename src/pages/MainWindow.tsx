@@ -209,7 +209,7 @@ function SnifferIndicator({ compact }: { compact: boolean }) {
 	);
 }
 
-export default function Settings() {
+export default function MainWindow() {
 	// The last tab and sidebar state survive restarts, like every tab's own
 	// filter settings.
 	const [tab, setTab] = usePersistedState("app.tab", "characters", reviveTab);
@@ -287,7 +287,7 @@ export default function Settings() {
 					}
 				}
 			} catch (error) {
-				console.error("[Settings] Failed to initialize app:", error);
+				console.error("[MainWindow] Failed to initialize app:", error);
 			}
 		};
 

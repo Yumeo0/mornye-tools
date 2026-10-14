@@ -22,7 +22,7 @@ drives the in-game overlay window.
   reads it and never writes. Keep the two data paths separate.
 - Never edit vendored or generated code: `src-tauri/crates/spectrum/`
   (including generated protos), `thewuwacalculator/`, `data/` checkouts.
-- The main window lives in `src/pages/Settings.tsx` (tab shell with
+- The main window lives in `src/pages/MainWindow.tsx` (tab shell with
   Characters / Echoes / Weapons / Optimizer / Settings tabs in
   `src/components/tabs/`); the overlay is a separate Vite entry
   (`overlay.html` → `overlay-main.tsx` → `src/pages/Overlay.tsx`).

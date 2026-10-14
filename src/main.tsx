@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import Settings from "./pages/Settings";
+import MainWindow from "./pages/MainWindow";
 
 import "./index.css";
 
@@ -10,6 +10,6 @@ if (!rootElement) throw new Error("Root element not found");
 
 ReactDOM.createRoot(rootElement).render(
 	<React.StrictMode>
-		<Settings />
+		<MainWindow />
 	</React.StrictMode>,
 );

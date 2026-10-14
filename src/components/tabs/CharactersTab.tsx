@@ -1,5 +1,5 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { charactersById, EchoCard } from "@/components/echo/EchoCard";
 import { FilterIconButton } from "@/components/tabs/FilterControls";
 import { CardBadge } from "@/components/ui/badge";
@@ -15,6 +15,11 @@ import {
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
+import {
+	type GridBreakpoint,
+	useResponsiveColumns,
+	VirtualGrid,
+} from "@/components/VirtualGrid";
 import { weaponName } from "@/components/weapon/WeaponCard";
 import {
 	type Echo,
@@ -235,6 +240,21 @@ export interface CharacterFilters {
 
 export const LEVEL_RANGE: [number, number] = [1, 90];
 export const CHAIN_RANGE: [number, number] = [0, 6];
+
+// Mirrors the previous grid classes (grid-cols-2 sm:grid-cols-3 md:grid-cols-4
+// lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7); the virtualized grid needs
+// the column count in JS.
+const CHARACTER_GRID_BREAKPOINTS: readonly GridBreakpoint[] = [
+	{ minWidth: 1536, columns: 7 },
+	{ minWidth: 1280, columns: 6 },
+	{ minWidth: 1024, columns: 5 },
+	{ minWidth: 768, columns: 4 },
+	{ minWidth: 640, columns: 3 },
+];
+const CHARACTER_GRID_FALLBACK_COLUMNS = 2;
+const CHARACTER_GRID_GAP = 12; // gap-3
+// Cards are aspect-696/960; a mid-size card measures roughly this tall.
+const CHARACTER_ROW_ESTIMATE_PX = 280;
 
 export const DEFAULT_FILTERS: CharacterFilters = {
 	search: "",
@@ -1013,6 +1033,28 @@ export function CharactersTab() {
 		? (characters.find((c) => c.id === selectedCharacterId) ?? null)
 		: null;
 
+	const getCharacterKey = useCallback(
+		(character: CharacterEntry) => character.id,
+		[],
+	);
+
+	const renderCharacter = useCallback(
+		(character: CharacterEntry) => (
+			<CharacterCard
+				key={character.id}
+				character={character}
+				account={accountByCharacterId.get(character.id)}
+				onOpen={() => setSelectedCharacterId(character.id)}
+			/>
+		),
+		[accountByCharacterId, setSelectedCharacterId],
+	);
+
+	const gridColumns = useResponsiveColumns(
+		CHARACTER_GRID_BREAKPOINTS,
+		CHARACTER_GRID_FALLBACK_COLUMNS,
+	);
+
 	if (selectedCharacter) {
 		return (
 			<div className="min-h-0 flex-1 overflow-y-auto">
@@ -1221,24 +1263,23 @@ export function CharactersTab() {
 
 			{error && <p className="text-sm text-destructive">{error}</p>}
 
-			<div className="min-h-0 flex-1 overflow-y-auto pr-1">
-				<div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
-					{filteredCharacters.map((character) => (
-						<CharacterCard
-							key={character.id}
-							character={character}
-							account={accountByCharacterId.get(character.id)}
-							onOpen={() => setSelectedCharacterId(character.id)}
-						/>
-					))}
-				</div>
-
-				{filteredCharacters.length === 0 && (
+			{filteredCharacters.length === 0 ? (
+				<div className="min-h-0 flex-1 overflow-y-auto pr-1">
 					<div className="py-8 text-center text-muted-foreground">
 						No characters match the current filters.
 					</div>
-				)}
-			</div>
+				</div>
+			) : (
+				<VirtualGrid
+					items={filteredCharacters}
+					columns={gridColumns}
+					gap={CHARACTER_GRID_GAP}
+					estimateRowHeight={CHARACTER_ROW_ESTIMATE_PX}
+					getItemKey={getCharacterKey}
+					renderItem={renderCharacter}
+					className="min-h-0 flex-1 overflow-y-auto pr-1"
+				/>
+			)}
 		</div>
 	);
 }

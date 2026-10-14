@@ -33,6 +33,11 @@ import {
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import {
+	type GridBreakpoint,
+	useResponsiveColumns,
+	VirtualGrid,
+} from "@/components/VirtualGrid";
+import {
 	addManualEcho,
 	type Echo,
 	formatStatValue,
@@ -116,6 +121,19 @@ const ECHO_SORT_OPTIONS: { value: SortKey; label: string; desc: boolean }[] = [
 	{ value: "name", label: "Name", desc: false },
 	{ value: "character", label: "Equipped", desc: false },
 ];
+
+// Mirrors the previous `sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4` classes
+// (the virtualized grid needs the column count in JS).
+const ECHO_GRID_BREAKPOINTS: readonly GridBreakpoint[] = [
+	{ minWidth: 1536, columns: 4 },
+	{ minWidth: 1280, columns: 3 },
+	{ minWidth: 640, columns: 2 },
+];
+const ECHO_GRID_FALLBACK_COLUMNS = 1;
+const ECHO_GRID_GAP = 8; // gap-2
+// Initial row estimate, also used as the uniform minimum row height until a
+// taller row reports its real size.
+const ECHO_ROW_ESTIMATE_PX = 280;
 
 interface Filters {
 	search: string;
@@ -414,8 +432,103 @@ export function EchoesTab() {
 		}
 	}, []);
 
-	const equippedValue = (echo: Echo): string =>
-		echo.equippedBy != null ? String(echo.equippedBy) : "unequipped";
+	const getEchoKey = useCallback((echo: Echo) => String(echo.incrId), []);
+
+	const renderEcho = useCallback(
+		(echo: Echo, index: number) => {
+			const character = equippedCharacter(echo.equippedBy);
+			const roll = rollByEcho.get(echoKey(echo));
+			return (
+				<ContextMenu key={`${echoKey(echo)}-${index}`}>
+					<ContextMenuTrigger className="h-full">
+						<EchoCard
+							echo={echo}
+							rollValue={roll?.rating}
+							rollCharacter={
+								roll
+									? {
+											name: roll.character.character_name,
+											icon:
+												charactersById.get(roll.character.character_id)
+													?.icon_head_256 ?? roll.character.icon_pile,
+										}
+									: null
+							}
+							actions={
+								<Select
+									value={
+										echo.equippedBy != null
+											? String(echo.equippedBy)
+											: "unequipped"
+									}
+									onValueChange={(value) =>
+										changeEquippedBy(echo, value ?? "unequipped")
+									}
+								>
+									<SelectTrigger
+										title={
+											charactersById.get(echo.equippedBy ?? -1)
+												?.character_name || "Not equipped"
+										}
+										className="size-8 w-8 justify-center p-0.5 [&>svg:last-child]:hidden"
+									>
+										{character ? (
+											<img
+												src={character.icon_head_256}
+												alt={character.character_name}
+												className="size-full object-contain"
+											/>
+										) : (
+											<UserRound className="size-4 text-muted-foreground" />
+										)}
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value="unequipped">Not equipped</SelectItem>
+										{characterOptions.map((option) => (
+											<SelectItem key={option.value} value={option.value}>
+												{option.icon && (
+													<img
+														src={option.icon}
+														alt=""
+														className="size-5 object-contain"
+													/>
+												)}
+												{option.label}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							}
+						/>
+					</ContextMenuTrigger>
+					<ContextMenuContent>
+						<ContextMenuItem onClick={() => copyEchoInfo(echo, roll)}>
+							Copy echo info
+						</ContextMenuItem>
+						{echo.source === "manual" && (
+							<ContextMenuItem onClick={() => removeEcho(echo.incrId)}>
+								Remove manual echo
+							</ContextMenuItem>
+						)}
+					</ContextMenuContent>
+				</ContextMenu>
+			);
+		},
+		[rollByEcho, characterOptions, changeEquippedBy, copyEchoInfo, removeEcho],
+	);
+
+	const gridColumns = useResponsiveColumns(
+		ECHO_GRID_BREAKPOINTS,
+		ECHO_GRID_FALLBACK_COLUMNS,
+	);
+
+	// All echo cards share one height (`auto-rows-fr`-style): the tallest row
+	// seen so far sets the uniform minimum, and rows taller than that raise it
+	// for every row at once.
+	const [echoRowHeight, setEchoRowHeight] = useState(ECHO_ROW_ESTIMATE_PX);
+	const handleMeasuredRowHeight = useCallback((height: number) => {
+		setEchoRowHeight((current) => (height > current ? height : current));
+	}, []);
 
 	if (echoes.length === 0) {
 		return (
@@ -627,97 +740,23 @@ export function EchoesTab() {
 			</div>
 
 			{filteredEchoes.length === 0 ? (
-				<p className="py-8 text-center text-sm text-muted-foreground">
-					No echoes match the current filters.
-				</p>
-			) : (
 				<div className="min-h-0 flex-1 overflow-y-auto pr-1">
-					<div className="grid auto-rows-fr gap-2 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-						{sortedEchoes.map((echo, index) => {
-							const character = equippedCharacter(echo.equippedBy);
-							const roll = rollByEcho.get(echoKey(echo));
-							return (
-								<ContextMenu
-									// biome-ignore lint/suspicious/noArrayIndexKey: the list can contain exact duplicate echoes
-									key={`${echoKey(echo)}-${index}`}
-								>
-									<ContextMenuTrigger className="h-full">
-										<EchoCard
-											echo={echo}
-											rollValue={roll?.rating}
-											rollCharacter={
-												roll
-													? {
-															name: roll.character.character_name,
-															icon:
-																charactersById.get(roll.character.character_id)
-																	?.icon_head_256 ?? roll.character.icon_pile,
-														}
-													: null
-											}
-											actions={
-												<Select
-													value={equippedValue(echo)}
-													onValueChange={(value) =>
-														changeEquippedBy(echo, value ?? "unequipped")
-													}
-												>
-													<SelectTrigger
-														title={
-															charactersById.get(echo.equippedBy ?? -1)
-																?.character_name || "Not equipped"
-														}
-														className="size-8 w-8 justify-center p-0.5 [&>svg:last-child]:hidden"
-													>
-														{character ? (
-															<img
-																src={character.icon_head_256}
-																alt={character.character_name}
-																className="size-full object-contain"
-															/>
-														) : (
-															<UserRound className="size-4 text-muted-foreground" />
-														)}
-													</SelectTrigger>
-													<SelectContent>
-														<SelectItem value="unequipped">
-															Not equipped
-														</SelectItem>
-														{characterOptions.map((option) => (
-															<SelectItem
-																key={option.value}
-																value={option.value}
-															>
-																{option.icon && (
-																	<img
-																		src={option.icon}
-																		alt=""
-																		className="size-5 object-contain"
-																	/>
-																)}
-																{option.label}
-															</SelectItem>
-														))}
-													</SelectContent>
-												</Select>
-											}
-										/>
-									</ContextMenuTrigger>
-									<ContextMenuContent>
-										<ContextMenuItem onClick={() => copyEchoInfo(echo, roll)}>
-											Copy echo info
-										</ContextMenuItem>
-										{echo.source === "manual" && (
-											<ContextMenuItem onClick={() => removeEcho(echo.incrId)}>
-												Remove manual echo
-											</ContextMenuItem>
-										)}
-									</ContextMenuContent>
-								</ContextMenu>
-							);
-						})}
-					</div>
+					<p className="py-8 text-center text-sm text-muted-foreground">
+						No echoes match the current filters.
+					</p>
 				</div>
+			) : (
+				<VirtualGrid
+					items={sortedEchoes}
+					columns={gridColumns}
+					gap={ECHO_GRID_GAP}
+					estimateRowHeight={ECHO_ROW_ESTIMATE_PX}
+					minRowHeight={echoRowHeight}
+					onMeasuredRowHeight={handleMeasuredRowHeight}
+					getItemKey={getEchoKey}
+					renderItem={renderEcho}
+					className="min-h-0 flex-1 overflow-y-auto pr-1"
+				/>
 			)}
 
 			{addOpen && (

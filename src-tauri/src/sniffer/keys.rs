@@ -1,9 +1,9 @@
 //! Bundled RSA key loading/validation and session-key cache.
 //!
-//! The `client_private_key.pem` resource is bundled with the app (gitignored in
-//! source control) and loaded at startup. Only its SHA-256 fingerprint is ever
-//! exposed; key material is never logged or emitted. The session key cache is
-//! the only key state that changes at runtime.
+//! The `data/client_private_key.pem` resource is bundled with the app and loaded
+//! at startup. Only its SHA-256 fingerprint is ever exposed; key material is
+//! never logged or emitted. The session key cache is the only key state that
+//! changes at runtime.
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -12,6 +12,9 @@ use sha2::{Digest, Sha256};
 use tauri::{AppHandle, Manager};
 
 const KEY_FILE: &str = "client_private_key.pem";
+/// Repository-relative path of the bundled key. Resources outside the Tauri
+/// crate are bundled under `_up_/`; see `config.rs`.
+const KEY_RELATIVE_PATH: &str = "data/client_private_key.pem";
 const SESSION_FILE: &str = "session.key";
 
 /// Metadata about the bundled key, safe to show in the UI.
@@ -29,10 +32,14 @@ pub struct KeyInfo {
 pub fn key_path(app: &AppHandle) -> Option<PathBuf> {
     let mut candidates: Vec<PathBuf> = Vec::new();
     if let Ok(manifest_dir) = std::env::var("CARGO_MANIFEST_DIR") {
-        candidates.push(PathBuf::from(manifest_dir).join("keys").join(KEY_FILE));
+        if let Some(project_root) = PathBuf::from(manifest_dir).parent() {
+            candidates.push(project_root.join(KEY_RELATIVE_PATH));
+        }
     }
     if let Ok(resource_dir) = app.path().resource_dir() {
-        candidates.push(resource_dir.join("keys").join(KEY_FILE));
+        // Resources outside the Tauri crate are bundled under `_up_/`.
+        candidates.push(resource_dir.join("_up_").join(KEY_RELATIVE_PATH));
+        candidates.push(resource_dir.join(KEY_RELATIVE_PATH));
         candidates.push(resource_dir.join(KEY_FILE));
     }
     candidates.into_iter().find(|p| p.exists())
@@ -42,7 +49,7 @@ pub fn key_path(app: &AppHandle) -> Option<PathBuf> {
 pub fn load_bundled_key(app: &AppHandle) -> Result<String, String> {
     let path = key_path(app).ok_or_else(|| {
         format!(
-            "bundled RSA key not found. Expected keys/{KEY_FILE} next to the app resource directory."
+            "bundled RSA key not found. Expected {KEY_RELATIVE_PATH} next to the app resource directory."
         )
     })?;
     let pem = fs::read_to_string(&path).map_err(|e| format!("cannot read {}: {e}", path.display()))?;
@@ -55,7 +62,7 @@ pub fn key_info(app: &AppHandle) -> KeyInfo {
     let Some(path) = key_path(app) else {
         return KeyInfo {
             valid: false,
-            error: Some(format!("keys/{KEY_FILE} not found")),
+            error: Some(format!("{KEY_RELATIVE_PATH} not found")),
             ..Default::default()
         };
     };

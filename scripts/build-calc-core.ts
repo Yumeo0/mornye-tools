@@ -39,7 +39,8 @@ function run(args: string[]): void {
 }
 
 if (!existsSync(join(submodule, "node_modules"))) {
-	// The submodule has no committed lockfile, so `npm install` (not `npm ci`).
+	// The submodule is its own npm checkout with a committed package-lock.json,
+	// so install it with npm rather than migrating it to Bun.
 	run(["install", "--no-audit", "--no-fund"]);
 }
 

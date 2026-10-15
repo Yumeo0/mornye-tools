@@ -47,6 +47,8 @@ function makeEcho(overrides: Partial<Echo> = {}): Echo {
 		monsterId: 390080007,
 		setId: 2,
 		level: 25,
+		funcValue: 0,
+		stackCount: 1,
 		mainProps: [
 			{ propId: 5002, key: "critDmg", raw: 4400, value: 44 },
 			{ propId: 50001, key: "atkFlat", raw: 150, value: 150 },

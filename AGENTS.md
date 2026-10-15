@@ -13,8 +13,6 @@ drives the in-game overlay window.
   submodule; on failure run `git submodule update --init` and install again.
 - Rust builds need `protoc` (the vendored `spectrum` crate compiles pinned
   protos).
-- `src-tauri/keys/client_private_key.pem` is intentionally untracked; without
-  it the app builds but account sync reports an error.
 - On Windows the app must run elevated for raw capture.
 
 ## Architecture rules

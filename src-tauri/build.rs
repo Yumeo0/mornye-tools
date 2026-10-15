@@ -37,10 +37,14 @@ fn main() {
 /// blocking, actionable error instead of silently not syncing.
 fn verify_bundled_key() {
     let manifest_dir = std::env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR");
+    // The key lives in the repository's data directory and is bundled as a
+    // resource; see tauri.conf.json.
     let key_path = Path::new(&manifest_dir)
-        .join("keys")
+        .parent()
+        .expect("repository root")
+        .join("data")
         .join("client_private_key.pem");
-    println!("cargo:rerun-if-changed=keys/client_private_key.pem");
+    println!("cargo:rerun-if-changed=../data/client_private_key.pem");
 
     if !key_path.exists() {
         println!(

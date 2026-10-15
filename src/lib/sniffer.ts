@@ -63,7 +63,7 @@ export function blockingErrors(status: SnifferStatus | null): string[] {
 		errors.push(
 			status.rsa_key_error
 				? `Bundled RSA key invalid: ${status.rsa_key_error}`
-				: "Bundled RSA key is missing. Account sync is disabled until keys/client_private_key.pem is provided.",
+				: "Bundled RSA key is missing. Account sync is disabled until data/client_private_key.pem is provided.",
 		);
 	}
 	if (!status.capture_available) {

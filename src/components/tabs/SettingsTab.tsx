@@ -33,6 +33,11 @@ interface ScanRegions {
 	tuning_successful?: ScanRegion;
 	sort_icon?: ScanRegion | null;
 	high_rarity_notice?: ScanRegion | null;
+	echo_panel?: ScanRegion | null;
+	main_stats?: ScanRegion | null;
+	sub_stats?: ScanRegion | null;
+	stat_stars?: ScanRegion | null;
+	sub_stat_stars?: ScanRegion | null;
 }
 
 const SETTINGS_SECTIONS = new Set(["overlay", "assistant", "advanced"]);
@@ -255,6 +260,11 @@ export function SettingsTab() {
 					tuning_successful: config.tuningSuccessful,
 					sort_icon: config.sortIcon ?? null,
 					high_rarity_notice: config.highRarityNotice ?? null,
+					echo_panel: config.echoPanel ?? null,
+					main_stats: config.mainStats ?? null,
+					sub_stats: config.subStats ?? null,
+					stat_stars: config.statStars ?? null,
+					sub_stat_stars: config.subStatStars ?? null,
 				};
 				await invoke("set_scan_regions", { regions: scanRegions });
 

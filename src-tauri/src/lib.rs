@@ -111,9 +111,19 @@ fn get_scan_region(state: State<AppState>) -> Result<Option<ScanRegion>, String>
 }
 
 #[tauri::command]
-fn set_scan_regions(state: State<AppState>, regions: ScanRegions) -> Result<(), String> {
+fn set_scan_regions(
+    app_handle: tauri::AppHandle,
+    state: State<AppState>,
+    regions: ScanRegions,
+) -> Result<(), String> {
     let mut scan_regions = state.scan_regions.lock().map_err(|e| e.to_string())?;
-    *scan_regions = Some(regions);
+    *scan_regions = Some(regions.clone());
+    drop(scan_regions);
+    // The overlay anchors its augmentation layer to the panel geometry;
+    // keep it in sync across resolution changes.
+    app_handle
+        .emit("scan-regions-changed", regions)
+        .map_err(|e| e.to_string())?;
     Ok(())
 }
 

@@ -1,5 +1,3 @@
-import { StarIcon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import {
@@ -8,9 +6,14 @@ import {
 	getCurrentWindow,
 } from "@tauri-apps/api/window";
 import { Store } from "@tauri-apps/plugin-store";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+	type CSSProperties,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import { SubStatRollBar } from "@/components/echo/SubStatRollBar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Echo } from "@/lib/account";
 import {
 	type EchoPanelScan,
@@ -50,6 +53,19 @@ interface ScanRegion {
 interface CaptureOrigin {
 	x: number;
 	y: number;
+}
+
+/**
+ * Panel geometry the overlay's augmentation layer aligns to, in game-window
+ * pixels. The game renders name, level and stat values itself; the overlay
+ * only adds wanted-stars and roll segments on top of those rows.
+ */
+interface PanelRegions {
+	echo_panel?: ScanRegion | null;
+	main_stats?: ScanRegion | null;
+	sub_stats?: ScanRegion | null;
+	stat_stars?: ScanRegion | null;
+	sub_stat_stars?: ScanRegion | null;
 }
 
 /** Last presses seen by the menu debug panel, keyed by the press kind. */
@@ -92,6 +108,12 @@ try {
  * are detected via the "Tuning Successful" region.
  */
 const PANEL_CLOSE_TICKS = 2;
+/** Tint of the wanted-star overlay (the game's star asset, masked). */
+const WANTED_STAR_COLOR = "#f7eba6";
+/** Soft glow around the wanted-star, drawn by the wrapper's drop-shadow. */
+const WANTED_STAR_GLOW = "rgba(247, 235, 166, 0.8)";
+/** Wanted-stars render a bit larger than the game's own stars. */
+const WANTED_STAR_SCALE = 1.25;
 /**
  * Fallback for the Echo Upgrade Assistant when no "Tuning Successful" screen
  * follows an update packet: the queued discard fires anyway after this long.
@@ -105,6 +127,8 @@ function Overlay() {
 	const [captureOrigin, setCaptureOrigin] = useState<CaptureOrigin | null>(
 		null,
 	);
+	// Panel geometry (window-relative) the augmentation layer aligns to
+	const [panelRegions, setPanelRegions] = useState<PanelRegions | null>(null);
 	// Exact echo from the game (lock-request packet path)
 	const [exactEcho, setExactEcho] = useState<Echo | null>(null);
 	const [panelOpen, setPanelOpen] = useState(false);
@@ -117,7 +141,7 @@ function Overlay() {
 	);
 	// Ratio of physical screen pixels to overlay CSS pixels
 	const [displayScale, setDisplayScale] = useState(1);
-	const cardRef = useRef<HTMLDivElement | null>(null);
+	const charsRef = useRef<HTMLDivElement | null>(null);
 	const busyRef = useRef(false);
 	const exactEchoRef = useRef<Echo | null>(null);
 	const targetRef = useRef<EchoTargetState>(INITIAL_ECHO_TARGET);
@@ -159,9 +183,9 @@ function Overlay() {
 		};
 
 		const isOverCard = (cssX: number, cssY: number) => {
-			const card = cardRef.current;
-			if (!card) return false;
-			const rect = card.getBoundingClientRect();
+			const node = charsRef.current;
+			if (!node) return false;
+			const rect = node.getBoundingClientRect();
 			return (
 				cssX >= rect.left &&
 				cssX <= rect.right &&
@@ -306,6 +330,14 @@ function Overlay() {
 			},
 		);
 
+		// Panel geometry the augmentation layer aligns to; follows live edits
+		const unlistenScanRegions = listen<PanelRegions>(
+			"scan-regions-changed",
+			(event) => {
+				setPanelRegions(event.payload);
+			},
+		);
+
 		// Listen for game window origin changes so the outline stays anchored
 		// to the window the regions are relative to
 		const unlistenCaptureOrigin = listen<CaptureOrigin | null>(
@@ -355,6 +387,13 @@ function Overlay() {
 		invoke<ScanRegion | null>("get_scan_region")
 			.then((region) => {
 				setScanRegion(region);
+			})
+			.catch(console.error);
+
+		// Load the panel geometry the augmentation layer aligns to
+		invoke<PanelRegions | null>("get_scan_regions")
+			.then((regions) => {
+				setPanelRegions(regions);
 			})
 			.catch(console.error);
 
@@ -538,6 +577,7 @@ function Overlay() {
 			unlistenEchoUpdated.then((fn) => fn());
 			unlistenEchoSplit.then((fn) => fn());
 			unlistenScanRegion.then((fn) => fn());
+			unlistenScanRegions.then((fn) => fn());
 			unlistenCaptureOrigin.then((fn) => fn());
 			unlistenShowRegion.then((fn) => fn());
 			unlistenMenuDebug.then((fn) => fn());
@@ -624,17 +664,81 @@ function Overlay() {
 		return press ? `${debugAgo(press.at)}${press.ok ? "" : " (failed)"}` : "-";
 	};
 
+	// The augmentation layer aligns to the game's own stat rows: wanted-stars
+	// in the gutter left of each row, roll segments below each substat. Name,
+	// level and values are the game's to render.
+	const mainRegion = panelRegions?.main_stats ?? null;
+	const subRegion = panelRegions?.sub_stats ?? null;
+	const starsRegion = panelRegions?.stat_stars ?? null;
+	const subStarsRegion = panelRegions?.sub_stat_stars ?? null;
+	const panelRegion = panelRegions?.echo_panel ?? null;
+	const anchored = mainRegion !== null && subRegion !== null;
+	const originX = captureOrigin?.x ?? 0;
+	const originY = captureOrigin?.y ?? 0;
+	// The game draws two main-stat rows and five substat row slots from the
+	// top of each region, so per-row geometry follows from the region height.
+	const mainRowHeight = (mainRegion?.height ?? 0) / 2;
+	const subRowHeight = (subRegion?.height ?? 0) / 5;
+	const starSize = Math.min(starsRegion?.width ?? 26, 26);
+	const starX = starsRegion ? starsRegion.x : (mainRegion?.x ?? 0) - 40;
+	// The substat-star region encapsulates the game's five star icons exactly,
+	// so the stars tile it: container width per star, an even pitch with the
+	// first star flush against the top and the last against the bottom.
+	const subStarSize = subStarsRegion?.width ?? 0;
+	const subStarPitch =
+		subStarsRegion && subStarSize > 0
+			? (subStarsRegion.height - subStarsRegion.width) / 4
+			: subRowHeight;
+	const anchorLeft = panelRegion
+		? panelRegion.x + panelRegion.width
+		: (mainRegion?.x ?? 0) + (mainRegion?.width ?? 0);
+	const anchorTop = panelRegion?.y ?? mainRegion?.y ?? 0;
+
+	// The game's star asset tinted through a CSS mask; drawn only over stats
+	// the active character wants, a bit larger than the original. Positioned
+	// by its center so the enlarged star stays centered on the game's own.
+	// The glow sits on this wrapper: masking is applied after filtering, so a
+	// drop-shadow on the masked element itself would be clipped away by the
+	// star mask and never show.
+	const starStyle = (cx: number, cy: number, size: number): CSSProperties => ({
+		position: "absolute",
+		left: (originX + cx - size / 2) * displayScale,
+		top: (originY + cy - size / 2) * displayScale,
+		width: size * displayScale,
+		height: size * displayScale,
+		filter: `drop-shadow(0 0 ${2 * displayScale}px ${WANTED_STAR_GLOW}) drop-shadow(0 0 ${6 * displayScale}px ${WANTED_STAR_GLOW})`,
+	});
+	/** The tinted star shape inside the glowing wrapper. */
+	const starMaskStyle: CSSProperties = {
+		position: "absolute",
+		inset: 0,
+		backgroundColor: WANTED_STAR_COLOR,
+		maskImage: "url(/star.png)",
+		maskSize: "100% 100%",
+		maskRepeat: "no-repeat",
+		WebkitMaskImage: "url(/star.png)",
+		WebkitMaskSize: "100% 100%",
+		WebkitMaskRepeat: "no-repeat",
+	};
+	const charactersStyle: CSSProperties = anchored
+		? {
+				pointerEvents: "auto",
+				position: "absolute",
+				left: (originX + anchorLeft + 20) * displayScale,
+				top: (originY + anchorTop) * displayScale,
+				width: 280 * displayScale,
+			}
+		: {
+				pointerEvents: "auto",
+				position: "absolute",
+				left: "50%",
+				top: 40,
+				transform: "translateX(-50%)",
+				width: 450,
+			};
+
 	return (
-		<div
-			style={{
-				width: "100vw",
-				height: "100vh",
-				display: "flex",
-				alignItems: "flex-start",
-				justifyContent: "center",
-				paddingTop: "40px",
-			}}
-		>
+		<div style={{ width: "100vw", height: "100vh", position: "relative" }}>
 			{/* Scan Region Outline */}
 			{showScanRegion && scanRegion && (
 				<div
@@ -726,164 +830,133 @@ function Overlay() {
 				</div>
 			)}
 
-			<div
-				style={{
-					display: "flex",
-					flexDirection: "column",
-					gap: "20px",
-					alignItems: "center",
-				}}
-			>
-				{/* Stats Display */}
-				{view && (
-					<div ref={cardRef}>
-						<Card
-							className="min-w-112.5 bg-card/95 backdrop-blur-sm shadow-2xl border-2"
-							style={{ pointerEvents: "auto" }}
-						>
-							{/* Echo Name Header */}
-							{view.name && (
-								<CardHeader className="border-b pb-3">
-									<CardTitle className="flex items-center justify-center gap-2 text-xl">
-										<span className="truncate">{view.name}</span>
-										{view.level && (
-											<span className="text-base font-bold text-yellow-400">
-												{view.level}
-											</span>
+			{view && (
+				<>
+					{anchored && mainRegion && subRegion && (
+						<div style={{ pointerEvents: "none" }}>
+							{/* Wanted-stars beside the game's main-stat rows */}
+							{mainStats.map((stat, index) => {
+								const parsed = parseStatValue(stat);
+								const statName = parsed ? normalizeStatName(parsed.name) : "";
+								if (!preferredMainStats.has(statName)) return null;
+								return (
+									<div
+										key={`main-star-${stat}`}
+										style={starStyle(
+											starX + starSize / 2,
+											mainRegion.y + index * mainRowHeight + mainRowHeight / 2,
+											starSize * WANTED_STAR_SCALE,
 										)}
-									</CardTitle>
-								</CardHeader>
-							)}
-
-							<CardContent className="space-y-4">
-								{/* Main Stats Section */}
-								<div className="space-y-2">
-									<h3 className="text-base font-bold text-purple-400">
-										Main Stats
-									</h3>
-									<div className="space-y-1">
-										{mainStats.map((stat) => {
-											const parsed = parseStatValue(stat);
-											const statName = parsed
-												? normalizeStatName(parsed.name)
-												: "";
-											const isPreferred = preferredMainStats.has(statName);
-											return (
-												<div
-													key={`main-${stat}`}
-													className={cn("text-sm flex items-center gap-2")}
-												>
-													{isPreferred && (
-														<HugeiconsIcon
-															icon={StarIcon}
-															className="w-4 h-4 text-yellow-400"
-														/>
-													)}
-													{stat}
-												</div>
-											);
-										})}
+									>
+										<div style={starMaskStyle} />
 									</div>
-								</div>
-
-								{/* Sub Stats Section */}
-								<div className="space-y-2">
-									<h3 className="text-base font-bold text-blue-400">
-										Sub Stats
-									</h3>
-									<div className="space-y-2">
-										{subStats.map((stat) => {
-											const parsed = parseStatValue(stat);
-											if (!parsed) {
-												return (
-													<div key={`sub-${stat}`} className="text-xs">
-														{stat}
-													</div>
-												);
-											}
-
-											const statName = normalizeStatName(parsed.name);
-											const isPreferred = preferredSubStats.has(statName);
-
-											return (
-												<div key={`sub-${stat}`} className="space-y-1">
-													<div className="flex justify-between items-center text-xs">
-														<div className="flex items-center gap-2">
-															{isPreferred && (
-																<HugeiconsIcon
-																	icon={StarIcon}
-																	className="w-3 h-3 text-yellow-400"
-																/>
-															)}
-															<span>{parsed.name}</span>
-														</div>
-														<span className="font-bold">
-															{parsed.value}
-															{parsed.hasPercent ? "%" : ""}
-														</span>
-													</div>
-													<SubStatRollBar
-														statName={parsed.name}
-														value={parsed.value}
-														className="h-1.5"
-													/>
-												</div>
-											);
-										})}
-									</div>
-								</div>
-
-								{/* Relevant Characters Section */}
-								{relevantCharacters.length > 0 && (
-									<div className="space-y-2">
-										<h3 className="text-base font-bold text-green-400">
-											Relevant Characters
-										</h3>
-										<p className="text-xs text-muted-foreground">
-											Click a character to highlight their preferred stats
-										</p>
-										<div className="space-y-2">
-											{rankedCharacters.map(({ character, rating }) => {
-												const isActive =
-													character.character_id ===
-													activeCharacter?.character_id;
-												return (
-													<button
-														type="button"
-														key={character.character_id}
-														onClick={() =>
-															setSelectedCharacterId(
-																isActive && selectedCharacterId !== null
-																	? null
-																	: character.character_id,
-															)
-														}
-														className={`flex w-full items-center gap-3 bg-muted/50 p-2 text-left ${
-															isActive ? "border border-primary" : ""
-														}`}
-													>
-														<img
-															src={character.icon_pile}
-															alt={character.character_name}
-															className="w-6 h-6 object-contain"
-														/>
-														<span className="text-sm flex-1">
-															{character.character_name}
-														</span>
-														<span className="text-sm font-bold text-yellow-400">
-															{rating}%
-														</span>
-													</button>
-												);
-											})}
+								);
+							})}
+							{/* Wanted-stars and roll segments on the substat rows */}
+							{subStats.map((stat, index) => {
+								const parsed = parseStatValue(stat);
+								if (!parsed) return null;
+								const statName = normalizeStatName(parsed.name);
+								const wanted = preferredSubStats.has(statName);
+								const rowTop = subRegion.y + index * subRowHeight;
+								return (
+									<div key={`sub-${stat}`}>
+										{wanted && subStarsRegion && (
+											// Cover the game's own substat star with the
+											// wanted-star.
+											<div
+												style={starStyle(
+													subStarsRegion.x + subStarsRegion.width / 2,
+													subStarsRegion.y +
+														index * subStarPitch +
+														subStarsRegion.width / 2,
+													subStarSize * WANTED_STAR_SCALE,
+												)}
+											>
+												<div style={starMaskStyle} />
+											</div>
+										)}
+										<div
+											style={{
+												position: "absolute",
+												left: (originX + subRegion.x) * displayScale,
+												top:
+													(originY + rowTop + subRowHeight - 8) * displayScale,
+												width: subRegion.width * displayScale,
+												height: 5 * displayScale,
+											}}
+										>
+											<SubStatRollBar
+												statName={parsed.name}
+												value={parsed.value}
+												className="h-full"
+												dimmed={!wanted}
+											/>
 										</div>
 									</div>
-								)}
-							</CardContent>
-						</Card>
-					</div>
-				)}
-			</div>
+								);
+							})}
+						</div>
+					)}
+
+					{/* Relevant characters, beside the stats panel. Styled after the
+					    game's own pills: fully rounded, translucent white/gray
+					    over the screen, gold accent on the active pick. */}
+					{relevantCharacters.length > 0 && (
+						<div
+							ref={charsRef}
+							style={charactersStyle}
+							className="flex flex-col gap-2 rounded-2xl border border-white/15 bg-black/35 p-2 shadow-2xl backdrop-blur-sm"
+						>
+							<h3 className="px-2 pt-0.5 text-lg font-bold text-white">
+								Relevant Characters
+							</h3>
+							<div className="flex flex-col gap-1.5">
+								{rankedCharacters.map(({ character, rating }) => {
+									const isActive =
+										character.character_id === activeCharacter?.character_id;
+									return (
+										<button
+											type="button"
+											key={character.character_id}
+											onClick={() =>
+												setSelectedCharacterId(
+													isActive && selectedCharacterId !== null
+														? null
+														: character.character_id,
+												)
+											}
+											className={cn(
+												"flex h-11 w-full items-center gap-2.5 rounded-full border pr-3.5 pl-0 text-left transition-colors",
+												isActive
+													? "border-[#f7eba6]/70 bg-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_0_10px_rgba(247,235,166,0.35)]"
+													: "border-white/15 bg-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_1px_3px_rgba(0,0,0,0.4)] hover:border-white/25 hover:bg-white/15",
+											)}
+										>
+											<img
+												src={character.icon_pile}
+												alt={character.character_name}
+												className="h-full aspect-square shrink-0 rounded-full object-contain"
+											/>
+											<span className="flex-1 truncate text-sm font-medium text-white">
+												{character.character_name}
+											</span>
+											<span
+												className={cn(
+													"text-sm font-bold",
+													isActive ? "text-[#f7eba6]" : "text-white/90",
+												)}
+											>
+												{rating}%
+											</span>
+										</button>
+									);
+								})}
+							</div>
+						</div>
+					)}
+				</>
+			)}
 		</div>
 	);
 }

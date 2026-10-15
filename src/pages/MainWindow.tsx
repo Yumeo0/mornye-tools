@@ -51,6 +51,11 @@ interface ScanRegions {
 	tuning_successful?: ScanRect;
 	sort_icon?: ScanRect | null;
 	high_rarity_notice?: ScanRect | null;
+	echo_panel?: ScanRect | null;
+	main_stats?: ScanRect | null;
+	sub_stats?: ScanRect | null;
+	stat_stars?: ScanRect | null;
+	sub_stat_stars?: ScanRect | null;
 }
 
 function WindowButton({
@@ -215,6 +220,11 @@ export default function MainWindow() {
 						tuning_successful: config.tuningSuccessful,
 						sort_icon: config.sortIcon ?? null,
 						high_rarity_notice: config.highRarityNotice ?? null,
+						echo_panel: config.echoPanel ?? null,
+						main_stats: config.mainStats ?? null,
+						sub_stats: config.subStats ?? null,
+						stat_stars: config.statStars ?? null,
+						sub_stat_stars: config.subStatStars ?? null,
 					};
 					await invoke("set_scan_regions", { regions: scanRegions });
 				}

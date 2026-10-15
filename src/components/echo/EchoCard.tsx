@@ -3,10 +3,10 @@ import { SubStatRollBar } from "@/components/echo/SubStatRollBar";
 import { type Echo, formatStatValue, statLabel } from "@/lib/account";
 import {
 	isExcludedCharacter,
-	maxSubStatValue,
 	ratingColor,
 	statIconAsset,
-	subStatRollColor,
+	subStatRoll,
+	subStatTierColor,
 } from "@/lib/stats";
 import characterData from "../../configs/character_data.json";
 import echoData from "../../configs/echo_data.json";
@@ -149,9 +149,8 @@ function StatRow({
 }) {
 	const icon = statIconAsset(label);
 	const numeric = muted && value ? Number.parseFloat(value) : null;
-	const maxValue = muted ? maxSubStatValue(label) : null;
-	const rollColor =
-		numeric !== null && maxValue ? subStatRollColor(numeric, maxValue) : null;
+	const roll = numeric !== null ? subStatRoll(label, numeric) : null;
+	const valueColor = roll ? subStatTierColor(roll.tier, roll.tierCount) : null;
 	return (
 		<div className="min-w-0" title={label}>
 			<div className="flex items-center gap-1.5">
@@ -164,7 +163,7 @@ function StatRow({
 				{value && (
 					<span
 						className="text-[11px] font-semibold"
-						style={rollColor ? { color: rollColor } : undefined}
+						style={valueColor ? { color: valueColor } : undefined}
 					>
 						{value}
 					</span>

@@ -106,17 +106,7 @@ export function subStatRoll(
 	return { tier, tierCount: rolls.length, rolls };
 }
 
-// Max possible substat roll for a stat name, or null if unknown
-export function maxSubStatValue(statName: string): number | null {
-	const stats = (statsJson as StatsJson).sub;
-	const key = Object.keys(stats).find(
-		(k) => normalizeStatName(k) === normalizeStatName(statName),
-	);
-	return key ? stats[key].max : null;
-}
-
-// Color a 0-100 percentage by how close it is to the maximum (shared
-// thresholds for ratings, roll bars and value colors)
+// Color a 0-100 percentage by how close it is to the maximum (echo ratings)
 export function ratingColor(percentage: number): string {
 	if (percentage >= 85) return "#10b981"; // green-500
 	if (percentage >= 70) return "#3b82f6"; // blue-500
@@ -124,9 +114,26 @@ export function ratingColor(percentage: number): string {
 	return "#ef4444"; // red-500
 }
 
-// Color a substat roll by how close it is to the max possible roll
-export function subStatRollColor(value: number, maxValue: number): string {
-	return ratingColor(Math.min((value / maxValue) * 100, 100));
+// Roll-bar colors from the lowest to the highest roll band
+export const SUBSTAT_ROLL_COLORS = [
+	"#7bcf7d",
+	"#5198fe",
+	"#c85cff",
+	"#f7eba6",
+] as const;
+
+/**
+ * Color one segment of a substat roll bar: 8-roll stats step every two rolls
+ * (two segments per color), 4-roll stats every single one.
+ */
+export function subStatSegmentColor(index: number, tierCount: number): string {
+	const band = Math.floor((index * SUBSTAT_ROLL_COLORS.length) / tierCount);
+	return SUBSTAT_ROLL_COLORS[Math.min(band, SUBSTAT_ROLL_COLORS.length - 1)];
+}
+
+/** Color of the band a 1-based roll tier lands in (last filled segment). */
+export function subStatTierColor(tier: number, tierCount: number): string {
+	return subStatSegmentColor(tier - 1, tierCount);
 }
 
 // Local game asset icons (IconAttribute folder) keyed by full stat name

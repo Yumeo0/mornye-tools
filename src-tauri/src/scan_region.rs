@@ -60,6 +60,25 @@ pub struct ScanRegions {
     /// icon screen, the overlay must not press any keys while it is up.
     #[serde(default)]
     pub high_rarity_notice: Option<ScanRegion>,
+    /// Bounding box of the game's echo stats panel (name, level, main and sub
+    /// stats). The overlay anchors its augmentation layer to it.
+    #[serde(default)]
+    pub echo_panel: Option<ScanRegion>,
+    /// The game's main-stat rows; the overlay derives per-row geometry from it
+    /// to place wanted-stars and roll segments. Not read by the backend.
+    #[serde(default)]
+    pub main_stats: Option<ScanRegion>,
+    /// The game's sub-stat rows (five row slots); same purpose as
+    /// [`Self::main_stats`].
+    #[serde(default)]
+    pub sub_stats: Option<ScanRegion>,
+    /// Column left of the stat rows where the overlay draws its wanted-stars.
+    #[serde(default)]
+    pub stat_stars: Option<ScanRegion>,
+    /// Column of the game's own substat star icons; the overlay covers them
+    /// with its star assets (glowing when the stat is wanted).
+    #[serde(default)]
+    pub sub_stat_stars: Option<ScanRegion>,
 }
 
 pub(crate) fn color_filter_image(img: &DynamicImage, filter: &ColorFilter) -> GrayImage {

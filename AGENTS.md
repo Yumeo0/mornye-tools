@@ -6,10 +6,11 @@ drives the in-game overlay window.
 
 ## Setup gotchas
 
-- Use `bun run dev` / `bun run build`, never raw `vite`: the predev/prebuild
-  hooks build the `thewuwacalculator` submodule's `@wuwacalc/core` and sync
+- Use `bun run dev` / `bun run build`, never raw `vite`: the `postinstall`
+  hook builds the `thewuwacalculator` submodule's `@wuwacalc/core` and syncs
   live game data into the gitignored `public/data`. Both are hard
-  requirements; on failure run `git submodule update --init`.
+  requirements, so `bun install` fails outright without an initialized
+  submodule; on failure run `git submodule update --init` and install again.
 - Rust builds need `protoc` (the vendored `spectrum` crate compiles pinned
   protos).
 - `src-tauri/keys/client_private_key.pem` is intentionally untracked; without

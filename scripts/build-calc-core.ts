@@ -1,10 +1,9 @@
 // Build the in-app calculator core (@wuwacalc/core) from the
 // `thewuwacalculator` submodule so `file:` resolution and workers work.
 //
-// Wired into `predev`/`prebuild`. Installs the submodule's workspace
-// dependencies if missing, then builds `packages/core` (tsc + tsc-alias +
-// asset copy). Fails loudly: the calculator is an in-app requirement, not an
-// optional extra.
+// Wired into `postinstall`. Installs the submodule's workspace dependencies if
+// missing, then builds `packages/core` (tsc + tsc-alias + asset copy). Fails
+// loudly: the calculator is an in-app requirement, not an optional extra.
 
 import { spawnSync } from "node:child_process";
 import { cpSync, existsSync, rmSync } from "node:fs";
@@ -26,7 +25,7 @@ if (!existsSync(submodule)) {
 
 const npm = process.platform === "win32" ? "npm.cmd" : "npm";
 
-function run(args) {
+function run(args: string[]): void {
 	console.log(`[build-calc-core] ${npm} ${args.join(" ")}`);
 	const result = spawnSync(npm, args, {
 		cwd: submodule,

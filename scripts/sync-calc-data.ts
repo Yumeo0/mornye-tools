@@ -3,7 +3,7 @@
 // without depending on the submodule at runtime. Workers use the same default
 // source, so evaluation and optimizer workers resolve the same files.
 //
-// Wired into `predev`/`prebuild`. Missing data is a hard error: the Account
+// Wired into `postinstall`. Missing data is a hard error: the Account
 // evaluation must not silently run against an empty catalog.
 
 import { cpSync, existsSync, mkdirSync, rmSync } from "node:fs";

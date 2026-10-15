@@ -695,7 +695,6 @@ fn set_show_menu_debug(app_handle: tauri::AppHandle, show: bool) -> Result<(), S
 pub fn run() {
     // MCP bridge for AI automation (debug builds only)
     let builder = tauri::Builder::default()
-        .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_store::Builder::new().build());
     #[cfg(debug_assertions)]

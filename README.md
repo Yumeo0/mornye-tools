@@ -45,7 +45,7 @@ Prerequisites:
 - Node/Bun and Rust (stable)
 - `protoc` (the vendored `spectrum` crate compiles the pinned protos)
 - The `thewuwacalculator` submodule (the calculator core lives in
-  `packages/core`; the predev/prebuild scripts build and link it)
+  `packages/core`; the `postinstall` hook builds and links it)
 - `src-tauri/keys/client_private_key.pem` - the bundled RSA key is intentionally
   **not** in version control. Copy it from the `wuwa-protos` extraction output;
   without it the app builds but account sync reports an actionable error.
@@ -53,8 +53,8 @@ Prerequisites:
   compilers.
 
 ```sh
-bun install
-bun run dev      # predev: builds @wuwacalc/core + syncs public/data
+bun install      # postinstall: builds @wuwacalc/core + syncs public/data
+bun run dev
 bun run build    # tsc + vite
 bun test ./src   # translation tests
 ```

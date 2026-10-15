@@ -134,6 +134,10 @@ const ECHO_GRID_GAP = 8; // gap-2
 // Initial row estimate, also used as the uniform minimum row height until a
 // taller row reports its real size.
 const ECHO_ROW_ESTIMATE_PX = 280;
+// Rows rendered beyond the viewport. Cards are cheap to mount and their icons
+// are cached, so a deep buffer costs little and keeps a fast scroll from
+// flashing blank rows while React catches up with it.
+const ECHO_ROW_OVERSCAN = 6;
 
 interface Filters {
 	search: string;
@@ -750,8 +754,9 @@ export function EchoesTab() {
 					items={sortedEchoes}
 					columns={gridColumns}
 					gap={ECHO_GRID_GAP}
-					estimateRowHeight={ECHO_ROW_ESTIMATE_PX}
+					estimateRowHeight={echoRowHeight}
 					minRowHeight={echoRowHeight}
+					overscan={ECHO_ROW_OVERSCAN}
 					onMeasuredRowHeight={handleMeasuredRowHeight}
 					getItemKey={getEchoKey}
 					renderItem={renderEcho}

@@ -5,14 +5,15 @@
  * referenced assets from the wuwa-assets checkout to the public folder. This is
  * what copies those checkouts into the app.
  *
- * `compile_build_guides.ts` is deliberately not part of this: its source is a
- * third-party site rather than a checkout, so it refreshes on its own schedule.
+ * Build guides come from tethys.gg rather than a checkout, so that step needs
+ * the network and follows the site's own update schedule.
  *
  * Run: bun scripts/compile_all_data.ts
  */
 
 import { join } from "node:path";
 
+import { compileBuildGuides } from "./compile_build_guides.ts";
 import { compileCharacterData } from "./compile_character_data.ts";
 import { compileEchoData } from "./compile_echo_data.ts";
 import { compileEchoProps } from "./compile_echo_props.ts";
@@ -91,6 +92,18 @@ async function main(): Promise<void> {
 	} catch (error) {
 		console.log(`Error compiling weapon data: ${error}`);
 		process.exit(1);
+	}
+
+	try {
+		console.log("Starting Build Guide Compilation...");
+		console.log("-".repeat(60));
+		await compileBuildGuides();
+		console.log();
+	} catch (error) {
+		// tethys.gg is a third party on its own schedule, so an outage or a
+		// changed page there must not discard the configs and assets that have
+		// already been rebuilt from the checkouts.
+		console.warn(`warning: build guides not updated: ${error}`);
 	}
 
 	try {

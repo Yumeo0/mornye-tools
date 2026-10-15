@@ -80,7 +80,6 @@ pub struct FuncValueChange {
 /// Tauri commands.
 pub struct SnifferState {
     data_dir: PathBuf,
-    pub paused: AtomicBool,
     pub capturing: AtomicBool,
     pub game_process_found: AtomicBool,
     pub packets_seen: AtomicU64,
@@ -121,7 +120,6 @@ impl SnifferState {
         let now = Instant::now();
         Self {
             data_dir: data_dir.clone(),
-            paused: AtomicBool::new(false),
             capturing: AtomicBool::new(false),
             game_process_found: AtomicBool::new(false),
             packets_seen: AtomicU64::new(0),
@@ -357,7 +355,6 @@ impl SnifferState {
 
 #[derive(Debug, Clone, Serialize)]
 pub struct SnifferStatus {
-    pub paused: bool,
     pub capturing: bool,
     pub game_process_found: bool,
     pub capture_available: bool,
@@ -388,11 +385,6 @@ pub fn start(app: &AppHandle) {
 fn spawn_supervisor(app: AppHandle) {
     std::thread::spawn(move || loop {
         let state = app.state::<SnifferState>();
-        if state.paused.load(Ordering::SeqCst) {
-            std::thread::sleep(Duration::from_millis(400));
-            continue;
-        }
-
         let pem = match keys::load_bundled_key(&app) {
             Ok(pem) => pem,
             Err(e) => {
@@ -571,7 +563,6 @@ fn pcapng_frames(buf: &[u8]) -> Vec<Vec<u8>> {
 pub fn sniffer_get_status(state: State<SnifferState>) -> SnifferStatus {
     let key_info = state.stored_key_info();
     SnifferStatus {
-        paused: state.paused.load(Ordering::SeqCst),
         capturing: state.capturing.load(Ordering::SeqCst),
         game_process_found: state.game_process_found.load(Ordering::SeqCst),
         capture_available: live::capture_available(),
@@ -594,39 +585,6 @@ pub fn sniffer_get_status(state: State<SnifferState>) -> SnifferStatus {
     }
 }
 
-#[tauri::command]
-pub fn sniffer_pause(state: State<SnifferState>) {
-    state.paused.store(true, Ordering::SeqCst);
-    state.log("paused");
-}
-
-#[tauri::command]
-pub fn sniffer_resume(state: State<SnifferState>) {
-    state.paused.store(false, Ordering::SeqCst);
-    state.log("resumed");
-}
-
-#[tauri::command(rename_all = "snake_case")]
-pub fn sniffer_set_session_key(
-    state: State<SnifferState>,
-    key: String,
-) -> Result<(), String> {
-    let parsed = keys::parse_key(&key)?;
-    *state.session_key.lock() = Some(parsed);
-    keys::write_session_key(&state.data_dir, &parsed)?;
-    state.log("session key set manually");
-    Ok(())
-}
-
-#[tauri::command]
-pub fn sniffer_clear_session_key(state: State<SnifferState>) -> Result<(), String> {
-    *state.session_key.lock() = None;
-    keys::clear_session_key(&state.data_dir)?;
-    state.log("session key cleared");
-    Ok(())
-}
-
-/// Offline test/debug tool: feed a saved `.pcap`/`.pcapng` through the extractor.
 #[tauri::command(rename_all = "snake_case")]
 pub fn sniffer_import_pcap(
     app: AppHandle,
@@ -634,7 +592,7 @@ pub fn sniffer_import_pcap(
     path: String,
 ) -> Result<usize, String> {
     if state.capturing.load(Ordering::SeqCst) {
-        return Err("a live capture is running; pause it before importing".into());
+        return Err("a live capture is running; close the game to import offline".into());
     }
     let pem = keys::load_bundled_key(&app)?;
     let frames = import_frames(&path)?;

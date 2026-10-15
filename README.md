@@ -46,15 +46,16 @@ cargo test
 
 Capture is on by design. It arms on start, polls for the game process, reads
 IPv4 frames with a raw `SIO_RCVALL` socket (Windows) or `AF_PACKET` (Linux),
-and decodes them with the vendored `spectrum` crate. The only user control is a
-runtime Pause/Resume toggle; the session key cache survives restarts.
+and decodes them with the vendored `spectrum` crate. There is no on/off control:
+capture follows the game process and stops on its own once the process is gone.
+The session key cache survives restarts.
 
 - Windows: the app must run elevated - raw capture needs Administrator rights and
   fails with `WSAEACCES` otherwise. Linux needs
   `setcap cap_net_raw,cap_net_admin+eip` on the binary.
 - Because capture is passive, open the Character / Echo / Weapon menus once (or
   let the game request them on login) so the notifies arrive.
-- Capture health is visible in settings → Packet capture: frame / packet /
+- Capture health is visible in settings → Developer: frame / packet /
   decode error counters, plus a stall warning when frames keep arriving but
   nothing decodes. A stall means the passive KCP mirror lost a segment (it can
   never ask for a retransmit); account updates stay frozen until the game

@@ -3,7 +3,6 @@
 import { invoke } from "@tauri-apps/api/core";
 
 export interface SnifferStatus {
-	paused: boolean;
 	capturing: boolean;
 	game_process_found: boolean;
 	capture_available: boolean;
@@ -33,22 +32,6 @@ export interface SnifferStatus {
 
 export async function getStatus(): Promise<SnifferStatus> {
 	return invoke<SnifferStatus>("sniffer_get_status");
-}
-
-export async function pauseSniffer(): Promise<void> {
-	await invoke("sniffer_pause");
-}
-
-export async function resumeSniffer(): Promise<void> {
-	await invoke("sniffer_resume");
-}
-
-export async function setSessionKey(key: string): Promise<void> {
-	await invoke("sniffer_set_session_key", { key });
-}
-
-export async function clearSessionKey(): Promise<void> {
-	await invoke("sniffer_clear_session_key");
 }
 
 export async function importPcap(path: string): Promise<number> {

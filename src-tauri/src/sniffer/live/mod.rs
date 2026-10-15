@@ -91,15 +91,6 @@ pub(crate) fn handle_frame(app: &AppHandle, sniffer: &mut spectrum::Sniffer, fra
     crate::sniffer::process_frame(app, sniffer, frame.to_vec());
 }
 
-/// Shared capture-loop plumbing: returns `true` when the loop should stop.
-pub(crate) fn should_stop(app: &AppHandle) -> bool {
-    use std::sync::atomic::Ordering;
-    use tauri::Manager;
-    app.state::<crate::sniffer::SnifferState>()
-        .paused
-        .load(Ordering::SeqCst)
-}
-
 /// Resolve the client process to capture, preferring the real client with ports.
 pub fn pick_process(procs: &[ProcInfo]) -> Option<&ProcInfo> {
     procs

@@ -734,10 +734,6 @@ pub fn run() {
             account::account_set_equipped_override,
             account::account_clear_echo_override,
             sniffer::sniffer_get_status,
-            sniffer::sniffer_pause,
-            sniffer::sniffer_resume,
-            sniffer::sniffer_set_session_key,
-            sniffer::sniffer_clear_session_key,
             sniffer::sniffer_import_pcap,
         ])
         .run(tauri::generate_context!())

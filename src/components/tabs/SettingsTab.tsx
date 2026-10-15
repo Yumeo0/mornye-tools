@@ -1,16 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { getAllWindows } from "@tauri-apps/api/window";
 import { Store } from "@tauri-apps/plugin-store";
-import {
-	Activity,
-	Bug,
-	KeyRound,
-	Monitor,
-	Pause,
-	Play,
-	ScanText,
-	Sparkles,
-} from "lucide-react";
+import { Activity, Monitor, ScanText, Sparkles } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -28,15 +19,7 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OCR_CONFIG from "@/configs/ocr.json";
 import { reviveString, usePersistedState } from "@/lib/persisted";
-import {
-	clearSessionKey,
-	getStatus,
-	importPcap,
-	pauseSniffer,
-	resumeSniffer,
-	type SnifferStatus,
-	setSessionKey,
-} from "@/lib/sniffer";
+import { getStatus, importPcap, type SnifferStatus } from "@/lib/sniffer";
 
 interface ScanRegion {
 	x: number;
@@ -55,12 +38,7 @@ interface ScanRegions {
 	sort_icon?: ScanRegion | null;
 }
 
-const SETTINGS_SECTIONS = new Set([
-	"overlay",
-	"assistant",
-	"capture",
-	"advanced",
-]);
+const SETTINGS_SECTIONS = new Set(["overlay", "assistant", "advanced"]);
 
 const reviveSection = (value: unknown): string =>
 	SETTINGS_SECTIONS.has(reviveString(value)) ? reviveString(value) : "overlay";
@@ -131,9 +109,6 @@ function UpgradeAssistantCard({
 
 function CaptureCard() {
 	const [status, setStatus] = useState<SnifferStatus | null>(null);
-	const [keyInput, setKeyInput] = useState("");
-	const [keyOpen, setKeyOpen] = useState(false);
-	const [keyMessage, setKeyMessage] = useState<string | null>(null);
 
 	const refresh = useCallback(
 		() =>
@@ -149,41 +124,10 @@ function CaptureCard() {
 		return () => clearInterval(timer);
 	}, [refresh]);
 
-	const togglePause = async () => {
-		if (!status) return;
-		if (status.paused) {
-			await resumeSniffer();
-		} else {
-			await pauseSniffer();
-		}
-		await refresh();
-	};
-
-	const applyKey = async () => {
-		try {
-			await setSessionKey(keyInput);
-			setKeyMessage("Session key set.");
-			setKeyInput("");
-			await refresh();
-		} catch (error) {
-			setKeyMessage(String(error));
-		}
-	};
-
-	const clearKey = async () => {
-		try {
-			await clearSessionKey();
-			setKeyMessage("Session key cleared.");
-			await refresh();
-		} catch (error) {
-			setKeyMessage(String(error));
-		}
-	};
-
 	const statusLine = !status
 		? "starting…"
 		: [
-				status.paused ? "paused" : status.capturing ? "capturing" : "armed",
+				status.capturing ? "capturing" : "armed",
 				status.game_process_found ? "game process found" : "waiting for game",
 				status.capture_available ? "capture available" : "capture unavailable",
 				status.session_key_cached
@@ -198,10 +142,6 @@ function CaptureCard() {
 					<Label className="flex items-center gap-2 text-base font-medium">
 						<Activity className="size-4" /> Packet capture
 					</Label>
-					<p className="text-xs text-muted-foreground">
-						Runs by design; the account is filled passively from the game's own
-						traffic. Pause only stops reading frames.
-					</p>
 				</div>
 
 				<p className="text-xs text-muted-foreground">{statusLine}</p>
@@ -261,53 +201,6 @@ function CaptureCard() {
 					</p>
 				)}
 
-				<div className="flex flex-wrap items-center gap-2">
-					<Button variant="default" size="sm" onClick={togglePause}>
-						{status?.paused ? (
-							<>
-								<Play className="mr-1 size-3.5" /> Resume
-							</>
-						) : (
-							<>
-								<Pause className="mr-1 size-3.5" /> Pause
-							</>
-						)}
-					</Button>
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => setKeyOpen((open) => !open)}
-					>
-						<KeyRound className="mr-1 size-3.5" />
-						{keyOpen ? "Hide session key" : "Session key"}
-					</Button>
-				</div>
-
-				{keyOpen && (
-					<div className="space-y-2 rounded-md bg-muted/50 p-3">
-						<Label className="text-xs font-medium">
-							Paste a 64-hex session key (recovery for a cleared cache)
-						</Label>
-						<div className="flex gap-2">
-							<Input
-								value={keyInput}
-								onChange={(e) => setKeyInput(e.target.value)}
-								placeholder="64 hex chars"
-								className="font-mono text-xs"
-							/>
-							<Button size="sm" onClick={applyKey} disabled={!keyInput.trim()}>
-								Use
-							</Button>
-							<Button size="sm" variant="outline" onClick={clearKey}>
-								Clear
-							</Button>
-						</div>
-						{keyMessage && (
-							<p className="text-[11px] text-muted-foreground">{keyMessage}</p>
-						)}
-					</div>
-				)}
-
 				{status && status.log.length > 0 && (
 					<details className="rounded-md bg-muted/50 p-2">
 						<summary className="cursor-pointer text-xs text-muted-foreground">
@@ -332,7 +225,6 @@ export function SettingsTab() {
 	const [showScanRegion, setShowScanRegion] = useState(false);
 	const [showMenuDebug, setShowMenuDebug] = useState(false);
 	const [selectedResolution, setSelectedResolution] = useState<string>("");
-	const [showDebugSection, setShowDebugSection] = useState(false);
 	const [overlayEnabled, setOverlayEnabled] = useState(false);
 	const [assistantEnabled, setAssistantEnabled] = useState(false);
 	const [assistantThreshold, setAssistantThreshold] = useState(
@@ -600,8 +492,7 @@ export function SettingsTab() {
 			<TabsList className="shrink-0">
 				<TabsTrigger value="overlay">Overlay</TabsTrigger>
 				<TabsTrigger value="assistant">Upgrade Assistant</TabsTrigger>
-				<TabsTrigger value="capture">Capture</TabsTrigger>
-				<TabsTrigger value="advanced">Advanced</TabsTrigger>
+				<TabsTrigger value="advanced">Developer</TabsTrigger>
 			</TabsList>
 
 			<TabsContent
@@ -679,200 +570,168 @@ export function SettingsTab() {
 			</TabsContent>
 
 			<TabsContent
-				value="capture"
-				className="min-h-0 flex-1 space-y-6 overflow-y-auto pb-4"
-			>
-				<CaptureCard />
-			</TabsContent>
-
-			<TabsContent
 				value="advanced"
 				className="min-h-0 flex-1 space-y-6 overflow-y-auto pb-4"
 			>
-				<Card>
-					<CardContent className="space-y-3">
-						<Button
-							onClick={() => setShowDebugSection(!showDebugSection)}
-							variant="ghost"
-							className="w-full justify-between px-0 hover:bg-transparent"
-						>
-							<span className="flex items-center gap-2 text-base font-medium">
-								<Bug className="size-4" /> Developer / Debug
-							</span>
-							<span className="text-muted-foreground">
-								{showDebugSection ? "▼" : "▶"}
-							</span>
-						</Button>
+				<CaptureCard />
 
-						{showDebugSection && (
-							<div className="space-y-4 rounded-lg bg-muted/50 p-4">
+				<div className="space-y-4 rounded-lg bg-muted/50 p-4">
+					<div className="space-y-2">
+						<Label className="flex items-center gap-2 text-sm font-medium">
+							<ScanText className="size-3.5" /> OCR Debug
+						</Label>
+
+						<div className="space-y-2 rounded-md bg-background p-3">
+							<Label className="text-sm font-medium">
+								Manual Region Configuration
+							</Label>
+							<p className="text-xs text-muted-foreground">
+								Test a custom region (relative to the game window) without
+								saving it to the main configuration
+							</p>
+							<div className="grid grid-cols-2 gap-4">
 								<div className="space-y-2">
-									<Label className="flex items-center gap-2 text-sm font-medium">
-										<ScanText className="size-3.5" /> OCR Debug
-									</Label>
-
-									<div className="space-y-2 rounded-md bg-background p-3">
-										<Label className="text-sm font-medium">
-											Manual Region Configuration
-										</Label>
-										<p className="text-xs text-muted-foreground">
-											Test a custom region (relative to the game window) without
-											saving it to the main configuration
-										</p>
-										<div className="grid grid-cols-2 gap-4">
-											<div className="space-y-2">
-												<Label htmlFor="debug-region-x">X Position (px)</Label>
-												<Input
-													id="debug-region-x"
-													type="number"
-													value={debugRegion.x}
-													onChange={(e) =>
-														setDebugRegion({
-															...debugRegion,
-															x: Number(e.target.value),
-														})
-													}
-												/>
-											</div>
-											<div className="space-y-2">
-												<Label htmlFor="debug-region-y">Y Position (px)</Label>
-												<Input
-													id="debug-region-y"
-													type="number"
-													value={debugRegion.y}
-													onChange={(e) =>
-														setDebugRegion({
-															...debugRegion,
-															y: Number(e.target.value),
-														})
-													}
-												/>
-											</div>
-											<div className="space-y-2">
-												<Label htmlFor="debug-region-width">Width (px)</Label>
-												<Input
-													id="debug-region-width"
-													type="number"
-													value={debugRegion.width}
-													onChange={(e) =>
-														setDebugRegion({
-															...debugRegion,
-															width: Number(e.target.value),
-														})
-													}
-												/>
-											</div>
-											<div className="space-y-2">
-												<Label htmlFor="debug-region-height">Height (px)</Label>
-												<Input
-													id="debug-region-height"
-													type="number"
-													value={debugRegion.height}
-													onChange={(e) =>
-														setDebugRegion({
-															...debugRegion,
-															height: Number(e.target.value),
-														})
-													}
-												/>
-											</div>
-										</div>
-										<Button
-											onClick={performDebugScan}
-											disabled={isDebugScanning}
-											variant="default"
-											className="w-full"
-										>
-											{isDebugScanning ? "Scanning..." : "Test Scan Region"}
-										</Button>
-
-										{debugOcrText !== null && (
-											<div className="rounded-lg bg-muted/50 border p-3 space-y-2">
-												<Label className="text-sm font-medium">
-													OCR Result:
-												</Label>
-												<pre className="text-xs text-muted-foreground whitespace-pre-wrap wrap-break-word font-mono">
-													{debugOcrText || "(No text detected)"}
-												</pre>
-											</div>
-										)}
-									</div>
-
-									<div className="space-y-2 rounded-md bg-background p-3">
-										<Label className="text-sm font-medium">
-											Region Outline Visibility
-										</Label>
-										<Button
-											onClick={toggleShowScanRegion}
-											variant={showScanRegion ? "default" : "outline"}
-											className="w-full"
-										>
-											{showScanRegion
-												? "Hide Region Outline"
-												: "Show Region Outline"}
-										</Button>
-										<p className="text-xs text-muted-foreground">
-											Displays a visual outline of the scan region on the
-											overlay
-										</p>
-									</div>
-
-									<div className="space-y-2 rounded-md bg-background p-3">
-										<Label className="text-sm font-medium">
-											Menu Detection Panel
-										</Label>
-										<Button
-											onClick={toggleMenuDebug}
-											variant={showMenuDebug ? "default" : "outline"}
-											className="w-full"
-										>
-											{showMenuDebug ? "Hide Menu Panel" : "Show Menu Panel"}
-										</Button>
-										<p className="text-xs text-muted-foreground">
-											Shows which menu the overlay believes is on screen - Echo
-											Upgrade panel, Tuning Successful screen or another screen
-											- in the bottom-left corner of the overlay, with the raw
-											title and banner reads behind the decision.
-										</p>
-									</div>
+									<Label htmlFor="debug-region-x">X Position (px)</Label>
+									<Input
+										id="debug-region-x"
+										type="number"
+										value={debugRegion.x}
+										onChange={(e) =>
+											setDebugRegion({
+												...debugRegion,
+												x: Number(e.target.value),
+											})
+										}
+									/>
 								</div>
-
-								<Separator />
-
 								<div className="space-y-2">
-									<Label className="text-sm font-medium">
-										Offline packet import (.pcap / .pcapng)
-									</Label>
-									<p className="text-xs text-muted-foreground">
-										Test tool: feeds a saved capture through the same extractor
-										as live capture. It is not a substitute for always-on
-										sniffing.
-									</p>
-									<div className="flex gap-2">
-										<Input
-											value={pcapPath}
-											onChange={(e) => setPcapPath(e.target.value)}
-											placeholder="C:\\path\\to\\capture.pcapng"
-											className="font-mono text-xs"
-										/>
-										<Button
-											variant="outline"
-											onClick={runImport}
-											disabled={!pcapPath.trim()}
-										>
-											Import
-										</Button>
-									</div>
-									{pcapStatus && (
-										<p className="text-[11px] text-muted-foreground">
-											{pcapStatus}
-										</p>
-									)}
+									<Label htmlFor="debug-region-y">Y Position (px)</Label>
+									<Input
+										id="debug-region-y"
+										type="number"
+										value={debugRegion.y}
+										onChange={(e) =>
+											setDebugRegion({
+												...debugRegion,
+												y: Number(e.target.value),
+											})
+										}
+									/>
+								</div>
+								<div className="space-y-2">
+									<Label htmlFor="debug-region-width">Width (px)</Label>
+									<Input
+										id="debug-region-width"
+										type="number"
+										value={debugRegion.width}
+										onChange={(e) =>
+											setDebugRegion({
+												...debugRegion,
+												width: Number(e.target.value),
+											})
+										}
+									/>
+								</div>
+								<div className="space-y-2">
+									<Label htmlFor="debug-region-height">Height (px)</Label>
+									<Input
+										id="debug-region-height"
+										type="number"
+										value={debugRegion.height}
+										onChange={(e) =>
+											setDebugRegion({
+												...debugRegion,
+												height: Number(e.target.value),
+											})
+										}
+									/>
 								</div>
 							</div>
+							<Button
+								onClick={performDebugScan}
+								disabled={isDebugScanning}
+								variant="default"
+								className="w-full"
+							>
+								{isDebugScanning ? "Scanning..." : "Test Scan Region"}
+							</Button>
+
+							{debugOcrText !== null && (
+								<div className="rounded-lg bg-muted/50 border p-3 space-y-2">
+									<Label className="text-sm font-medium">OCR Result:</Label>
+									<pre className="text-xs text-muted-foreground whitespace-pre-wrap wrap-break-word font-mono">
+										{debugOcrText || "(No text detected)"}
+									</pre>
+								</div>
+							)}
+						</div>
+
+						<div className="space-y-2 rounded-md bg-background p-3">
+							<Label className="text-sm font-medium">
+								Region Outline Visibility
+							</Label>
+							<Button
+								onClick={toggleShowScanRegion}
+								variant={showScanRegion ? "default" : "outline"}
+								className="w-full"
+							>
+								{showScanRegion ? "Hide Region Outline" : "Show Region Outline"}
+							</Button>
+							<p className="text-xs text-muted-foreground">
+								Displays a visual outline of the scan region on the overlay
+							</p>
+						</div>
+
+						<div className="space-y-2 rounded-md bg-background p-3">
+							<Label className="text-sm font-medium">
+								Menu Detection Panel
+							</Label>
+							<Button
+								onClick={toggleMenuDebug}
+								variant={showMenuDebug ? "default" : "outline"}
+								className="w-full"
+							>
+								{showMenuDebug ? "Hide Menu Panel" : "Show Menu Panel"}
+							</Button>
+							<p className="text-xs text-muted-foreground">
+								Shows which menu the overlay believes is on screen - Echo
+								Upgrade panel, Tuning Successful screen or another screen - in
+								the bottom-left corner of the overlay, with the raw title and
+								banner reads behind the decision.
+							</p>
+						</div>
+					</div>
+
+					<Separator />
+
+					<div className="space-y-2">
+						<Label className="text-sm font-medium">
+							Offline packet import (.pcap / .pcapng)
+						</Label>
+						<p className="text-xs text-muted-foreground">
+							Test tool: feeds a saved capture through the same extractor as
+							live capture. It is not a substitute for always-on sniffing.
+						</p>
+						<div className="flex gap-2">
+							<Input
+								value={pcapPath}
+								onChange={(e) => setPcapPath(e.target.value)}
+								placeholder="C:\\path\\to\\capture.pcapng"
+								className="font-mono text-xs"
+							/>
+							<Button
+								variant="outline"
+								onClick={runImport}
+								disabled={!pcapPath.trim()}
+							>
+								Import
+							</Button>
+						</div>
+						{pcapStatus && (
+							<p className="text-[11px] text-muted-foreground">{pcapStatus}</p>
 						)}
-					</CardContent>
-				</Card>
+					</div>
+				</div>
 			</TabsContent>
 		</Tabs>
 	);

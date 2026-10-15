@@ -156,15 +156,6 @@ pub fn write_session_key(dir: &Path, key: &[u8; 32]) -> Result<(), String> {
     fs::rename(&tmp, &path).map_err(|e| e.to_string())
 }
 
-/// Remove the cached session key.
-pub fn clear_session_key(dir: &Path) -> Result<(), String> {
-    let path = session_path(dir);
-    if path.exists() {
-        fs::remove_file(&path).map_err(|e| e.to_string())?;
-    }
-    Ok(())
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

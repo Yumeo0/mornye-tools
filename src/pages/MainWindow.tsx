@@ -7,8 +7,6 @@ import {
 	Minus,
 	PanelLeftClose,
 	PanelLeftOpen,
-	Pause,
-	Play,
 	Square,
 	X,
 } from "lucide-react";
@@ -28,13 +26,7 @@ import {
 	reviveString,
 	usePersistedState,
 } from "@/lib/persisted";
-import {
-	blockingErrors,
-	getStatus,
-	pauseSniffer,
-	resumeSniffer,
-	type SnifferStatus,
-} from "@/lib/sniffer";
+import { blockingErrors, getStatus, type SnifferStatus } from "@/lib/sniffer";
 
 const TAB_VALUES = new Set([
 	"characters",
@@ -114,12 +106,11 @@ function TitleBar() {
 }
 
 /**
- * Compact account-sync indicator for the sidebar footer: a state dot plus a
- * click-to-pause/resume control. Details live in Settings -> Packet capture.
+ * Compact account-sync indicator for the sidebar footer: a state dot and the
+ * current state. Details live in Settings -> Developer.
  */
 function SnifferIndicator({ compact }: { compact: boolean }) {
 	const [status, setStatus] = useState<SnifferStatus | null>(null);
-	const [busy, setBusy] = useState(false);
 
 	useEffect(() => {
 		let cancelled = false;
@@ -139,23 +130,6 @@ function SnifferIndicator({ compact }: { compact: boolean }) {
 		};
 	}, []);
 
-	const toggle = async () => {
-		if (!status || busy) return;
-		setBusy(true);
-		try {
-			if (status.paused) {
-				await resumeSniffer();
-			} else {
-				await pauseSniffer();
-			}
-			setStatus(await getStatus());
-		} catch {
-			// Ignore transient failures; the next poll re-reads the state.
-		} finally {
-			setBusy(false);
-		}
-	};
-
 	const problem = status
 		? (blockingErrors(status)[0] ?? status.last_error)
 		: null;
@@ -163,49 +137,30 @@ function SnifferIndicator({ compact }: { compact: boolean }) {
 		? ["starting…", "bg-muted-foreground/50"]
 		: problem
 			? ["sync error", "bg-destructive"]
-			: status.paused
-				? ["paused", "bg-amber-400"]
-				: status.capturing
-					? ["capturing", "bg-emerald-400"]
-					: status.game_process_found
-						? ["game found", "bg-sky-400"]
-						: ["armed", "bg-muted-foreground/50"];
+			: status.capturing
+				? ["capturing", "bg-emerald-400"]
+				: status.game_process_found
+					? ["game found", "bg-sky-400"]
+					: ["armed", "bg-muted-foreground/50"];
 
-	const title = !status
-		? "Account sync: starting…"
-		: [
-				`Account sync: ${label}`,
-				problem,
-				status.paused ? "click to resume" : "click to pause",
-			]
-				.filter(Boolean)
-				.join(" · ");
+	const title = [!status ? "Account sync: starting…" : `Account sync: ${label}`, problem]
+		.filter(Boolean)
+		.join(" · ");
 
 	return (
-		<button
-			type="button"
-			onClick={toggle}
-			disabled={!status || busy}
+		<div
 			title={title}
-			className={`flex h-9 shrink-0 items-center rounded-md text-muted-foreground transition-colors hover:bg-muted/70 hover:text-foreground ${
-				compact ? "w-9 justify-center p-0" : "w-full gap-2 px-2"
+			className={`flex h-9 shrink-0 items-center text-muted-foreground ${
+				compact ? "w-9 justify-center" : "w-full gap-2 px-2"
 			}`}
 		>
 			<span className={`size-2 shrink-0 rounded-full ${dotClass}`} />
 			{!compact && (
-				<>
-					<span className="min-w-0 flex-1 truncate text-left text-[11px]">
-						{label}
-					</span>
-					{status &&
-						(status.paused ? (
-							<Play className="size-3.5 shrink-0" />
-						) : (
-							<Pause className="size-3.5 shrink-0" />
-						))}
-				</>
+				<span className="min-w-0 flex-1 truncate text-left text-[11px]">
+					{label}
+				</span>
 			)}
-		</button>
+		</div>
 	);
 }
 

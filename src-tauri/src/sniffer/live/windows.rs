@@ -385,7 +385,7 @@ pub fn run(
         state.capturing.store(true, Ordering::SeqCst);
     }
 
-    while !super::should_stop(&app) {
+    loop {
         if last_refresh.elapsed() > Duration::from_secs(2) {
             *ports.lock() = udp_ports(pid).into_iter().collect();
             if process_alive(pid) {
@@ -421,7 +421,7 @@ pub fn run(
             )
         };
         if ready <= 0 {
-            continue; // timeout (or transient error): re-check the stop flag
+            continue; // timeout (or transient error): nothing to read this round
         }
 
         for i in 0..readfds.fd_count as usize {

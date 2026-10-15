@@ -39,19 +39,18 @@ const TAB_VALUES = new Set([
 const reviveTab = (value: unknown): string =>
 	TAB_VALUES.has(reviveString(value)) ? reviveString(value) : "characters";
 
+interface ScanRect {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+}
+
 interface ScanRegions {
-	echo_upgrade: { x: number; y: number; width: number; height: number };
-	echo_name: { x: number; y: number; width: number; height: number };
-	level: { x: number; y: number; width: number; height: number };
-	main_stats: { x: number; y: number; width: number; height: number };
-	sub_stats: { x: number; y: number; width: number; height: number };
-	tuning_successful?: { x: number; y: number; width: number; height: number };
-	sort_icon?: {
-		x: number;
-		y: number;
-		width: number;
-		height: number;
-	} | null;
+	echo_upgrade: ScanRect;
+	tuning_successful?: ScanRect;
+	sort_icon?: ScanRect | null;
+	high_rarity_notice?: ScanRect | null;
 }
 
 function WindowButton({
@@ -143,7 +142,10 @@ function SnifferIndicator({ compact }: { compact: boolean }) {
 					? ["game found", "bg-sky-400"]
 					: ["armed", "bg-muted-foreground/50"];
 
-	const title = [!status ? "Account sync: starting…" : `Account sync: ${label}`, problem]
+	const title = [
+		!status ? "Account sync: starting…" : `Account sync: ${label}`,
+		problem,
+	]
 		.filter(Boolean)
 		.join(" · ");
 
@@ -207,24 +209,14 @@ export default function MainWindow() {
 					// Set the echo upgrade scan region
 					await invoke("set_scan_region", { region: echoUpgradeRegion });
 
-					// Set all scan regions including echo name for stats scanning
-					if (
-						config.echoName &&
-						config.level &&
-						config.mainStats &&
-						config.subStats
-					) {
-						const scanRegions: ScanRegions = {
-							echo_upgrade: echoUpgradeRegion,
-							echo_name: config.echoName,
-							level: config.level,
-							main_stats: config.mainStats,
-							sub_stats: config.subStats,
-							tuning_successful: config.tuningSuccessful,
-							sort_icon: config.sortIcon ?? null,
-						};
-						await invoke("set_scan_regions", { regions: scanRegions });
-					}
+					// Set all panel-scan regions
+					const scanRegions: ScanRegions = {
+						echo_upgrade: echoUpgradeRegion,
+						tuning_successful: config.tuningSuccessful,
+						sort_icon: config.sortIcon ?? null,
+						high_rarity_notice: config.highRarityNotice ?? null,
+					};
+					await invoke("set_scan_regions", { regions: scanRegions });
 				}
 
 				// Then handle overlay visibility

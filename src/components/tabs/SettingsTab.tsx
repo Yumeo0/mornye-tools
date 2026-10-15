@@ -30,12 +30,9 @@ interface ScanRegion {
 
 interface ScanRegions {
 	echo_upgrade: ScanRegion;
-	echo_name: ScanRegion;
-	level: ScanRegion;
-	main_stats: ScanRegion;
-	sub_stats: ScanRegion;
 	tuning_successful?: ScanRegion;
 	sort_icon?: ScanRegion | null;
+	high_rarity_notice?: ScanRegion | null;
 }
 
 const SETTINGS_SECTIONS = new Set(["overlay", "assistant", "advanced"]);
@@ -252,24 +249,14 @@ export function SettingsTab() {
 				// Set the echo upgrade scan region (for backward compatibility and debug outline)
 				await invoke("set_scan_region", { region: echoUpgradeRegion });
 
-				// Set all scan regions including echo name for stats scanning
-				if (
-					config.echoName &&
-					config.level &&
-					config.mainStats &&
-					config.subStats
-				) {
-					const scanRegions: ScanRegions = {
-						echo_upgrade: echoUpgradeRegion,
-						echo_name: config.echoName,
-						level: config.level,
-						main_stats: config.mainStats,
-						sub_stats: config.subStats,
-						tuning_successful: config.tuningSuccessful,
-						sort_icon: config.sortIcon ?? null,
-					};
-					await invoke("set_scan_regions", { regions: scanRegions });
-				}
+				// Set all panel-scan regions
+				const scanRegions: ScanRegions = {
+					echo_upgrade: echoUpgradeRegion,
+					tuning_successful: config.tuningSuccessful,
+					sort_icon: config.sortIcon ?? null,
+					high_rarity_notice: config.highRarityNotice ?? null,
+				};
+				await invoke("set_scan_regions", { regions: scanRegions });
 
 				// Save the selected resolution to plugin-store
 				const store = await Store.load("settings.json");

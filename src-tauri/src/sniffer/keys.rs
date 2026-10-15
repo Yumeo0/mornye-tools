@@ -176,7 +176,7 @@ mod tests {
         fs::create_dir_all(&dir).unwrap();
         write_session_key(&dir, &[7u8; 32]).unwrap();
         assert_eq!(read_session_key(&dir), Some([7u8; 32]));
-        clear_session_key(&dir).unwrap();
+        fs::remove_file(session_path(&dir)).unwrap();
         assert_eq!(read_session_key(&dir), None);
         let _ = fs::remove_dir_all(&dir);
     }

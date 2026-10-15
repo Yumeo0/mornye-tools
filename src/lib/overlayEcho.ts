@@ -1,21 +1,13 @@
-// Overlay view model. Two independent sources feed the stats card:
-//
-//   - "packet": the exact echo the game reported over its own traffic
-//     (`echo-detected`, triggered by the lock key; refreshed in place by
-//     `echo-updated` when the game reports new stats). Authoritative.
-//   - "ocr":    the stats fallback read from the screen (`stats-data`).
-//     Approximate, and only used until an exact echo arrives.
-//
-// Both normalise into one view model so the card renders a single way, and the
-// card shows which source produced the data.
+// Overlay view model. The stats card is fed by the "packet" path: the exact
+// echo the game reported over its own traffic (`echo-detected`, triggered by
+// the lock key; refreshed in place by `echo-updated` when the game reports
+// new stats). It normalises into a view model so the card renders a single
+// way.
 
 import { type Echo, formatStatValue, statLabel } from "@/lib/account";
-import { findEcho, findEchoById } from "@/lib/rating";
-
-export type OverlayEchoSource = "packet" | "ocr";
+import { findEchoById } from "@/lib/rating";
 
 export interface OverlayEchoView {
-	source: OverlayEchoSource;
 	name: string;
 	/** Level text ("+25"); empty when unknown. */
 	level: string;
@@ -23,14 +15,6 @@ export interface OverlayEchoView {
 	subStats: string[];
 	/** Sonata set names, used to rank the relevant characters. */
 	setNames: string[];
-}
-
-/** Payload of the backend's `stats-data` event (OCR fallback). */
-export interface OcrStatsData {
-	echo_name: string;
-	level: string;
-	main_stats: string;
-	sub_stats: string;
 }
 
 /** Payload of the backend's `echo-split` event: both halves of a stack split. */
@@ -76,7 +60,7 @@ export function retargetPendingDiscard(
 	return involved ? split.operated.incrId : pendingIncrId;
 }
 
-/** `"Label value"` lines, matching what the OCR path produces. */
+/** `"Label value"` lines for the card's stat sections. */
 function propLines(props: Echo["mainProps"]): string[] {
 	return props.map(
 		(prop) => `${statLabel(prop.key)} ${formatStatValue(prop.key, prop.value)}`,
@@ -95,29 +79,10 @@ function setNamesForEcho(echo: Echo): string[] {
 /** View model for the exact echo from `echo-detected`. */
 export function viewFromEcho(echo: Echo): OverlayEchoView {
 	return {
-		source: "packet",
 		name: findEchoById(echo.monsterId)?.echo_name ?? `Echo ${echo.monsterId}`,
 		level: `+${echo.level}`,
 		mainStats: propLines(echo.mainProps),
 		subStats: propLines(echo.subProps),
 		setNames: setNamesForEcho(echo),
-	};
-}
-
-/** View model for the OCR stats fallback. */
-export function viewFromOcr(stats: OcrStatsData): OverlayEchoView {
-	const lines = (text: string) =>
-		text
-			.split("\n")
-			.map((line) => line.trim())
-			.filter((line) => line.length > 0);
-
-	return {
-		source: "ocr",
-		name: stats.echo_name,
-		level: stats.level,
-		mainStats: lines(stats.main_stats),
-		subStats: lines(stats.sub_stats),
-		setNames: findEcho(stats.echo_name)?.echo_sets.map((set) => set.name) ?? [],
 	};
 }

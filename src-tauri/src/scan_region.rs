@@ -46,11 +46,6 @@ pub(crate) fn parse_hex_color(color: &str) -> Option<(u8, u8, u8)> {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ScanRegions {
     pub echo_upgrade: ScanRegion,
-    pub echo_name: ScanRegion,
-    #[serde(default)]
-    pub level: Option<ScanRegion>,
-    pub main_stats: ScanRegion,
-    pub sub_stats: ScanRegion,
     /// "Tuning Successful" banner; read to tell an open panel whose title is
     /// covered by the tuning screen apart from a closed panel.
     #[serde(default)]
@@ -59,6 +54,12 @@ pub struct ScanRegions {
     /// echo bags). While it is visible the overlay must not press any keys.
     #[serde(default)]
     pub sort_icon: Option<ScanRegion>,
+    /// The confirmation dialog text shown when the upgrade fodder includes
+    /// high-rarity or already-upgraded echoes ("Includes High Rarity and
+    /// Upgrade materials. Do you wish to continue upgrade?"). Like the sort
+    /// icon screen, the overlay must not press any keys while it is up.
+    #[serde(default)]
+    pub high_rarity_notice: Option<ScanRegion>,
 }
 
 pub(crate) fn color_filter_image(img: &DynamicImage, filter: &ColorFilter) -> GrayImage {

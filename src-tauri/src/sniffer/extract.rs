@@ -718,8 +718,14 @@ fn apply_stack_ops<'a>(
     changed
 }
 
-/// Shared shape of `PhantomLevelUpResponse` / `PhantomPolishResponse`: upsert
-/// the operated item, then apply the stack operations that came with it.
+/// Shared shape of `PhantomLevelUpResponse` / `PhantomPolishResponse`: apply
+/// the stack operations that came with the response, then upsert the operated
+/// item. `UpdateInfo` is the authoritative post-operation state while the
+/// split's `OperateItem` is a pre-operation snapshot (a level-up of one copy
+/// of a stack carries it at level 0 right next to the leveled `UpdateInfo`),
+/// so it must not be the last write for the operated id. The exception is a
+/// polish whose merge consumed the operated echo: an `UpdateInfo` naming a
+/// merged id is transitional and would resurrect the dead instance.
 /// Returns whether the store changed, the echoes the overlay should refresh,
 /// and - when the operation split a stack - both halves as stored, so the
 /// overlay can follow the operated half under its (possibly new) instance id.
@@ -732,8 +738,16 @@ fn apply_update_with_split<'a>(
     split: Option<&'a pb::PhantomStackSplitInfo>,
     merges: impl Iterator<Item = &'a pb::PhantomStackMergeInfo>,
 ) -> (bool, Vec<Echo>, Option<(Echo, Option<Echo>)>) {
+    let merges: Vec<&pb::PhantomStackMergeInfo> = merges.collect();
+    let consumed_by_merge = update_info.is_some_and(|item| {
+        merges.iter().any(|merge| {
+            merge.merged_incr_id != 0 && merge.merged_incr_id as i64 == item.incr_id as i64
+        })
+    });
+    let changed = apply_stack_ops(tables, store, split.into_iter(), merges.into_iter())
+        || update_info.is_some();
     let mut updated = Vec::new();
-    if let Some(item) = update_info {
+    if let Some(item) = update_info.filter(|_| !consumed_by_merge) {
         let echo = tables.echo_from_item(item);
         let incr_id = echo.incr_id;
         store.upsert_echoes(vec![echo]);
@@ -741,8 +755,6 @@ fn apply_update_with_split<'a>(
             updated.push(stored);
         }
     }
-    let changed =
-        apply_stack_ops(tables, store, split.into_iter(), merges) || update_info.is_some();
     // Read the halves back from the store so equipment and overrides are
     // already applied.
     let mut split_halves = None;
@@ -1050,6 +1062,125 @@ mod tests {
         let remainder = remainder.expect("remainder stored");
         assert_eq!(remainder.incr_id, 100);
         assert_eq!(remainder.stack_count, 50);
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn update_info_wins_over_stale_split_operate_item() {
+        // Replay of a captured `PhantomLevelUpResponse` for one copy of a
+        // 13-stack: `UpdateInfo` carries the operated echo at level 5 while
+        // the split's `OperateItem` is a pre-operation snapshot at level 0
+        // under the *same* instance id (the remainder moved to a new id).
+        // The stale snapshot must not be the last write, or the store and the
+        // overlay's split event keep showing the un-upgraded echo.
+        let dir = std::env::temp_dir().join(format!("mny-extract-stale-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        let mut store = AccountStore::load(dir.clone());
+        let tables = ExtractTables::default();
+
+        store.upsert_echoes(vec![tables.echo_from_item(&pb::PhantomItem {
+            incr_id: 24972,
+            stack_count: 13,
+            ..Default::default()
+        })]);
+
+        let leveled = pb::PhantomItem {
+            incr_id: 24972,
+            phantom_level: 5,
+            phantom_exp: 1600,
+            stack_count: 1,
+            ..Default::default()
+        };
+        let split = pb::PhantomStackSplitInfo {
+            operate_item: Some(pb::PhantomItem {
+                incr_id: 24972,
+                phantom_level: 0,
+                stack_count: 1,
+                ..Default::default()
+            }),
+            operate_before_count: 13,
+            remainder_item: Some(pb::PhantomItem {
+                incr_id: 24973,
+                phantom_level: 0,
+                stack_count: 12,
+                ..Default::default()
+            }),
+        };
+
+        let (changed, updated, halves) = apply_update_with_split(
+            &tables,
+            &mut store,
+            Some(&leveled),
+            Some(&split),
+            std::iter::empty(),
+        );
+        assert!(changed);
+        // The refresh target is the leveled echo, not the stale snapshot.
+        assert_eq!(updated.len(), 1);
+        assert_eq!(updated[0].incr_id, 24972);
+        assert_eq!(updated[0].level, 5);
+        let (operated, remainder) = halves.expect("split halves reported");
+        assert_eq!(operated.incr_id, 24972);
+        assert_eq!(operated.level, 5);
+        assert_eq!(operated.stack_count, 1);
+        let remainder = remainder.expect("remainder stored");
+        assert_eq!(remainder.incr_id, 24973);
+        assert_eq!(remainder.stack_count, 12);
+        assert_eq!(remainder.level, 0);
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn merged_update_info_is_not_resurrected() {
+        // A polish whose result merged the operated echo into another stack:
+        // `UpdateInfo` names the consumed instance and must not be stored
+        // after the merge removed it.
+        let dir = std::env::temp_dir().join(format!("mny-extract-merged-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        let mut store = AccountStore::load(dir.clone());
+        let tables = ExtractTables::default();
+
+        store.upsert_echoes(vec![
+            tables.echo_from_item(&pb::PhantomItem {
+                incr_id: 100,
+                ..Default::default()
+            }),
+            tables.echo_from_item(&pb::PhantomItem {
+                incr_id: 200,
+                stack_count: 3,
+                ..Default::default()
+            }),
+        ]);
+
+        let polished = pb::PhantomItem {
+            incr_id: 100,
+            phantom_level: 1,
+            stack_count: 1,
+            ..Default::default()
+        };
+        let merge = pb::PhantomStackMergeInfo {
+            merged_incr_id: 100,
+            representative_item: Some(pb::PhantomItem {
+                incr_id: 200,
+                stack_count: 4,
+                ..Default::default()
+            }),
+        };
+
+        let (changed, updated, halves) = apply_update_with_split(
+            &tables,
+            &mut store,
+            Some(&polished),
+            None,
+            std::iter::once(&merge),
+        );
+        assert!(changed);
+        assert!(updated.is_empty());
+        assert!(halves.is_none());
+        assert!(store.echo(100).is_none());
+        assert_eq!(store.echo(200).unwrap().stack_count, 4);
         let _ = std::fs::remove_dir_all(&dir);
     }
 

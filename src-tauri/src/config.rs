@@ -2,8 +2,6 @@ use std::fs;
 use std::path::PathBuf;
 use tauri::{AppHandle, Manager};
 
-use crate::stats::StatsConfig;
-
 /// Load a JSON config from src/configs, trying the development path first and
 /// then the bundled resource path (for production builds).
 pub(crate) fn load_json_resource<T: serde::de::DeserializeOwned>(
@@ -64,8 +62,4 @@ pub(crate) fn load_binary_resource(
     }
 
     Err(format!("{relative_path} not found"))
-}
-
-pub(crate) fn load_stats_config(app_handle: &AppHandle) -> Result<StatsConfig, String> {
-    load_json_resource(app_handle, "stats.json")
 }

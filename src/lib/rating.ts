@@ -137,23 +137,6 @@ export function getMaxStatValue(
 	return null;
 }
 
-// Find the echo matching an OCR'd echo name (case-insensitive, exact matches
-// preferred, then by longest name for specificity)
-export function findEcho(echoName: string): Echo | undefined {
-	const lower = echoName.toLowerCase();
-	const candidates = (echoData as Echo[]).filter(
-		(e) =>
-			e.echo_name.toLowerCase().includes(lower) ||
-			lower.includes(e.echo_name.toLowerCase()),
-	);
-	const exactMatches = candidates.filter(
-		(e) => e.echo_name.toLowerCase() === lower,
-	);
-	return exactMatches.length > 0
-		? exactMatches[0]
-		: candidates.sort((a, b) => b.echo_name.length - a.echo_name.length)[0];
-}
-
 // "ER:120%>CR=CD>ATK%>Lib%>ATK" -> ["Energy Regen", "Crit. Rate", ...]
 function parseSubstatPriority(raw: string | null | undefined): string[] {
 	return parseSubstatTiers(raw)

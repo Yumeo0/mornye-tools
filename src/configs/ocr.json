@@ -9,38 +9,6 @@
 				"textColor": "#f9ffff",
 				"tolerance": 60
 			},
-			"level": {
-				"x": 270,
-				"y": 265,
-				"width": 70,
-				"height": 40,
-				"textColor": "#efeafd",
-				"tolerance": 60
-			},
-			"echoName": {
-				"x": 260,
-				"y": 190,
-				"width": 395,
-				"height": 65,
-				"textColor": "#f7eba6",
-				"tolerance": 60
-			},
-			"mainStats": {
-				"x": 330,
-				"y": 340,
-				"width": 550,
-				"height": 105,
-				"textColor": "#d0d6d8",
-				"tolerance": 60
-			},
-			"subStats": {
-				"x": 330,
-				"y": 455,
-				"width": 550,
-				"height": 280,
-				"textColor": "#ced5d8",
-				"tolerance": 60
-			},
 			"tuningSuccessful": {
 				"x": 1050,
 				"y": 440,
@@ -54,6 +22,12 @@
 				"y": 1284,
 				"width": 82,
 				"height": 82
+			},
+			"highRarityNotice": {
+				"x": 620,
+				"y": 610,
+				"width": 1290,
+				"height": 115
 			}
 		}
 	}

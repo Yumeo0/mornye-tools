@@ -3482,7 +3482,6 @@ dependencies = [
  "libc",
  "parking_lot",
  "pcap-file",
- "regex",
  "rsa",
  "serde",
  "serde_json",

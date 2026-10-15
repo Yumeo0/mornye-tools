@@ -57,10 +57,9 @@ fn main() {
 
     for (name, key) in [
         ("echo_upgrade", "echoUpgrade"),
-        ("echo_name", "echoName"),
-        ("level", "level"),
-        ("main_stats", "mainStats"),
-        ("sub_stats", "subStats"),
+        ("tuning_successful", "tuningSuccessful"),
+        ("sort_icon", "sortIcon"),
+        ("high_rarity_notice", "highRarityNotice"),
     ] {
         let region: ScanRegion = serde_json::from_value(res[key].clone()).unwrap();
         match crop_region(&frame, &region) {

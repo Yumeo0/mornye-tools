@@ -34,6 +34,8 @@ function evaluate(
 			bannerText: "",
 			sortIconVisible: false,
 			sortIconScore: null,
+			highRarityNoticeVisible: false,
+			highRarityNoticeText: "",
 			...overrides,
 		},
 		now,
@@ -135,6 +137,32 @@ describe("evaluateEchoTarget", () => {
 		expect(held.state.panelOpen).toBe(true);
 
 		// The screen closes with the panel still open: the pending refetch
+		// resumes (subject to the throttle).
+		const resumed = evaluate(
+			held.state,
+			true,
+			BASE + 2 * PRESS_ATTEMPT_INTERVAL_MS,
+		);
+		expect(resumed.attempt).toBe(true);
+	});
+
+	test("the high-rarity confirmation dialog holds the state and skips presses", () => {
+		const state: EchoTargetState = {
+			panelOpen: true,
+			needsRefetch: true,
+			lastAttemptAt: 0,
+			failures: 0,
+		};
+		const held = evaluate(state, true, BASE + PRESS_ATTEMPT_INTERVAL_MS, {
+			highRarityNoticeVisible: true,
+			highRarityNoticeText:
+				"Includes High Rarity and Upgrade materials. Do you wish to continue upgrade?",
+		});
+		expect(held.attempt).toBe(false);
+		expect(held.changed).toBe(false);
+		expect(held.state.panelOpen).toBe(true);
+
+		// The dialog closes with the panel still open: the pending refetch
 		// resumes (subject to the throttle).
 		const resumed = evaluate(
 			held.state,

@@ -104,9 +104,7 @@ export function WeaponCard({ weapon }: { weapon: Weapon }) {
 						src={weaponIconUrl(weapon.itemId)}
 						alt={name}
 						onError={() => setFailed(true)}
-						className={`size-24 object-contain drop-shadow-xl ${
-							character ? "" : "opacity-60 grayscale"
-						}`}
+						className="size-24 object-contain drop-shadow-xl"
 					/>
 				) : null}
 			</div>

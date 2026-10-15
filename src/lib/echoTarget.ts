@@ -9,9 +9,8 @@
 // it can be covered while browsing upgrade fodder, so the panel opening is what
 // marks a fresh (possibly different) echo.
 //
-// This module is deliberately separate from the OCR-stats fallback
-// (`scan_for_text`): that path only ever *displays* data, this one drives the
-// input/packet round-trip.
+// This module drives the input/packet round-trip; the card itself is rendered
+// from the sniffer's exact-echo events (`@/lib/overlayEcho`).
 
 import { invoke } from "@tauri-apps/api/core";
 
@@ -46,6 +45,15 @@ export interface EchoPanelScan {
 	 * is unavailable.
 	 */
 	sortIconScore: number | null;
+	/**
+	 * True while the high-rarity confirmation dialog text ("Includes High
+	 * Rarity and Upgrade materials. Do you wish to continue upgrade?") is
+	 * visible in its configured region. The dialog swallows the mark keys, so
+	 * presses wait until it closes, like for the sort-icon screen.
+	 */
+	highRarityNoticeVisible: boolean;
+	/** Raw OCR of the high-rarity notice region; debug evidence. */
+	highRarityNoticeText: string;
 }
 
 /** Ask the backend for the panel and tuning states. */
@@ -86,7 +94,7 @@ export const INITIAL_ECHO_TARGET: EchoTargetState = {
 };
 
 /** Stop retrying identification after this many consecutive failures. */
-export const MAX_FAILED_ATTEMPTS = 4;
+export const MAX_FAILED_ATTEMPTS = 1;
 
 export interface EchoTargetEvaluation {
 	state: EchoTargetState;
@@ -115,9 +123,14 @@ export function evaluateEchoTarget(
 
 	// The tuning-success banner hides the panel title while it is up, and the
 	// sort icon marks a list screen inside the panel (fodder selection) where
-	// the mark keys do nothing useful: hold the state and skip presses until
-	// the screen clears.
-	if (scan.tuningSuccessful || scan.sortIconVisible) {
+	// the mark keys do nothing useful; the high-rarity confirmation dialog
+	// swallows them outright. Hold the state and skip presses until the screen
+	// clears.
+	if (
+		scan.tuningSuccessful ||
+		scan.sortIconVisible ||
+		scan.highRarityNoticeVisible
+	) {
 		return {
 			state: { ...state, panelOpen: true },
 			attempt: false,

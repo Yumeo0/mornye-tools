@@ -26,12 +26,10 @@ import {
 } from "@/lib/echoTarget";
 import {
 	type EchoSplitPayload,
-	type OcrStatsData,
 	type OverlayEchoView,
 	retargetPendingDiscard,
 	splitFollowTarget,
 	viewFromEcho,
-	viewFromOcr,
 } from "@/lib/overlayEcho";
 import {
 	calculateRating,
@@ -94,8 +92,6 @@ try {
  * are detected via the "Tuning Successful" region.
  */
 const PANEL_CLOSE_TICKS = 2;
-/** Run the OCR stats fallback every Nth name-scan tick while it is needed. */
-const STATS_EVERY_TICKS = 2;
 /**
  * Fallback for the Echo Upgrade Assistant when no "Tuning Successful" screen
  * follows an update packet: the queued discard fires anyway after this long.
@@ -111,8 +107,6 @@ function Overlay() {
 	);
 	// Exact echo from the game (lock-request packet path)
 	const [exactEcho, setExactEcho] = useState<Echo | null>(null);
-	// OCR stats fallback, used until an exact echo is available
-	const [ocrStats, setOcrStats] = useState<OcrStatsData | null>(null);
 	const [panelOpen, setPanelOpen] = useState(false);
 	// Menu-detection debug panel (toggled from the settings Debug section)
 	const [showMenuDebug, setShowMenuDebug] = useState(false);
@@ -128,7 +122,6 @@ function Overlay() {
 	const exactEchoRef = useRef<Echo | null>(null);
 	const targetRef = useRef<EchoTargetState>(INITIAL_ECHO_TARGET);
 	const closedTicksRef = useRef(0);
-	const tickRef = useRef(0);
 	const lastEchoKeyRef = useRef<string | null>(null);
 	const showMenuDebugRef = useRef(false);
 	const lastPressesRef = useRef<MenuDebugPressLog>({});
@@ -141,13 +134,12 @@ function Overlay() {
 	// When the discard was queued (fallback when no tuning screen appears).
 	const discardQueuedAtRef = useRef(0);
 
-	// Single view model for both sources; null hides the card.
+	// The card's view model; null hides the card.
 	const view: OverlayEchoView | null = useMemo(() => {
 		if (!panelOpen) return null;
 		if (exactEcho) return viewFromEcho(exactEcho);
-		if (ocrStats) return viewFromOcr(ocrStats);
 		return null;
-	}, [panelOpen, exactEcho, ocrStats]);
+	}, [panelOpen, exactEcho]);
 
 	// The overlay window is click-through so the game stays playable. To allow
 	// clicking the stats card we poll the global cursor position and disable
@@ -233,6 +225,15 @@ function Overlay() {
 		// reach the configured rating on any relevant character is queued for
 		// an automatic discard mark (applied once the upgrade screen clears).
 		const queueAssistantDiscard = async (echo: Echo) => {
+			// Every update re-evaluates its echo from scratch. A stack upgrade
+			// sends an intermediate update (the split moment: level 0, no new
+			// substats) before the response with the final stats arrives; a
+			// discard queued from that transitional state must not survive the
+			// final echo passing the threshold.
+			if (pendingDiscardRef.current === echo.incrId) {
+				pendingDiscardRef.current = null;
+				pendingDiscardFuncRef.current = null;
+			}
 			try {
 				const store = await Store.load("settings.json");
 				const enabled = await store.get<boolean>("upgradeAssistantEnabled");
@@ -296,11 +297,6 @@ function Overlay() {
 				void queueAssistantDiscard(follow);
 			},
 		);
-
-		// OCR stats fallback (`scan_for_text`).
-		const unlistenStats = listen<OcrStatsData | null>("stats-data", (event) => {
-			setOcrStats(event.payload);
-		});
 
 		// Listen for scan region changes so the outline follows live edits
 		const unlistenScanRegion = listen<ScanRegion>(
@@ -376,13 +372,6 @@ function Overlay() {
 			})
 			.catch(console.error);
 
-		// Load the last OCR fallback data on mount
-		invoke<OcrStatsData | null>("get_last_stats_data")
-			.then((data) => {
-				setOcrStats(data);
-			})
-			.catch(console.error);
-
 		// Region outlines are positioned in physical screen pixels; scale them
 		// into the overlay window's CSS pixel space. Measuring the actual
 		// monitor width against the viewport covers both DPI scaling and a
@@ -399,8 +388,8 @@ function Overlay() {
 		updateDisplayScale();
 		window.addEventListener("resize", updateDisplayScale);
 
-		// One scan tick: read the echo name, ask the game for the exact echo
-		// when it changed, and keep the OCR stats fallback warm.
+		// One scan tick: watch the panel state and ask the game for the exact
+		// echo when it changed.
 		const runScan = async () => {
 			if (busyRef.current) return;
 			busyRef.current = true;
@@ -431,14 +420,12 @@ function Overlay() {
 				if (panelClosed) {
 					exactEchoRef.current = null;
 					setExactEcho(null);
-					setOcrStats(null);
 					pendingDiscardRef.current = null;
 				} else if (evaluation.changed) {
 					// A different echo is on screen; the previous exact echo
 					// no longer applies.
 					exactEchoRef.current = null;
 					setExactEcho(null);
-					setOcrStats(null);
 					pendingDiscardRef.current = null;
 				}
 
@@ -450,7 +437,12 @@ function Overlay() {
 				// through a single unreadable tick, but a press in any other
 				// screen (echo inventory, equip menu) would toggle whatever is
 				// selected there.
-				if (evaluation.attempt && scan.panelOpen && !scan.sortIconVisible) {
+				if (
+					evaluation.attempt &&
+					scan.panelOpen &&
+					!scan.sortIconVisible &&
+					!scan.highRarityNoticeVisible
+				) {
 					try {
 						await pressEchoToggle();
 						target = markRefetched(target);
@@ -488,6 +480,7 @@ function Overlay() {
 						scan.panelOpen &&
 						!scan.tuningSuccessful &&
 						!scan.sortIconVisible &&
+						!scan.highRarityNoticeVisible &&
 						screenCleared &&
 						echo?.incrId === pendingDiscardRef.current
 					) {
@@ -530,23 +523,6 @@ function Overlay() {
 						lastPresses: { ...lastPressesRef.current },
 					});
 				}
-
-				// OCR stats fallback: only while the panel is open and no
-				// exact echo is available yet.
-				tickRef.current += 1;
-				const due = tickRef.current % STATS_EVERY_TICKS === 0;
-				if (
-					!panelClosed &&
-					!scan.tuningSuccessful &&
-					!exactEchoRef.current &&
-					(due || evaluation.changed)
-				) {
-					try {
-						await invoke("scan_for_text");
-					} catch (error) {
-						console.error("OCR scan error:", error);
-					}
-				}
 			} catch (error) {
 				console.error("Echo name scan failed:", error);
 			} finally {
@@ -561,7 +537,6 @@ function Overlay() {
 			unlistenEcho.then((fn) => fn());
 			unlistenEchoUpdated.then((fn) => fn());
 			unlistenEchoSplit.then((fn) => fn());
-			unlistenStats.then((fn) => fn());
 			unlistenScanRegion.then((fn) => fn());
 			unlistenCaptureOrigin.then((fn) => fn());
 			unlistenShowRegion.then((fn) => fn());
@@ -573,14 +548,12 @@ function Overlay() {
 
 	// Reset the highlighted character when a different echo appears.
 	useEffect(() => {
-		const key = exactEcho
-			? `id:${exactEcho.incrId}`
-			: (ocrStats?.echo_name ?? null);
+		const key = exactEcho ? `id:${exactEcho.incrId}` : null;
 		if (key !== lastEchoKeyRef.current) {
 			lastEchoKeyRef.current = key;
 			setSelectedCharacterId(null);
 		}
-	}, [exactEcho, ocrStats]);
+	}, [exactEcho]);
 
 	const mainStats = view?.mainStats ?? [];
 	const subStats = view?.subStats ?? [];
@@ -716,6 +689,13 @@ function Overlay() {
 								? "(no template)"
 								: `(${menuDebug.scan.sortIconScore.toFixed(2)})`}
 						</span>
+						<span className="text-zinc-500">rarity</span>
+						<span className="break-all">
+							{menuDebug.scan.highRarityNoticeVisible ? "yes" : "no"}
+							{menuDebug.scan.highRarityNoticeText.trim()
+								? ` (${menuDebug.scan.highRarityNoticeText.trim()})`
+								: ""}
+						</span>
 						<span className="text-zinc-500">card</span>
 						<span>
 							{menuDebug.panelClosed
@@ -772,18 +752,6 @@ function Overlay() {
 											</span>
 										)}
 									</CardTitle>
-									<p
-										className={cn(
-											"text-center text-[10px] font-medium uppercase tracking-wide",
-											view.source === "packet"
-												? "text-emerald-400"
-												: "text-amber-400",
-										)}
-									>
-										{view.source === "packet"
-											? "Exact echo"
-											: "OCR (unverified)"}
-									</p>
 								</CardHeader>
 							)}
 

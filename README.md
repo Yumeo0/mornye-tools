@@ -17,7 +17,6 @@ while you upgrade them.
   or tune it.
 - **Echo Upgrade Assistant** - re-rates an echo after each upgrade or tuning and marks
   it for discard once it can no longer reach your threshold; a manual mark cancels that.
-- **Stats OCR** - fallback for echoes that cannot be identified automatically.
 
 ## Development
 
@@ -75,4 +74,4 @@ The session key cache survives restarts.
   `postinstall` builders, all run with `bun`
 - `src/lib/account.ts`, `src/lib/calc/` - account bridge and calculator
   translation/evaluation
-- `src/lib/rating.ts`, `src/pages/Overlay.tsx` - OCR overlay path (unchanged)
+- `src/lib/rating.ts`, `src/pages/Overlay.tsx` - overlay card rendering and echo rating

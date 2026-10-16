@@ -54,6 +54,26 @@ export interface EchoPanelScan {
 	highRarityNoticeVisible: boolean;
 	/** Raw OCR of the high-rarity notice region; debug evidence. */
 	highRarityNoticeText: string;
+	/**
+	 * Raw OCR of the echo-bag header region ("Echoes"); one of the two cheap
+	 * reads that tell the overlay an echo menu is on screen, which switches
+	 * the scan to its fast cadence.
+	 */
+	echoesText: string;
+	/**
+	 * True while that region reads as "echo" (the bag's header, or the upgrade
+	 * panel title the region also overlaps). Phrase-checked: the raw OCR of
+	 * this area is junk on an idle screen (the minimap sits under it).
+	 */
+	echoesVisible: boolean;
+	/** Raw OCR of the COST text region; the other fast-cadence read. */
+	costText: string;
+	/**
+	 * True while the COST text is on screen. Those are the echo-bag screens,
+	 * never the upgrade panel, so the overlay closes its augmentation at once
+	 * instead of holding it through the flicker guard.
+	 */
+	echoCostVisible: boolean;
 }
 
 /** Ask the backend for the panel and tuning states. */
@@ -71,8 +91,113 @@ export function pressEchoDiscard(): Promise<void> {
 	return invoke("press_echo_discard");
 }
 
-/** Cadence of the panel scan. */
-export const PANEL_SCAN_INTERVAL_MS = 500;
+/**
+ * Cadence of the panel scan while no echo menu is on screen. Every tick
+ * captures the game window and OCRs several regions, so the idle rate stays
+ * gentle.
+ */
+export const PANEL_SCAN_INTERVAL_MS = 1000;
+/**
+ * Cadence while an echo menu is on screen: the echo bag and the upgrade panel
+ * change quickly (lock-press round trip, tuning banner), so the scan polls
+ * fast to keep up with them.
+ */
+export const PANEL_SCAN_FAST_INTERVAL_MS = 100;
+/**
+ * Consecutive scans without a menu read before the scan drops back to the
+ * slow cadence - the menus count as closed once they have been gone for more
+ * than two scans.
+ */
+export const PANEL_SCAN_MENU_MISS_LIMIT = 3;
+
+/**
+ * Consecutive closed scans before the panel counts as closed. A single
+ * unreadable scan is a flicker, not a closed panel: it neither hides the
+ * augmentation (with [`foldPanelVisibility`]) nor resets the identified echo.
+ */
+export const PANEL_CLOSE_TICKS = 2;
+
+/**
+ * Fold one scan into the augmentation's panel state: the updated closed-scan
+ * counter, whether the panel counts as closed (the identified echo is dropped
+ * then) and whether the augmentation hides this tick.
+ *
+ * - The COST text marks an echo-bag screen, never the upgrade panel: closed
+ *   and hidden at once.
+ * - The high-rarity dialog is a modal over the panel, which is still open
+ *   behind it (its dimmed title stops reading): the augmentation hides so it
+ *   cannot draw over the dialog, but the panel is not closed, so the echo
+ *   survives and returns with the dialog's exit, like on the sort-icon screen.
+ * - Otherwise the flicker guard: hidden and closed once the panel has read
+ *   closed for [`PANEL_CLOSE_TICKS`] straight scans.
+ */
+export function foldPanelVisibility(
+	closedTicks: number,
+	scan: EchoPanelScan,
+): { closedTicks: number; panelClosed: boolean; hidden: boolean } {
+	if (scan.echoCostVisible) {
+		return { closedTicks: PANEL_CLOSE_TICKS, panelClosed: true, hidden: true };
+	}
+
+	// The dialog counts as an open panel for the flicker guard.
+	const ticks =
+		scan.panelOpen || scan.highRarityNoticeVisible ? 0 : closedTicks + 1;
+	const panelClosed = !scan.panelOpen && ticks >= PANEL_CLOSE_TICKS;
+	return {
+		closedTicks: ticks,
+		panelClosed,
+		hidden: panelClosed || scan.highRarityNoticeVisible,
+	};
+}
+
+/** Scan cadence state: how long the echo menus have been gone. */
+export interface EchoMenuWatch {
+	/** Consecutive scans that read no menu. */
+	misses: number;
+}
+
+/** The overlay launches outside the echo menus; start at the slow cadence. */
+export const INITIAL_ECHO_MENU_WATCH: EchoMenuWatch = {
+	misses: PANEL_SCAN_MENU_MISS_LIMIT,
+};
+
+/**
+ * Whether one scan shows an echo menu on screen. Only actual menu reads count
+ * - phrase matches and flags from the backend (the echo-bag header, the COST
+ * text, the upgrade panel with its tuning banner, the high-rarity dialog).
+ * Raw OCR text does not: an idle screen harvests junk out of these regions
+ * (the minimap sits right under the header), and junk must not keep the scan
+ * fast. The sort-icon template match does not count either; it is not OCR.
+ */
+function scanShowsMenu(scan: EchoPanelScan): boolean {
+	return (
+		scan.echoesVisible ||
+		scan.echoCostVisible ||
+		scan.panelOpen ||
+		scan.highRarityNoticeVisible
+	);
+}
+
+/**
+ * Fold one scan into the scan cadence: fast while an echo menu is on screen,
+ * back to the standard rate once the menus have been gone for more than two
+ * scans with no menu read in between. Pure, like the trigger rules, so the
+ * timing stays testable without the game.
+ */
+export function watchEchoMenu(
+	watch: EchoMenuWatch,
+	scan: EchoPanelScan,
+): { watch: EchoMenuWatch; delayMs: number } {
+	const misses = scanShowsMenu(scan) ? 0 : watch.misses + 1;
+	return {
+		watch: { misses },
+		delayMs:
+			misses >= PANEL_SCAN_MENU_MISS_LIMIT
+				? PANEL_SCAN_INTERVAL_MS
+				: PANEL_SCAN_FAST_INTERVAL_MS,
+	};
+}
+
 /** Minimum gap between lock-key attempts (also throttles focus retries). */
 export const PRESS_ATTEMPT_INTERVAL_MS = 1000;
 

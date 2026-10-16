@@ -22,7 +22,9 @@ use crate::scan_region::{ScanRegion, ScanRegions};
 /// open and whether the tuning-success banner is up. The panel opening is the
 /// overlay's re-fetch signal; the echo name is deliberately not read here
 /// because it can be covered while browsing upgrade fodder. The raw title and
-/// banner reads ride along as evidence for the menu-detection debug panel.
+/// banner reads ride along as evidence for the menu-detection debug panel,
+/// and the echo-bag header and COST reads drive the overlay's scan cadence
+/// (fast while an echo menu is on screen, slow once it is gone).
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct EchoPanelScan {
@@ -53,6 +55,32 @@ pub struct EchoPanelScan {
     /// Raw OCR of the high-rarity notice region, when it was read this scan;
     /// debug evidence for the menu-detection panel.
     pub high_rarity_notice_text: String,
+    /// Raw OCR of the echo-bag header region ("Echoes"): with `cost_text` one
+    /// of the two cheap menu reads the overlay uses to pick its scan cadence.
+    pub echoes_text: String,
+    /// True while the echo-bag header (or the upgrade panel's title, which the
+    /// same region overlaps) reads as "echo": an echo menu is on screen.
+    pub echoes_visible: bool,
+    /// Raw OCR of the COST text region; the second fast-cadence read.
+    pub cost_text: String,
+    /// True while the COST text is on screen: those are the echo-bag screens,
+    /// never the upgrade panel, so the overlay closes its augmentation
+    /// immediately instead of holding it through the flicker guard.
+    pub echo_cost_visible: bool,
+}
+
+/// Scan memo shared across ticks. The expensive reads are gated on it so idle
+/// ticks stay cheap without ever missing a screen: the high-rarity dialog is
+/// only read while the upgrade flow was on screen moments ago (or while the
+/// dialog itself is still up), and the tuning banner only while a packet is
+/// recent.
+#[derive(Default)]
+pub struct ScanMemo {
+    /// Last tick that saw the upgrade screen, its tuning banner or its fodder
+    /// list (the screens the high-rarity dialog can be opened from).
+    upgrade_flow_at: Option<std::time::Instant>,
+    /// The high-rarity dialog was visible on the last tick that read it.
+    notice_visible: bool,
 }
 
 #[derive(Default)]
@@ -63,6 +91,8 @@ pub struct AppState {
     /// Where the last captured game window sat on screen, so the overlay can
     /// draw the scan-region outline relative to the window.
     pub capture_origin: Mutex<Option<CaptureOrigin>>,
+    /// Cross-tick scan memo; see [`ScanMemo`].
+    pub scan_memo: Mutex<ScanMemo>,
 }
 
 /// Publish the game window origin when it changes; the overlay listens for
@@ -144,6 +174,15 @@ fn contains_phrase(text: &str, phrase: &str) -> bool {
     normalized.contains(phrase)
 }
 
+/// Whether the "Tuning Successful" screen is up. It covers the panel title and
+/// waits for a tap, so it holds the panel open until the title reads again -
+/// the echo must survive however long the player studies the new rolls. Right
+/// after the update packet the banner is still animating in, so the wait
+/// counts as the screen being up.
+fn tuning_screen_up(title_visible: bool, waiting_for_banner: bool, banner_text: &str) -> bool {
+    !title_visible && (waiting_for_banner || contains_phrase(banner_text, "tuning successful"))
+}
+
 /// Minimum similarity (0..=1) between the sort-icon region and its template
 /// for the icon to count as visible.
 const SORT_ICON_MATCH_THRESHOLD: f32 = 0.9;
@@ -215,9 +254,16 @@ fn sort_icon_similarity(region: &image::DynamicImage, template: &image::DynamicI
 /// scan waits this long before reading its region.
 const BANNER_ANIMATION_WAIT: std::time::Duration = std::time::Duration::from_millis(1500);
 
+/// How long the upgrade flow counts as "just on screen" for the high-rarity
+/// dialog read: the dialog is opened from the upgrade screen or its fodder
+/// list, so the flow was visible moments before it pops.
+const UPGRADE_FLOW_GRACE: std::time::Duration = std::time::Duration::from_secs(5);
+
 /// Overlay trigger scan: is the "Echo Upgrade" panel open, and is the
 /// tuning-success banner up? Used to decide when to identify the echo (see
-/// [`press_echo_toggle`]).
+/// [`press_echo_toggle`]). The cheap echo-menu reads ([`ScanRegions::echoes_text`]
+/// and [`ScanRegions::cost_text`]) ride along so the overlay can poll fast
+/// while the player is inside the echo menus.
 #[tauri::command]
 async fn scan_echo_panel(
     state: State<'_, AppState>,
@@ -248,10 +294,36 @@ async fn scan_echo_panel(
                             sort_icon_score: None,
                             high_rarity_notice_visible: false,
                             high_rarity_notice_text: String::new(),
+                            echoes_text: String::new(),
+                            echoes_visible: false,
+                            cost_text: String::new(),
+                            echo_cost_visible: false,
                         },
                         None,
                     ))
                 }
+            };
+
+            // Read one optional region and return its text (trimmed); missing
+            // regions and failed reads both yield no text. These reads are
+            // debug evidence and, for the menu regions below, the signal the
+            // overlay's scan cadence follows.
+            let read_region = |region: Option<&ScanRegion>| -> String {
+                region
+                    .and_then(|region| {
+                        crop_region(&screenshot, region)
+                            .and_then(|crop| {
+                                perform_ocr_on_image(
+                                    &crop,
+                                    &app_handle_clone,
+                                    region.color_filter().as_ref(),
+                                )
+                            })
+                            .ok()
+                    })
+                    .unwrap_or_default()
+                    .trim()
+                    .to_string()
             };
 
             let title = crop_region(&screenshot, &regions.echo_upgrade)
@@ -276,7 +348,9 @@ async fn scan_echo_panel(
             // so a visible title means the panel is showing normally. Reading
             // the banner region tells "panel open, title hidden" apart from a
             // closed panel, so the overlay card stays and no key press fires.
-            // The read is kept for the menu-detection debug panel.
+            // The screen waits for a tap, so this read must keep running for as
+            // long as the title is hidden; the read is kept for the
+            // menu-detection debug panel.
             let banner_text = if title_visible || waiting_for_banner {
                 String::new()
             } else {
@@ -296,13 +370,8 @@ async fn scan_echo_panel(
                     })
                     .unwrap_or_default()
             };
-            let tuning_successful = if title_visible {
-                false
-            } else if waiting_for_banner {
-                true
-            } else {
-                contains_phrase(&banner_text, "tuning successful")
-            };
+            let tuning_successful =
+                tuning_screen_up(title_visible, waiting_for_banner, &banner_text);
 
             // The sort icon marks list screens (upgrade fodder selection,
             // echo bags) where the mark keys do nothing useful - or worse,
@@ -332,25 +401,56 @@ async fn scan_echo_panel(
             // swallows the mark keys, so the overlay waits it out like the
             // sort-icon screen. Either dialog line counts: the OCR may only
             // read one of them cleanly.
-            let high_rarity_notice_text = regions
-                .high_rarity_notice
-                .as_ref()
-                .and_then(|region| {
-                    crop_region(&screenshot, region)
-                        .and_then(|crop| {
-                            perform_ocr_on_image(
-                                &crop,
-                                &app_handle_clone,
-                                region.color_filter().as_ref(),
-                            )
-                        })
-                        .ok()
-                })
-                .unwrap_or_default();
-            let high_rarity_notice_text = high_rarity_notice_text.trim().to_string();
+            //
+            // This is the most expensive read of the scan: the region has no
+            // color filter, so on an idle screen it OCRs the whole world strip
+            // behind it (hundreds of milliseconds of junk). It is therefore
+            // only read while the upgrade flow was on screen moments ago -
+            // the dialog can only be opened from there - or while the dialog
+            // itself is still up, its buttons waiting for input.
+            let flow_now = std::time::Instant::now();
+            let upgrade_flow_on_screen =
+                title_visible || tuning_successful || waiting_for_banner || sort_icon_visible;
+            let app_state = app_handle_clone.state::<AppState>();
+            let scan_memo = &app_state.scan_memo;
+            let (flow_recent, notice_seen) = {
+                let memo = scan_memo.lock().map_err(|e| e.to_string())?;
+                (
+                    memo.upgrade_flow_at
+                        .map_or(false, |at| flow_now.duration_since(at) < UPGRADE_FLOW_GRACE),
+                    memo.notice_visible,
+                )
+            };
+            let notice_read = flow_recent || notice_seen;
+            let high_rarity_notice_text = if notice_read {
+                read_region(regions.high_rarity_notice.as_ref())
+            } else {
+                String::new()
+            };
             let high_rarity_notice_visible =
                 contains_phrase(&high_rarity_notice_text, "high rarity")
                     || contains_phrase(&high_rarity_notice_text, "continue upgrade");
+            {
+                let mut memo = scan_memo.lock().map_err(|e| e.to_string())?;
+                if upgrade_flow_on_screen {
+                    memo.upgrade_flow_at = Some(flow_now);
+                }
+                memo.notice_visible = notice_read && high_rarity_notice_visible;
+            }
+
+            // The two cheap "an echo menu is on screen" reads: the echo-bag
+            // header and the COST text. The overlay polls fast while either is
+            // on screen and drops back to the slow cadence once both have been
+            // gone for a few scans with no other menu read in between. Both
+            // are phrase-checked: an idle screen OCRs junk out of these areas
+            // (the minimap sits right under the header region), and junk must
+            // not keep the scan fast.
+            let echoes_text = read_region(regions.echoes_text.as_ref());
+            let echoes_visible = contains_phrase(&echoes_text, "echo");
+            let cost_text = read_region(regions.cost_text.as_ref());
+            // The COST text is drawn by the echo-bag screens, which are not
+            // the upgrade panel: seeing it means the overlay must close now.
+            let echo_cost_visible = contains_phrase(&cost_text, "cost");
 
             Ok((
                 EchoPanelScan {
@@ -363,6 +463,10 @@ async fn scan_echo_panel(
                     sort_icon_score,
                     high_rarity_notice_visible,
                     high_rarity_notice_text,
+                    echoes_text,
+                    echoes_visible,
+                    cost_text,
+                    echo_cost_visible,
                 },
                 Some(origin),
             ))

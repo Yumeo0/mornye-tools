@@ -258,3 +258,117 @@ fn sort_icon_similarity_matches_the_icon_shape() {
     let missing = crate::sort_icon_similarity_best(&plain, &template);
     assert!(missing < 0.8, "plain background scored {missing}");
 }
+
+#[test]
+fn profile_scan_regions() {
+    // Where does a scan tick spend its time? Times the real per-region OCR
+    // against the sample screenshots (2560x1440, same as the game capture).
+    let samples = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .unwrap()
+        .join("samples");
+    let cases = [
+        ("upgrade", "echo_detail_screenshot.png"),
+        ("bag", "echo_cost_text.png"),
+        ("tuning", "tuning_successful.png"),
+        ("world-ish", "inventory_screenshot.png"),
+    ];
+    // Mirrors the 2560x1440 block of src/configs/ocr.json.
+    let regions: Vec<(&str, ScanRegion)> = vec![
+        (
+            "title (echoUpgrade)",
+            ScanRegion {
+                x: 135,
+                y: 65,
+                width: 260,
+                height: 60,
+                text_color: Some("#f9ffff".into()),
+                tolerance: Some(60),
+            },
+        ),
+        (
+            "banner (tuningSuccessful)",
+            ScanRegion {
+                x: 1050,
+                y: 440,
+                width: 460,
+                height: 68,
+                text_color: Some("#f4eafd".into()),
+                tolerance: Some(60),
+            },
+        ),
+        (
+            "notice (highRarityNotice)",
+            ScanRegion {
+                x: 795,
+                y: 615,
+                width: 215,
+                height: 50,
+                text_color: None,
+                tolerance: None,
+            },
+        ),
+        (
+            "echoes",
+            ScanRegion {
+                x: 140,
+                y: 74,
+                width: 130,
+                height: 40,
+                text_color: Some("#efeafd".into()),
+                tolerance: Some(60),
+            },
+        ),
+        (
+            "cost",
+            ScanRegion {
+                x: 98,
+                y: 63,
+                width: 102,
+                height: 40,
+                text_color: Some("#bdcccc".into()),
+                tolerance: Some(60),
+            },
+        ),
+    ];
+
+    for (label, file) in cases {
+        let path = samples.join(file);
+        if !path.exists() {
+            eprintln!("skipping {label}: {file} not found");
+            continue;
+        }
+        let img = image::open(&path).unwrap();
+        println!("--- {label} ({file}) ---");
+        let mut total = 0u128;
+        for (name, region) in &regions {
+            let crop = DynamicImage::ImageRgba8(
+                crop_imm(&img, region.x, region.y, region.width, region.height).to_image(),
+            );
+            let start = std::time::Instant::now();
+            let text = test_ocr(&crop, region.color_filter().as_ref());
+            let ms = start.elapsed().as_millis();
+            total += ms;
+            println!("  {name}: {ms} ms -> {:?}", text.trim());
+        }
+        println!("  OCR total: {total} ms");
+    }
+}
+
+#[test]
+fn tuning_screen_holds_until_the_title_returns() {
+    // The screen covers the panel title and waits for a tap, so it must hold
+    // the panel open for as long as it reads - the echo must not be forgotten
+    // while the player studies the new rolls.
+    assert!(crate::tuning_screen_up(false, false, "Tuning Successful"));
+    // The OCR often splits the phrase across lines.
+    assert!(crate::tuning_screen_up(false, false, "Tuning\nSuccessful"));
+    // Right after the update packet the banner is still animating in.
+    assert!(crate::tuning_screen_up(false, true, ""));
+    // A readable panel title means the panel itself is back on screen.
+    assert!(!crate::tuning_screen_up(true, false, "Tuning Successful"));
+    assert!(!crate::tuning_screen_up(true, true, ""));
+    // No packet and no banner text: not the tuning screen.
+    assert!(!crate::tuning_screen_up(false, false, ""));
+    assert!(!crate::tuning_screen_up(false, false, "12 K"));
+}

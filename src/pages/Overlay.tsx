@@ -16,16 +16,22 @@ import {
 import { SubStatRollBar } from "@/components/echo/SubStatRollBar";
 import type { Echo } from "@/lib/account";
 import {
+	type EchoMenuWatch,
 	type EchoPanelScan,
 	type EchoTargetState,
 	evaluateEchoTarget,
+	foldPanelVisibility,
+	INITIAL_ECHO_MENU_WATCH,
 	INITIAL_ECHO_TARGET,
 	markRefetched,
+	PANEL_CLOSE_TICKS,
 	PANEL_SCAN_INTERVAL_MS,
+	PANEL_SCAN_MENU_MISS_LIMIT,
 	pressEchoDiscard,
 	pressEchoToggle,
 	registerFailedAttempt,
 	scanEchoPanel,
+	watchEchoMenu,
 } from "@/lib/echoTarget";
 import {
 	type EchoSplitPayload,
@@ -78,6 +84,8 @@ interface MenuDebugInfo {
 	scan: EchoPanelScan;
 	/** The flicker guard says the panel is closed (the card is hidden). */
 	panelClosed: boolean;
+	/** The augmentation hides this tick (dialog up, or the panel closed). */
+	panelHidden: boolean;
 	/** Consecutive closed scans; the card holds through a single one. */
 	closedTicks: number;
 	/** The trigger rules still owe the current echo an identification. */
@@ -89,6 +97,12 @@ interface MenuDebugInfo {
 	/** Echo queued for the assistant's discard, if any. */
 	pendingDiscard: number | null;
 	lastPresses: MenuDebugPressLog;
+	/** Delay chosen for the next scan (fast while an echo menu is on screen). */
+	scanDelayMs: number;
+	/** Consecutive scans that read no menu text. */
+	menuMisses: number;
+	/** Wall-clock cost of the last scan tick, in milliseconds. */
+	scanMs: number;
 }
 
 // Set overlay to ignore cursor events so you can click through it. A failure
@@ -101,13 +115,6 @@ try {
 	console.error("Failed to set ignore cursor events:", error);
 }
 
-/**
- * Closed scans before the panel counts as closed. A single unreadable scan is
- * treated as a flicker for both the card and the trigger rules, so it neither
- * hides the card nor resets the identified echo. The upgrade/tuning screens
- * are detected via the "Tuning Successful" region.
- */
-const PANEL_CLOSE_TICKS = 2;
 /** Tint of the wanted-star overlay (the game's star asset, masked). */
 const WANTED_STAR_COLOR = "#f7eba6";
 /** Soft glow around the wanted-star, drawn by the wrapper's drop-shadow. */
@@ -146,6 +153,9 @@ function Overlay() {
 	const exactEchoRef = useRef<Echo | null>(null);
 	const targetRef = useRef<EchoTargetState>(INITIAL_ECHO_TARGET);
 	const closedTicksRef = useRef(0);
+	// Scan cadence watch: how long the echo menus have been gone, so the scan
+	// ticks slowly outside them and fast while they are on screen.
+	const menuWatchRef = useRef<EchoMenuWatch>(INITIAL_ECHO_MENU_WATCH);
 	const lastEchoKeyRef = useRef<string | null>(null);
 	const showMenuDebugRef = useRef(false);
 	const lastPressesRef = useRef<MenuDebugPressLog>({});
@@ -428,20 +438,29 @@ function Overlay() {
 		window.addEventListener("resize", updateDisplayScale);
 
 		// One scan tick: watch the panel state and ask the game for the exact
-		// echo when it changed.
-		const runScan = async () => {
-			if (busyRef.current) return;
+		// echo when it changed. Returns the delay to wait before the next tick.
+		const runScan = async (): Promise<number> => {
+			if (busyRef.current) return PANEL_SCAN_INTERVAL_MS;
 			busyRef.current = true;
+			const startedAt = performance.now();
 			try {
 				const scan = await scanEchoPanel();
+				const scanMs = Math.round(performance.now() - startedAt);
 
-				if (scan.panelOpen) {
-					closedTicksRef.current = 0;
-				} else {
-					closedTicksRef.current += 1;
-				}
-				const panelClosed =
-					!scan.panelOpen && closedTicksRef.current >= PANEL_CLOSE_TICKS;
+				// Scan cadence: a menu read means an echo menu is on screen,
+				// where the overlay polls fast; once the menus have been gone
+				// for more than two scans it drops back to the standard rate.
+				const cadence = watchEchoMenu(menuWatchRef.current, scan);
+				menuWatchRef.current = cadence.watch;
+
+				// Panel visibility: the echo bag closes the augmentation on
+				// the spot, the high-rarity dialog only hides it (the panel is
+				// still open behind the modal, so the echo is remembered), and
+				// an unreadable scan counts once it repeats (a flicker must not
+				// hide the card).
+				const visibility = foldPanelVisibility(closedTicksRef.current, scan);
+				closedTicksRef.current = visibility.closedTicks;
+				const panelClosed = visibility.panelClosed;
 
 				// A single unreadable scan is a flicker, not a closed panel:
 				// feed the trigger rules an open panel then, so the target is
@@ -454,7 +473,7 @@ function Overlay() {
 				);
 				let target = evaluation.state;
 
-				setPanelOpen(!panelClosed);
+				setPanelOpen(!visibility.hidden);
 
 				if (panelClosed) {
 					exactEchoRef.current = null;
@@ -554,25 +573,42 @@ function Overlay() {
 					setMenuDebug({
 						scan,
 						panelClosed,
+						panelHidden: visibility.hidden,
 						closedTicks: closedTicksRef.current,
 						needsRefetch: target.needsRefetch,
 						failures: target.failures,
 						lastAttemptAt: target.lastAttemptAt,
 						pendingDiscard: pendingDiscardRef.current,
 						lastPresses: { ...lastPressesRef.current },
+						scanDelayMs: cadence.delayMs,
+						menuMisses: cadence.watch.misses,
+						scanMs,
 					});
 				}
+
+				return cadence.delayMs;
 			} catch (error) {
 				console.error("Echo name scan failed:", error);
+				return PANEL_SCAN_INTERVAL_MS;
 			} finally {
 				busyRef.current = false;
 			}
 		};
 
-		const scanInterval = setInterval(runScan, PANEL_SCAN_INTERVAL_MS);
-		runScan();
+		// Self-scheduling scan loop: each tick picks the next delay from what
+		// it saw, so a slow OCR pass never queues up behind another tick.
+		let scanTimer: ReturnType<typeof setTimeout> | undefined;
+		let scanStopped = false;
+		const runScanLoop = async () => {
+			const delayMs = await runScan();
+			if (scanStopped) return;
+			scanTimer = setTimeout(runScanLoop, delayMs);
+		};
+		void runScanLoop();
 
 		return () => {
+			scanStopped = true;
+			if (scanTimer !== undefined) clearTimeout(scanTimer);
 			unlistenEcho.then((fn) => fn());
 			unlistenEchoUpdated.then((fn) => fn());
 			unlistenEchoSplit.then((fn) => fn());
@@ -582,7 +618,6 @@ function Overlay() {
 			unlistenShowRegion.then((fn) => fn());
 			unlistenMenuDebug.then((fn) => fn());
 			window.removeEventListener("resize", updateDisplayScale);
-			clearInterval(scanInterval);
 		};
 	}, []);
 
@@ -784,7 +819,9 @@ function Overlay() {
 						<span>
 							panel {menuDebug.scan.panelOpen ? "yes" : "no"} · tuning{" "}
 							{menuDebug.scan.tuningSuccessful ? "yes" : "no"} · waiting{" "}
-							{menuDebug.scan.waitingForBanner ? "yes" : "no"}
+							{menuDebug.scan.waitingForBanner ? "yes" : "no"} · echoes{" "}
+							{menuDebug.scan.echoesVisible ? "yes" : "no"} · cost{" "}
+							{menuDebug.scan.echoCostVisible ? "yes" : "no"}
 						</span>
 						<span className="text-zinc-500">sortIcon</span>
 						<span>
@@ -800,11 +837,26 @@ function Overlay() {
 								? ` (${menuDebug.scan.highRarityNoticeText.trim()})`
 								: ""}
 						</span>
+						<span className="text-zinc-500">menu</span>
+						<span className="break-all">
+							echoes {menuDebug.scan.echoesText.trim() || "(no text)"} · cost{" "}
+							{menuDebug.scan.costText.trim() || "(no text)"}
+						</span>
+						<span className="text-zinc-500">cadence</span>
+						<span>
+							{menuDebug.scanDelayMs} ms
+							{menuDebug.menuMisses >= PANEL_SCAN_MENU_MISS_LIMIT
+								? " (menus gone)"
+								: ` · ${menuDebug.menuMisses} missed`}{" "}
+							· tick {menuDebug.scanMs} ms
+						</span>
 						<span className="text-zinc-500">card</span>
 						<span>
 							{menuDebug.panelClosed
 								? `hidden (closed ${menuDebug.closedTicks} scans)`
-								: "shown"}
+								: menuDebug.panelHidden
+									? "hidden (dialog)"
+									: "shown"}
 						</span>
 						<span className="text-zinc-500">trigger</span>
 						<span>

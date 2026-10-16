@@ -60,6 +60,14 @@ pub struct ScanRegions {
     /// icon screen, the overlay must not press any keys while it is up.
     #[serde(default)]
     pub high_rarity_notice: Option<ScanRegion>,
+    /// The echo-bag header ("Echoes"); with [`Self::cost_text`] one of the two
+    /// cheap "an echo menu is on screen" reads that let the overlay poll fast
+    /// while the player browses echoes.
+    #[serde(default)]
+    pub echoes_text: Option<ScanRegion>,
+    /// The COST text shown by the echo screens; the second fast-cadence read.
+    #[serde(default)]
+    pub cost_text: Option<ScanRegion>,
     /// Bounding box of the game's echo stats panel (name, level, main and sub
     /// stats). The overlay anchors its augmentation layer to it.
     #[serde(default)]

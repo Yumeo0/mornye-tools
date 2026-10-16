@@ -51,6 +51,9 @@ interface ScanRegions {
 	tuning_successful?: ScanRect;
 	sort_icon?: ScanRect | null;
 	high_rarity_notice?: ScanRect | null;
+	/** Echo-bag header and COST text: the overlay's fast-cadence reads. */
+	echoes_text?: ScanRect | null;
+	cost_text?: ScanRect | null;
 	echo_panel?: ScanRect | null;
 	main_stats?: ScanRect | null;
 	sub_stats?: ScanRect | null;
@@ -220,6 +223,8 @@ export default function MainWindow() {
 						tuning_successful: config.tuningSuccessful,
 						sort_icon: config.sortIcon ?? null,
 						high_rarity_notice: config.highRarityNotice ?? null,
+						echoes_text: config.echoesText ?? null,
+						cost_text: config.costText ?? null,
 						echo_panel: config.echoPanel ?? null,
 						main_stats: config.mainStats ?? null,
 						sub_stats: config.subStats ?? null,

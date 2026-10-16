@@ -33,6 +33,9 @@ interface ScanRegions {
 	tuning_successful?: ScanRegion;
 	sort_icon?: ScanRegion | null;
 	high_rarity_notice?: ScanRegion | null;
+	/** Echo-bag header and COST text: the overlay's fast-cadence reads. */
+	echoes_text?: ScanRegion | null;
+	cost_text?: ScanRegion | null;
 	echo_panel?: ScanRegion | null;
 	main_stats?: ScanRegion | null;
 	sub_stats?: ScanRegion | null;
@@ -260,6 +263,8 @@ export function SettingsTab() {
 					tuning_successful: config.tuningSuccessful,
 					sort_icon: config.sortIcon ?? null,
 					high_rarity_notice: config.highRarityNotice ?? null,
+					echoes_text: config.echoesText ?? null,
+					cost_text: config.costText ?? null,
 					echo_panel: config.echoPanel ?? null,
 					main_stats: config.mainStats ?? null,
 					sub_stats: config.subStats ?? null,

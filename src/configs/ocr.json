@@ -24,10 +24,26 @@
 				"height": 82
 			},
 			"highRarityNotice": {
-				"x": 620,
-				"y": 610,
-				"width": 1290,
-				"height": 115
+				"x": 795,
+				"y": 615,
+				"width": 215,
+				"height": 50
+			},
+			"costText": {
+				"x": 98,
+				"y": 63,
+				"width": 102,
+				"height": 40,
+				"textColor": "#bdcccc",
+				"tolerance": 60
+			},
+			"echoesText": {
+				"x": 140,
+				"y": 74,
+				"width": 130,
+				"height": 40,
+				"textColor": "#efeafd",
+				"tolerance": 60
 			},
 			"echoPanel": {
 				"x": 260,

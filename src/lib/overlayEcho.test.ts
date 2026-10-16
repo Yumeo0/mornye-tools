@@ -71,6 +71,5 @@ describe("retargetPendingDiscard", () => {
 
 	test("leaves unrelated queue entries alone", () => {
 		expect(retargetPendingDiscard(7, split)).toBe(7);
-		expect(retargetPendingDiscard(null, split)).toBeNull();
 	});
 });

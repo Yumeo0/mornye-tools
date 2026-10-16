@@ -1,26 +1,21 @@
 use image::{DynamicImage, ImageFormat};
 use std::io::Cursor;
 use std::path::PathBuf;
-use tauri::{AppHandle, Manager};
+use tauri::AppHandle;
 use xberg::{extract, ExtractInput, ExtractionConfig, OcrConfig, TesseractConfig};
 
 use crate::scan_region::{preprocess_image, ColorFilter};
 
 fn get_tessdata_dir(app_handle: &AppHandle) -> Result<PathBuf, String> {
-    // First, try development path (src-tauri/tessdata) relative to cargo manifest dir
-    if let Ok(manifest_dir) = std::env::var("CARGO_MANIFEST_DIR") {
-        let dev_tessdata = PathBuf::from(manifest_dir).join("tessdata");
-        if dev_tessdata.exists() {
-            return Ok(dev_tessdata);
-        }
-    }
-
-    // Try to get bundled tessdata path (for production builds)
-    if let Ok(resource_path) = app_handle.path().resource_dir() {
-        let tessdata_path = resource_path.join("tessdata");
-        if tessdata_path.exists() {
-            return Ok(tessdata_path);
-        }
+    // The dev tree lives at `src-tauri/tessdata` (crate-relative, unlike the
+    // other repo-root resources); packaged builds bundle it at the resource
+    // root as `tessdata`.
+    if let Some(dir) =
+        crate::config::resource_candidates(app_handle, ["src-tauri/tessdata", "tessdata"])
+            .into_iter()
+            .find(|path| path.exists())
+    {
+        return Ok(dir);
     }
 
     // Fallback to TESSDATA_PREFIX environment variable

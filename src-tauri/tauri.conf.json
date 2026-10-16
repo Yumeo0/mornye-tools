@@ -1,62 +1,62 @@
 {
-  "$schema": "https://schema.tauri.app/config/2",
-  "productName": "mornye-tools",
-  "version": "0.1.0",
-  "identifier": "dev.yumeo.mornye-tools",
-  "build": {
-    "beforeDevCommand": "bun run dev",
-    "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "bun run build",
-    "frontendDist": "../dist"
-  },
-  "app": {
-    "withGlobalTauri": true,
-    "windows": [
-      {
-        "label": "settings",
-        "title": "Mornye Tools",
-        "url": "index.html",
-        "width": 1280,
-        "height": 720,
-        "visible": true,
-        "decorations": false,
-        "resizable": true,
-        "dragDropEnabled": false
-      },
-      {
-        "label": "overlay",
-        "title": "Overlay",
-        "url": "overlay.html",
-        "width": 1920,
-        "height": 1080,
-        "transparent": true,
-        "decorations": false,
-        "alwaysOnTop": true,
-        "fullscreen": true,
-        "visible": false,
-        "skipTaskbar": true,
-        "focusable": false
-      }
-    ],
-    "security": {
-      "csp": null
-    }
-  },
-  "bundle": {
-    "active": true,
-    "targets": "all",
-    "icon": [
-      "icons/32x32.png",
-      "icons/128x128.png",
-      "icons/128x128@2x.png",
-      "icons/icon.icns",
-      "icons/icon.ico"
-    ],
-    "resources": [
-      "tessdata/*",
-      "../data/client_private_key.pem",
-      "../src/configs/*",
-      "../public/sort_icon.png"
-    ]
-  }
+	"$schema": "https://schema.tauri.app/config/2",
+	"productName": "mornye-tools",
+	"version": "0.1.0",
+	"identifier": "dev.yumeo.mornye-tools",
+	"build": {
+		"beforeDevCommand": "bun run dev",
+		"devUrl": "http://localhost:1420",
+		"beforeBuildCommand": "bun run build",
+		"frontendDist": "../dist"
+	},
+	"app": {
+		"withGlobalTauri": true,
+		"windows": [
+			{
+				"label": "settings",
+				"title": "Mornye Tools",
+				"url": "index.html",
+				"width": 1280,
+				"height": 720,
+				"visible": true,
+				"decorations": false,
+				"resizable": true,
+				"dragDropEnabled": false
+			},
+			{
+				"label": "overlay",
+				"title": "Overlay",
+				"url": "overlay.html",
+				"width": 1920,
+				"height": 1080,
+				"transparent": true,
+				"decorations": false,
+				"alwaysOnTop": true,
+				"fullscreen": true,
+				"visible": false,
+				"skipTaskbar": true,
+				"focusable": false
+			}
+		],
+		"security": {
+			"csp": null
+		}
+	},
+	"bundle": {
+		"active": true,
+		"targets": "all",
+		"icon": [
+			"icons/32x32.png",
+			"icons/128x128.png",
+			"icons/128x128@2x.png",
+			"icons/icon.icns",
+			"icons/icon.ico"
+		],
+		"resources": [
+			"tessdata/*",
+			"../data/client_private_key.pem",
+			"../src/configs/*",
+			"../public/sort_icon.png"
+		]
+	}
 }

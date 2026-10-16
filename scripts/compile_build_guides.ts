@@ -77,7 +77,8 @@ async function fetchUrl(url: string): Promise<string> {
 		headers: { "User-Agent": USER_AGENT },
 		signal: AbortSignal.timeout(30_000),
 	});
-	if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+	if (!response.ok)
+		throw new Error(`${response.status} ${response.statusText}`);
 	return response.text();
 }
 
@@ -103,7 +104,11 @@ function* extractJsonParseStrings(js: string): Generator<string> {
 			if (char === "\\" && pos + 1 < js.length) {
 				const nextChar = js.charAt(pos + 1);
 				if (nextChar === "u" && pos + 5 < js.length) {
-					chunks.push(String.fromCharCode(Number.parseInt(js.slice(pos + 2, pos + 6), 16)));
+					chunks.push(
+						String.fromCharCode(
+							Number.parseInt(js.slice(pos + 2, pos + 6), 16),
+						),
+					);
 					pos += 6;
 					continue;
 				}
@@ -131,7 +136,9 @@ function* extractJsonParseStrings(js: string): Generator<string> {
 }
 
 /** Download chunks until the resonator guides dataset is found. */
-async function findGuidesDataset(chunkUrls: string[]): Promise<Resonator[] | null> {
+async function findGuidesDataset(
+	chunkUrls: string[],
+): Promise<Resonator[] | null> {
 	for (const url of chunkUrls) {
 		let js: string;
 		try {
@@ -169,7 +176,9 @@ async function loadCharacterIds(): Promise<Record<string, number>> {
 		console.log(`  ! ${CHARACTER_DATA_PATH} not found, skipping id mapping`);
 		return {};
 	}
-	const characters = (await Bun.file(CHARACTER_DATA_PATH).json()) as CharacterDataEntry[];
+	const characters = (await Bun.file(
+		CHARACTER_DATA_PATH,
+	).json()) as CharacterDataEntry[];
 	const ids: Record<string, number> = {};
 	for (const character of characters) {
 		const name = character.character_name;
@@ -183,18 +192,27 @@ async function loadCharacterIds(): Promise<Record<string, number>> {
 function quotePlus(value: string): string {
 	return encodeURIComponent(value)
 		.replace(/%20/g, "+")
-		.replace(/[!*'()]/g, (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`);
+		.replace(
+			/[!*'()]/g,
+			(char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`,
+		);
 }
 
 /** Compile the raw tethys dataset into per-resonator, per-role builds. */
-function compileGuides(dataset: Resonator[], characterIds: Record<string, number>): Record<string, BuildEntry> {
+function compileGuides(
+	dataset: Resonator[],
+	characterIds: Record<string, number>,
+): Record<string, BuildEntry> {
 	const builds: Record<string, BuildEntry> = {};
 
 	for (const resonator of dataset) {
 		const name = resonator.name;
 		if (!name) continue;
 
-		const entry: BuildEntry = { character_id: characterIds[name] ?? null, roles: {} };
+		const entry: BuildEntry = {
+			character_id: characterIds[name] ?? null,
+			roles: {},
+		};
 
 		for (const guide of resonator.guides ?? []) {
 			const role = guide.role;
@@ -231,7 +249,11 @@ async function main(): Promise<void> {
 	console.log("\nFetching resonators page...");
 	const page = await fetchUrl(RESONATORS_URL);
 
-	const chunkUrls = [...new Set([...page.matchAll(CHUNK_RE)].map((match) => `${BASE_URL}${match[0]}`))];
+	const chunkUrls = [
+		...new Set(
+			[...page.matchAll(CHUNK_RE)].map((match) => `${BASE_URL}${match[0]}`),
+		),
+	];
 	console.log(`Found ${chunkUrls.length} JS chunks to scan`);
 
 	console.log("\nScanning chunks for guides dataset...");
@@ -246,8 +268,13 @@ async function main(): Promise<void> {
 	const characterIds = await loadCharacterIds();
 	const builds = compileGuides(dataset, characterIds);
 
-	const rolesTotal = Object.values(builds).reduce((sum, entry) => sum + Object.keys(entry.roles).length, 0);
-	const multiRole = Object.values(builds).filter((entry) => Object.keys(entry.roles).length > 1).length;
+	const rolesTotal = Object.values(builds).reduce(
+		(sum, entry) => sum + Object.keys(entry.roles).length,
+		0,
+	);
+	const multiRole = Object.values(builds).filter(
+		(entry) => Object.keys(entry.roles).length > 1,
+	).length;
 	console.log(
 		`Compiled ${rolesTotal} roles across ${Object.keys(builds).length} resonators (${multiRole} with multiple roles)`,
 	);

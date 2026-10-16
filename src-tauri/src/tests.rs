@@ -240,22 +240,18 @@ fn sort_icon_similarity_matches_the_icon_shape() {
         img
     }
 
-    let template = DynamicImage::ImageRgba8(icon());
+    let template = crate::echo_panel::SortIconTemplate::new(DynamicImage::ImageRgba8(icon()));
 
     // The icon on screen inside a slightly larger region, a few pixels off.
     let mut screen = RgbaImage::from_pixel(60, 60, Rgba([180, 180, 180, 255]));
     image::imageops::overlay(&mut screen, &icon(), 7, 6);
     let visible =
-        crate::sort_icon_similarity_best(&DynamicImage::ImageRgba8(screen), &template);
+        crate::echo_panel::sort_icon_similarity_best(&DynamicImage::ImageRgba8(screen), &template);
     assert!(visible > 0.97, "identical icon scored {visible}");
 
     // A screen without the icon is clearly below the threshold.
-    let plain = DynamicImage::ImageRgba8(RgbaImage::from_pixel(
-        60,
-        60,
-        Rgba([180, 180, 180, 255]),
-    ));
-    let missing = crate::sort_icon_similarity_best(&plain, &template);
+    let plain = DynamicImage::ImageRgba8(RgbaImage::from_pixel(60, 60, Rgba([180, 180, 180, 255])));
+    let missing = crate::echo_panel::sort_icon_similarity_best(&plain, &template);
     assert!(missing < 0.8, "plain background scored {missing}");
 }
 
@@ -360,15 +356,27 @@ fn tuning_screen_holds_until_the_title_returns() {
     // The screen covers the panel title and waits for a tap, so it must hold
     // the panel open for as long as it reads - the echo must not be forgotten
     // while the player studies the new rolls.
-    assert!(crate::tuning_screen_up(false, false, "Tuning Successful"));
+    assert!(crate::echo_panel::tuning_screen_up(
+        false,
+        false,
+        "Tuning Successful"
+    ));
     // The OCR often splits the phrase across lines.
-    assert!(crate::tuning_screen_up(false, false, "Tuning\nSuccessful"));
+    assert!(crate::echo_panel::tuning_screen_up(
+        false,
+        false,
+        "Tuning\nSuccessful"
+    ));
     // Right after the update packet the banner is still animating in.
-    assert!(crate::tuning_screen_up(false, true, ""));
+    assert!(crate::echo_panel::tuning_screen_up(false, true, ""));
     // A readable panel title means the panel itself is back on screen.
-    assert!(!crate::tuning_screen_up(true, false, "Tuning Successful"));
-    assert!(!crate::tuning_screen_up(true, true, ""));
+    assert!(!crate::echo_panel::tuning_screen_up(
+        true,
+        false,
+        "Tuning Successful"
+    ));
+    assert!(!crate::echo_panel::tuning_screen_up(true, true, ""));
     // No packet and no banner text: not the tuning screen.
-    assert!(!crate::tuning_screen_up(false, false, ""));
-    assert!(!crate::tuning_screen_up(false, false, "12 K"));
+    assert!(!crate::echo_panel::tuning_screen_up(false, false, ""));
+    assert!(!crate::echo_panel::tuning_screen_up(false, false, "12 K"));
 }

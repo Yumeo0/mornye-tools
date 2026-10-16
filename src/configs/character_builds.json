@@ -13,13 +13,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Aero%",
-						"Aero%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Aero%", "Aero%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "CR=CD>ER:110-120%>ATK%>ATK",
 				"url": "https://tethys.gg/resonators/1403?role=Sub+DPS"
@@ -40,13 +34,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Fusion%",
-						"Fusion%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Fusion%", "Fusion%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:122%>CR=CD>ATK%>Lib%>ATK",
 				"url": "https://tethys.gg/resonators/1210?role=Rupture+mDPS"
@@ -67,13 +55,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Electro%",
-						"Electro%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Electro%", "Electro%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:125%>CR=CD>ATK%>HA%>ATK",
 				"url": "https://tethys.gg/resonators/1306?role=Main+DPS"
@@ -100,13 +82,7 @@
 							"value": "ALT"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"ER",
-						"ER/Fusion%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "ER", "ER/Fusion%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:200-250%+>CR=CD>BA%>ATK%>ATK",
 				"url": "https://tethys.gg/resonators/1206?role=Sub+DPS"
@@ -133,13 +109,7 @@
 							"value": "ALT"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Electro%",
-						"Electro%/ER",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Electro%", "Electro%/ER", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER>CR=CD>ATK%>Lib%>ATK>BA%",
 				"url": "https://tethys.gg/resonators/1307?role=Support"
@@ -160,13 +130,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Electro%",
-						"Electro%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Electro%", "Electro%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:120%>CR=CD>ATK%>Lib%>ATK",
 				"url": "https://tethys.gg/resonators/1301?role=Main+DPS"
@@ -187,13 +151,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Havoc%",
-						"Havoc%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Havoc%", "Havoc%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:120%>CR=CD>ATK%>BA%>ATK",
 				"url": "https://tethys.gg/resonators/1603?role=Main+DPS"
@@ -232,13 +190,7 @@
 							"value": "ALT"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Havoc%",
-						"Havoc%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Havoc%", "Havoc%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:130%+>CR=CD>ATK%>BA%>ATK",
 				"url": "https://tethys.gg/resonators/1607?role=Hybrid"
@@ -259,13 +211,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Glacio%",
-						"Glacio%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Glacio%", "Glacio%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:110%-130%>CR=CD>ATK%>Skill%>ATK",
 				"url": "https://tethys.gg/resonators/1107?role=Main+DPS"
@@ -286,13 +232,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"CD",
-						"HP%",
-						"HP%",
-						"HP%"
-					]
+					"main_stats": ["CR/CD", "CD", "HP%", "HP%", "HP%"]
 				},
 				"substats_priority": "ER:100-120%>CR=CD>HP%>BA%>HP=Lib%",
 				"url": "https://tethys.gg/resonators/1409?role=Main+DPS"
@@ -313,13 +253,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Fusion%",
-						"Fusion%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Fusion%", "Fusion%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:~125%>CR=CD>ATK%>Skill%>ATK=Lib%",
 				"url": "https://tethys.gg/resonators/1205?role=Main+DPS"
@@ -352,13 +286,7 @@
 							"value": "ALT"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Havoc%",
-						"Havoc%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Havoc%", "Havoc%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:120%>CR=CD>ATK%>Lib%>ATK",
 				"url": "https://tethys.gg/resonators/1508?role=Hybrid"
@@ -379,13 +307,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Aero%",
-						"Aero%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Aero%", "Aero%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:120-130%>CR=CD>ATK%>ATK>Lib%=BA%",
 				"url": "https://tethys.gg/resonators/1407?role=Sub+DPS"
@@ -412,13 +334,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Havoc%/ATK%",
-						"Havoc%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Havoc%/ATK%", "Havoc%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "CR=CD>ER:110-120%>ATK%>ATK",
 				"url": "https://tethys.gg/resonators/1602?role=Sub+DPS"
@@ -440,13 +356,7 @@
 							"value": "ALT"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Havoc%",
-						"Havoc%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Havoc%", "Havoc%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "CR=CD>ER:100-115%>ATK%>ATK",
 				"url": "https://tethys.gg/resonators/1602?role=Main+DPS"
@@ -473,13 +383,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Fusion%",
-						"Fusion%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Fusion%", "Fusion%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:120%>CR=CD>ATK%>Lib%>ATK",
 				"url": "https://tethys.gg/resonators/1211?role=Burst+sDPS"
@@ -501,13 +405,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Fusion%",
-						"Fusion%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Fusion%", "Fusion%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": null,
 				"url": "https://tethys.gg/resonators/1211?role=Strain+sDPS"
@@ -528,13 +426,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Fusion%",
-						"Fusion%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Fusion%", "Fusion%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:110-120%>CR=CD>ATK%>BA%>ATK",
 				"url": "https://tethys.gg/resonators/1203?role=Main+DPS"
@@ -555,13 +447,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Fusion%",
-						"Fusion%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Fusion%", "Fusion%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:120%>CR=CD>ATK%>ATK>HA%",
 				"url": "https://tethys.gg/resonators/1208?role=Echo+mDPS"
@@ -577,13 +463,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Fusion%",
-						"Fusion%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Fusion%", "Fusion%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:120%>CR=CD>HA%=ATK%>ATK",
 				"url": "https://tethys.gg/resonators/1208?role=Heavy+mDPS"
@@ -604,13 +484,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Glacio%",
-						"Glacio%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Glacio%", "Glacio%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:120%>CR=CD>ATK%>Lib%>ATK",
 				"url": "https://tethys.gg/resonators/1108?role=Main+DPS"
@@ -631,13 +505,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Electro%",
-						"Electro%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Electro%", "Electro%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:110%>CR=CD>ATK%>Skill%>ATK",
 				"url": "https://tethys.gg/resonators/1311?role=Flare+mDPS"
@@ -664,13 +532,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Aero%",
-						"Aero%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Aero%", "Aero%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:~130%>CR=CD>Lib%>ATK%>ATK",
 				"url": "https://tethys.gg/resonators/1410?role=Sub+DPS"
@@ -686,13 +548,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Aero%",
-						"Aero%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Aero%", "Aero%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:110%>CR=CD>ATK%>Lib%>ATK",
 				"url": "https://tethys.gg/resonators/1410?role=Main+DPS"
@@ -713,13 +569,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Aero%",
-						"Aero%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Aero%", "Aero%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "CR=CD>ATK%>ER:140%>ATK>Lib%>HA%>Skill%",
 				"url": "https://tethys.gg/resonators/1405?role=Support"
@@ -735,13 +585,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Aero%",
-						"Aero%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Aero%", "Aero%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": null,
 				"url": "https://tethys.gg/resonators/1405?role=Sub+DPS"
@@ -762,13 +606,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CD/CR",
-						"CD",
-						"HP%",
-						"HP%",
-						"HP%"
-					]
+					"main_stats": ["CD/CR", "CD", "HP%", "HP%", "HP%"]
 				},
 				"substats_priority": "ER:120%>CR=CD>HA%>ATK%>ATK>HP%",
 				"url": "https://tethys.gg/resonators/1212?role=Main+DPS"
@@ -789,13 +627,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Spectro%",
-						"Spectro%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Spectro%", "Spectro%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:110-130%>CR=CD>ATK%>Skill%>ATK>Lib%",
 				"url": "https://tethys.gg/resonators/1304?role=Main+DPS"
@@ -816,13 +648,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Aero%",
-						"Aero%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Aero%", "Aero%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:~125%>CR=CD>ATK%>HA%>ATK",
 				"url": "https://tethys.gg/resonators/1404?role=Main+DPS"
@@ -849,13 +675,7 @@
 							"value": "ALT"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Glacio%",
-						"Glacio%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Glacio%", "Glacio%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "CR=CD>ATK%>BA%>ATK",
 				"url": "https://tethys.gg/resonators/1109?role=Chafe+sDPS"
@@ -877,13 +697,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Glacio%",
-						"Glacio%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Glacio%", "Glacio%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "CR=CD>ATK%>ATK>BA%",
 				"url": "https://tethys.gg/resonators/1109?role=Echo+sDPS"
@@ -916,13 +730,7 @@
 							"value": "ALT"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Spectro%",
-						"Spectro%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Spectro%", "Spectro%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:120%>CR=CD>ATK%>HA%>ATK",
 				"url": "https://tethys.gg/resonators/1511?role=Main+DPS"
@@ -943,13 +751,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Fusion%",
-						"Fusion%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Fusion%", "Fusion%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:125%>CR=CD>ATK%>Lib%>ATK",
 				"url": "https://tethys.gg/resonators/1207?role=Hybrid"
@@ -970,13 +772,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Spectro%",
-						"Spectro%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Spectro%", "Spectro%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:120%>CR=CD>ATK%>BA%>ATK",
 				"url": "https://tethys.gg/resonators/1510?role=Main+DPS"
@@ -1003,13 +799,7 @@
 							"value": "ALT"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Spectro%",
-						"Spectro%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Spectro%", "Spectro%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:122%>CR=CD>ATK%>ATK>BA%",
 				"url": "https://tethys.gg/resonators/1509?role=Sub+DPS"
@@ -1036,13 +826,7 @@
 							"value": "ALT"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Fusion%",
-						"Fusion%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Fusion%", "Fusion%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "CR=CD>ER:105-120%>ATK%>Lib%>ATK",
 				"url": "https://tethys.gg/resonators/1204?role=Sub+DPS"
@@ -1069,13 +853,7 @@
 							"value": "ALT"
 						}
 					],
-					"main_stats": [
-						"DEF%",
-						"ER",
-						"ER/Fusion%",
-						"DEF%",
-						"DEF%"
-					]
+					"main_stats": ["DEF%", "ER", "ER/Fusion%", "DEF%", "DEF%"]
 				},
 				"substats_priority": "ER:260%>Lib%=CD>DEF%>ATK%>DEF>ATK",
 				"url": "https://tethys.gg/resonators/1209?role=Support"
@@ -1102,13 +880,7 @@
 							"value": "ALT"
 						}
 					],
-					"main_stats": [
-						"CD",
-						"Spectro%",
-						"Spectro%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CD", "Spectro%", "Spectro%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:120%>CR=CD>ATK%>ATK>HA%>Lib%=BA%",
 				"url": "https://tethys.gg/resonators/1506?role=Sub+DPS"
@@ -1124,13 +896,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CD",
-						"Spectro%",
-						"Spectro%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CD", "Spectro%", "Spectro%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": null,
 				"url": "https://tethys.gg/resonators/1506?role=Main+DPS"
@@ -1151,13 +917,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Havoc%",
-						"Havoc%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Havoc%", "Havoc%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "CR=CD>ATK%>Skill%=ATK",
 				"url": "https://tethys.gg/resonators/1608?role=Main+DPS"
@@ -1178,13 +938,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR",
-						"CD",
-						"ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR", "CD", "ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:125%>CR=CD>ATK%>ATK>HA%>Lib%",
 				"url": "https://tethys.gg/resonators/1413?role=Main+DPS"
@@ -1211,13 +965,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Aero%",
-						"Aero%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Aero%", "Aero%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:130%>CR=CD>ATK%>HA%>ATK",
 				"url": "https://tethys.gg/resonators/1411?role=Sub+DPS"
@@ -1250,13 +998,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Electro%",
-						"Electro%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Electro%", "Electro%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:120%>CR=CD>ATK%>BA%>ATK",
 				"url": "https://tethys.gg/resonators/1308?role=Sub+DPS"
@@ -1283,13 +1025,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Havoc%",
-						"Havoc%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Havoc%", "Havoc%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:~110%>CR:70%>CD>ATK%>HA%=ATK",
 				"url": "https://tethys.gg/resonators/1606?role=Sub+DPS"
@@ -1322,13 +1058,7 @@
 							"value": "ALT"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Aero%",
-						"Aero%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Aero%", "Aero%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:120%>CR=CD>ATK%>Skill%>ATK",
 				"url": "https://tethys.gg/resonators/1406?role=Support"
@@ -1350,13 +1080,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Aero%",
-						"Aero%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Aero%", "Aero%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": null,
 				"url": "https://tethys.gg/resonators/1406?role=Sub+DPS"
@@ -1377,13 +1101,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Havoc%",
-						"Havoc%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Havoc%", "Havoc%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "CR=CD>ER:115-130%>ATK%>ATK",
 				"url": "https://tethys.gg/resonators/1604?role=Main+DPS"
@@ -1404,13 +1122,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Spectro%",
-						"Spectro%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Spectro%", "Spectro%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:~130%>CR=CD>Skill%=ATK%>ATK>Lib%",
 				"url": "https://tethys.gg/resonators/1501?role=Support"
@@ -1432,13 +1144,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Spectro%",
-						"Spectro%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Spectro%", "Spectro%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": null,
 				"url": "https://tethys.gg/resonators/1501?role=DPS"
@@ -1459,13 +1165,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Glacio%",
-						"Glacio%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Glacio%", "Glacio%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "CR=CD>ATK%>ER:~110%>ATK>Lib%",
 				"url": "https://tethys.gg/resonators/1102?role=Sub+DPS"
@@ -1492,13 +1192,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"HP%/CD",
-						"ER",
-						"ER/Spectro%",
-						"HP%",
-						"HP%"
-					]
+					"main_stats": ["HP%/CD", "ER", "ER/Spectro%", "HP%", "HP%"]
 				},
 				"substats_priority": "ER:230-250%>HP%>CD>Lib%>HP",
 				"url": "https://tethys.gg/resonators/1505?role=Support"
@@ -1519,13 +1213,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"ATK%",
-						"ER/Aero%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "ATK%", "ER/Aero%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:120%-150%>CR=CD>ATK%>ATK",
 				"url": "https://tethys.gg/resonators/1412?role=Main+DPS"
@@ -1546,13 +1234,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"HP%/CD",
-						"ER",
-						"ER/HP%",
-						"HP%",
-						"HP%"
-					]
+					"main_stats": ["HP%/CD", "ER", "ER/HP%", "HP%", "HP%"]
 				},
 				"substats_priority": "ER:260%>CD>CR>HP%>BA%",
 				"url": "https://tethys.gg/resonators/1110?role=Support"
@@ -1579,13 +1261,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"Heal%/ATK%",
-						"ER",
-						"ER",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["Heal%/ATK%", "ER", "ER", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:200-210%>ATK%>ATK",
 				"url": "https://tethys.gg/resonators/1503?role=Support"
@@ -1612,13 +1288,7 @@
 							"value": "ALT"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Electro%",
-						"Electro%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Electro%", "Electro%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:~120%>CR>CD>ATK%>Lib%=ATK",
 				"url": "https://tethys.gg/resonators/1305?role=DPS"
@@ -1639,13 +1309,7 @@
 							"value": "BIS"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Havoc%",
-						"Havoc%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Havoc%", "Havoc%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:120%>CR=CD>HA%>ATK%>ATK",
 				"url": "https://tethys.gg/resonators/1610?role=Main+DPS"
@@ -1672,13 +1336,7 @@
 							"value": "ALT"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Electro%",
-						"Electro%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Electro%", "Electro%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:~120%>CR=CD>ATK%>Skill%>ATK",
 				"url": "https://tethys.gg/resonators/1302?role=Sub+DPS"
@@ -1705,13 +1363,7 @@
 							"value": "ALT"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Spectro%",
-						"Spectro%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Spectro%", "Spectro%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:110-120%>CR=CD>ATK%>HA%>ATK",
 				"url": "https://tethys.gg/resonators/1507?role=Main+DPS"
@@ -1738,13 +1390,7 @@
 							"value": "ALT"
 						}
 					],
-					"main_stats": [
-						"CR/CD",
-						"Glacio%",
-						"Glacio%/ATK%",
-						"ATK%",
-						"ATK%"
-					]
+					"main_stats": ["CR/CD", "Glacio%", "Glacio%/ATK%", "ATK%", "ATK%"]
 				},
 				"substats_priority": "ER:125%>CR=CD>ATK%>BA%>ATK",
 				"url": "https://tethys.gg/resonators/1105?role=Sub+DPS"

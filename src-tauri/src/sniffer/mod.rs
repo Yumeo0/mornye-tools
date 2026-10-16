@@ -167,9 +167,9 @@ impl SnifferState {
         self.frame_errors.fetch_add(1, Ordering::Relaxed);
         let conv_mismatch = matches!(
             err,
-            spectrum::SnifferError::Kcp(spectrum::KcpError::PacketDoesNotBelongToConversation {
-                ..
-            })
+            spectrum::SnifferError::Kcp(
+                spectrum::KcpError::PacketDoesNotBelongToConversation { .. }
+            )
         );
         if conv_mismatch {
             self.conv_mismatches.fetch_add(1, Ordering::Relaxed);
@@ -337,7 +337,9 @@ impl SnifferState {
     }
 
     pub fn take_pending(&self) -> Vec<String> {
-        std::mem::take(&mut *self.pending.lock()).into_iter().collect()
+        std::mem::take(&mut *self.pending.lock())
+            .into_iter()
+            .collect()
     }
 
     pub fn stored_key_info(&self) -> KeyInfo {
@@ -489,25 +491,23 @@ fn cache_session_key(app: &AppHandle, sniffer: &spectrum::Sniffer) {
     }
 }
 
-/// Read the (src, dst) UDP ports from a frame; used by the offline import path.
+/// Read the raw frames from a pcap or pcapng capture file; used by the
+/// offline import path.
 fn import_frames(path: &str) -> Result<Vec<Vec<u8>>, String> {
-    use std::io::Read;
+    use std::io::{BufReader, Read};
+    let mut file = BufReader::new(
+        std::fs::File::open(path).map_err(|e| format!("cannot open {path}: {e}"))?,
+    );
     let mut head = [0u8; 4];
-    let mut file = std::fs::File::open(path).map_err(|e| format!("cannot open {path}: {e}"))?;
     file.read_exact(&mut head)
         .map_err(|e| format!("cannot read {path}: {e}"))?;
     if head == [0x0a, 0x0d, 0x0d, 0x0a] {
-        let mut rest = Vec::new();
-        file.read_to_end(&mut rest).map_err(|e| e.to_string())?;
         let mut all = head.to_vec();
-        all.extend_from_slice(&rest);
+        file.read_to_end(&mut all).map_err(|e| e.to_string())?;
         Ok(pcapng_frames(&all))
     } else {
         use pcap_file::pcap::PcapReader;
-        let mut reader = PcapReader::new(std::io::BufReader::new(
-            std::fs::File::open(path).map_err(|e| e.to_string())?,
-        ))
-        .map_err(|e| e.to_string())?;
+        let mut reader = PcapReader::new(file).map_err(|e| e.to_string())?;
         let mut out = Vec::new();
         while let Some(Ok(packet)) = reader.next_packet() {
             out.push(packet.data.to_vec());
@@ -607,19 +607,4 @@ pub fn sniffer_import_pcap(
     }
     state.log(format!("imported {decoded} game packets from {path}"));
     Ok(decoded)
-}
-
-/// Emit an `account-updated` after an import so the UI refreshes immediately.
-pub fn flush_pending(app: &AppHandle) {
-    let sections = app.state::<SnifferState>().take_pending();
-    if sections.is_empty() {
-        return;
-    }
-    if let Ok(mut store) = app.state::<AccountState>().store.lock() {
-        let prepared = store.prepare_save();
-        drop(store);
-        let _ = prepared.write();
-    }
-    let refs: Vec<&str> = sections.iter().map(|s| s.as_str()).collect();
-    emit_updated(app, &refs);
 }

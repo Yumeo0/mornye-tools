@@ -5,6 +5,7 @@
 //! may only write `overrides.json` (equipped-by / slot adjustments) and manual
 //! echoes (`source: Manual`, synthetic negative instance ids).
 
+use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -33,8 +34,7 @@ impl AccountStore {
         let snapshot = read_json::<AccountSnapshot>(&dir.join(ACCOUNT_FILE))
             .filter(|s| s.version == STORE_VERSION)
             .unwrap_or_default();
-        let overrides =
-            read_json::<Overrides>(&dir.join(OVERRIDES_FILE)).unwrap_or_default();
+        let overrides = read_json::<Overrides>(&dir.join(OVERRIDES_FILE)).unwrap_or_default();
 
         let mut store = Self {
             dir,
@@ -52,11 +52,32 @@ impl AccountStore {
 
     /// Look up one echo by its instance id (`incr_id`).
     pub fn echo(&self, incr_id: i64) -> Option<Echo> {
+        self.echo_index(incr_id)
+            .map(|index| self.snapshot.echoes[index].clone())
+    }
+
+    /// Index of a resonator by role id.
+    fn resonator_index(&self, role_id: i64) -> Option<usize> {
+        self.snapshot
+            .resonators
+            .iter()
+            .position(|r| r.id == role_id)
+    }
+
+    /// Index of a weapon by instance id.
+    fn weapon_index(&self, incr_id: i64) -> Option<usize> {
+        self.snapshot
+            .weapons
+            .iter()
+            .position(|w| w.incr_id == incr_id)
+    }
+
+    /// Index of an echo by instance id.
+    fn echo_index(&self, incr_id: i64) -> Option<usize> {
         self.snapshot
             .echoes
             .iter()
-            .find(|echo| echo.incr_id == incr_id)
-            .cloned()
+            .position(|e| e.incr_id == incr_id)
     }
 
     /// Replace the player info.
@@ -76,13 +97,9 @@ impl AccountStore {
     /// Upsert resonators by role id.
     pub fn upsert_resonators(&mut self, incoming: Vec<Resonator>) {
         for resonator in incoming {
-            match self
-                .snapshot
-                .resonators
-                .iter_mut()
-                .find(|r| r.id == resonator.id)
-            {
-                Some(existing) => {
+            match self.resonator_index(resonator.id) {
+                Some(index) => {
+                    let existing = &mut self.snapshot.resonators[index];
                     // Sequence unlocks are monotonic and some role payloads
                     // omit the field; never let a sparse packet lower it.
                     let chain = existing.chain.max(resonator.chain);
@@ -103,15 +120,10 @@ impl AccountStore {
     /// Set a known resonator's level. Unknown roles are ignored; the full
     /// role-list snapshot introduces them. Returns whether a resonator matched.
     pub fn patch_resonator_level(&mut self, role_id: i64, level: i32) -> bool {
-        let Some(resonator) = self
-            .snapshot
-            .resonators
-            .iter_mut()
-            .find(|r| r.id == role_id)
-        else {
+        let Some(index) = self.resonator_index(role_id) else {
             return false;
         };
-        resonator.level = level;
+        self.snapshot.resonators[index].level = level;
         true
     }
 
@@ -119,14 +131,10 @@ impl AccountStore {
     /// incremental packets only ever move the count up; full snapshots stay
     /// authoritative. Returns whether a resonator matched.
     pub fn raise_resonator_chain(&mut self, role_id: i64, chain: i32) -> bool {
-        let Some(resonator) = self
-            .snapshot
-            .resonators
-            .iter_mut()
-            .find(|r| r.id == role_id)
-        else {
+        let Some(index) = self.resonator_index(role_id) else {
             return false;
         };
+        let resonator = &mut self.snapshot.resonators[index];
         resonator.chain = resonator.chain.max(chain);
         true
     }
@@ -134,14 +142,10 @@ impl AccountStore {
     /// Merge one skill level into a known resonator. Returns whether a
     /// resonator matched.
     pub fn merge_resonator_skill(&mut self, role_id: i64, skill_id: i64, level: i32) -> bool {
-        let Some(resonator) = self
-            .snapshot
-            .resonators
-            .iter_mut()
-            .find(|r| r.id == role_id)
-        else {
+        let Some(index) = self.resonator_index(role_id) else {
             return false;
         };
+        let resonator = &mut self.snapshot.resonators[index];
         match resonator.skills.iter_mut().find(|s| s.id == skill_id) {
             Some(skill) => skill.level = level,
             None => resonator.skills.push(SkillNode {
@@ -155,14 +159,19 @@ impl AccountStore {
     /// Upsert weapons by incr id. Partial notifies (`OneWeaponItemInfo`) carry
     /// no item id, so a stored id/equipment is preserved when the packet omits it.
     pub fn upsert_weapons(&mut self, incoming: Vec<Weapon>) {
+        // Batch-local id -> slot index: full snapshots carry hundreds of
+        // weapons and a per-item scan would make the upsert quadratic.
+        let mut index: HashMap<i64, usize> = self
+            .snapshot
+            .weapons
+            .iter()
+            .enumerate()
+            .map(|(i, weapon)| (weapon.incr_id, i))
+            .collect();
         for mut weapon in incoming {
-            match self
-                .snapshot
-                .weapons
-                .iter_mut()
-                .find(|w| w.incr_id == weapon.incr_id)
-            {
-                Some(existing) => {
+            match index.get(&weapon.incr_id).copied() {
+                Some(i) => {
+                    let existing = &mut self.snapshot.weapons[i];
                     if weapon.item_id == 0 {
                         weapon.item_id = existing.item_id;
                     }
@@ -171,7 +180,10 @@ impl AccountStore {
                     }
                     *existing = weapon;
                 }
-                None => self.snapshot.weapons.push(weapon),
+                None => {
+                    index.insert(weapon.incr_id, self.snapshot.weapons.len());
+                    self.snapshot.weapons.push(weapon);
+                }
             }
         }
     }
@@ -208,14 +220,10 @@ impl AccountStore {
         breach: Option<i32>,
         rank: Option<i32>,
     ) -> bool {
-        let Some(weapon) = self
-            .snapshot
-            .weapons
-            .iter_mut()
-            .find(|w| w.incr_id == incr_id)
-        else {
+        let Some(index) = self.weapon_index(incr_id) else {
             return false;
         };
+        let weapon = &mut self.snapshot.weapons[index];
         if let Some(level) = level {
             weapon.level = level;
         }
@@ -231,14 +239,19 @@ impl AccountStore {
     /// Upsert echoes by incr id. Packet fields win over everything except
     /// explicit user overrides for `equipped_by`/`slot`.
     pub fn upsert_echoes(&mut self, incoming: Vec<Echo>) {
+        // Batch-local id -> slot index: full snapshots carry thousands of
+        // echoes and a per-item scan would make the upsert quadratic.
+        let mut index: HashMap<i64, usize> = self
+            .snapshot
+            .echoes
+            .iter()
+            .enumerate()
+            .map(|(i, echo)| (echo.incr_id, i))
+            .collect();
         for mut echo in incoming {
-            match self
-                .snapshot
-                .echoes
-                .iter_mut()
-                .find(|e| e.incr_id == echo.incr_id)
-            {
-                Some(existing) => {
+            match index.get(&echo.incr_id).copied() {
+                Some(i) => {
+                    let existing = &mut self.snapshot.echoes[i];
                     // Preserve equipment the new packet does not carry.
                     if echo.equipped_by.is_none() {
                         echo.equipped_by = existing.equipped_by;
@@ -248,7 +261,10 @@ impl AccountStore {
                     }
                     *existing = echo;
                 }
-                None => self.snapshot.echoes.push(echo),
+                None => {
+                    index.insert(echo.incr_id, self.snapshot.echoes.len());
+                    self.snapshot.echoes.push(echo);
+                }
             }
         }
         self.apply_overrides();
@@ -258,11 +274,8 @@ impl AccountStore {
     /// 2 = discard-marked) from an `ItemFuncValueUpdateNotify`. Returns the
     /// updated echo; unknown echoes are ignored.
     pub fn set_echo_func_value(&mut self, incr_id: i64, func_value: i32) -> Option<Echo> {
-        let echo = self
-            .snapshot
-            .echoes
-            .iter_mut()
-            .find(|e| e.incr_id == incr_id)?;
+        let index = self.echo_index(incr_id)?;
+        let echo = &mut self.snapshot.echoes[index];
         echo.func_value = func_value;
         Some(echo.clone())
     }
@@ -273,12 +286,23 @@ impl AccountStore {
     /// Only sniffer echoes are ever dropped, and any override for the id is
     /// discarded with it. Returns whether an echo was removed.
     pub fn remove_merged_echo(&mut self, incr_id: i64) -> bool {
+        self.remove_echo(incr_id, EchoSource::Sniffer)
+    }
+
+    /// Remove a manual echo by instance id; sniffer echoes are never removed.
+    pub fn remove_manual_echo(&mut self, incr_id: i64) -> bool {
+        self.remove_echo(incr_id, EchoSource::Manual)
+    }
+
+    /// Remove one echo of the given source by instance id. Overrides only
+    /// exist for sniffer echoes, so they are cleaned up for those alone.
+    fn remove_echo(&mut self, incr_id: i64, source: EchoSource) -> bool {
         let before = self.snapshot.echoes.len();
         self.snapshot
             .echoes
-            .retain(|echo| !(echo.incr_id == incr_id && echo.source == EchoSource::Sniffer));
+            .retain(|echo| !(echo.incr_id == incr_id && echo.source == source));
         let removed = self.snapshot.echoes.len() != before;
-        if removed {
+        if removed && source == EchoSource::Sniffer {
             self.overrides.echoes.remove(&incr_id.to_string());
         }
         removed
@@ -309,15 +333,6 @@ impl AccountStore {
         echo
     }
 
-    /// Remove a manual echo by instance id; sniffer echoes are never removed.
-    pub fn remove_manual_echo(&mut self, incr_id: i64) -> bool {
-        let before = self.snapshot.echoes.len();
-        self.snapshot
-            .echoes
-            .retain(|echo| !(echo.incr_id == incr_id && echo.source == EchoSource::Manual));
-        self.snapshot.echoes.len() != before
-    }
-
     /// Apply the equip info from `PhantomEquipInfoNotify` / `RolePhantomEquipInfo`:
     /// each `incr_id` at `slot` (index 0 = main echo) belongs to `role_id`.
     pub fn apply_equip_info(&mut self, role_id: i64, incr_ids: &[i64]) {
@@ -329,59 +344,53 @@ impl AccountStore {
             }
         }
         for (slot, incr_id) in incr_ids.iter().enumerate() {
-            if let Some(echo) = self
-                .snapshot
-                .echoes
-                .iter_mut()
-                .find(|e| e.incr_id == *incr_id)
-            {
-                echo.equipped_by = Some(role_id);
-                echo.slot = Some(slot as u8);
-            }
+            let Some(index) = self.echo_index(*incr_id) else {
+                continue;
+            };
+            let echo = &mut self.snapshot.echoes[index];
+            echo.equipped_by = Some(role_id);
+            echo.slot = Some(slot as u8);
         }
         self.apply_overrides();
     }
 
     /// Set (or clear) a user override for an echo's equipped role and slot.
-    pub fn set_echo_override(
-        &mut self,
-        incr_id: i64,
-        equipped_by: Option<i64>,
-        slot: Option<u8>,
-    ) {
+    pub fn set_echo_override(&mut self, incr_id: i64, equipped_by: Option<i64>, slot: Option<u8>) {
         let key = incr_id.to_string();
         if equipped_by.is_none() && slot.is_none() {
             self.overrides.echoes.remove(&key);
         } else {
-            self.overrides.echoes.insert(
-                key,
-                EchoOverride {
-                    equipped_by,
-                    slot,
-                },
-            );
+            self.overrides
+                .echoes
+                .insert(key, EchoOverride { equipped_by, slot });
         }
         self.apply_overrides();
     }
 
-    /// Drop every echo (used by explicit user clear / reset).
-    pub fn clear_echoes(&mut self) {
-        self.snapshot.echoes.clear();
-    }
-
-    /// Re-apply stored overrides on top of the current snapshot.
+    /// Re-apply stored overrides on top of the current snapshot. Iterates the
+    /// (few) overrides instead of the (many) echoes; keys that do not parse or
+    /// name no stored echo are inert.
     pub fn apply_overrides(&mut self) {
         if self.overrides.echoes.is_empty() {
             return;
         }
-        for echo in self.snapshot.echoes.iter_mut() {
-            if let Some(over) = self.overrides.echoes.get(&echo.incr_id.to_string()) {
-                if over.equipped_by.is_some() {
-                    echo.equipped_by = over.equipped_by;
-                }
-                if over.slot.is_some() {
-                    echo.slot = over.slot;
-                }
+        let Self {
+            snapshot,
+            overrides,
+            ..
+        } = self;
+        for (key, over) in overrides.echoes.iter() {
+            let Ok(incr_id) = key.parse::<i64>() else {
+                continue;
+            };
+            let Some(echo) = snapshot.echoes.iter_mut().find(|e| e.incr_id == incr_id) else {
+                continue;
+            };
+            if over.equipped_by.is_some() {
+                echo.equipped_by = over.equipped_by;
+            }
+            if over.slot.is_some() {
+                echo.slot = over.slot;
             }
         }
     }
@@ -435,31 +444,11 @@ fn atomic_write_json<T: serde::Serialize>(path: &Path, value: &T) -> Result<(), 
     Ok(())
 }
 
-/// RFC3339-ish UTC timestamp without pulling in a date crate.
+/// RFC3339 UTC timestamp, e.g. `2026-10-16T09:30:00Z`; display-only.
 pub fn now_iso8601() -> String {
-    let now = std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .unwrap_or_default();
-    let secs = now.as_secs();
-    // Days since epoch -> civil date (Howard Hinnant's algorithm).
-    let days = (secs / 86_400) as i64;
-    let rem = secs % 86_400;
-    let (h, m, s) = (rem / 3600, (rem % 3600) / 60, rem % 60);
-    let (y, mo, d) = civil_from_days(days);
-    format!("{y:04}-{mo:02}-{d:02}T{h:02}:{m:02}:{s:02}Z")
-}
-
-fn civil_from_days(z: i64) -> (i64, u32, u32) {
-    let z = z + 719_468;
-    let era = if z >= 0 { z } else { z - 146_096 } / 146_097;
-    let doe = z - era * 146_097;
-    let yoe = (doe - doe / 1460 + doe / 36_524 - doe / 146_096) / 365;
-    let y = yoe + era * 400;
-    let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
-    let mp = (5 * doy + 2) / 153;
-    let d = doy - (153 * mp + 2) / 5 + 1;
-    let m = if mp < 10 { mp + 3 } else { mp - 9 };
-    (if m <= 2 { y + 1 } else { y }, m as u32, d as u32)
+    time::OffsetDateTime::now_utc()
+        .format(&time::format_description::well_known::Rfc3339)
+        .unwrap_or_default()
 }
 
 #[cfg(test)]

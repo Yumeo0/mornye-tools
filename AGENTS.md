@@ -30,7 +30,6 @@ drives the in-game overlay window.
 - Long lists use `src/components/VirtualGrid.tsx` (TanStack React Virtual),
   not plain `.map()` grids.
 - `bun run dev` also serves the UI in a plain browser with Tauri APIs
-  degraded (persisted state falls back to localStorage) — handy for UI work
-  without Rust.
+  degraded — handy for UI work without Rust.
 
 `README.md` documents the sniffer/overlay protocol in depth.

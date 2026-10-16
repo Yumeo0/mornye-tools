@@ -144,17 +144,23 @@ async function main(): Promise<string[]> {
 		if (!(await Bun.file(join(ASSETS_ROOT, file)).exists())) missing.push(file);
 	}
 	if (missing.length > 0) {
-		console.log(`✗ ${missing.length} referenced assets are missing from ${ASSETS_ROOT}:`);
+		console.log(
+			`✗ ${missing.length} referenced assets are missing from ${ASSETS_ROOT}:`,
+		);
 		for (const file of missing.slice(0, 20)) console.log("  ", file);
-		if (missing.length > 20) console.log(`   ... and ${missing.length - 20} more`);
+		if (missing.length > 20)
+			console.log(`   ... and ${missing.length - 20} more`);
 		process.exit(1);
 	}
 
 	let totalBytes = 0;
-	for (const file of files) totalBytes += Bun.file(join(ASSETS_ROOT, file)).size;
+	for (const file of files)
+		totalBytes += Bun.file(join(ASSETS_ROOT, file)).size;
 	await Bun.write(MANIFEST_PATH, `${JSON.stringify({ files }, null, "\t")}\n`);
 
-	console.log(`✓ ${files.length} assets referenced (${(totalBytes / 1024 / 1024).toFixed(1)} MiB of PNGs)`);
+	console.log(
+		`✓ ${files.length} assets referenced (${(totalBytes / 1024 / 1024).toFixed(1)} MiB of PNGs)`,
+	);
 	console.log(`✓ Manifest written to ${basename(MANIFEST_PATH)}`);
 	return files;
 }

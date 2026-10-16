@@ -10,6 +10,12 @@
 
 import { join } from "node:path";
 
+import {
+	indexBy,
+	loadJson,
+	unrealPathToRelative,
+} from "./lib/compile-data-util";
+
 const SCRIPTS_DIR = import.meta.dirname;
 const REPO_ROOT = join(SCRIPTS_DIR, "..");
 const DATA_DIR = join(REPO_ROOT, "data");
@@ -17,11 +23,26 @@ const WUWA_DATA = join(DATA_DIR, "wuwa-data");
 
 const MULTITEXT_PATH = join(WUWA_DATA, "Textmaps/en/multi_text/MultiText.json");
 const PHANTOM_ITEM_PATH = join(WUWA_DATA, "BinData/phantom/phantomitem.json");
-const PHANTOM_FETTER_GROUP_PATH = join(WUWA_DATA, "BinData/phantom/phantomfettergroup.json");
-const PHANTOM_MAIN_PROPERTY_PATH = join(WUWA_DATA, "BinData/phantom/phantommainproperty.json");
-const PHANTOM_MAIN_PROP_ITEM_PATH = join(WUWA_DATA, "BinData/phantom/phantommainpropitem.json");
-const PHANTOM_SUB_PROPERTY_PATH = join(WUWA_DATA, "BinData/phantom/phantomsubproperty.json");
-const PROPERTY_INDEX_PATH = join(WUWA_DATA, "BinData/property/propertyindex.json");
+const PHANTOM_FETTER_GROUP_PATH = join(
+	WUWA_DATA,
+	"BinData/phantom/phantomfettergroup.json",
+);
+const PHANTOM_MAIN_PROPERTY_PATH = join(
+	WUWA_DATA,
+	"BinData/phantom/phantommainproperty.json",
+);
+const PHANTOM_MAIN_PROP_ITEM_PATH = join(
+	WUWA_DATA,
+	"BinData/phantom/phantommainpropitem.json",
+);
+const PHANTOM_SUB_PROPERTY_PATH = join(
+	WUWA_DATA,
+	"BinData/phantom/phantomsubproperty.json",
+);
+const PROPERTY_INDEX_PATH = join(
+	WUWA_DATA,
+	"BinData/property/propertyindex.json",
+);
 
 const OUTPUT_PATH = join(REPO_ROOT, "src/configs/echo_data.json");
 
@@ -86,51 +107,6 @@ interface EchoEntry {
 	possible_substats: string[];
 }
 
-/** Load a JSON file, reporting the same failures the original compiler did. */
-async function loadJson<T>(filePath: string): Promise<T | null> {
-	try {
-		return (await Bun.file(filePath).json()) as T;
-	} catch (error) {
-		if (error instanceof Error && "code" in error && error.code === "ENOENT") {
-			console.log(`Error: File not found at ${filePath}`);
-		} else {
-			console.log(`Error: Failed to parse ${filePath}`);
-		}
-		return null;
-	}
-}
-
-/**
- * Index 300k+ MultiText entries by id.
- *
- * The original compiler scanned the whole array per lookup, which cost
- * ~5 microseconds each and dominated this script's runtime. The first entry
- * wins, matching the scan it replaces.
- */
-function indexBy<T, K>(entries: T[], key: (entry: T) => K | undefined): Map<K, T> {
-	const index = new Map<K, T>();
-	for (const entry of entries) {
-		const id = key(entry);
-		if (id === undefined || id === null) continue;
-		if (!index.has(id)) index.set(id, entry);
-	}
-	return index;
-}
-
-/**
- * Convert an Unreal Engine path to a published asset path.
- *
- * `/Game/Aki/UI/.../T_IconMonsterGoods160_YZ_33020_UI.T_IconMonsterGoods160_YZ_33020_UI`
- * becomes `/wuwa-assets/UI/.../T_IconMonsterGoods160_YZ_33020_UI.webp`.
- */
-function convertUnrealPathToRelative(unrealPath: string | null | undefined): string | null {
-	if (!unrealPath) return null;
-	let result = unrealPath.replace("/Game/Aki/", "");
-	// Drop the duplicate asset name after the last dot.
-	if (result.includes(".")) result = result.slice(0, result.lastIndexOf("."));
-	return `/wuwa-assets/${result}.webp`;
-}
-
 /** Cost from the possible mainstats: "Crit. DMG" -> 4, element DMG -> 3, else 1. */
 function determineEchoCost(mainstats: string[]): number {
 	if (mainstats.includes("Crit. DMG")) return 4;
@@ -155,7 +131,10 @@ function getPropertyName(
 	propertyById: Map<number, PropertyIndexEntry>,
 	textById: Map<number, MultiTextEntry>,
 ): string {
-	const name = propId === undefined ? undefined : textById.get(propertyById.get(propId)?.Name ?? -1)?.Content;
+	const name =
+		propId === undefined
+			? undefined
+			: textById.get(propertyById.get(propId)?.Name ?? -1)?.Content;
 	return name ? name : `Unknown (PropId: ${propId})`;
 }
 
@@ -173,7 +152,7 @@ function getEchoSetInfo(
 			setInfo.push({
 				id: fetterId ?? null,
 				name: setName,
-				icon: convertUnrealPathToRelative(fetterEntry.FetterElementPath),
+				icon: unrealPathToRelative(fetterEntry.FetterElementPath),
 			});
 		}
 	}
@@ -233,9 +212,12 @@ async function compileEchoData(): Promise<void> {
 	const phantomData = await loadJson<PhantomItem[]>(PHANTOM_ITEM_PATH);
 	const fetterData = await loadJson<FetterEntry[]>(PHANTOM_FETTER_GROUP_PATH);
 	const mainPropData = await loadJson<MainProp[]>(PHANTOM_MAIN_PROPERTY_PATH);
-	const mainPropItemData = await loadJson<MainPropItem[]>(PHANTOM_MAIN_PROP_ITEM_PATH);
+	const mainPropItemData = await loadJson<MainPropItem[]>(
+		PHANTOM_MAIN_PROP_ITEM_PATH,
+	);
 	const subPropData = await loadJson<SubPropEntry[]>(PHANTOM_SUB_PROPERTY_PATH);
-	const propertyData = await loadJson<PropertyIndexEntry[]>(PROPERTY_INDEX_PATH);
+	const propertyData =
+		await loadJson<PropertyIndexEntry[]>(PROPERTY_INDEX_PATH);
 
 	if (
 		!multitextData ||
@@ -266,7 +248,11 @@ async function compileEchoData(): Promise<void> {
 		else propGroupsByRandGroupId.set(randGroupId, [...(entry.PropGroup ?? [])]);
 	}
 
-	const possibleSubstats = getPossibleSubstats(subPropData, propertyById, textById);
+	const possibleSubstats = getPossibleSubstats(
+		subPropData,
+		propertyById,
+		textById,
+	);
 
 	const echoList: EchoEntry[] = [];
 	let processed = 0;
@@ -283,7 +269,11 @@ async function compileEchoData(): Promise<void> {
 		const echoName = textById.get(monsterNameId)?.Content;
 		if (!echoName) continue;
 
-		const setInfo = getEchoSetInfo(phantomItem.FetterGroup ?? [], fetterById, textById);
+		const setInfo = getEchoSetInfo(
+			phantomItem.FetterGroup ?? [],
+			fetterById,
+			textById,
+		);
 
 		const mainstats = getPossibleMainstats(
 			phantomItem.MainProp ?? {},
@@ -298,9 +288,9 @@ async function compileEchoData(): Promise<void> {
 			echo_id: echoId,
 			monster_id: monsterId ?? null,
 			echo_cost: determineEchoCost(mainstats),
-			icon_head: convertUnrealPathToRelative(phantomItem.Icon),
-			icon_middle: convertUnrealPathToRelative(phantomItem.IconMiddle),
-			icon_small: convertUnrealPathToRelative(phantomItem.IconSmall),
+			icon_head: unrealPathToRelative(phantomItem.Icon),
+			icon_middle: unrealPathToRelative(phantomItem.IconMiddle),
+			icon_small: unrealPathToRelative(phantomItem.IconSmall),
 			echo_sets: setInfo,
 			possible_mainstats: mainstats,
 			possible_substats: possibleSubstats,

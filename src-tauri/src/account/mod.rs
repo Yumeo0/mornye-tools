@@ -131,13 +131,6 @@ pub fn account_clear_echo_override(
     Ok(())
 }
 
-/// Read the full echo bag (convenience for the id-based Inventory tab).
-#[tauri::command]
-pub fn account_get_echoes(state: State<AccountState>) -> Result<Vec<Echo>, String> {
-    let store = state.store.lock().map_err(|e| e.to_string())?;
-    Ok(store.snapshot().echoes.clone())
-}
-
 /// Add an echo entered by hand (no packet capture involved). The store assigns
 /// the synthetic instance id and marks the source as manual.
 #[tauri::command]

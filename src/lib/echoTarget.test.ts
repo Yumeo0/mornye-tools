@@ -5,6 +5,7 @@
 import { describe, expect, test } from "bun:test";
 
 import {
+	DISCARD_SCREEN_TIMEOUT_MS,
 	type EchoMenuWatch,
 	type EchoPanelScan,
 	type EchoTargetState,
@@ -14,10 +15,12 @@ import {
 	INITIAL_ECHO_TARGET,
 	MAX_FAILED_ATTEMPTS,
 	markRefetched,
+	nextDiscardDecision,
 	PANEL_CLOSE_TICKS,
 	PANEL_SCAN_FAST_INTERVAL_MS,
 	PANEL_SCAN_INTERVAL_MS,
 	PANEL_SCAN_MENU_MISS_LIMIT,
+	type PendingDiscard,
 	PRESS_ATTEMPT_INTERVAL_MS,
 	registerFailedAttempt,
 	watchEchoMenu,
@@ -365,5 +368,106 @@ describe("watchEchoMenu", () => {
 			watch = result.watch;
 			expect(result.delayMs).toBe(PANEL_SCAN_INTERVAL_MS);
 		}
+	});
+});
+
+describe("nextDiscardDecision", () => {
+	// An open upgrade panel showing the queued echo.
+	const openScan: EchoPanelScan = {
+		panelOpen: true,
+		tuningSuccessful: false,
+		waitingForBanner: false,
+		titleText: "Echo Upgrade",
+		bannerText: "",
+		sortIconVisible: false,
+		sortIconScore: null,
+		highRarityNoticeVisible: false,
+		highRarityNoticeText: "",
+		echoesText: "",
+		echoesVisible: false,
+		costText: "",
+		echoCostVisible: false,
+	};
+	const pending: PendingDiscard = {
+		incrId: 7,
+		funcValue: 1,
+		sawTuning: false,
+		queuedAt: BASE,
+	};
+	const echo = { incrId: 7, funcValue: 1 };
+
+	test("waits for the tuning screen before firing", () => {
+		// The tuning banner is up: hold, and remember the screen was seen.
+		const held = nextDiscardDecision(
+			pending,
+			echo,
+			{ ...openScan, tuningSuccessful: true },
+			BASE + 100,
+		);
+		expect(held).toEqual({
+			action: "wait",
+			pending: { ...pending, sawTuning: true },
+		});
+
+		// The banner cleared: the discard fires immediately, no timeout wait.
+		expect(
+			nextDiscardDecision(
+				{ ...pending, sawTuning: true },
+				echo,
+				openScan,
+				BASE + 200,
+			),
+		).toEqual({ action: "fire" });
+	});
+
+	test("fires after the fallback timeout when no screen appears", () => {
+		expect(
+			nextDiscardDecision(
+				pending,
+				echo,
+				openScan,
+				BASE + DISCARD_SCREEN_TIMEOUT_MS - 1,
+			).action,
+		).toBe("wait");
+		expect(
+			nextDiscardDecision(
+				pending,
+				echo,
+				openScan,
+				BASE + DISCARD_SCREEN_TIMEOUT_MS,
+			),
+		).toEqual({ action: "fire" });
+	});
+
+	test("cancels when the player re-marked the echo", () => {
+		expect(
+			nextDiscardDecision(
+				{ ...pending, sawTuning: true },
+				{ incrId: 7, funcValue: 2 },
+				openScan,
+				BASE + 100,
+			),
+		).toEqual({ action: "cancel" });
+	});
+
+	test("waits while another screen or a different echo is up", () => {
+		const cleared = { ...pending, sawTuning: true };
+		for (const scan of [
+			{ ...openScan, panelOpen: false },
+			{ ...openScan, sortIconVisible: true },
+			{ ...openScan, highRarityNoticeVisible: true },
+		]) {
+			expect(nextDiscardDecision(cleared, echo, scan, BASE + 100).action).toBe(
+				"wait",
+			);
+		}
+		expect(
+			nextDiscardDecision(
+				cleared,
+				{ incrId: 8, funcValue: 1 },
+				openScan,
+				BASE + 100,
+			).action,
+		).toBe("wait");
 	});
 });

@@ -8,8 +8,14 @@
  * Run: bun scripts/compile_character_data.ts
  */
 
-import { readdirSync } from "node:fs";
-import { basename, extname, join } from "node:path";
+import { join } from "node:path";
+
+import {
+	assetPath,
+	fixFilePathCapitalization,
+	indexBy,
+	loadJson,
+} from "./lib/compile-data-util";
 
 const SCRIPTS_DIR = import.meta.dirname;
 const REPO_ROOT = join(SCRIPTS_DIR, "..");
@@ -20,9 +26,18 @@ const ASSETS_PATH = join(DATA_DIR, "wuwa-assets");
 
 const MULTITEXT_PATH = join(WUWA_DATA, "Textmaps/en/multi_text/MultiText.json");
 const ROLE_INFO_PATH = join(WUWA_DATA, "BinData/role/roleinfo.json");
-const PROPERTY_INDEX_PATH = join(WUWA_DATA, "BinData/property/propertyindex.json");
-const ELEMENT_INFO_PATH = join(WUWA_DATA, "BinData/element_info/elementinfo.json");
-const RESONANT_CHAIN_PATH = join(WUWA_DATA, "BinData/resonate_chain/resonantchain.json");
+const PROPERTY_INDEX_PATH = join(
+	WUWA_DATA,
+	"BinData/property/propertyindex.json",
+);
+const ELEMENT_INFO_PATH = join(
+	WUWA_DATA,
+	"BinData/element_info/elementinfo.json",
+);
+const RESONANT_CHAIN_PATH = join(
+	WUWA_DATA,
+	"BinData/resonate_chain/resonantchain.json",
+);
 
 const OUTPUT_PATH = join(REPO_ROOT, "src/configs/character_data.json");
 
@@ -104,94 +119,18 @@ interface CharacterEntry {
 	is_show: boolean;
 }
 
-/** Load a JSON file, reporting the same failures the original compiler did. */
-async function loadJson<T>(filePath: string): Promise<T | null> {
-	try {
-		return (await Bun.file(filePath).json()) as T;
-	} catch (error) {
-		if (error instanceof Error && "code" in error && error.code === "ENOENT") {
-			console.log(`Error: File not found at ${filePath}`);
-		} else {
-			console.log(`Error: Failed to parse ${filePath}`);
-		}
-		return null;
-	}
-}
-
-/**
- * Index 300k+ MultiText entries by id.
- *
- * The original compiler scanned the whole array per lookup, which cost
- * ~5 microseconds each and dominated this script's runtime. The first entry
- * wins, matching the scan it replaces.
- */
-function indexBy<T, K>(entries: T[], key: (entry: T) => K | undefined): Map<K, T> {
-	const index = new Map<K, T>();
-	for (const entry of entries) {
-		const id = key(entry);
-		if (id === undefined || id === null) continue;
-		if (!index.has(id)) index.set(id, entry);
-	}
-	return index;
-}
-
-function getText(textId: number | undefined, textById: Map<number, MultiTextEntry>): string | undefined {
+function getText(
+	textId: number | undefined,
+	textById: Map<number, MultiTextEntry>,
+): string | undefined {
 	return textId === undefined ? undefined : textById.get(textId)?.Content;
 }
 
-/**
- * Convert an Unreal Engine path to a published asset path.
- *
- * `/Game/Aki/UI/.../T_IconRoleHead256_1_UI.T_IconRoleHead256_1_UI`
- * becomes `/wuwa-assets/UI/.../T_IconRoleHead256_1_UI.webp`.
- */
-function convertUnrealPathToRelative(unrealPath: string | null | undefined): string | null {
-	if (!unrealPath) return null;
-	let result = unrealPath.replace("/Game/Aki/", "");
-	// Drop the duplicate asset name after the last dot.
-	if (result.includes(".")) result = result.slice(0, result.lastIndexOf("."));
-	return fixFilePathCapitalization(`/wuwa-assets/${result}.webp`);
-}
-
-// Directory listings are stable for the duration of a run, so read each one once.
-const directoryCache = new Map<string, string[]>();
-
-function listDirectory(dir: string): string[] {
-	const cached = directoryCache.get(dir);
-	if (cached) return cached;
-	let entries: string[];
-	try {
-		entries = readdirSync(dir);
-	} catch {
-		entries = [];
-	}
-	directoryCache.set(dir, entries);
-	return entries;
-}
-
-/**
- * Some asset files have different capitalization than the data references, so
- * check the real directory listing and adopt the on-disk stem.
- */
-function fixFilePathCapitalization(relativePath: string | null): string | null {
-	if (!relativePath) return null;
-
-	const filePath = join(ASSETS_PATH, relativePath.replace("/wuwa-assets/", ""));
-	const parentDir = join(filePath, "..");
-	const extension = extname(filePath);
-	const stem = basename(filePath, extension);
-
-	// Compare file stems only: the published extension (.webp) differs from the
-	// source files on disk (.png).
-	for (const entry of listDirectory(parentDir)) {
-		const entryExtension = extname(entry);
-		if (basename(entry, entryExtension).toLowerCase() === stem.toLowerCase()) {
-			const directory = relativePath.slice(0, relativePath.lastIndexOf("/"));
-			return `${directory}/${basename(entry, entryExtension)}${extension}`;
-		}
-	}
-
-	return relativePath;
+/** Unreal path -> published asset path for this script's asset root. */
+function convertUnrealPathToRelative(
+	unrealPath: string | null | undefined,
+): string | null {
+	return assetPath(unrealPath, ASSETS_PATH);
 }
 
 function getElementName(elementId: number | undefined): string {
@@ -232,13 +171,21 @@ const WEAPON_TYPE_ICON_FILES: Record<number, string> = {
 };
 
 function getWeaponTypeIcon(weaponTypeId: number | undefined): string | null {
-	const file = weaponTypeId === undefined ? undefined : WEAPON_TYPE_ICON_FILES[weaponTypeId];
+	const file =
+		weaponTypeId === undefined
+			? undefined
+			: WEAPON_TYPE_ICON_FILES[weaponTypeId];
 	if (!file) return null;
-	return fixFilePathCapitalization(`/wuwa-assets/UI/UIResources/Common/Image/Com/Icon/${file}`);
+	return fixFilePathCapitalization(
+		`/wuwa-assets/UI/UIResources/Common/Image/Com/Icon/${file}`,
+		ASSETS_PATH,
+	);
 }
 
 /** Group chain nodes by GroupId, sorted by GroupIndex. */
-function buildChainData(resonantChainData: ResonantChainNode[]): Map<number, ResonantChainNode[]> {
+function buildChainData(
+	resonantChainData: ResonantChainNode[],
+): Map<number, ResonantChainNode[]> {
 	const chains = new Map<number, ResonantChainNode[]>();
 	for (const node of resonantChainData) {
 		const groupId = node.GroupId;
@@ -266,7 +213,10 @@ function getChainInfo(
 	};
 }
 
-function getElementIcons(elementId: number | undefined, elementInfoData: ElementInfo[]): ElementIcons {
+function getElementIcons(
+	elementId: number | undefined,
+	elementInfoData: ElementInfo[],
+): ElementIcons {
 	for (const element of elementInfoData) {
 		if (element.Id === elementId) {
 			return {
@@ -286,7 +236,8 @@ async function compileCharacterData(): Promise<void> {
 	const roleInfoData = await loadJson<RoleInfo[]>(ROLE_INFO_PATH);
 	const propertyData = await loadJson<unknown[]>(PROPERTY_INDEX_PATH);
 	const elementInfoData = await loadJson<ElementInfo[]>(ELEMENT_INFO_PATH);
-	const resonantChainData = await loadJson<ResonantChainNode[]>(RESONANT_CHAIN_PATH);
+	const resonantChainData =
+		await loadJson<ResonantChainNode[]>(RESONANT_CHAIN_PATH);
 
 	if (!multitextData || !roleInfoData || !propertyData || !elementInfoData) {
 		console.log("Error: Failed to load one or more required files");
@@ -352,11 +303,16 @@ async function compileCharacterData(): Promise<void> {
 		});
 		processed += 1;
 
-		console.log(`Processed: ${characterName} (ID: ${roleId}) - ${element} - ${weaponType}`);
+		console.log(
+			`Processed: ${characterName} (ID: ${roleId}) - ${element} - ${weaponType}`,
+		);
 	}
 
 	console.log(`\nWriting ${processed} characters to ${OUTPUT_PATH}...`);
-	await Bun.write(OUTPUT_PATH, `${JSON.stringify(characterList, null, "\t")}\n`);
+	await Bun.write(
+		OUTPUT_PATH,
+		`${JSON.stringify(characterList, null, "\t")}\n`,
+	);
 
 	console.log(`✓ Successfully compiled character data to ${OUTPUT_PATH}`);
 	console.log(`  Total characters: ${processed}`);

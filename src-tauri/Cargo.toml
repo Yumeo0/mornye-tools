@@ -36,6 +36,9 @@ parking_lot = "0.12"
 pcap-file = "2"
 rsa = { version = "0.9.10", features = ["pem"] }
 sha2 = "0.10"
+# Save timestamps (`account.json`). Already in the tree via tauri's
+# cookie/plist dependencies; used for RFC3339 formatting only.
+time = { version = "0.3", features = ["formatting"] }
 
 [target.'cfg(target_os = "linux")'.dependencies]
 libc = "0.2"

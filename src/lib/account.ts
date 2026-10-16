@@ -3,7 +3,6 @@
 // of truth; the UI only reads it here and writes equipment overrides.
 
 import { invoke } from "@tauri-apps/api/core";
-import { listen } from "@tauri-apps/api/event";
 
 export type StatKey =
 	| "hpFlat"
@@ -127,7 +126,7 @@ export const STAT_LABELS: Record<StatKey, string> = {
 };
 
 export function statLabel(key: StatKey): string {
-	return STAT_LABELS[key] ?? key;
+	return STAT_LABELS[key];
 }
 
 /** Format a display value for a stat key (percent -> "6.3%"). */
@@ -135,6 +134,13 @@ export function formatStatValue(key: StatKey, value: number): string {
 	const percent = PERCENT_STATS.has(key);
 	const text = Number.isInteger(value) ? String(value) : value.toFixed(1);
 	return percent ? `${text}%` : text;
+}
+
+/** `"Label value"` lines for stat props, as used by cards and roll ratings. */
+export function statPropLines(props: EchoProp[]): string[] {
+	return props.map(
+		(prop) => `${statLabel(prop.key)} ${formatStatValue(prop.key, prop.value)}`,
+	);
 }
 
 const PERCENT_STATS = new Set<StatKey>([
@@ -176,10 +182,6 @@ export async function getSnapshot(): Promise<AccountSnapshot> {
 	return invoke<AccountSnapshot>("account_get_snapshot");
 }
 
-export async function getEchoes(): Promise<Echo[]> {
-	return invoke<Echo[]>("account_get_echoes");
-}
-
 /** Add an echo entered by hand; the backend assigns the synthetic instance id. */
 export async function addManualEcho(echo: Echo): Promise<Echo> {
 	return invoke<Echo>("account_add_manual_echo", { echo });
@@ -202,31 +204,6 @@ export async function setEquippedOverride(
 	});
 }
 
-export async function clearEchoOverride(incrId: number): Promise<void> {
-	await invoke("account_clear_echo_override", { incr_id: incrId });
-}
-
-/** Subscribe to `account-updated`; returns an unlisten function. */
-export function onAccountUpdated(
-	callback: (sections: string[]) => void,
-): () => void {
-	let unlisten: (() => void) | null = null;
-	let disposed = false;
-	listen<{ sections: string[] }>("account-updated", (event) => {
-		callback(event.payload?.sections ?? []);
-	}).then((fn) => {
-		if (disposed) {
-			fn();
-		} else {
-			unlisten = fn;
-		}
-	});
-	return () => {
-		disposed = true;
-		unlisten?.();
-	};
-}
-
 export function weaponForResonator(
 	snapshot: AccountSnapshot,
 	roleId: number,
@@ -241,8 +218,4 @@ export function echoesForResonator(
 	return snapshot.echoes
 		.filter((echo) => echo.equippedBy === roleId)
 		.sort((a, b) => (a.slot ?? 99) - (b.slot ?? 99));
-}
-
-export function mainEcho(echoes: Echo[]): Echo | undefined {
-	return echoes.find((echo) => echo.slot === 0);
 }

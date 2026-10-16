@@ -21,8 +21,9 @@
  * Run: bun scripts/compile_weapon_data.ts
  */
 
-import { readdirSync } from "node:fs";
-import { basename, extname, join } from "node:path";
+import { join } from "node:path";
+
+import { assetPath, indexBy, loadJson } from "./lib/compile-data-util";
 
 const SCRIPTS_DIR = import.meta.dirname;
 const REPO_ROOT = join(SCRIPTS_DIR, "..");
@@ -32,7 +33,10 @@ const ASSETS_PATH = join(DATA_DIR, "wuwa-assets");
 
 const MULTITEXT_PATH = join(WUWA_DATA, "Textmaps/en/multi_text/MultiText.json");
 const WEAPON_CONF_PATH = join(WUWA_DATA, "BinData/weapon/weaponconf.json");
-const PROPERTY_INDEX_PATH = join(WUWA_DATA, "BinData/property/propertyindex.json");
+const PROPERTY_INDEX_PATH = join(
+	WUWA_DATA,
+	"BinData/property/propertyindex.json",
+);
 
 const OUTPUT_PATH = join(REPO_ROOT, "src/configs/weapon_data.json");
 
@@ -114,87 +118,23 @@ const KEY_TO_STAT: Record<string, string> = {
 	DamageChangeUltra: "resonanceLiberation",
 };
 
-/** Load a JSON file, reporting the same failures the original compiler did. */
-async function loadJson<T>(filePath: string): Promise<T | null> {
-	try {
-		return (await Bun.file(filePath).json()) as T;
-	} catch (error) {
-		if (error instanceof Error && "code" in error && error.code === "ENOENT") {
-			console.log(`Error: File not found at ${filePath}`);
-		} else {
-			console.log(`Error: Failed to parse ${filePath}`);
-		}
-		return null;
-	}
+/** Unreal path -> published asset path for this script's asset root. */
+function convertUnrealPathToRelative(
+	unrealPath: string | null | undefined,
+): string | null {
+	return assetPath(unrealPath, ASSETS_PATH);
 }
 
-/**
- * Index 300k+ MultiText entries by id. The first entry wins, matching the
- * linear scan this replaces.
- */
-function indexBy<T, K>(entries: T[], key: (entry: T) => K | undefined): Map<K, T> {
-	const index = new Map<K, T>();
-	for (const entry of entries) {
-		const id = key(entry);
-		if (id === undefined || id === null) continue;
-		if (!index.has(id)) index.set(id, entry);
-	}
-	return index;
-}
-
-// Directory listings are stable for the duration of a run, so read each one once.
-const directoryCache = new Map<string, string[]>();
-
-function listDirectory(dir: string): string[] {
-	const cached = directoryCache.get(dir);
-	if (cached) return cached;
-	let entries: string[];
-	try {
-		entries = readdirSync(dir);
-	} catch {
-		entries = [];
-	}
-	directoryCache.set(dir, entries);
-	return entries;
-}
-
-/**
- * Some asset files have different capitalization than the data references, so
- * check the real directory listing and adopt the on-disk stem.
- */
-function fixFilePathCapitalization(relativePath: string | null): string | null {
-	if (!relativePath) return null;
-	const filePath = join(ASSETS_PATH, relativePath.replace("/wuwa-assets/", ""));
-	const parentDir = join(filePath, "..");
-	const extension = extname(filePath);
-	const stem = basename(filePath, extension);
-
-	// Compare stems only: the published extension (.webp) differs from the
-	// source files on disk (.png).
-	for (const entry of listDirectory(parentDir)) {
-		const entryExtension = extname(entry);
-		if (basename(entry, entryExtension).toLowerCase() === stem.toLowerCase()) {
-			const directory = relativePath.slice(0, relativePath.lastIndexOf("/"));
-			return `${directory}/${basename(entry, entryExtension)}${extension}`;
-		}
-	}
-	return relativePath;
-}
-
-function convertUnrealPathToRelative(unrealPath: string | null | undefined): string | null {
-	if (!unrealPath) return null;
-	let result = unrealPath.replace("/Game/Aki/", "");
-	if (result.includes(".")) result = result.slice(0, result.lastIndexOf("."));
-	result = `${result}.webp`;
-	return fixFilePathCapitalization(`/wuwa-assets/${result}`);
-}
-
-function statFor(propKey: string | undefined, isRatio: boolean): string | undefined {
+function statFor(
+	propKey: string | undefined,
+	isRatio: boolean,
+): string | undefined {
 	if (propKey === undefined) return undefined;
 	if (Object.hasOwn(KEY_TO_STAT_FLAT, propKey)) {
 		return isRatio ? KEY_TO_STAT_PERCENT[propKey] : KEY_TO_STAT_FLAT[propKey];
 	}
-	if (Object.hasOwn(KEY_TO_STAT_PERCENT, propKey)) return KEY_TO_STAT_PERCENT[propKey];
+	if (Object.hasOwn(KEY_TO_STAT_PERCENT, propKey))
+		return KEY_TO_STAT_PERCENT[propKey];
 	return Object.hasOwn(KEY_TO_STAT, propKey) ? KEY_TO_STAT[propKey] : undefined;
 }
 
@@ -209,14 +149,18 @@ function round3(value: number): number {
  * file differ on those lines, so restore it for the ratio fields only.
  */
 function withPythonFloatRatios(json: string): string {
-	return json.replace(/"value": (\d+)(,\n(\t+)"is_ratio": true)/g, '"value": $1.0$2');
+	return json.replace(
+		/"value": (\d+)(,\n(\t+)"is_ratio": true)/g,
+		'"value": $1.0$2',
+	);
 }
 
 async function compileWeaponData(): Promise<void> {
 	console.log("Loading weapon tables...");
 	const multitextData = await loadJson<MultiTextEntry[]>(MULTITEXT_PATH);
 	const weaponData = await loadJson<WeaponConf[]>(WEAPON_CONF_PATH);
-	const propertyData = await loadJson<PropertyIndexEntry[]>(PROPERTY_INDEX_PATH);
+	const propertyData =
+		await loadJson<PropertyIndexEntry[]>(PROPERTY_INDEX_PATH);
 
 	if (!multitextData || !weaponData || !propertyData) {
 		console.log("Error: Failed to load one or more required files");
@@ -231,7 +175,10 @@ async function compileWeaponData(): Promise<void> {
 	const unmappedSecondary: unknown[][] = [];
 	for (const weapon of weaponData) {
 		const itemId = weapon.ItemId;
-		const name = weapon.WeaponName === undefined ? undefined : textById.get(weapon.WeaponName)?.Content;
+		const name =
+			weapon.WeaponName === undefined
+				? undefined
+				: textById.get(weapon.WeaponName)?.Content;
 		if (!itemId || !name) continue;
 
 		const first = weapon.FirstPropId ?? {};
@@ -264,11 +211,16 @@ async function compileWeaponData(): Promise<void> {
 	}
 
 	if (unmappedSecondary.length > 0) {
-		console.log(`WARNING unmapped weapon secondary props: ${JSON.stringify(unmappedSecondary.slice(0, 20))}`);
+		console.log(
+			`WARNING unmapped weapon secondary props: ${JSON.stringify(unmappedSecondary.slice(0, 20))}`,
+		);
 	}
 
 	console.log(`Writing ${weapons.length} weapons to ${OUTPUT_PATH}...`);
-	await Bun.write(OUTPUT_PATH, `${withPythonFloatRatios(JSON.stringify(weapons, null, "\t"))}\n`);
+	await Bun.write(
+		OUTPUT_PATH,
+		`${withPythonFloatRatios(JSON.stringify(weapons, null, "\t"))}\n`,
+	);
 	console.log(`Successfully wrote ${OUTPUT_PATH}`);
 }
 

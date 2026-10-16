@@ -4,7 +4,8 @@
 // new stats). It normalises into a view model so the card renders a single
 // way.
 
-import { type Echo, formatStatValue, statLabel } from "@/lib/account";
+import { type Echo, statPropLines } from "@/lib/account";
+import { echoSetsFor } from "@/lib/catalog";
 import { findEchoById } from "@/lib/rating";
 
 export interface OverlayEchoView {
@@ -50,30 +51,20 @@ export function splitFollowTarget(
  * Unrelated entries pass through unchanged.
  */
 export function retargetPendingDiscard(
-	pendingIncrId: number | null,
+	pendingIncrId: number,
 	split: EchoSplitPayload,
-): number | null {
-	if (pendingIncrId === null) return null;
+): number {
 	const involved =
 		pendingIncrId === split.operated.incrId ||
 		(split.remainder !== null && pendingIncrId === split.remainder.incrId);
 	return involved ? split.operated.incrId : pendingIncrId;
 }
 
-/** `"Label value"` lines for the card's stat sections. */
-function propLines(props: Echo["mainProps"]): string[] {
-	return props.map(
-		(prop) => `${statLabel(prop.key)} ${formatStatValue(prop.key, prop.value)}`,
-	);
-}
-
 /** Sonata sets of the echo instance (`setId`), else all possible sets. */
 function setNamesForEcho(echo: Echo): string[] {
 	const entry = findEchoById(echo.monsterId);
 	if (!entry) return [];
-	const sets = entry.echo_sets ?? [];
-	const matching = sets.filter((set) => set.id === echo.setId);
-	return (matching.length > 0 ? matching : sets).map((set) => set.name);
+	return echoSetsFor(entry, echo.setId).map((set) => set.name);
 }
 
 /** View model for the exact echo from `echo-detected`. */
@@ -81,8 +72,8 @@ export function viewFromEcho(echo: Echo): OverlayEchoView {
 	return {
 		name: findEchoById(echo.monsterId)?.echo_name ?? `Echo ${echo.monsterId}`,
 		level: `+${echo.level}`,
-		mainStats: propLines(echo.mainProps),
-		subStats: propLines(echo.subProps),
+		mainStats: statPropLines(echo.mainProps),
+		subStats: statPropLines(echo.subProps),
 		setNames: setNamesForEcho(echo),
 	};
 }

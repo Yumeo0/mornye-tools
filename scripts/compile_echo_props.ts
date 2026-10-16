@@ -29,9 +29,18 @@ const REPO_ROOT = join(SCRIPTS_DIR, "..");
 const DATA_DIR = join(REPO_ROOT, "data");
 const WUWA_DATA = join(DATA_DIR, "wuwa-data");
 
-const MAIN_PROP_ITEM_PATH = join(WUWA_DATA, "BinData/phantom/phantommainpropitem.json");
-const SUB_PROPERTY_PATH = join(WUWA_DATA, "BinData/phantom/phantomsubproperty.json");
-const PROPERTY_INDEX_PATH = join(WUWA_DATA, "BinData/property/propertyindex.json");
+const MAIN_PROP_ITEM_PATH = join(
+	WUWA_DATA,
+	"BinData/phantom/phantommainpropitem.json",
+);
+const SUB_PROPERTY_PATH = join(
+	WUWA_DATA,
+	"BinData/phantom/phantomsubproperty.json",
+);
+const PROPERTY_INDEX_PATH = join(
+	WUWA_DATA,
+	"BinData/property/propertyindex.json",
+);
 
 const OUTPUT_PATH = join(REPO_ROOT, "src/configs/echo_props.json");
 
@@ -102,9 +111,15 @@ function hasOwn(source: Record<string, string>, key: string): boolean {
 }
 
 /** Map a (propertyindex.Key, AddType) pair to a calculator stat key. */
-function statFor(propKey: string | undefined, addType: number | undefined): string | undefined {
+function statFor(
+	propKey: string | undefined,
+	addType: number | undefined,
+): string | undefined {
 	if (propKey === undefined) return undefined;
-	if (hasOwn(KEY_TO_STAT_FLAT, propKey) || hasOwn(KEY_TO_STAT_PERCENT, propKey)) {
+	if (
+		hasOwn(KEY_TO_STAT_FLAT, propKey) ||
+		hasOwn(KEY_TO_STAT_PERCENT, propKey)
+	) {
 		if (addType === 1) return KEY_TO_STAT_FLAT[propKey];
 		if (addType === 2) return KEY_TO_STAT_PERCENT[propKey];
 		return undefined;
@@ -129,7 +144,9 @@ function serializeIdMaps(sections: [string, Map<string, string>][]): string {
 			lines.push(`\t${JSON.stringify(name)}: {`);
 			items.forEach(([key, value], index) => {
 				const comma = index < items.length - 1 ? "," : "";
-				lines.push(`\t\t${JSON.stringify(key)}: ${JSON.stringify(value)}${comma}`);
+				lines.push(
+					`\t\t${JSON.stringify(key)}: ${JSON.stringify(value)}${comma}`,
+				);
 			});
 			lines.push("\t}");
 		}
@@ -143,7 +160,8 @@ async function compileEchoProps(): Promise<void> {
 	console.log("Loading property tables...");
 	const mainPropItemData = await readJson<PropItem[]>(MAIN_PROP_ITEM_PATH);
 	const subPropData = await readJson<PropItem[]>(SUB_PROPERTY_PATH);
-	const propertyData = await readJson<PropertyIndexEntry[]>(PROPERTY_INDEX_PATH);
+	const propertyData =
+		await readJson<PropertyIndexEntry[]>(PROPERTY_INDEX_PATH);
 
 	const keyById = new Map<number | undefined, string | undefined>();
 	for (const entry of propertyData) {
@@ -183,9 +201,13 @@ async function compileEchoProps(): Promise<void> {
 		}
 	}
 
-	console.log(`Mapped ${main.size} main prop ids, ${sub.size} sub prop entries`);
-	if (unmappedMain.length > 0) console.log(`WARNING unmapped main props: ${JSON.stringify(unmappedMain)}`);
-	if (unmappedSub.length > 0) console.log(`WARNING unmapped sub props: ${JSON.stringify(unmappedSub)}`);
+	console.log(
+		`Mapped ${main.size} main prop ids, ${sub.size} sub prop entries`,
+	);
+	if (unmappedMain.length > 0)
+		console.log(`WARNING unmapped main props: ${JSON.stringify(unmappedMain)}`);
+	if (unmappedSub.length > 0)
+		console.log(`WARNING unmapped sub props: ${JSON.stringify(unmappedSub)}`);
 
 	await Bun.write(
 		OUTPUT_PATH,

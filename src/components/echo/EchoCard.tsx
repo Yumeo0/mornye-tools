@@ -1,82 +1,37 @@
 import type { ReactNode } from "react";
 import { SubStatRollBar } from "@/components/echo/SubStatRollBar";
-import { type Echo, formatStatValue, statLabel } from "@/lib/account";
 import {
-	isExcludedCharacter,
+	type Echo,
+	formatStatValue,
+	statLabel,
+	statPropLines,
+} from "@/lib/account";
+import {
+	type CatalogCharacter,
+	type CatalogEcho,
+	catalogCharacters,
+	charactersById,
+	type EchoSet,
+	echoesByMonsterId,
+	echoSetsFor,
+	sonataIcon128,
+} from "@/lib/catalog";
+import {
 	ratingColor,
 	statIconAsset,
 	subStatRoll,
 	subStatTierColor,
 } from "@/lib/stats";
-import characterData from "../../configs/character_data.json";
-import echoData from "../../configs/echo_data.json";
 
-export interface CharacterEntry {
-	character_id: number;
-	character_name: string;
-	icon_head_256: string;
-}
-
-interface EchoSetEntry {
-	id: number;
-	name: string;
-	icon: string;
-}
-
-export interface EchoEntry {
-	echo_name: string;
-	echo_id: number;
-	monster_id?: number | null;
-	echo_cost?: number;
-	icon_middle?: string;
-	echo_sets?: EchoSetEntry[];
-}
-
-/** Deduplicate characters, drop excluded forms, and sort by name. */
-export const allCharacters: CharacterEntry[] = [
-	...new Map(
-		(characterData as CharacterEntry[])
-			.filter((character) => !isExcludedCharacter(character.character_id))
-			.map((character) => [character.character_id, character]),
-	).values(),
-].sort((a, b) => a.character_name.localeCompare(b.character_name));
-
-export const charactersById = new Map(
-	allCharacters.map((character) => [character.character_id, character]),
+/** Every character, deduplicated and sorted by name. */
+export const allCharacters: CatalogCharacter[] = [...catalogCharacters].sort(
+	(a, b) => a.character_name.localeCompare(b.character_name),
 );
-
-// Catalog entries by calculator id (`MonsterId`). Entries may repeat per set;
-// merge them so each echo exposes every possible sonata.
-const echoesByMonsterId = new Map<number, EchoEntry>();
-for (const echo of echoData as EchoEntry[]) {
-	if (echo.monster_id == null) continue;
-	const existing = echoesByMonsterId.get(echo.monster_id);
-	if (!existing) {
-		echoesByMonsterId.set(echo.monster_id, {
-			...echo,
-			echo_sets: [...(echo.echo_sets ?? [])],
-		});
-		continue;
-	}
-	for (const set of echo.echo_sets ?? []) {
-		if (!existing.echo_sets?.some((s) => s.id === set.id)) {
-			existing.echo_sets = [...(existing.echo_sets ?? []), set];
-		}
-	}
-}
 
 /** Every echo species (merged across sets), sorted by name. */
-export const allEchoSpecies: EchoEntry[] = [...echoesByMonsterId.values()].sort(
-	(a, b) => a.echo_name.localeCompare(b.echo_name),
-);
-
-/** The sonata icon assets only ship in the IconElementAttri128 resolution. */
-export function sonataIcon128(icon: string): string {
-	return icon.replace(
-		"IconElementAttri/T_IconElementAttri",
-		"IconElementAttri128/T_IconElementAttri128_",
-	);
-}
+export const allEchoSpecies: CatalogEcho[] = [
+	...echoesByMonsterId.values(),
+].sort((a, b) => a.echo_name.localeCompare(b.echo_name));
 
 export function echoKey(echo: Echo): string {
 	return `incr:${echo.incrId}`;
@@ -97,10 +52,10 @@ export function echoCost(echo: Echo): number | undefined {
 }
 
 /** The sonata set of the echo instance (`set_id`), falling back to the first. */
-export function echoSet(echo: Echo): EchoSetEntry | undefined {
-	const sets = echoesByMonsterId.get(echo.monsterId)?.echo_sets;
-	if (!sets?.length) return undefined;
-	return sets.find((set) => set.id === echo.setId) ?? sets[0];
+export function echoSet(echo: Echo): EchoSet | undefined {
+	const entry = echoesByMonsterId.get(echo.monsterId);
+	if (!entry) return undefined;
+	return echoSetsFor(entry, echo.setId)[0];
 }
 
 /** Plain-text summary of an echo, used by the right-click "copy info" menu. */
@@ -114,16 +69,9 @@ export function echoInfoText(
 	const lines = [
 		`${name} +${echo.level}${stack}${set ? ` · ${set.name}` : ""}`,
 	];
-	const format = (props: Echo["mainProps"]) =>
-		props
-			.map(
-				(prop) =>
-					`${statLabel(prop.key)} ${formatStatValue(prop.key, prop.value)}`,
-			)
-			.join(" / ");
-	const mains = format(echo.mainProps);
+	const mains = statPropLines(echo.mainProps).join(" / ");
 	if (mains) lines.push(`Main: ${mains}`);
-	const subs = format(echo.subProps);
+	const subs = statPropLines(echo.subProps).join(" / ");
 	if (subs) lines.push(`Subs: ${subs}`);
 	if (roll) {
 		lines.push(`RV ${roll.rating}% (${roll.character.character_name})`);
@@ -133,7 +81,7 @@ export function echoInfoText(
 
 export function equippedCharacter(
 	equippedBy: number | null | undefined,
-): CharacterEntry | undefined {
+): CatalogCharacter | undefined {
 	if (equippedBy == null) return undefined;
 	return charactersById.get(equippedBy);
 }

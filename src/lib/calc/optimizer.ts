@@ -189,10 +189,7 @@ const session = new OptimizerCompileSession();
 
 /** Cancel the run in flight, if any (no-op otherwise). */
 export function cancelOptimizerRun(): void {
-	if (!session.hasActiveRun()) return;
-	session.stop();
-	cnclActOptWr();
-	rstOptWrkrPo();
+	if (session.hasActiveRun()) disposeOptimizerRun();
 }
 
 /** Release optimizer resources: stop the pool and terminate the compile worker. */
@@ -281,6 +278,7 @@ export async function runOptimizerBaseline(
 				type: "baseline",
 				runId: -1,
 				payload,
+				// A build without a main echo (findIndex -> -1) scores from slot 0.
 				mainIndex: Math.max(0, mainIndex),
 				setConds: cloneSntSet(DEF_SET_COND),
 			} satisfies OptCompInMsg);
@@ -394,28 +392,29 @@ const ELEMENT_MAIN_KEYS = new Set<string>([
 ]);
 
 /** Echo main-stat keys -> the core optimizer's coarse filter buckets. */
+const BUCKET_BY_MAIN_KEY: Record<string, string> = {
+	atkPercent: "atk%",
+	hpPercent: "hp%",
+	defPercent: "def%",
+	energyRegen: "er",
+	critRate: "cr",
+	critDmg: "cd",
+	healingBonus: "healing",
+};
+
+/** Core optimizer filter bucket -> echo main-stat key (inverse of the above). */
+const MAIN_KEY_BY_BUCKET: Record<string, string> = Object.fromEntries(
+	Object.entries(BUCKET_BY_MAIN_KEY).map(([key, bucket]) => [bucket, key]),
+);
+
 function statKeyBucket(key: string): string | null {
-	if (key === "atkPercent") return "atk%";
-	if (key === "hpPercent") return "hp%";
-	if (key === "defPercent") return "def%";
-	if (key === "energyRegen") return "er";
-	if (key === "critRate") return "cr";
-	if (key === "critDmg") return "cd";
-	if (key === "healingBonus") return "healing";
-	if (ELEMENT_MAIN_KEYS.has(key)) return "bonus";
-	return null;
+	return (
+		BUCKET_BY_MAIN_KEY[key] ?? (ELEMENT_MAIN_KEYS.has(key) ? "bonus" : null)
+	);
 }
 
-/** Core optimizer filter keys -> echo main-stat keys (`bonus` is the element). */
 function filterStatKey(filter: string): string | null {
-	if (filter === "atk%") return "atkPercent";
-	if (filter === "hp%") return "hpPercent";
-	if (filter === "def%") return "defPercent";
-	if (filter === "er") return "energyRegen";
-	if (filter === "cr") return "critRate";
-	if (filter === "cd") return "critDmg";
-	if (filter === "healing") return "healingBonus";
-	return null;
+	return MAIN_KEY_BY_BUCKET[filter] ?? null;
 }
 
 /** Bucket allowed set ids into the core's piece-count selector shape. */
@@ -609,26 +608,19 @@ export function selectOptimizerCandidates(params: {
 	}
 
 	// Prefer dropping the lowest-ranked optional echoes when the row space
-	// still overflows (a tiny slice settles this in one or two passes).
+	// still overflows: `ranked` is best-first, so its tail is the drop order.
 	const keep = [...byUid.values()];
 	const requiredUids = new Set(required.map((echo) => echo.uid));
+	const droppable = ranked.filter((echo) => !requiredUids.has(echo.uid));
 	while (
 		keep.length > 5 &&
 		countOptCombos(keep, params.settings.lockedMainEchoId, "combinadic") >
 			MAX_SEARCH_ROWS
 	) {
-		let worstIndex = -1;
-		let worstRank = -1;
-		for (let index = 0; index < keep.length; index += 1) {
-			if (requiredUids.has(keep[index].uid)) continue;
-			const rank = ranked.indexOf(keep[index]);
-			if (rank > worstRank) {
-				worstRank = rank;
-				worstIndex = index;
-			}
-		}
-		if (worstIndex < 0) break;
-		keep.splice(worstIndex, 1);
+		const drop = droppable.pop();
+		if (!drop) break;
+		const index = keep.findIndex((echo) => echo.uid === drop.uid);
+		if (index >= 0) keep.splice(index, 1);
 	}
 
 	const echoes = keep;

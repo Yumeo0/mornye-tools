@@ -9,9 +9,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use sha2::{Digest, Sha256};
-use tauri::{AppHandle, Manager};
+use tauri::AppHandle;
 
-const KEY_FILE: &str = "client_private_key.pem";
 /// Repository-relative path of the bundled key. Resources outside the Tauri
 /// crate are bundled under `_up_/`; see `config.rs`.
 const KEY_RELATIVE_PATH: &str = "data/client_private_key.pem";
@@ -30,19 +29,9 @@ pub struct KeyInfo {
 /// Resolve the bundled key path, preferring the dev source tree then the
 /// packaged resource directory.
 pub fn key_path(app: &AppHandle) -> Option<PathBuf> {
-    let mut candidates: Vec<PathBuf> = Vec::new();
-    if let Ok(manifest_dir) = std::env::var("CARGO_MANIFEST_DIR") {
-        if let Some(project_root) = PathBuf::from(manifest_dir).parent() {
-            candidates.push(project_root.join(KEY_RELATIVE_PATH));
-        }
-    }
-    if let Ok(resource_dir) = app.path().resource_dir() {
-        // Resources outside the Tauri crate are bundled under `_up_/`.
-        candidates.push(resource_dir.join("_up_").join(KEY_RELATIVE_PATH));
-        candidates.push(resource_dir.join(KEY_RELATIVE_PATH));
-        candidates.push(resource_dir.join(KEY_FILE));
-    }
-    candidates.into_iter().find(|p| p.exists())
+    crate::config::resource_candidates(app, [KEY_RELATIVE_PATH])
+        .into_iter()
+        .find(|path| path.exists())
 }
 
 /// Load and validate the bundled key. Returns the PEM contents on success.
@@ -52,7 +41,8 @@ pub fn load_bundled_key(app: &AppHandle) -> Result<String, String> {
             "bundled RSA key not found. Expected {KEY_RELATIVE_PATH} next to the app resource directory."
         )
     })?;
-    let pem = fs::read_to_string(&path).map_err(|e| format!("cannot read {}: {e}", path.display()))?;
+    let pem =
+        fs::read_to_string(&path).map_err(|e| format!("cannot read {}: {e}", path.display()))?;
     validate_pem(&pem)?;
     Ok(pem)
 }
@@ -103,20 +93,18 @@ pub fn validate_pem(pem: &str) -> Result<(), String> {
     let key = rsa::RsaPrivateKey::from_pkcs1_pem(pem)
         .map_err(|e| format!("invalid PKCS#1 PEM RSA key: {e}"))?;
     if key.n().bits() != 2048 {
-        return Err(format!("expected a 2048-bit RSA key, got {} bits", key.n().bits()));
+        return Err(format!(
+            "expected a 2048-bit RSA key, got {} bits",
+            key.n().bits()
+        ));
     }
     Ok(())
 }
 
-/// Parse a session token: 64 hex chars, or the 32 ASCII chars used by msg 111.
+/// Parse a cached session key: 64 hex chars, as written by
+/// [`write_session_key`].
 pub fn parse_key(text: &str) -> Result<[u8; 32], String> {
-    let s = text.trim();
-    if s.len() == 32 && s.bytes().all(|b| b.is_ascii()) {
-        let mut out = [0u8; 32];
-        out.copy_from_slice(s.as_bytes());
-        return Ok(out);
-    }
-    let clean: String = s.chars().filter(|c| !c.is_whitespace()).collect();
+    let clean: String = text.trim().chars().filter(|c| !c.is_whitespace()).collect();
     if clean.len() == 64 && clean.chars().all(|c| c.is_ascii_hexdigit()) {
         let mut out = [0u8; 32];
         for (i, byte) in out.iter_mut().enumerate() {
@@ -124,7 +112,7 @@ pub fn parse_key(text: &str) -> Result<[u8; 32], String> {
         }
         return Ok(out);
     }
-    Err("expected 64 hex chars or 32 ASCII chars".into())
+    Err("expected 64 hex chars".into())
 }
 
 pub fn hex(key: &[u8; 32]) -> String {
@@ -161,12 +149,11 @@ mod tests {
     use super::*;
 
     #[test]
-    fn parses_hex_and_ascii_tokens() {
+    fn parses_hex_tokens() {
         let hex_key = "ab".repeat(32);
         assert_eq!(parse_key(&hex_key).unwrap(), [0xab; 32]);
-        let ascii = "a".repeat(32);
-        assert_eq!(parse_key(&ascii).unwrap(), [b'a'; 32]);
         assert!(parse_key("nope").is_err());
+        assert!(parse_key(&"a".repeat(32)).is_err());
     }
 
     #[test]

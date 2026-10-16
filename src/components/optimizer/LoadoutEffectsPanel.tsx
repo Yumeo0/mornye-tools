@@ -12,6 +12,7 @@ import {
 } from "@wuwacalc/core/data/catalog/gameDataService";
 import { getWpnsById } from "@wuwacalc/core/data/gameData/weapons/weaponDataStore";
 import type { ResRuntime } from "@wuwacalc/core/domain/entities/runtime";
+import { isNoWeaponId } from "@wuwacalc/core/domain/entities/runtime";
 import type { SourceState } from "@wuwacalc/core/domain/gameData/contracts";
 import { readRtPath } from "@wuwacalc/core/domain/gameData/runtimePath";
 import {
@@ -26,10 +27,7 @@ import {
 	isStateEnabled,
 	isStateVisible,
 } from "@wuwacalc/core/engine/services/sourceStateService";
-import {
-	type FilterOption,
-	FilterSelect,
-} from "@/components/tabs/FilterControls";
+import { type FilterOption, FilterSelect } from "@/components/filters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -105,10 +103,9 @@ function buildSections(roleId: string, runtime: ResRuntime): EffectSection[] {
 	}
 
 	const weaponId = runtime.build.weapon.id;
-	const weapon =
-		weaponId && weaponId !== "0"
-			? visibleStates("weapon", weaponId, runtime)
-			: [];
+	const weapon = !isNoWeaponId(weaponId)
+		? visibleStates("weapon", weaponId, runtime)
+		: [];
 
 	return [
 		{ id: "inherent", label: "Inherent Skills", states: inherent },
@@ -198,6 +195,14 @@ function EffectDescription({ text }: { text: string }) {
 	);
 }
 
+/** First argument that is a number; `undefined` when none is. */
+function firstNumber(...values: unknown[]): number | undefined {
+	for (const value of values) {
+		if (typeof value === "number") return value;
+	}
+	return undefined;
+}
+
 /** Kind-specific editor for one state: switch, dropdown or number field. */
 function EffectControl({
 	state,
@@ -243,11 +248,8 @@ function EffectControl({
 	const min = state.min ?? 0;
 	const dynamicMax = srcSttNumMax(runtime, runtime, state, runtime);
 	const max =
-		typeof dynamicMax === "number"
-			? dynamicMax
-			: typeof state.maxValue === "number"
-				? state.maxValue
-				: Math.max(min, Number(value) || 0);
+		firstNumber(dynamicMax, state.maxValue) ??
+		Math.max(min, Number(value) || 0);
 	const numeric = Number(value);
 	return (
 		<Input
@@ -391,8 +393,7 @@ export function LoadoutEffectsPanel({
 
 	const sections = buildSections(roleId, runtime);
 	const weaponId = runtime.build.weapon.id;
-	const weapon =
-		weaponId && weaponId !== "0" ? getWpnsById()[weaponId] : undefined;
+	const weapon = !isNoWeaponId(weaponId) ? getWpnsById()[weaponId] : undefined;
 	const weaponParams = passiveParams(
 		weapon?.passive.params,
 		runtime.build.weapon.rank,

@@ -40,10 +40,10 @@ pub fn game_processes() -> Vec<ProcInfo> {
                 .to_string()
         };
 
-        let is_client = exe_name.contains("Client-Win64-Shipping")
-            || comm.starts_with("Client-Win64-Sh");
-        let is_launcher = exe_name.eq_ignore_ascii_case("Wuthering Waves.exe")
-            || comm == "Wuthering Waves";
+        let is_client =
+            exe_name.contains("Client-Win64-Shipping") || comm.starts_with("Client-Win64-Sh");
+        let is_launcher =
+            exe_name.eq_ignore_ascii_case("Wuthering Waves.exe") || comm == "Wuthering Waves";
         if !(is_client || is_launcher) {
             continue;
         }

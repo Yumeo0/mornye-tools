@@ -18,84 +18,66 @@ use crate::account::store::AccountStore;
 use crate::account::AccountState;
 use crate::sniffer::{FuncValueChange, SnifferState};
 
-// Message ids from `data/wuwa-protos/packetIds.json`.
-pub const PB_GET_ROLE_LIST_RESPONSE: u16 = 25557;
-pub const PB_GET_ROLE_LIST_NOTIFY: u16 = 18368;
-pub const PB_ROLE_ACTIVE_NOTIFY: u16 = 27050;
-pub const PB_UP_LEVEL_ROLE_RESPONSE: u16 = 17222;
-pub const PB_ROLE_EXP_NOTIFY: u16 = 27992;
-pub const PB_ROLE_SKILL_LEVEL_NOTIFY: u16 = 17396;
-pub const PB_UP_LEVEL_SKILL_RESPONSE: u16 = 17988;
-pub const RESONANT_CHAIN_UNLOCK_RESPONSE: u16 = 29448;
-pub const ROLE_CHANGE_NOTIFY: u16 = 28197;
-pub const ROLE_SKILL_QUICK_LEVEL_UP_RESPONSE: u16 = 18822;
-pub const PHANTOM_ITEM_RESPONSE: u16 = 26275;
-pub const PHANTOM_ITEM_UPDATE_NOTIFY: u16 = 28162;
-pub const PHANTOM_ITEM_ADD_NOTIFY: u16 = 17848;
-pub const PHANTOM_ITEM_REMOVE_NOTIFY: u16 = 29775;
-pub const PHANTOM_EQUIP_INFO_NOTIFY: u16 = 15372;
-pub const PHANTOM_LEVEL_UP_RESPONSE: u16 = 22489;
-/// Equipping one echo; splits its stack when it was part of one.
-pub const PHANTOM_PUT_ON_RESPONSE: u16 = 16317;
-/// The "auto equip" recommendation; may split and merge several stacks.
-pub const PHANTOM_AUTO_PUT_RESPONSE: u16 = 19223;
-/// Stat re-roll of an echo; splits its stack when it was part of one.
-pub const PHANTOM_POLISH_RESPONSE: u16 = 16484;
-/// Applying a saved echo loadout; may split and merge several stacks.
-pub const USE_PHANTOM_EQUIP_GROUP_RESPONSE: u16 = 21750;
-pub const WEAPON_ITEM_RESPONSE: u16 = 27089;
-pub const WEAPON_ALL_INFO_NOTIFY: u16 = 19780;
-pub const WEAPON_ADD_NOTIFY: u16 = 18560;
-pub const WEAPON_ITEM_ADD_NOTIFY: u16 = 24339;
-pub const WEAPON_LEVEL_UP_RESPONSE: u16 = 21842;
-pub const WEAPON_BREACH_RESPONSE: u16 = 24159;
-pub const WEAPON_RESON_UP_RESPONSE: u16 = 24490;
-pub const EQUIP_TAKE_ON_RESPONSE: u16 = 28184;
-pub const EQUIP_TAKE_ON_NOTIFY: u16 = 28760;
-pub const PLAYER_BASIC_INFO_GET_RESPONSE: u16 = 22549;
-/// Server push for an item's mark state (lock/discard) change. The overlay
-/// triggers it on purpose (see `press_echo_toggle`) to learn which echo is on
-/// screen and to keep every echo's `FuncValue` current.
-pub const ITEM_FUNC_VALUE_UPDATE_NOTIFY: u16 = 23784;
+// Message ids from `data/wuwa-protos/packetIds.json`. The macro declares the
+// consts and the early-bail-out table from one list, so a new protocol message
+// is registered exactly once.
+macro_rules! protocol_message_ids {
+    ($(
+        $(#[$doc:meta])*
+        $name:ident = $id:literal,
+    )*) => {
+        $( $(#[$doc])* pub const $name: u16 = $id; )*
 
-/// Every message id [`handle_packet`] acts on. Anything else returns before
-/// the account store lock is taken: the vast majority of decoded traffic
-/// (combat, scene sync) never touches the store, and blocking the capture
-/// loop on that mutex risks overflowing the socket buffer - a single lost
-/// frame permanently stalls the passive KCP mirror.
-const HANDLED_MSG_IDS: &[u16] = &[
-    PB_GET_ROLE_LIST_RESPONSE,
-    PB_GET_ROLE_LIST_NOTIFY,
-    PB_ROLE_ACTIVE_NOTIFY,
-    PB_UP_LEVEL_ROLE_RESPONSE,
-    PB_ROLE_EXP_NOTIFY,
-    PB_ROLE_SKILL_LEVEL_NOTIFY,
-    PB_UP_LEVEL_SKILL_RESPONSE,
-    RESONANT_CHAIN_UNLOCK_RESPONSE,
-    ROLE_CHANGE_NOTIFY,
-    ROLE_SKILL_QUICK_LEVEL_UP_RESPONSE,
-    PHANTOM_ITEM_RESPONSE,
-    PHANTOM_ITEM_UPDATE_NOTIFY,
-    PHANTOM_ITEM_ADD_NOTIFY,
-    PHANTOM_ITEM_REMOVE_NOTIFY,
-    PHANTOM_EQUIP_INFO_NOTIFY,
-    PHANTOM_LEVEL_UP_RESPONSE,
-    PHANTOM_PUT_ON_RESPONSE,
-    PHANTOM_AUTO_PUT_RESPONSE,
-    PHANTOM_POLISH_RESPONSE,
-    USE_PHANTOM_EQUIP_GROUP_RESPONSE,
-    WEAPON_ITEM_RESPONSE,
-    WEAPON_ALL_INFO_NOTIFY,
-    WEAPON_ADD_NOTIFY,
-    WEAPON_ITEM_ADD_NOTIFY,
-    WEAPON_LEVEL_UP_RESPONSE,
-    WEAPON_BREACH_RESPONSE,
-    WEAPON_RESON_UP_RESPONSE,
-    EQUIP_TAKE_ON_RESPONSE,
-    EQUIP_TAKE_ON_NOTIFY,
-    PLAYER_BASIC_INFO_GET_RESPONSE,
-    ITEM_FUNC_VALUE_UPDATE_NOTIFY,
-];
+        /// Every message id [`handle_packet`] acts on. Anything else returns
+        /// before the account store lock is taken: the vast majority of
+        /// decoded traffic (combat, scene sync) never touches the store, and
+        /// blocking the capture loop on that mutex risks overflowing the
+        /// socket buffer - a single lost frame permanently stalls the passive
+        /// KCP mirror. The match arms use these consts, so listing an id here
+        /// is what registers it for the early bail-out.
+        const HANDLED_MSG_IDS: &[u16] = &[$($name),*];
+    };
+}
+
+protocol_message_ids! {
+    PB_GET_ROLE_LIST_RESPONSE = 25557,
+    PB_GET_ROLE_LIST_NOTIFY = 18368,
+    PB_ROLE_ACTIVE_NOTIFY = 27050,
+    PB_UP_LEVEL_ROLE_RESPONSE = 17222,
+    PB_ROLE_EXP_NOTIFY = 27992,
+    PB_ROLE_SKILL_LEVEL_NOTIFY = 17396,
+    PB_UP_LEVEL_SKILL_RESPONSE = 17988,
+    RESONANT_CHAIN_UNLOCK_RESPONSE = 29448,
+    ROLE_CHANGE_NOTIFY = 28197,
+    ROLE_SKILL_QUICK_LEVEL_UP_RESPONSE = 18822,
+    PHANTOM_ITEM_RESPONSE = 26275,
+    PHANTOM_ITEM_UPDATE_NOTIFY = 28162,
+    PHANTOM_ITEM_ADD_NOTIFY = 17848,
+    PHANTOM_EQUIP_INFO_NOTIFY = 15372,
+    PHANTOM_LEVEL_UP_RESPONSE = 22489,
+    /// Equipping one echo; splits its stack when it was part of one.
+    PHANTOM_PUT_ON_RESPONSE = 16317,
+    /// The "auto equip" recommendation; may split and merge several stacks.
+    PHANTOM_AUTO_PUT_RESPONSE = 19223,
+    /// Stat re-roll of an echo; splits its stack when it was part of one.
+    PHANTOM_POLISH_RESPONSE = 16484,
+    /// Applying a saved echo loadout; may split and merge several stacks.
+    USE_PHANTOM_EQUIP_GROUP_RESPONSE = 21750,
+    WEAPON_ITEM_RESPONSE = 27089,
+    WEAPON_ALL_INFO_NOTIFY = 19780,
+    WEAPON_ADD_NOTIFY = 18560,
+    WEAPON_ITEM_ADD_NOTIFY = 24339,
+    WEAPON_LEVEL_UP_RESPONSE = 21842,
+    WEAPON_BREACH_RESPONSE = 24159,
+    WEAPON_RESON_UP_RESPONSE = 24490,
+    EQUIP_TAKE_ON_RESPONSE = 28184,
+    EQUIP_TAKE_ON_NOTIFY = 28760,
+    PLAYER_BASIC_INFO_GET_RESPONSE = 22549,
+    /// Server push for an item's mark state (lock/discard) change. The overlay
+    /// triggers it on purpose (see `press_echo_toggle`) to learn which echo is
+    /// on screen and to keep every echo's `FuncValue` current.
+    ITEM_FUNC_VALUE_UPDATE_NOTIFY = 23784,
+}
 
 fn is_handled(msg_id: u16) -> bool {
     HANDLED_MSG_IDS.contains(&msg_id)
@@ -129,17 +111,18 @@ impl ExtractTables {
     /// Load `echo_data.json` (ItemId -> MonsterId) and `echo_props.json`.
     pub fn load(app: &AppHandle) -> Self {
         let mut tables = Self::default();
-        if let Ok(entries) = crate::config::load_json_resource::<Vec<EchoCatalogEntry>>(
-            app,
-            "echo_data.json",
-        ) {
+        if let Ok(entries) =
+            crate::config::load_json_resource::<Vec<EchoCatalogEntry>>(app, "echo_data.json")
+        {
             for entry in entries {
                 if let Some(monster_id) = entry.monster_id {
                     tables.item_to_monster.insert(entry.echo_id, monster_id);
                 }
             }
         }
-        if let Ok(props) = crate::config::load_json_resource::<EchoPropsFile>(app, "echo_props.json") {
+        if let Ok(props) =
+            crate::config::load_json_resource::<EchoPropsFile>(app, "echo_props.json")
+        {
             for (id, key) in props.main {
                 if let (Ok(id), Some(key)) = (id.parse::<i64>(), stat_key_from_str(&key)) {
                     tables.main_props.insert(id, key);
@@ -162,7 +145,11 @@ impl ExtractTables {
     /// Convert one packet prop to an [`EchoProp`].
     fn echo_prop(&self, prop: &pb::PhantomPropInfo, main: bool) -> Option<EchoProp> {
         let prop_id = prop.phantom_prop_id as i64;
-        let table = if main { &self.main_props } else { &self.sub_props };
+        let table = if main {
+            &self.main_props
+        } else {
+            &self.sub_props
+        };
         let key = *table.get(&prop_id)?;
         let raw = prop.value as i64;
         let value = if key.is_percent() {
@@ -243,29 +230,27 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
     let mut split_event: Option<(Echo, Option<Echo>)> = None;
 
     match gp.msg_id {
-        PB_GET_ROLE_LIST_RESPONSE | PB_GET_ROLE_LIST_NOTIFY => {
-            if gp.msg_id == PB_GET_ROLE_LIST_RESPONSE {
-                if let Some(msg) = parse_msg::<pb::PbGetRoleListResponse>(app, gp) {
-                    let list: Vec<Resonator> = msg.role_list.iter().map(role_to_resonator).collect();
-                    if !list.is_empty() {
-                        store.upsert_resonators(list);
-                        sections.push("resonators");
-                    }
-                }
-            } else if let Some(msg) = parse_msg::<pb::PbGetRoleListNotify>(app, gp) {
-                let list: Vec<Resonator> = msg.role_list.iter().map(role_to_resonator).collect();
-                if !list.is_empty() {
-                    store.upsert_resonators(list);
-                    sections.push("resonators");
-                }
+        PB_GET_ROLE_LIST_RESPONSE => {
+            if let Some(msg) = parse_msg::<pb::PbGetRoleListResponse>(app, gp) {
+                upsert_resonators(
+                    &mut store,
+                    &mut sections,
+                    msg.role_list.iter().map(role_to_resonator),
+                );
+            }
+        }
+        PB_GET_ROLE_LIST_NOTIFY => {
+            if let Some(msg) = parse_msg::<pb::PbGetRoleListNotify>(app, gp) {
+                upsert_resonators(
+                    &mut store,
+                    &mut sections,
+                    msg.role_list.iter().map(role_to_resonator),
+                );
             }
         }
         PB_ROLE_ACTIVE_NOTIFY => {
             if let Some(msg) = parse_msg::<pb::PbRoleActiveNotify>(app, gp) {
-                if let Some(role) = msg.role.as_ref() {
-                    store.upsert_resonators(vec![role_to_resonator(role)]);
-                    sections.push("resonators");
-                }
+                upsert_resonators(&mut store, &mut sections, msg.role.iter().map(role_to_resonator));
             }
         }
         PB_UP_LEVEL_ROLE_RESPONSE => {
@@ -286,39 +271,21 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
         }
         PB_ROLE_SKILL_LEVEL_NOTIFY => {
             if let Some(msg) = parse_msg::<pb::PbRoleSkillLevelNotify>(app, gp) {
-                if let Some(skill) = msg.skill_info.as_ref() {
-                    if store.merge_resonator_skill(
-                        msg.role_id as i64,
-                        skill.key as i64,
-                        skill.value,
-                    ) {
-                        sections.push("resonators");
-                    }
-                }
+                merge_skill(&mut store, &mut sections, msg.role_id, msg.skill_info.as_ref());
             }
         }
         PB_UP_LEVEL_SKILL_RESPONSE => {
             if let Some(msg) = parse_msg::<pb::PbUpLevelSkillResponse>(app, gp) {
                 if msg.code == pb::ErrorCode::Success as i32 {
-                    if let Some(skill) = msg.skill_info.as_ref() {
-                        if store.merge_resonator_skill(
-                            msg.role_id as i64,
-                            skill.key as i64,
-                            skill.value,
-                        ) {
-                            sections.push("resonators");
-                        }
-                    }
+                    merge_skill(&mut store, &mut sections, msg.role_id, msg.skill_info.as_ref());
                 }
             }
         }
         RESONANT_CHAIN_UNLOCK_RESPONSE => {
             if let Some(msg) = parse_msg::<pb::ResonantChainUnlockResponse>(app, gp) {
                 if msg.err_code == pb::ErrorCode::Success as i32
-                    && store.raise_resonator_chain(
-                        msg.role_id as i64,
-                        msg.resonant_chain_group_index,
-                    )
+                    && store
+                        .raise_resonator_chain(msg.role_id as i64, msg.resonant_chain_group_index)
                 {
                     sections.push("resonators");
                 }
@@ -326,33 +293,33 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
         }
         ROLE_CHANGE_NOTIFY => {
             if let Some(msg) = parse_msg::<pb::RoleChangeNotify>(app, gp) {
-                if let Some(role) = msg.role_info.as_ref() {
-                    store.upsert_resonators(vec![role_to_resonator(role)]);
-                    sections.push("resonators");
-                }
+                upsert_resonators(
+                    &mut store,
+                    &mut sections,
+                    msg.role_info.iter().map(role_to_resonator),
+                );
             }
         }
         ROLE_SKILL_QUICK_LEVEL_UP_RESPONSE => {
             if let Some(msg) = parse_msg::<pb::RoleSkillQuickLevelUpResponse>(app, gp) {
                 if msg.error_code == pb::ErrorCode::Success as i32 {
-                    if let Some(role) = msg.role_info.as_ref() {
-                        store.upsert_resonators(vec![role_to_resonator(role)]);
-                        sections.push("resonators");
-                    }
+                    upsert_resonators(
+                        &mut store,
+                        &mut sections,
+                        msg.role_info.iter().map(role_to_resonator),
+                    );
                 }
             }
         }
         PHANTOM_ITEM_RESPONSE => {
             if let Some(msg) = parse_msg::<pb::PhantomItemResponse>(app, gp) {
-                let echoes: Vec<Echo> = msg
-                    .phantom_item_list
-                    .iter()
-                    .map(|i| tables.echo_from_item(i))
-                    .collect();
-                if !echoes.is_empty() {
-                    store.upsert_echoes(echoes);
-                    sections.push("echoes");
-                }
+                upsert_echoes(
+                    &mut store,
+                    &mut sections,
+                    msg.phantom_item_list
+                        .iter()
+                        .map(|i| tables.echo_from_item(i)),
+                );
                 if apply_equip_list(&mut store, &msg.equip_info) {
                     sections.push("echoes");
                 }
@@ -375,21 +342,13 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
         }
         PHANTOM_ITEM_ADD_NOTIFY => {
             if let Some(msg) = parse_msg::<pb::PhantomItemAddNotify>(app, gp) {
-                let echoes: Vec<Echo> = msg
-                    .phantom_item_list
-                    .iter()
-                    .map(|i| tables.echo_from_item(i))
-                    .collect();
-                if !echoes.is_empty() {
-                    store.upsert_echoes(echoes);
-                    sections.push("echoes");
-                }
-            }
-        }
-        PHANTOM_ITEM_REMOVE_NOTIFY => {
-            if let Some(msg) = parse_msg::<pb::PhantomItemRemoveNotify>(app, gp) {
-                // Removal is not part of the model; ignore.
-                let _ = msg;
+                upsert_echoes(
+                    &mut store,
+                    &mut sections,
+                    msg.phantom_item_list
+                        .iter()
+                        .map(|i| tables.echo_from_item(i)),
+                );
             }
         }
         PHANTOM_LEVEL_UP_RESPONSE => {
@@ -433,56 +392,41 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
         }
         PHANTOM_PUT_ON_RESPONSE => {
             if let Some(msg) = parse_msg::<pb::PhantomPutOnResponse>(app, gp) {
-                if msg.error_code == pb::ErrorCode::Success as i32 {
-                    let mut changed = apply_stack_ops(
-                        &tables,
-                        &mut store,
-                        msg.stack_split_infos.iter(),
-                        msg.stack_merge_infos.iter(),
-                    );
-                    if apply_equip_list(&mut store, &msg.equip_info_list) {
-                        changed = true;
-                    }
-                    if changed {
-                        sections.push("echoes");
-                    }
-                }
+                apply_operation_response(
+                    msg.error_code,
+                    &tables,
+                    &mut store,
+                    &mut sections,
+                    &msg.stack_split_infos,
+                    &msg.stack_merge_infos,
+                    &msg.equip_info_list,
+                );
             }
         }
         PHANTOM_AUTO_PUT_RESPONSE => {
             if let Some(msg) = parse_msg::<pb::PhantomAutoPutResponse>(app, gp) {
-                if msg.error_code == pb::ErrorCode::Success as i32 {
-                    let mut changed = apply_stack_ops(
-                        &tables,
-                        &mut store,
-                        msg.stack_split_infos.iter(),
-                        msg.stack_merge_infos.iter(),
-                    );
-                    if apply_equip_list(&mut store, &msg.equip_info_list) {
-                        changed = true;
-                    }
-                    if changed {
-                        sections.push("echoes");
-                    }
-                }
+                apply_operation_response(
+                    msg.error_code,
+                    &tables,
+                    &mut store,
+                    &mut sections,
+                    &msg.stack_split_infos,
+                    &msg.stack_merge_infos,
+                    &msg.equip_info_list,
+                );
             }
         }
         USE_PHANTOM_EQUIP_GROUP_RESPONSE => {
             if let Some(msg) = parse_msg::<pb::UsePhantomEquipGroupResponse>(app, gp) {
-                if msg.error_code == pb::ErrorCode::Success as i32 {
-                    let mut changed = apply_stack_ops(
-                        &tables,
-                        &mut store,
-                        msg.stack_split_infos.iter(),
-                        msg.stack_merge_infos.iter(),
-                    );
-                    if apply_equip_list(&mut store, &msg.equip_info_list) {
-                        changed = true;
-                    }
-                    if changed {
-                        sections.push("echoes");
-                    }
-                }
+                apply_operation_response(
+                    msg.error_code,
+                    &tables,
+                    &mut store,
+                    &mut sections,
+                    &msg.stack_split_infos,
+                    &msg.stack_merge_infos,
+                    &msg.equip_info_list,
+                );
             }
         }
         PHANTOM_EQUIP_INFO_NOTIFY => {
@@ -494,37 +438,34 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
         }
         WEAPON_ITEM_RESPONSE => {
             if let Some(msg) = parse_msg::<pb::WeaponItemResponse>(app, gp) {
-                let weapons: Vec<Weapon> = msg.weapon_item_list.iter().map(weapon_item).collect();
-                if !weapons.is_empty() {
-                    store.upsert_weapons(weapons);
-                    sections.push("weapons");
-                }
+                upsert_weapons(
+                    &mut store,
+                    &mut sections,
+                    msg.weapon_item_list.iter().map(weapon_item),
+                );
             }
         }
         WEAPON_ALL_INFO_NOTIFY => {
             if let Some(msg) = parse_msg::<pb::WeaponAllInfoNotify>(app, gp) {
-                let weapons: Vec<Weapon> = msg.all_weapon.iter().map(one_weapon_item).collect();
-                if !weapons.is_empty() {
-                    store.upsert_weapons(weapons);
-                    sections.push("weapons");
-                }
+                upsert_weapons(&mut store, &mut sections, msg.all_weapon.iter().map(one_weapon_item));
             }
         }
         WEAPON_ADD_NOTIFY => {
             if let Some(msg) = parse_msg::<pb::WeaponAddNotify>(app, gp) {
-                if let Some(info) = msg.weapon_info.as_ref() {
-                    store.upsert_weapons(vec![one_weapon_item(info)]);
-                    sections.push("weapons");
-                }
+                upsert_weapons(
+                    &mut store,
+                    &mut sections,
+                    msg.weapon_info.iter().map(one_weapon_item),
+                );
             }
         }
         WEAPON_ITEM_ADD_NOTIFY => {
             if let Some(msg) = parse_msg::<pb::WeaponItemAddNotify>(app, gp) {
-                let weapons: Vec<Weapon> = msg.weapon_item_list.iter().map(weapon_item).collect();
-                if !weapons.is_empty() {
-                    store.upsert_weapons(weapons);
-                    sections.push("weapons");
-                }
+                upsert_weapons(
+                    &mut store,
+                    &mut sections,
+                    msg.weapon_item_list.iter().map(weapon_item),
+                );
             }
         }
         WEAPON_LEVEL_UP_RESPONSE => {
@@ -615,8 +556,9 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
     }
 
     if let Some(incr_id) = unknown_func_value_id {
-        app.state::<SnifferState>()
-            .log(format!("func value update for unknown echo {incr_id} (ignored)"));
+        app.state::<SnifferState>().log(format!(
+            "func value update for unknown echo {incr_id} (ignored)"
+        ));
     }
 
     if !updated_echoes.is_empty() {
@@ -650,10 +592,88 @@ where
     match gp.parse_proto::<T>() {
         Ok(msg) => Some(msg),
         Err(e) => {
-            app.state::<SnifferState>()
-                .record_decode_failure(gp.msg_id, gp.get_msg_name(), &e.to_string());
+            app.state::<SnifferState>().record_decode_failure(
+                gp.msg_id,
+                gp.get_msg_name(),
+                &e.to_string(),
+            );
             None
         }
+    }
+}
+
+/// Upsert a resonator list/snapshot and mark the section when it carried
+/// entries. Single-role payloads pass the `Option`'s iterator (0 or 1 items).
+fn upsert_resonators(
+    store: &mut AccountStore,
+    sections: &mut Vec<&'static str>,
+    roles: impl IntoIterator<Item = Resonator>,
+) {
+    let list: Vec<Resonator> = roles.into_iter().collect();
+    if !list.is_empty() {
+        store.upsert_resonators(list);
+        sections.push("resonators");
+    }
+}
+
+/// Upsert a weapon list/snapshot and mark the section when it carried entries.
+fn upsert_weapons(
+    store: &mut AccountStore,
+    sections: &mut Vec<&'static str>,
+    weapons: impl IntoIterator<Item = Weapon>,
+) {
+    let list: Vec<Weapon> = weapons.into_iter().collect();
+    if !list.is_empty() {
+        store.upsert_weapons(list);
+        sections.push("weapons");
+    }
+}
+
+/// Upsert an echo list/snapshot and mark the section when it carried entries.
+fn upsert_echoes(
+    store: &mut AccountStore,
+    sections: &mut Vec<&'static str>,
+    echoes: impl IntoIterator<Item = Echo>,
+) {
+    let list: Vec<Echo> = echoes.into_iter().collect();
+    if !list.is_empty() {
+        store.upsert_echoes(list);
+        sections.push("echoes");
+    }
+}
+
+/// Merge one skill level row (`skill_info` of the skill notify/response) into
+/// its resonator; payloads without the row are ignored.
+fn merge_skill(
+    store: &mut AccountStore,
+    sections: &mut Vec<&'static str>,
+    role_id: i32,
+    skill: Option<&pb::ArrayIntInt>,
+) {
+    if let Some(skill) = skill {
+        if store.merge_resonator_skill(role_id as i64, skill.key as i64, skill.value) {
+            sections.push("resonators");
+        }
+    }
+}
+
+/// Shared body of the echo-operation responses (`PhantomPutOnResponse`,
+/// `PhantomAutoPutResponse`, `UsePhantomEquipGroupResponse`): the stack
+/// split/merge rows, then the equipment snapshot. Error responses are ignored.
+#[allow(clippy::too_many_arguments)]
+fn apply_operation_response(
+    error_code: i32,
+    tables: &ExtractTables,
+    store: &mut AccountStore,
+    sections: &mut Vec<&'static str>,
+    splits: &[pb::PhantomStackSplitInfo],
+    merges: &[pb::PhantomStackMergeInfo],
+    equip_list: &[pb::RolePhantomEquipInfo],
+) {
+    if error_code == pb::ErrorCode::Success as i32
+        && apply_echo_operation(tables, store, splits.iter(), merges.iter(), equip_list)
+    {
+        sections.push("echoes");
     }
 }
 
@@ -713,6 +733,24 @@ fn apply_stack_ops<'a>(
     }
     if !echoes.is_empty() {
         store.upsert_echoes(echoes);
+        changed = true;
+    }
+    changed
+}
+
+/// Apply one full echo-operation response (`PhantomPutOnResponse`,
+/// `PhantomAutoPutResponse`, `UsePhantomEquipGroupResponse`): the stack
+/// split/merge rows, then the equipment snapshot. The caller checks the
+/// response error code. Returns whether the store changed.
+fn apply_echo_operation<'a>(
+    tables: &ExtractTables,
+    store: &mut AccountStore,
+    splits: impl Iterator<Item = &'a pb::PhantomStackSplitInfo>,
+    merges: impl Iterator<Item = &'a pb::PhantomStackMergeInfo>,
+    equip_list: &[pb::RolePhantomEquipInfo],
+) -> bool {
+    let mut changed = apply_stack_ops(tables, store, splits, merges);
+    if apply_equip_list(store, equip_list) {
         changed = true;
     }
     changed
@@ -882,45 +920,15 @@ mod tests {
     use super::*;
 
     #[test]
-    fn handled_msg_ids_cover_every_const() {
-        // Guards the early-return in `handle_packet`: every message id with a
-        // match arm must be registered, or its packets are dropped unseen.
-        for id in [
-            PB_GET_ROLE_LIST_RESPONSE,
-            PB_GET_ROLE_LIST_NOTIFY,
-            PB_ROLE_ACTIVE_NOTIFY,
-            PB_UP_LEVEL_ROLE_RESPONSE,
-            PB_ROLE_EXP_NOTIFY,
-            PB_ROLE_SKILL_LEVEL_NOTIFY,
-            PB_UP_LEVEL_SKILL_RESPONSE,
-            RESONANT_CHAIN_UNLOCK_RESPONSE,
-            ROLE_CHANGE_NOTIFY,
-            ROLE_SKILL_QUICK_LEVEL_UP_RESPONSE,
-            PHANTOM_ITEM_RESPONSE,
-            PHANTOM_ITEM_UPDATE_NOTIFY,
-            PHANTOM_ITEM_ADD_NOTIFY,
-            PHANTOM_ITEM_REMOVE_NOTIFY,
-            PHANTOM_EQUIP_INFO_NOTIFY,
-            PHANTOM_LEVEL_UP_RESPONSE,
-            PHANTOM_PUT_ON_RESPONSE,
-            PHANTOM_AUTO_PUT_RESPONSE,
-            PHANTOM_POLISH_RESPONSE,
-            USE_PHANTOM_EQUIP_GROUP_RESPONSE,
-            WEAPON_ITEM_RESPONSE,
-            WEAPON_ALL_INFO_NOTIFY,
-            WEAPON_ADD_NOTIFY,
-            WEAPON_ITEM_ADD_NOTIFY,
-            WEAPON_LEVEL_UP_RESPONSE,
-            WEAPON_BREACH_RESPONSE,
-            WEAPON_RESON_UP_RESPONSE,
-            EQUIP_TAKE_ON_RESPONSE,
-            EQUIP_TAKE_ON_NOTIFY,
-            PLAYER_BASIC_INFO_GET_RESPONSE,
-            ITEM_FUNC_VALUE_UPDATE_NOTIFY,
-        ] {
+    fn handled_message_ids_are_unique() {
+        // The consts and `HANDLED_MSG_IDS` come from one `protocol_message_ids!`
+        // invocation, so a match arm always registers its id; this guards the
+        // one thing the macro cannot: two protocol messages sharing an id.
+        let mut seen = std::collections::HashSet::new();
+        for id in HANDLED_MSG_IDS {
             assert!(
-                is_handled(id),
-                "message id {id} has a match arm but is missing from HANDLED_MSG_IDS"
+                seen.insert(*id),
+                "message id {id} is listed twice in protocol_message_ids!"
             );
         }
     }
@@ -1042,13 +1050,8 @@ mod tests {
             }),
         };
 
-        let (changed, updated, halves) = apply_update_with_split(
-            &tables,
-            &mut store,
-            None,
-            Some(&split),
-            std::iter::empty(),
-        );
+        let (changed, updated, halves) =
+            apply_update_with_split(&tables, &mut store, None, Some(&split), std::iter::empty());
         assert!(changed);
         // Without `UpdateInfo`, the operated half is the overlay's refresh
         // target and the split payload.

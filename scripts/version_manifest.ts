@@ -22,8 +22,15 @@ const VERSION_PATH = join(REPO_ROOT, "data", "VERSION.json");
  * `field` is the input's key and `source` is where the value came from, so the
  * log line says which checkout a version was read from.
  */
-async function updateVersionField(field: string, version: string, source: string): Promise<void> {
-	const manifest = (await Bun.file(VERSION_PATH).json()) as Record<string, string>;
+async function updateVersionField(
+	field: string,
+	version: string,
+	source: string,
+): Promise<void> {
+	const manifest = (await Bun.file(VERSION_PATH).json()) as Record<
+		string,
+		string
+	>;
 
 	if (manifest[field] === version) {
 		console.log(`${field} version: ${version} (already current)`);

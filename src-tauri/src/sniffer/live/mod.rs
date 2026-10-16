@@ -14,12 +14,18 @@ use tauri::AppHandle;
 #[cfg(target_os = "linux")]
 mod linux;
 #[cfg(target_os = "linux")]
-pub use linux::{capture_available, game_processes, is_elevated, open_error, open_socket, process_alive, run, udp_ports};
+pub use linux::{
+    capture_available, game_processes, is_elevated, open_error, open_socket, process_alive, run,
+    udp_ports,
+};
 
 #[cfg(windows)]
 mod windows;
 #[cfg(windows)]
-pub use windows::{capture_available, game_processes, is_elevated, open_error, open_socket, process_alive, run, udp_ports};
+pub use windows::{
+    capture_available, game_processes, is_elevated, open_error, open_socket, process_alive, run,
+    udp_ports,
+};
 
 #[cfg(not(any(target_os = "linux", windows)))]
 compile_error!("live capture is implemented for Linux and Windows only");
@@ -62,16 +68,15 @@ pub fn in_default_ranges(port: u16) -> bool {
     PORT_RANGES.iter().any(|&(a, b)| port >= a && port <= b)
 }
 
-/// Extract `(src_port, dst_port)` from an Ethernet/raw-IP IPv4 UDP frame.
+/// Extract `(src_port, dst_port)` from an Ethernet-framed IPv4 UDP frame.
+/// Every capture path feeds Ethernet frames: Windows prepends a synthetic
+/// header to the bare `SIO_RCVALL` datagrams, Linux `AF_PACKET` delivers them
+/// natively, and pcap/pcapng imports carry them.
 pub fn udp_ports_of(frame: &[u8]) -> Option<(u16, u16)> {
-    let ip = if frame.len() > 14 && frame[12] == 0x08 && frame[13] == 0x00 {
-        14
-    } else if matches!(frame.first().map(|b| b >> 4), Some(4)) {
-        0
-    } else {
+    if frame.len() <= 14 || frame[12] != 0x08 || frame[13] != 0x00 {
         return None;
-    };
-    let hdr = frame.get(ip..)?;
+    }
+    let hdr = &frame[14..];
     if hdr.len() < 20 || hdr[9] != 17 {
         return None;
     }
@@ -91,14 +96,15 @@ pub(crate) fn handle_frame(app: &AppHandle, sniffer: &mut spectrum::Sniffer, fra
     crate::sniffer::process_frame(app, sniffer, frame.to_vec());
 }
 
-/// Resolve the client process to capture, preferring the real client with ports.
+/// Resolve the client process to capture, preferring the real client. The
+/// launcher never carries game traffic, so a client without (visible) ports
+/// still wins over it, and a launcher-only list captures nothing.
 pub fn pick_process(procs: &[ProcInfo]) -> Option<&ProcInfo> {
     procs
         .iter()
         .find(|p| p.is_client && !p.ports.is_empty())
-        .or_else(|| procs.iter().find(|p| !p.ports.is_empty()))
         .or_else(|| procs.iter().find(|p| p.is_client))
-        .or_else(|| procs.first())
+        .or_else(|| procs.iter().find(|p| !p.ports.is_empty()))
 }
 
 /// Convert `udp_ports` into the shared port set used by the capture loop.

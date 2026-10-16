@@ -38,12 +38,17 @@ const LOSSLESS_MAX_DIM = 256;
 const LOSSY_QUALITY = 90;
 
 /** Convert one source PNG to WebP. Returns "lossy" or "lossless". */
-async function encodeWebp(source: string, destination: string): Promise<"lossy" | "lossless"> {
+async function encodeWebp(
+	source: string,
+	destination: string,
+): Promise<"lossy" | "lossless"> {
 	const { width, height } = await new Bun.Image(source).metadata();
 	mkdirSync(dirname(destination), { recursive: true });
 
 	if (Math.max(width, height) > LOSSLESS_MAX_DIM) {
-		await new Bun.Image(source).webp({ quality: LOSSY_QUALITY }).write(destination);
+		await new Bun.Image(source)
+			.webp({ quality: LOSSY_QUALITY })
+			.write(destination);
 		return "lossy";
 	}
 	await new Bun.Image(source).webp({ lossless: true }).write(destination);
@@ -99,7 +104,8 @@ async function copyAssets(): Promise<void> {
 	await buildAssetManifest();
 	console.log();
 
-	const files = ((await Bun.file(MANIFEST_PATH).json()) as { files: string[] }).files;
+	const files = ((await Bun.file(MANIFEST_PATH).json()) as { files: string[] })
+		.files;
 
 	if (existsSync(PUBLIC_ROOT)) {
 		const stale = countFiles(PUBLIC_ROOT);

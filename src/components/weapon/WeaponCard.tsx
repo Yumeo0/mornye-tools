@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { charactersById } from "@/components/echo/EchoCard";
 import { CardBadge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import type { Weapon } from "@/lib/account";
+import { charactersById } from "@/lib/catalog";
 import { qualityGradient, rarityTextClass } from "@/lib/rarity";
 import weaponData from "../../configs/weapon_data.json";
 

@@ -301,3 +301,70 @@ export function registerFailedAttempt(state: EchoTargetState): EchoTargetState {
 		needsRefetch: state.needsRefetch && failures < MAX_FAILED_ATTEMPTS,
 	};
 }
+
+/**
+ * Fallback for the Echo Upgrade Assistant when no "Tuning Successful" screen
+ * follows an update packet: the queued discard fires anyway after this long.
+ */
+export const DISCARD_SCREEN_TIMEOUT_MS = 4000;
+
+/** Echo queued for the assistant's automatic discard mark. */
+export interface PendingDiscard {
+	incrId: number;
+	/** `FuncValue` the echo had when queued; player input cancels the discard. */
+	funcValue: number;
+	/** A "Tuning Successful" screen was seen since the discard was queued. */
+	sawTuning: boolean;
+	/** When the discard was queued; the screen wait times out from here. */
+	queuedAt: number;
+}
+
+export type DiscardDecision =
+	/** Keep waiting; `pending` carries the updated gate (`sawTuning`). */
+	| { action: "wait"; pending: PendingDiscard }
+	/** The player re-marked the echo: the discard is cancelled. */
+	| { action: "cancel" }
+	/** Fire the discard key now. */
+	| { action: "fire" };
+
+/** Minimal echo shape the discard gate reads. */
+export interface DiscardEcho {
+	incrId: number;
+	funcValue: number;
+}
+
+/**
+ * Fold one scan tick into the assistant-discard decision. The discard waits
+ * out the "Tuning Successful" screen (the discard key is swallowed while it is
+ * up) and only fires while the upgrade panel is verifiably showing - anywhere
+ * else the key would act on a different screen. If no tuning screen follows
+ * the update packet, the wait times out after [`DISCARD_SCREEN_TIMEOUT_MS`].
+ * Pure, like the other trigger rules.
+ */
+export function nextDiscardDecision(
+	pending: PendingDiscard,
+	echo: DiscardEcho | null,
+	scan: EchoPanelScan,
+	now: number,
+): DiscardDecision {
+	const sawTuning = pending.sawTuning || scan.tuningSuccessful;
+	const wait = (): DiscardDecision => ({
+		action: "wait",
+		pending: { ...pending, sawTuning },
+	});
+
+	if (
+		!scan.panelOpen ||
+		scan.tuningSuccessful ||
+		scan.sortIconVisible ||
+		scan.highRarityNoticeVisible
+	) {
+		return wait();
+	}
+	const screenCleared =
+		sawTuning || now - pending.queuedAt >= DISCARD_SCREEN_TIMEOUT_MS;
+	if (!screenCleared) return wait();
+	if (echo === null || echo.incrId !== pending.incrId) return wait();
+	if (echo.funcValue !== pending.funcValue) return { action: "cancel" };
+	return { action: "fire" };
+}

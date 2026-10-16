@@ -132,31 +132,43 @@ pub fn udp_ports(pid: u32) -> Vec<u16> {
     ports
 }
 
-/// `(local port, owning pid)` for every UDP endpoint of the given family.
-/// Best-effort: returns an empty list when the table cannot be queried.
-fn udp_rows(af: u32) -> Vec<(u16, u32)> {
-    let mut words: Vec<u32> = vec![0; 8 * 1024]; // 32 KiB, grown on demand
+/// Run a WinAPI table query that grows its buffer on
+/// `ERROR_INSUFFICIENT_BUFFER`; `query` returns the error code and reports the
+/// required byte count through its `size` argument.
+fn with_growing_buffer(
+    mut words: Vec<u32>,
+    mut query: impl FnMut(&mut Vec<u32>, &mut u32) -> u32,
+) -> Result<Vec<u32>, u32> {
     loop {
         let mut size = (words.len() * 4) as u32;
-        let ret = unsafe {
-            GetExtendedUdpTable(
-                words.as_mut_ptr() as *mut c_void,
-                &mut size,
-                0,
-                af,
-                UDP_TABLE_OWNER_PID,
-                0,
-            )
-        };
+        let ret = query(&mut words, &mut size);
         if ret == NO_ERROR {
-            break;
+            return Ok(words);
         }
         if ret != ERROR_INSUFFICIENT_BUFFER {
-            return Vec::new();
+            return Err(ret);
         }
         let need = (size as usize).div_ceil(4).max(words.len());
         words.resize(need, 0);
     }
+}
+
+/// `(local port, owning pid)` for every UDP endpoint of the given family.
+/// Best-effort: returns an empty list when the table cannot be queried.
+fn udp_rows(af: u32) -> Vec<(u16, u32)> {
+    let words = match with_growing_buffer(vec![0; 8 * 1024], |words, size| unsafe {
+        GetExtendedUdpTable(
+            words.as_mut_ptr() as *mut c_void,
+            size,
+            0,
+            af,
+            UDP_TABLE_OWNER_PID,
+            0,
+        )
+    }) {
+        Ok(words) => words,
+        Err(_) => return Vec::new(),
+    };
 
     let mut out = Vec::new();
     unsafe {
@@ -180,20 +192,10 @@ fn udp_rows(af: u32) -> Vec<(u16, u32)> {
 
 /// Non-loopback IPv4 addresses, one per interface (by interface index).
 fn ipv4_ifaces() -> io::Result<Vec<u32>> {
-    let mut words: Vec<u32> = vec![0; 16 * 1024]; // 64 KiB, grown on demand
-    loop {
-        let mut size = (words.len() * 4) as u32;
-        let ret =
-            unsafe { GetIpAddrTable(words.as_mut_ptr() as *mut MIB_IPADDRTABLE, &mut size, 0) };
-        if ret == NO_ERROR {
-            break;
-        }
-        if ret != ERROR_INSUFFICIENT_BUFFER {
-            return Err(io::Error::from_raw_os_error(ret as i32));
-        }
-        let need = (size as usize).div_ceil(4).max(words.len());
-        words.resize(need, 0);
-    }
+    let words = with_growing_buffer(vec![0; 16 * 1024], |words, size| unsafe {
+        GetIpAddrTable(words.as_mut_ptr() as *mut MIB_IPADDRTABLE, size, 0)
+    })
+    .map_err(|ret| io::Error::from_raw_os_error(ret as i32))?;
 
     let mut seen = HashSet::new();
     let mut out = Vec::new();

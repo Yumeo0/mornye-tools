@@ -15,15 +15,11 @@ import type {
 } from "@wuwacalc/core/domain/entities/runtime";
 import { isNoWeaponId } from "@wuwacalc/core/domain/entities/runtime";
 import { setResRtSequence } from "@wuwacalc/core/engine/gameData/resonatorMax";
-import {
-	makeResRuntime,
-	mkMaxResRt,
-} from "@wuwacalc/core/engine/runtime/defaults";
+import { mkMaxResRt } from "@wuwacalc/core/engine/runtime/defaults";
 import { initWpnStts } from "@wuwacalc/core/engine/runtime/sourceStateInit";
 import { wpnAtkAt } from "@wuwacalc/core/engine/runtime/weaponState";
 
 import roleAliases from "@/configs/role_aliases.json";
-import weaponData from "@/configs/weapon_data.json";
 import {
 	type AccountSnapshot,
 	type Echo,
@@ -35,12 +31,6 @@ import {
 
 const ROLE_ALIASES: Record<string, string> =
 	(roleAliases as { aliases?: Record<string, string> }).aliases ?? {};
-
-const WEAPON_BASE_ATK: Record<number, number> = Object.fromEntries(
-	(weaponData as { item_id: number; base_atk?: number | null }[])
-		.filter((weapon) => weapon.base_atk != null)
-		.map((weapon) => [weapon.item_id, weapon.base_atk as number]),
-);
 
 export type TranslationErrorKind = "resonator" | "weapon" | "echo";
 
@@ -143,12 +133,9 @@ export function toWeaponState(weapon: Weapon | undefined): {
 			id: String(weapon.itemId),
 			level: weapon.level,
 			rank: weapon.rank,
-			// Level-correct attack from the calculator catalog; the static base
-			// table is only a fallback for catalogs that have not hydrated.
-			baseAtk:
-				wpnAtkAt(String(weapon.itemId), weapon.level) ||
-				WEAPON_BASE_ATK[weapon.itemId] ||
-				0,
+			// Level-correct attack from the calculator catalog; every runtime
+			// caller translates only once the core is hydrated.
+			baseAtk: wpnAtkAt(String(weapon.itemId), weapon.level),
 		},
 	};
 }
@@ -229,12 +216,6 @@ export function translateAccount(
 	};
 }
 
-/** A fresh, unequipped runtime for a resonator (used by tests/debug). */
-export function makeDefaultRuntime(roleId: string): ResRuntime | null {
-	const seed = getResSeedBy(aliasRoleId(Number(roleId)));
-	return seed ? makeResRuntime(seed) : null;
-}
-
 /** One runtime control value (see `runtime.state.controls`). */
 export type OptimizerControlValue = boolean | number | string;
 
@@ -284,14 +265,14 @@ export function applyControlOverrides(
 	controls: Record<string, OptimizerControlValue> | null | undefined,
 ): ResRuntime {
 	if (!controls) return runtime;
-	let next: Record<string, OptimizerControlValue> | null = null;
+	const next = { ...runtime.state.controls };
+	let changed = false;
 	for (const [key, value] of Object.entries(controls)) {
-		const current = next ?? runtime.state.controls;
-		if (Object.is(current[key], value)) continue;
-		next = next ?? { ...runtime.state.controls };
+		if (Object.is(next[key], value)) continue;
 		next[key] = value;
+		changed = true;
 	}
-	if (!next) return runtime;
+	if (!changed) return runtime;
 	return {
 		...runtime,
 		state: { ...runtime.state, controls: next },
@@ -345,7 +326,7 @@ export function buildOptimizerRuntime(
 	const weaponId =
 		overrides?.weaponItemId != null
 			? String(overrides.weaponItemId)
-			: (build.weapon?.id ?? base.build.weapon.id ?? null);
+			: (build.weapon?.id ?? base.build.weapon.id);
 	if (!isNoWeaponId(weaponId)) {
 		const weaponLevel =
 			overrides?.weaponLevel ?? build.weapon?.level ?? MAX_RESONATOR_LEVEL;
@@ -391,7 +372,7 @@ export function makeUnownedBuild(
 		: { ...runtime.build.weapon };
 	return {
 		resonator: {
-			id: Number.isNaN(numericId) ? 0 : numericId,
+			id: numericId,
 			name,
 			level: MAX_RESONATOR_LEVEL,
 			breakthrough: 6,

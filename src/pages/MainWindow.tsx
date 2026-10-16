@@ -1,7 +1,5 @@
-import { invoke } from "@tauri-apps/api/core";
 import { getAllWindows, getCurrentWindow } from "@tauri-apps/api/window";
 import { exit } from "@tauri-apps/plugin-process";
-import { Store } from "@tauri-apps/plugin-store";
 import {
 	Cog,
 	Minus,
@@ -19,47 +17,9 @@ import { SettingsTab } from "@/components/tabs/SettingsTab";
 import { WeaponsTab } from "@/components/tabs/WeaponsTab";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import OCR_CONFIG from "@/configs/ocr.json";
-import {
-	persistedReady,
-	reviveBoolean,
-	reviveString,
-	usePersistedState,
-} from "@/lib/persisted";
+import { applyResolutionRegions } from "@/lib/scanRegions";
+import { readSetting } from "@/lib/settings";
 import { blockingErrors, getStatus, type SnifferStatus } from "@/lib/sniffer";
-
-const TAB_VALUES = new Set([
-	"characters",
-	"echoes",
-	"weapons",
-	"optimizer",
-	"settings",
-]);
-
-const reviveTab = (value: unknown): string =>
-	TAB_VALUES.has(reviveString(value)) ? reviveString(value) : "characters";
-
-interface ScanRect {
-	x: number;
-	y: number;
-	width: number;
-	height: number;
-}
-
-interface ScanRegions {
-	echo_upgrade: ScanRect;
-	tuning_successful?: ScanRect;
-	sort_icon?: ScanRect | null;
-	high_rarity_notice?: ScanRect | null;
-	/** Echo-bag header and COST text: the overlay's fast-cadence reads. */
-	echoes_text?: ScanRect | null;
-	cost_text?: ScanRect | null;
-	echo_panel?: ScanRect | null;
-	main_stats?: ScanRect | null;
-	sub_stats?: ScanRect | null;
-	stat_stars?: ScanRect | null;
-	sub_stat_stars?: ScanRect | null;
-}
 
 function WindowButton({
 	onClick,
@@ -78,6 +38,38 @@ function WindowButton({
 		>
 			{children}
 		</button>
+	);
+}
+
+/** Primary sidebar tabs, in display order. */
+const NAV_TABS = [
+	{ value: "characters", title: "Characters", icon: "/characters.webp" },
+	{ value: "echoes", title: "Echoes", icon: "/characters/echo.png" },
+	{ value: "weapons", title: "Weapons", icon: "/weapons.webp" },
+	{ value: "optimizer", title: "Optimizer", icon: "/optimizer.webp" },
+] as const;
+
+/** One sidebar tab button: icon plus label (hidden while collapsed). */
+function NavTab({
+	value,
+	title,
+	icon,
+	sidebarOpen,
+}: {
+	value: string;
+	title: string;
+	icon: ReactNode;
+	sidebarOpen: boolean;
+}) {
+	return (
+		<TabsTrigger
+			value={value}
+			title={title}
+			className={`h-auto flex-none gap-3 py-2.5 text-base ${sidebarOpen ? "px-3 justify-start" : "px-0 group-data-[orientation=vertical]/tabs:justify-center"}`}
+		>
+			{icon}
+			{sidebarOpen && title}
+		</TabsTrigger>
 	);
 }
 
@@ -175,67 +167,21 @@ function SnifferIndicator({ compact }: { compact: boolean }) {
 }
 
 export default function MainWindow() {
-	// The last tab and sidebar state survive restarts, like every tab's own
-	// filter settings.
-	const [tab, setTab] = usePersistedState("app.tab", "characters", reviveTab);
-	const [sidebarOpen, setSidebarOpen] = usePersistedState(
-		"app.sidebarOpen",
-		true,
-		(value) => reviveBoolean(value, true),
-	);
-	// Hold the tab content until the persisted state has been read (the shell
-	// renders once `ready` flips below).
-	const [ready, setReady] = useState(false);
-
-	useEffect(() => {
-		let cancelled = false;
-		void persistedReady().then(() => {
-			if (!cancelled) setReady(true);
-		});
-		return () => {
-			cancelled = true;
-		};
-	}, []);
+	const [tab, setTab] = useState("characters");
+	const [sidebarOpen, setSidebarOpen] = useState(true);
 
 	// Initialize scan regions and overlay state on app start
 	useEffect(() => {
 		const initApp = async () => {
 			try {
-				const store = await Store.load("settings.json");
-
-				// Initialize scan regions first (required for overlay to function)
-				const savedResolution = await store.get<string>("resolution");
-				const resolution = savedResolution || "2560x1440"; // Default resolution
-
-				const config =
-					OCR_CONFIG.resolutions[
-						resolution as keyof typeof OCR_CONFIG.resolutions
-					];
-				if (config?.echoUpgrade) {
-					const echoUpgradeRegion = config.echoUpgrade;
-
-					// Set the echo upgrade scan region
-					await invoke("set_scan_region", { region: echoUpgradeRegion });
-
-					// Set all panel-scan regions
-					const scanRegions: ScanRegions = {
-						echo_upgrade: echoUpgradeRegion,
-						tuning_successful: config.tuningSuccessful,
-						sort_icon: config.sortIcon ?? null,
-						high_rarity_notice: config.highRarityNotice ?? null,
-						echoes_text: config.echoesText ?? null,
-						cost_text: config.costText ?? null,
-						echo_panel: config.echoPanel ?? null,
-						main_stats: config.mainStats ?? null,
-						sub_stats: config.subStats ?? null,
-						stat_stars: config.statStars ?? null,
-						sub_stat_stars: config.subStatStars ?? null,
-					};
-					await invoke("set_scan_regions", { regions: scanRegions });
-				}
+				// Initialize scan regions first (required for the overlay to
+				// function); an unknown saved resolution is ignored.
+				const savedResolution = await readSetting<string>("resolution");
+				await applyResolutionRegions(savedResolution || "2560x1440");
 
 				// Then handle overlay visibility
-				const savedOverlayEnabled = await store.get<boolean>("overlayEnabled");
+				const savedOverlayEnabled =
+					await readSetting<boolean>("overlayEnabled");
 				const shouldShowOverlay = savedOverlayEnabled === true;
 
 				const windows = await getAllWindows();
@@ -274,15 +220,18 @@ export default function MainWindow() {
 		};
 	}, []);
 
-	// Hold the shell content until the persisted state has been read so
-	// restored values never flash the defaults first.
-	if (!ready) {
-		return (
-			<div className="flex h-screen flex-col overflow-hidden bg-background">
-				<TitleBar />
-			</div>
-		);
-	}
+	// Content panes for the primary tabs; all stay mounted so each tab keeps
+	// its state (filters, scroll position) across switches.
+	const tabContents: Array<{ value: string; content: ReactNode }> = [
+		{ value: "characters", content: <CharactersTab /> },
+		{ value: "echoes", content: <EchoesTab /> },
+		{ value: "weapons", content: <WeaponsTab /> },
+		{
+			value: "optimizer",
+			content: <OptimizerTab active={tab === "optimizer"} />,
+		},
+		{ value: "settings", content: <SettingsTab /> },
+	];
 
 	return (
 		<div className="flex h-screen flex-col overflow-hidden bg-background">
@@ -315,108 +264,44 @@ export default function MainWindow() {
 					</div>
 
 					<div className="flex min-h-0 flex-1 flex-col justify-center gap-1 self-stretch">
-						<TabsTrigger
-							value="characters"
-							title="Characters"
-							className={`h-auto flex-none gap-3 py-2.5 text-base ${sidebarOpen ? "px-3 justify-start" : "px-0 group-data-[orientation=vertical]/tabs:justify-center"}`}
-						>
-							<img
-								src="/characters.webp"
-								alt=""
-								className="size-7 shrink-0 object-contain"
+						{NAV_TABS.map((tab) => (
+							<NavTab
+								key={tab.value}
+								value={tab.value}
+								title={tab.title}
+								sidebarOpen={sidebarOpen}
+								icon={
+									<img
+										src={tab.icon}
+										alt=""
+										className="size-7 shrink-0 object-contain"
+									/>
+								}
 							/>
-							{sidebarOpen && "Characters"}
-						</TabsTrigger>
-						<TabsTrigger
-							value="echoes"
-							title="Echoes"
-							className={`h-auto flex-none gap-3 py-2.5 text-base ${sidebarOpen ? "px-3 justify-start" : "px-0 group-data-[orientation=vertical]/tabs:justify-center"}`}
-						>
-							<img
-								src="/characters/echo.png"
-								alt=""
-								className="size-7 shrink-0 object-contain"
-							/>
-							{sidebarOpen && "Echoes"}
-						</TabsTrigger>
-						<TabsTrigger
-							value="weapons"
-							title="Weapons"
-							className={`h-auto flex-none gap-3 py-2.5 text-base ${sidebarOpen ? "px-3 justify-start" : "px-0 group-data-[orientation=vertical]/tabs:justify-center"}`}
-						>
-							<img
-								src="/weapons.webp"
-								alt=""
-								className="size-7 shrink-0 object-contain"
-							/>
-							{sidebarOpen && "Weapons"}
-						</TabsTrigger>
-						<TabsTrigger
-							value="optimizer"
-							title="Optimizer"
-							className={`h-auto flex-none gap-3 py-2.5 text-base ${sidebarOpen ? "px-3 justify-start" : "px-0 group-data-[orientation=vertical]/tabs:justify-center"}`}
-						>
-							<img
-								src="/optimizer.webp"
-								alt=""
-								className="size-7 shrink-0 object-contain"
-							/>
-							{sidebarOpen && "Optimizer"}
-						</TabsTrigger>
+						))}
 					</div>
 					<div className="flex shrink-0 justify-center">
 						<SnifferIndicator compact={!sidebarOpen} />
 					</div>
-					<TabsTrigger
+					<NavTab
 						value="settings"
 						title="Settings"
-						className={`h-auto flex-none gap-3 py-2.5 text-base ${sidebarOpen ? "px-3 justify-start" : "px-0 group-data-[orientation=vertical]/tabs:justify-center"}`}
-					>
-						<Cog className="size-5 shrink-0" />
-						{sidebarOpen && "Settings"}
-					</TabsTrigger>
+						sidebarOpen={sidebarOpen}
+						icon={<Cog className="size-5 shrink-0" />}
+					/>
 				</TabsList>
 
 				<div className="flex min-h-0 flex-1 flex-col px-6 pt-4">
-					<TabsContent
-						value="characters"
-						keepMounted
-						className="min-h-0 flex-1 flex flex-col"
-					>
-						<CharactersTab />
-					</TabsContent>
-
-					<TabsContent
-						value="echoes"
-						keepMounted
-						className="flex min-h-0 flex-1 flex-col"
-					>
-						<EchoesTab />
-					</TabsContent>
-
-					<TabsContent
-						value="weapons"
-						keepMounted
-						className="flex min-h-0 flex-1 flex-col"
-					>
-						<WeaponsTab />
-					</TabsContent>
-
-					<TabsContent
-						value="optimizer"
-						keepMounted
-						className="flex min-h-0 flex-1 flex-col"
-					>
-						<OptimizerTab active={tab === "optimizer"} />
-					</TabsContent>
-
-					<TabsContent
-						value="settings"
-						keepMounted
-						className="flex min-h-0 flex-1 flex-col"
-					>
-						<SettingsTab />
-					</TabsContent>
+					{tabContents.map(({ value, content }) => (
+						<TabsContent
+							key={value}
+							value={value}
+							keepMounted
+							className="flex min-h-0 flex-1 flex-col"
+						>
+							{content}
+						</TabsContent>
+					))}
 				</div>
 			</Tabs>
 		</div>

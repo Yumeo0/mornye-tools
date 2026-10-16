@@ -1,11 +1,12 @@
 // Echo-to-character relevance rating, shared by the overlay and the
 // inventory sorting
-import buildsData from "@/configs/character_builds.json";
-import characterData from "@/configs/character_data.json";
-import echoData from "@/configs/echo_data.json";
-import statsConfig from "@/configs/stats.json";
 import {
-	isExcludedCharacter,
+	type CatalogEcho,
+	charactersById,
+	echoesByMonsterId,
+} from "@/lib/catalog";
+import { type BuildEntry, buildEntries } from "@/lib/characters";
+import {
 	normalizeStatName,
 	parseSubstatTiers,
 	sonataNames,
@@ -25,78 +26,9 @@ export interface CharacterInfo {
 	};
 }
 
-export interface EchoSet {
-	id: number;
-	name: string;
-}
-
-export interface Echo {
-	echo_name: string;
-	echo_id: number;
-	monster_id?: number | null;
-	echo_sets: EchoSet[];
-}
-
-// Calculator id (`MonsterId`) -> catalog entry, with every possible set merged.
-const echoByMonsterId = new Map<number, Echo>();
-for (const echo of echoData as Echo[]) {
-	if (echo.monster_id == null) continue;
-	const existing = echoByMonsterId.get(echo.monster_id);
-	if (!existing) {
-		echoByMonsterId.set(echo.monster_id, {
-			...echo,
-			echo_sets: [...(echo.echo_sets ?? [])],
-		});
-		continue;
-	}
-	for (const set of echo.echo_sets ?? []) {
-		if (!existing.echo_sets.some((s) => s.id === set.id)) {
-			existing.echo_sets.push(set);
-		}
-	}
-}
-
 /** Id-based catalog lookup used by the account-based Inventory tab. */
-export function findEchoById(monsterId: number): Echo | undefined {
-	return echoByMonsterId.get(monsterId);
-}
-
-interface BuildSet {
-	variant: string;
-	name: string;
-	sonata?: string;
-	value?: string;
-}
-
-interface RoleBuild {
-	echo_sets: {
-		variant: string;
-		sets: BuildSet[];
-		main_stats: string[];
-	};
-	substats_priority: string | null;
-}
-
-interface BuildEntry {
-	character_id: number | null;
-	roles: Record<string, RoleBuild>;
-}
-
-const builds = buildsData as Record<string, BuildEntry>;
-
-const characterById = new Map<number, { name: string; icon_pile: string }>();
-for (const character of characterData as {
-	character_id: number;
-	character_name: string;
-	icon_pile: string;
-}[]) {
-	if (isExcludedCharacter(character.character_id)) continue;
-	if (!characterById.has(character.character_id)) {
-		characterById.set(character.character_id, {
-			name: character.character_name,
-			icon_pile: character.icon_pile,
-		});
-	}
+export function findEchoById(monsterId: number): CatalogEcho | undefined {
+	return echoesByMonsterId.get(monsterId);
 }
 
 // Parse a stat string like "HP% 10.5%" or "ATK 123"
@@ -122,26 +54,34 @@ export function parseStatValue(
 	return null;
 }
 
-// Max possible value for a stat from stats.json (main or sub table)
-export function getMaxStatValue(
-	statName: string,
-	isMainStat: boolean,
-): number | null {
-	const stats = isMainStat ? statsConfig.main : statsConfig.sub;
-	const statKey = Object.keys(stats).find(
-		(key) => normalizeStatName(key) === normalizeStatName(statName),
-	);
-	if (statKey) {
-		return stats[statKey as keyof typeof stats].max;
-	}
-	return null;
-}
-
 // "ER:120%>CR=CD>ATK%>Lib%>ATK" -> ["Energy Regen", "Crit. Rate", ...]
 function parseSubstatPriority(raw: string | null | undefined): string[] {
 	return parseSubstatTiers(raw)
 		.flat()
 		.map((stat) => stat.name);
+}
+
+/** Per-cost main-stat tiers from a role guide (empty tiers dropped). */
+function mainStatsFromRole(
+	mainStats: string[] | undefined,
+): Pick<CharacterInfo["stats"], "4cost" | "3cost" | "1cost"> {
+	const stats = mainStats ?? [];
+	return {
+		"4cost": [splitStatCodes(stats[0])].filter((group) => group.length > 0),
+		"3cost": [splitStatCodes(stats[1]), splitStatCodes(stats[2])].filter(
+			(group) => group.length > 0,
+		),
+		"1cost": [splitStatCodes(stats[3]), splitStatCodes(stats[4])].filter(
+			(group) => group.length > 0,
+		),
+	};
+}
+
+/** Substat tiers from a priority string; empty when none parses. */
+function subsFromPriority(
+	priority: string | null | undefined,
+): CharacterInfo["stats"]["subs"] {
+	return [parseSubstatPriority(priority)].filter((group) => group.length > 0);
 }
 
 // Preferred stats of the build role that matches the most of the echo's
@@ -163,52 +103,18 @@ function preferredStatsForBuild(
 		).length;
 		if (matches === 0 || matches <= bestMatches) continue;
 
-		const mainStats = guide.echo_sets.main_stats ?? [];
 		bestMatches = matches;
 		bestStats = {
-			"4cost": [splitStatCodes(mainStats[0])].filter(
-				(group) => group.length > 0,
+			...mainStatsFromRole(guide.echo_sets.main_stats),
+			subs: subsFromPriority(
+				guide.substats_priority ??
+					Object.values(build.roles)[0]?.substats_priority ??
+					null,
 			),
-			"3cost": [
-				splitStatCodes(mainStats[1]),
-				splitStatCodes(mainStats[2]),
-			].filter((group) => group.length > 0),
-			"1cost": [
-				splitStatCodes(mainStats[3]),
-				splitStatCodes(mainStats[4]),
-			].filter((group) => group.length > 0),
-			subs: [
-				parseSubstatPriority(
-					guide.substats_priority ??
-						Object.values(build.roles)[0]?.substats_priority ??
-						null,
-				),
-			].filter((group) => group.length > 0),
 		};
 	}
 
 	return bestStats;
-}
-
-// Fallback stats from the first build role (used when no role matches)
-function firstRoleStats(build: BuildEntry): CharacterInfo["stats"] | null {
-	const firstRole = Object.values(build.roles)[0];
-	if (!firstRole) return null;
-	const mainStats = firstRole.echo_sets.main_stats ?? [];
-	return {
-		"4cost": [splitStatCodes(mainStats[0])].filter((group) => group.length > 0),
-		"3cost": [
-			splitStatCodes(mainStats[1]),
-			splitStatCodes(mainStats[2]),
-		].filter((group) => group.length > 0),
-		"1cost": [
-			splitStatCodes(mainStats[3]),
-			splitStatCodes(mainStats[4]),
-		].filter((group) => group.length > 0),
-		subs: [parseSubstatPriority(firstRole.substats_priority)].filter(
-			(group) => group.length > 0,
-		),
-	};
 }
 
 // Find characters whose builds use any of the echo's sonata sets.
@@ -218,9 +124,9 @@ export function getRelevantCharacters(setNames: string[]): CharacterInfo[] {
 	const wanted = setNames.map((name) => name.toLowerCase());
 	const relevant: CharacterInfo[] = [];
 
-	for (const [name, build] of Object.entries(builds)) {
+	for (const [name, build] of Object.entries(buildEntries)) {
 		if (build.character_id === null) continue;
-		const character = characterById.get(build.character_id);
+		const character = charactersById.get(build.character_id);
 		if (!character) continue;
 
 		const bestStats = preferredStatsForBuild(build, wanted);
@@ -235,30 +141,6 @@ export function getRelevantCharacters(setNames: string[]): CharacterInfo[] {
 	}
 
 	return relevant;
-}
-
-// Preferred stats of a specific character for an echo with the given sonata
-// sets. Falls back to the first build role when no role matches the sets.
-export function getCharacterInfo(
-	characterId: number,
-	setNames: string[],
-): CharacterInfo | null {
-	const wanted = setNames.map((name) => name.toLowerCase());
-	for (const [name, build] of Object.entries(builds)) {
-		if (build.character_id !== characterId) continue;
-		const character = characterById.get(build.character_id);
-		if (!character) return null;
-		const stats =
-			preferredStatsForBuild(build, wanted) ?? firstRoleStats(build);
-		if (!stats) return null;
-		return {
-			character_id: build.character_id,
-			character_name: name,
-			icon_pile: character.icon_pile,
-			stats,
-		};
-	}
-	return null;
 }
 
 /** Maximum roll points a substat can contribute: 8 percent tiers at 1 point

@@ -20,12 +20,12 @@ import {
 	useResponsiveColumns,
 	VirtualGrid,
 } from "@/components/VirtualGrid";
-import { useAccountSnapshot } from "@/hooks/useAccountSnapshot";
 import {
 	addManualEcho,
 	type Echo,
 	removeManualEcho,
 	setEquippedOverride,
+	useAccount,
 } from "@/lib/account";
 
 // Mirrors the previous `sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4` classes
@@ -46,7 +46,7 @@ const ECHO_ROW_ESTIMATE_PX = 280;
 const ECHO_ROW_OVERSCAN = 6;
 
 export function EchoesTab() {
-	const { snapshot, error } = useAccountSnapshot();
+	const { snapshot, error } = useAccount();
 	const echoes = snapshot.echoes;
 	const [actionError, setActionError] = useState<string | null>(null);
 	const [toast, setToast] = useState<string | null>(null);

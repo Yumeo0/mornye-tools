@@ -11,7 +11,7 @@ pub mod store;
 use std::path::PathBuf;
 use std::sync::Mutex;
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Emitter, State};
 
 use crate::account::model::{AccountSnapshot, Echo};
@@ -72,7 +72,7 @@ pub fn emit_echo_updated(app: &AppHandle, echo: &Echo) {
 /// splits it, and the operated half may move to a new instance id while the
 /// old id becomes the remainder. The echo on screen is the operated half, so
 /// an overlay tracking either id must follow it.
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct EchoSplit {
     pub operated: Echo,
@@ -99,7 +99,9 @@ pub fn account_get_snapshot(state: State<AccountState>) -> Result<AccountSnapsho
     Ok(store.snapshot().clone())
 }
 
-/// Manual equipment override for one echo (the only user-writable account data).
+/// Manual equipment override for one echo (the only user-writable account
+/// data). Passing `equipped_by: None` and `slot: None` clears the override so
+/// packet-derived equipment wins again.
 #[tauri::command(rename_all = "snake_case")]
 pub fn account_set_equipped_override(
     app: AppHandle,
@@ -110,21 +112,6 @@ pub fn account_set_equipped_override(
 ) -> Result<(), String> {
     let mut store = state.store.lock().map_err(|e| e.to_string())?;
     store.set_echo_override(incr_id, equipped_by, slot);
-    store.save()?;
-    drop(store);
-    emit_updated(&app, &["echoes"]);
-    Ok(())
-}
-
-/// Clear an override so packet-derived equipment wins again.
-#[tauri::command(rename_all = "snake_case")]
-pub fn account_clear_echo_override(
-    app: AppHandle,
-    state: State<AccountState>,
-    incr_id: i64,
-) -> Result<(), String> {
-    let mut store = state.store.lock().map_err(|e| e.to_string())?;
-    store.set_echo_override(incr_id, None, None);
     store.save()?;
     drop(store);
     emit_updated(&app, &["echoes"]);

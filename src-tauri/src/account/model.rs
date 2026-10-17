@@ -132,7 +132,7 @@ pub enum EchoSource {
     Manual,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Echo {
     /// Game instance id (stable identity).

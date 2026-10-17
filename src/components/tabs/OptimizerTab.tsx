@@ -16,13 +16,13 @@ import { OptimizerResultsPanel } from "@/components/optimizer/OptimizerResultsPa
 import { OptimizerRunBar } from "@/components/optimizer/OptimizerRunBar";
 import { TeamSection } from "@/components/optimizer/TeamSection";
 import { CharacterPickerDialog } from "@/components/tabs/CharacterPickerDialog";
-import { useAccountSnapshot } from "@/hooks/useAccountSnapshot";
 import { useOptimizerRun } from "@/hooks/useOptimizerRun";
 import { useOptimizerTeam } from "@/hooks/useOptimizerTeam";
+import { useAccount } from "@/lib/account";
 import { ensureCoreReady, isCoreReady } from "@/lib/calc/core";
 
 export function OptimizerTab({ active }: { active: boolean }) {
-	const { snapshot } = useAccountSnapshot();
+	const { snapshot } = useAccount();
 	const [coreReady, setCoreReady] = useState(() => isCoreReady());
 	const [coreError, setCoreError] = useState<string | null>(null);
 

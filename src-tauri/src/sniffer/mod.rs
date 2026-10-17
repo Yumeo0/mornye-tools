@@ -495,9 +495,8 @@ fn cache_session_key(app: &AppHandle, sniffer: &spectrum::Sniffer) {
 /// offline import path.
 fn import_frames(path: &str) -> Result<Vec<Vec<u8>>, String> {
     use std::io::{BufReader, Read};
-    let mut file = BufReader::new(
-        std::fs::File::open(path).map_err(|e| format!("cannot open {path}: {e}"))?,
-    );
+    let mut file =
+        BufReader::new(std::fs::File::open(path).map_err(|e| format!("cannot open {path}: {e}"))?);
     let mut head = [0u8; 4];
     file.read_exact(&mut head)
         .map_err(|e| format!("cannot read {path}: {e}"))?;

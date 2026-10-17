@@ -4,10 +4,10 @@
 
 import { useMemo } from "react";
 import { weaponName } from "@/components/weapon/WeaponCard";
-import { useAccountSnapshot } from "@/hooks/useAccountSnapshot";
 import {
 	type AccountSnapshot,
 	echoesForResonator,
+	useAccount,
 	weaponForResonator,
 } from "@/lib/account";
 import { charactersById } from "@/lib/catalog";
@@ -23,7 +23,7 @@ export function useCharacterList(): {
 	characters: CharacterEntry[];
 	accountByCharacterId: Map<number, CardAccount>;
 } {
-	const { snapshot, error } = useAccountSnapshot();
+	const { snapshot, error } = useAccount();
 
 	const characters = useMemo(() => {
 		const list = [...allCharacters];

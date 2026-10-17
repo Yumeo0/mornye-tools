@@ -60,10 +60,39 @@ The session key cache survives restarts.
   never ask for a retransmit); account updates stay frozen until the game
   restarts its connection.
 
+## Overlay protocol
+
+The overlay is purely event-driven. A Rust supervisor (`src-tauri/src/overlay.rs`)
+owns the whole scan/input round trip and only runs while the overlay window is
+visible:
+
+- It captures the game window, OCRs the trigger regions
+  (`src-tauri/src/echo_panel.rs`) at an adaptive cadence (fast while an echo
+  menu is on screen), and folds the panel/flicker/dialog state machines.
+- When the Echo Upgrade panel opens on a fresh echo it presses the game's lock
+  key to identify the echo (the game answers with an
+  `ItemFuncValueUpdateNotify`, which the sniffer turns into `echo-detected`)
+  and restores the previous mark right after.
+- Events to the frontend: `overlay-panel` (show/hide the card layer),
+  `echo-detected` / `echo-updated` / `echo-split` (the exact echo for the
+  card), `menu-debug` (per-tick snapshot while the debug panel is on) and
+  `capture-origin-changed` (outline placement).
+- The Echo Upgrade Assistant is split: the frontend rates the updated echo
+  against the TypeScript character catalogs and queues or cancels a discard
+  through `assistant_queue_discard` / `assistant_cancel_discard`; the
+  supervisor owns the timing (tuning-banner wait, panel checks) and presses
+  the discard key itself.
+
+Account data has a single frontend source of truth as well: `src/lib/account.ts`
+mirrors the Rust store (one fetch path, one `account-updated` subscription,
+all writes through its mutation functions) and exposes it via `useAccount`.
+
 ## Layout
 
 - `src-tauri/src/account/` - account model, store and overrides
 - `src-tauri/src/sniffer/` - capture lifecycle, keys, extraction, live modules
+- `src-tauri/src/overlay.rs` - overlay scan supervisor, mark presses, events
+- `src-tauri/src/echo_panel.rs` - trigger-region OCR and template matching
 - `src-tauri/crates/spectrum/` - vendored Apache-2.0 capture/decrypt crate
 - `data/VERSION.json` - the game version each pinned input came from
   (`game`, `assets`, `data`, `protos`); the pipeline refreshes `assets` and
@@ -72,6 +101,6 @@ The session key cache survives restarts.
   `spectrum` build compiles; refresh by hand from a `wuwa-protos` extraction
 - `scripts/` - the data pipeline (configs, assets, versions) plus the
   `postinstall` builders, all run with `bun`
-- `src/lib/account.ts`, `src/lib/calc/` - account bridge and calculator
-  translation/evaluation
+- `src/lib/account.ts`, `src/lib/calc/` - the single account store (reads,
+  writes, `useAccount`) and calculator translation/evaluation
 - `src/lib/rating.ts`, `src/pages/Overlay.tsx` - overlay card rendering and echo rating

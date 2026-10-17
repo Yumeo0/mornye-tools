@@ -1,15 +1,12 @@
 // Stack-split following: upgrading one copy of a stack moves it to a new
 // instance id while the old id becomes the unleveled remainder. The overlay
-// card must follow the operated half, and a queued assistant discard with it.
+// card must follow the operated half. (The matching queue-entry retargeting
+// lives in the Rust supervisor; see `overlay.rs`.)
 
 import { describe, expect, test } from "bun:test";
 
 import type { Echo } from "@/lib/account";
-import {
-	type EchoSplitPayload,
-	retargetPendingDiscard,
-	splitFollowTarget,
-} from "@/lib/overlayEcho";
+import { type EchoSplitPayload, splitFollowTarget } from "@/lib/overlayEcho";
 
 function echo(incrId: number, overrides: Partial<Echo> = {}): Echo {
 	return {
@@ -57,19 +54,5 @@ describe("splitFollowTarget", () => {
 		};
 		expect(splitFollowTarget(echo(100), noRemainder)).toBeNull();
 		expect(splitFollowTarget(echo(500), noRemainder)?.incrId).toBe(500);
-	});
-});
-
-describe("retargetPendingDiscard", () => {
-	test("moves a queue entry on the remainder to the operated half", () => {
-		expect(retargetPendingDiscard(100, split)).toBe(500);
-	});
-
-	test("keeps a queue entry already on the operated half", () => {
-		expect(retargetPendingDiscard(500, split)).toBe(500);
-	});
-
-	test("leaves unrelated queue entries alone", () => {
-		expect(retargetPendingDiscard(7, split)).toBe(7);
 	});
 });

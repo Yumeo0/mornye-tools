@@ -149,7 +149,9 @@ impl SortIconTemplate {
 /// Shrink an image to the comparison grid.
 fn shrink_to_grid(image: &DynamicImage) -> image::RgbaImage {
     use image::imageops::FilterType;
-    image.resize_exact(GRID, GRID, FilterType::Triangle).to_rgba8()
+    image
+        .resize_exact(GRID, GRID, FilterType::Triangle)
+        .to_rgba8()
 }
 
 /// Best similarity of a captured region against the sort-icon template over a

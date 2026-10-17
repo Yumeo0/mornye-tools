@@ -74,8 +74,9 @@ protocol_message_ids! {
     EQUIP_TAKE_ON_NOTIFY = 28760,
     PLAYER_BASIC_INFO_GET_RESPONSE = 22549,
     /// Server push for an item's mark state (lock/discard) change. The overlay
-    /// triggers it on purpose (see `press_echo_toggle`) to learn which echo is
-    /// on screen and to keep every echo's `FuncValue` current.
+    /// supervisor triggers it on purpose (see `overlay::toggle_echo_mark`) to
+    /// learn which echo is on screen and to keep every echo's `FuncValue`
+    /// current.
     ITEM_FUNC_VALUE_UPDATE_NOTIFY = 23784,
 }
 
@@ -250,7 +251,11 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
         }
         PB_ROLE_ACTIVE_NOTIFY => {
             if let Some(msg) = parse_msg::<pb::PbRoleActiveNotify>(app, gp) {
-                upsert_resonators(&mut store, &mut sections, msg.role.iter().map(role_to_resonator));
+                upsert_resonators(
+                    &mut store,
+                    &mut sections,
+                    msg.role.iter().map(role_to_resonator),
+                );
             }
         }
         PB_UP_LEVEL_ROLE_RESPONSE => {
@@ -271,13 +276,23 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
         }
         PB_ROLE_SKILL_LEVEL_NOTIFY => {
             if let Some(msg) = parse_msg::<pb::PbRoleSkillLevelNotify>(app, gp) {
-                merge_skill(&mut store, &mut sections, msg.role_id, msg.skill_info.as_ref());
+                merge_skill(
+                    &mut store,
+                    &mut sections,
+                    msg.role_id,
+                    msg.skill_info.as_ref(),
+                );
             }
         }
         PB_UP_LEVEL_SKILL_RESPONSE => {
             if let Some(msg) = parse_msg::<pb::PbUpLevelSkillResponse>(app, gp) {
                 if msg.code == pb::ErrorCode::Success as i32 {
-                    merge_skill(&mut store, &mut sections, msg.role_id, msg.skill_info.as_ref());
+                    merge_skill(
+                        &mut store,
+                        &mut sections,
+                        msg.role_id,
+                        msg.skill_info.as_ref(),
+                    );
                 }
             }
         }
@@ -447,7 +462,11 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
         }
         WEAPON_ALL_INFO_NOTIFY => {
             if let Some(msg) = parse_msg::<pb::WeaponAllInfoNotify>(app, gp) {
-                upsert_weapons(&mut store, &mut sections, msg.all_weapon.iter().map(one_weapon_item));
+                upsert_weapons(
+                    &mut store,
+                    &mut sections,
+                    msg.all_weapon.iter().map(one_weapon_item),
+                );
             }
         }
         WEAPON_ADD_NOTIFY => {

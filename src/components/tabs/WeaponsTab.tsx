@@ -13,10 +13,10 @@ import {
 	type WeaponFilters,
 	type WeaponSortKey,
 } from "@/components/weapon/weaponFilters";
-import { useAccountSnapshot } from "@/hooks/useAccountSnapshot";
+import { useAccount } from "@/lib/account";
 
 export function WeaponsTab() {
-	const { snapshot, error } = useAccountSnapshot();
+	const { snapshot, error } = useAccount();
 	const weapons = snapshot.weapons;
 	const [filters, setFilters] = useState<WeaponFilters>(EMPTY_WEAPON_FILTERS);
 	const [sortBy, setSortBy] = useState<WeaponSortKey>(WEAPON_DEFAULT_SORT);

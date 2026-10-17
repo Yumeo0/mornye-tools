@@ -1,8 +1,17 @@
-// TypeScript mirrors of the Rust account model (`src-tauri/src/account/model.rs`)
-// plus the snapshot/event bridge. The Rust account store is the single source
-// of truth; the UI only reads it here and writes equipment overrides.
+// The single source of truth for account data in the frontend.
+//
+// One module-level mirror of the Rust account store: a single snapshot cache
+// fed by `account_get_snapshot` and kept fresh by the backend's
+// `account-updated` event. Every read goes through `useAccount` (React) or
+// `readAccount` (plain code); every write goes through the mutation functions
+// at the bottom - no other module should invoke account commands. The Rust
+// store (`src-tauri/src/account`) stays authoritative; this only mirrors it.
+//
+// TypeScript mirrors of the Rust account model (`src-tauri/src/account/model.rs`).
 
 import { invoke } from "@tauri-apps/api/core";
+import { listen } from "@tauri-apps/api/event";
+import { useSyncExternalStore } from "react";
 
 export type StatKey =
 	| "hpFlat"
@@ -178,32 +187,6 @@ export const EMPTY_ACCOUNT: AccountSnapshot = {
 	echoes: [],
 };
 
-export async function getSnapshot(): Promise<AccountSnapshot> {
-	return invoke<AccountSnapshot>("account_get_snapshot");
-}
-
-/** Add an echo entered by hand; the backend assigns the synthetic instance id. */
-export async function addManualEcho(echo: Echo): Promise<Echo> {
-	return invoke<Echo>("account_add_manual_echo", { echo });
-}
-
-/** Remove a manually added echo. */
-export async function removeManualEcho(incrId: number): Promise<void> {
-	await invoke("account_remove_manual_echo", { incr_id: incrId });
-}
-
-export async function setEquippedOverride(
-	incrId: number,
-	equippedBy: number | null,
-	slot: number | null,
-): Promise<void> {
-	await invoke("account_set_equipped_override", {
-		incr_id: incrId,
-		equipped_by: equippedBy,
-		slot,
-	});
-}
-
 export function weaponForResonator(
 	snapshot: AccountSnapshot,
 	roleId: number,
@@ -218,4 +201,105 @@ export function echoesForResonator(
 	return snapshot.echoes
 		.filter((echo) => echo.equippedBy === roleId)
 		.sort((a, b) => (a.slot ?? 99) - (b.slot ?? 99));
+}
+
+// ---------------------------------------------------------------------------
+// The store
+// ---------------------------------------------------------------------------
+
+/** The mirrored account state: one immutable object, replaced on change. */
+export interface AccountState {
+	snapshot: AccountSnapshot;
+	error: string | null;
+}
+
+let state: AccountState = { snapshot: EMPTY_ACCOUNT, error: null };
+const listeners = new Set<() => void>();
+let started = false;
+let refreshInFlight: Promise<void> | null = null;
+
+function emitChange(): void {
+	for (const listener of [...listeners]) listener();
+}
+
+async function fetchSnapshot(): Promise<void> {
+	try {
+		const snapshot = await invoke<AccountSnapshot>("account_get_snapshot");
+		state = { snapshot, error: null };
+	} catch (error) {
+		// Keep serving the last good snapshot; surface why it is stale.
+		state = { snapshot: state.snapshot, error: String(error) };
+	}
+	emitChange();
+}
+
+/** Refresh the mirror; concurrent calls share one fetch. */
+export function refreshAccount(): Promise<void> {
+	refreshInFlight ??= fetchSnapshot().finally(() => {
+		refreshInFlight = null;
+	});
+	return refreshInFlight;
+}
+
+// The module lives for the lifetime of the window, so the listener is never
+// removed and the initial fetch happens on first subscription.
+function ensureStarted(): void {
+	if (started) return;
+	started = true;
+	void refreshAccount();
+	void listen("account-updated", () => {
+		void refreshAccount();
+	});
+}
+
+export function subscribeAccount(listener: () => void): () => void {
+	ensureStarted();
+	listeners.add(listener);
+	return () => {
+		listeners.delete(listener);
+	};
+}
+
+/** Current account state outside React. */
+export function readAccount(): AccountState {
+	return state;
+}
+
+/** Live account state for React components; the only account read path. */
+export function useAccount(): AccountState {
+	return useSyncExternalStore(subscribeAccount, readAccount, readAccount);
+}
+
+// ---------------------------------------------------------------------------
+// Writes (the only path to the backend's account commands)
+// ---------------------------------------------------------------------------
+
+/** Add an echo entered by hand; the backend assigns the synthetic instance id. */
+export async function addManualEcho(echo: Echo): Promise<Echo> {
+	const added = await invoke<Echo>("account_add_manual_echo", { echo });
+	await refreshAccount();
+	return added;
+}
+
+/** Remove a manually added echo. */
+export async function removeManualEcho(incrId: number): Promise<void> {
+	await invoke("account_remove_manual_echo", { incr_id: incrId });
+	await refreshAccount();
+}
+
+/**
+ * Set (or, with both fields null, clear) the manual equipment override for
+ * one echo.
+ */
+export async function setEquippedOverride(
+	incrId: number,
+	equippedBy: number | null,
+	slot: number | null,
+): Promise<void> {
+	await invoke("account_set_equipped_override", {
+		incr_id: incrId,
+		equipped_by: equippedBy,
+		slot,
+	});
+	await refreshAccount();
 }

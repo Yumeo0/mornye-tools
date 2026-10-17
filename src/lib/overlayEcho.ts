@@ -32,7 +32,8 @@ export interface EchoSplitPayload {
  *
  * Upgrading one copy of a stack moves it to a new instance id while the old
  * id becomes the unleveled remainder: a card tracking either half would keep
- * showing the stale remainder unless it follows the operated half.
+ * showing the stale remainder unless it follows the operated half. (The
+ * backend mirrors this for its discard queue in `overlay.rs`.)
  */
 export function splitFollowTarget(
 	current: Echo | null,
@@ -43,21 +44,6 @@ export function splitFollowTarget(
 		current.incrId === split.operated.incrId ||
 		(split.remainder !== null && current.incrId === split.remainder.incrId);
 	return involved ? split.operated : null;
-}
-
-/**
- * Move a queued assistant discard across a stack split: a queue entry
- * pointing at either half belongs to the echo on screen (the operated one).
- * Unrelated entries pass through unchanged.
- */
-export function retargetPendingDiscard(
-	pendingIncrId: number,
-	split: EchoSplitPayload,
-): number {
-	const involved =
-		pendingIncrId === split.operated.incrId ||
-		(split.remainder !== null && pendingIncrId === split.remainder.incrId);
-	return involved ? split.operated.incrId : pendingIncrId;
 }
 
 /** Sonata sets of the echo instance (`setId`), else all possible sets. */

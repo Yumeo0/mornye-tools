@@ -153,9 +153,6 @@ export function OcrDebugPanel() {
 				>
 					{showScanRegion ? "Hide Region Outline" : "Show Region Outline"}
 				</Button>
-				<p className="text-xs text-muted-foreground">
-					Displays a visual outline of the scan region on the overlay
-				</p>
 			</div>
 
 			<div className="space-y-2 rounded-md bg-background p-3">

@@ -46,7 +46,6 @@ export function OcrResolutionCard() {
 					</Label>
 					<p className="text-xs text-muted-foreground">
 						Reads the echo on screen so the overlay can show it automatically.
-						Pick your game's screen resolution so it reads correctly.
 					</p>
 				</div>
 				<div className="space-y-2">

@@ -97,10 +97,6 @@ export function UpgradeAssistantCard() {
 						}
 						disabled={!enabled}
 					/>
-					<p className="text-xs text-muted-foreground">
-						An echo is discarded once even perfect remaining substats cannot
-						reach this rating on any relevant character.
-					</p>
 				</div>
 			</CardContent>
 		</Card>

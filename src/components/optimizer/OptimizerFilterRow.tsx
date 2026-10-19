@@ -23,6 +23,7 @@ export function OptimizerFilterRow({
 	recommendedEnabled,
 	onRecommended,
 	counts,
+	countsHint = "Echoes eligible after the filters; when pruning applies, echoes beyond the search cap are ranked by stat weight",
 }: {
 	filters: OptimizerFilters;
 	onFiltersChange: (
@@ -33,6 +34,8 @@ export function OptimizerFilterRow({
 	recommendedEnabled: boolean;
 	onRecommended: () => void;
 	counts: { eligible: number; total: number; combos: number } | null;
+	/** Tooltip over the counts; team mode ranks by the role guide instead. */
+	countsHint?: string;
 }) {
 	return (
 		<div className="flex flex-wrap items-end gap-x-4 gap-y-2 border-t border-border/60 pt-3">
@@ -114,7 +117,7 @@ export function OptimizerFilterRow({
 			{counts && (
 				<span
 					className="ml-auto self-center text-[11px] text-muted-foreground"
-					title="Echoes eligible after the filters; when pruning applies, echoes beyond the search cap are ranked by stat weight"
+					title={countsHint}
 				>
 					{counts.eligible}/{counts.total} echoes ·{" "}
 					{formatDamage(counts.combos)} builds

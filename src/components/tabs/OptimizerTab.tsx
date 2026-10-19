@@ -1,8 +1,14 @@
 // Optimizer tab: search the captured echo inventory for the best five-echo
 // build of one resonator inside a specific team and rotation.
 //
-// Everything here is presentation and request wiring; the damage model and the
-// search itself stay in `@wuwacalc/core` (see `src/lib/calc/optimizer.ts`).
+// Two modes:
+// - Own damage: the packed optimizer maximizes the target's own damage.
+// - Team damage: the searched character is a support, and every combo is
+//   scored by the team damage a chosen teammate's rotation deals.
+//
+// Everything here is presentation and request wiring; the damage model, the
+// packed search (`@wuwacalc/core`) and the exact team metric
+// (`src/lib/calc/teamOptimizer.ts`) stay out of the components.
 
 import { ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -10,14 +16,15 @@ import {
 	SLOT_LABELS,
 	type SlotKey,
 } from "@/components/optimizer/CharacterSlotBox";
+import { roleLabel } from "@/components/optimizer/display";
 import { LoadoutDialog } from "@/components/optimizer/LoadoutDialog";
 import { OptimizerFilterRow } from "@/components/optimizer/OptimizerFilterRow";
 import { OptimizerResultsPanel } from "@/components/optimizer/OptimizerResultsPanel";
 import { OptimizerRunBar } from "@/components/optimizer/OptimizerRunBar";
 import { TeamSection } from "@/components/optimizer/TeamSection";
 import { CharacterPickerDialog } from "@/components/tabs/CharacterPickerDialog";
-import { useOptimizerRun } from "@/hooks/useOptimizerRun";
-import { useOptimizerTeam } from "@/hooks/useOptimizerTeam";
+import { type OptimizerMode, useOptimizerRun } from "@/hooks/useOptimizerRun";
+import { type MeasuredSlot, useOptimizerTeam } from "@/hooks/useOptimizerTeam";
 import { useAccount } from "@/lib/account";
 import { ensureCoreReady, isCoreReady } from "@/lib/calc/core";
 
@@ -25,6 +32,8 @@ export function OptimizerTab({ active }: { active: boolean }) {
 	const { snapshot } = useAccount();
 	const [coreReady, setCoreReady] = useState(() => isCoreReady());
 	const [coreError, setCoreError] = useState<string | null>(null);
+	const [mode, setMode] = useState<OptimizerMode>("damage");
+	const [measuredSlot, setMeasuredSlot] = useState<MeasuredSlot>("mateOne");
 
 	useEffect(() => {
 		if (!active || coreReady) return;
@@ -41,8 +50,8 @@ export function OptimizerTab({ active }: { active: boolean }) {
 		};
 	}, [active, coreReady]);
 
-	const team = useOptimizerTeam({ coreReady, snapshot });
-	const run = useOptimizerRun({ coreReady, snapshot, team });
+	const team = useOptimizerTeam({ coreReady, snapshot, mode, measuredSlot });
+	const run = useOptimizerRun({ coreReady, snapshot, team, mode });
 
 	const {
 		slotRoleIds,
@@ -56,6 +65,7 @@ export function OptimizerTab({ active }: { active: boolean }) {
 		setRotationId,
 		targetBuild,
 		targetSkillId,
+		measuredBuild,
 		editingSlot,
 		editingBuild,
 		editingOverride,
@@ -68,8 +78,10 @@ export function OptimizerTab({ active }: { active: boolean }) {
 		patchRole,
 	} = team;
 
+	const teamMode = mode === "team";
 	const hasTarget = Boolean(targetBuild?.runtime);
 	const hasTargetMode = rotation != null || targetSkillId != null;
+	const measuredName = measuredBuild ? roleLabel(measuredBuild) : null;
 
 	return (
 		<div className="flex min-h-0 flex-1 flex-col gap-4">
@@ -87,6 +99,9 @@ export function OptimizerTab({ active }: { active: boolean }) {
 					rotation={rotation}
 					coreReady={coreReady}
 					onRotationChange={setRotationId}
+					mode={mode}
+					measuredSlot={measuredSlot}
+					onMeasuredSlotChange={setMeasuredSlot}
 				/>
 
 				<OptimizerFilterRow
@@ -94,18 +109,17 @@ export function OptimizerTab({ active }: { active: boolean }) {
 					onFiltersChange={run.setFilters}
 					recommendedEnabled={coreReady && hasTarget}
 					onRecommended={run.applyRecommended}
-					counts={
-						run.plan
-							? {
-									eligible: run.plan.selection.echoes.length,
-									total: run.plan.selection.inventoryTotal,
-									combos: run.plan.selection.combos,
-								}
-							: null
+					countsHint={
+						teamMode
+							? "Echoes eligible after the filters; beyond the search cap they are ranked by the role guide's main stats and substat priorities"
+							: undefined
 					}
+					counts={run.counts}
 				/>
 
 				<OptimizerRunBar
+					mode={mode}
+					onModeChange={setMode}
 					resultsLimit={run.resultsLimit}
 					onResultsLimitChange={run.setResultsLimit}
 					engine={run.engine}
@@ -124,6 +138,14 @@ export function OptimizerTab({ active }: { active: boolean }) {
 					<p className="text-xs text-destructive">
 						Not enough captured echoes match the current filters (at least 5 are
 						needed).
+					</p>
+				)}
+
+				{coreReady && teamMode && !rotation && (
+					<p className="text-xs text-destructive">
+						{measuredName
+							? `${measuredName} has no authored rotation, so there is nothing to measure. Pick another teammate or switch to own damage.`
+							: "Pick a teammate with an authored rotation to measure."}
 					</p>
 				)}
 
@@ -183,12 +205,41 @@ export function OptimizerTab({ active }: { active: boolean }) {
 				expandedIndex={run.expandedIndex}
 				onExpandedChange={run.setExpandedIndex}
 				echoByUid={run.echoByUid}
+				title={
+					teamMode
+						? measuredName
+							? `Team damage · ${measuredName}'s rotation`
+							: "Team damage"
+						: "Results"
+				}
+				runningText={
+					teamMode
+						? "Scoring the team rotation for every candidate combo…"
+						: "Searching the captured inventory…"
+				}
+				idleText={
+					teamMode
+						? "Give the support a team and a teammate rotation to measure, then run the team search."
+						: "Pick a target, team and rotation, then run the optimizer."
+				}
 			/>
 
 			<p className="flex shrink-0 items-center gap-1 pb-2 text-[10px] text-muted-foreground">
 				<ChevronRight className="size-3" />
-				Enemy: Lvl. 100 Calamity, Tower of Adversity rules (all RES 20%). Only
-				the target's five echoes change; teammates and rotation stay fixed.
+				{teamMode ? (
+					<>
+						Enemy: Lvl. 100 Calamity, Tower of Adversity rules (all RES 20%).
+						The support&apos;s five echoes change; every combo is scored by the
+						measured teammate&apos;s rotation damage in the same simulation the
+						rotation view runs.
+					</>
+				) : (
+					<>
+						Enemy: Lvl. 100 Calamity, Tower of Adversity rules (all RES 20%).
+						Only the target&apos;s five echoes change; teammates and rotation
+						stay fixed.
+					</>
+				)}
 			</p>
 
 			{editingSlot && editingBuild && (
@@ -205,7 +256,11 @@ export function OptimizerTab({ active }: { active: boolean }) {
 
 			{pickingSlot && (
 				<CharacterPickerDialog
-					title={`Select ${SLOT_LABELS[pickingSlot]}`}
+					title={`Select ${
+						teamMode && pickingSlot === "target"
+							? "support"
+							: SLOT_LABELS[pickingSlot]
+					}`}
 					currentRoleId={slotRoleIds[pickingSlot]}
 					assignmentLabels={Object.fromEntries(
 						(["target", "mateOne", "mateTwo"] as SlotKey[])

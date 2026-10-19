@@ -17,6 +17,9 @@ export function OptimizerResultsPanel({
 	expandedIndex,
 	onExpandedChange,
 	echoByUid,
+	title = "Results",
+	runningText = "Searching the captured inventory…",
+	idleText = "Pick a target, team and rotation, then run the optimizer.",
 }: {
 	results: OptResultEntry[];
 	baseline: OptimizerBaseline | null;
@@ -24,6 +27,10 @@ export function OptimizerResultsPanel({
 	expandedIndex: number | "baseline" | null;
 	onExpandedChange: (index: number | "baseline" | null) => void;
 	echoByUid: Map<string, Echo>;
+	/** Panel heading; team mode names the measured rotation. */
+	title?: string;
+	runningText?: string;
+	idleText?: string;
 }) {
 	const rows = useMemo<ResultRowModel[]>(() => {
 		if (!baseline) {
@@ -49,13 +56,11 @@ export function OptimizerResultsPanel({
 	return (
 		<section className="bg-card text-card-foreground ring-foreground/10 flex min-h-0 flex-1 flex-col ring-1">
 			<header className="flex shrink-0 items-center justify-between gap-2 border-b border-border/60 px-3 py-2">
-				<h3 className="text-sm font-medium">Results</h3>
+				<h3 className="text-sm font-medium">{title}</h3>
 			</header>
 			{rows.length === 0 ? (
 				<p className="px-3 py-6 text-center text-[11px] text-muted-foreground">
-					{running
-						? "Searching the captured inventory…"
-						: "Pick a target, team and rotation, then run the optimizer."}
+					{running ? runningText : idleText}
 				</p>
 			) : (
 				<div className="min-h-0 flex-1 overflow-y-auto pr-1">

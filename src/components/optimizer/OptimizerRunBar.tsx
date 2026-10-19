@@ -14,12 +14,14 @@ import {
 	SelectTrigger,
 } from "@/components/ui/select";
 
-/** Results limit, engine picker and the run/cancel button with its progress. */
+/** Results limit, mode, engine picker and the run/cancel button with progress. */
 export function OptimizerRunBar({
 	resultsLimit,
 	onResultsLimitChange,
 	engine,
 	onEngineChange,
+	mode,
+	onModeChange,
 	running,
 	phase,
 	progress,
@@ -33,8 +35,11 @@ export function OptimizerRunBar({
 	onResultsLimitChange: (value: number) => void;
 	engine: "gpu" | "cpu";
 	onEngineChange: (engine: "gpu" | "cpu") => void;
+	/** Search objective: the target's own damage or a teammate's rotation. */
+	mode: "damage" | "team";
+	onModeChange: (mode: "damage" | "team") => void;
 	running: boolean;
-	phase: "baseline" | "search" | null;
+	phase: "baseline" | "search" | "team" | "stats" | null;
 	progress: OptPrgr | null;
 	progressPercent: number;
 	canRun: boolean;
@@ -42,9 +47,49 @@ export function OptimizerRunBar({
 	onRun: () => void;
 	onCancel: () => void;
 }) {
+	const teamMode = mode === "team";
+	const phaseLabel =
+		phase === "baseline"
+			? teamMode
+				? "Scoring the equipped support build…"
+				: "Evaluating the current build…"
+			: phase === "stats"
+				? "Reading the searched character's stats…"
+				: progress
+					? `${progressPercent}% · ${Math.round(progress.processed).toLocaleString()}${
+							progress.total != null
+								? ` / ${progress.total.toLocaleString()}`
+								: ""
+						} builds · ${formatMs(progress.elapsedMs)} elapsed · ~${formatMs(
+							progress.remainingMs,
+						)} left`
+					: teamMode
+						? "Preparing the team search…"
+						: "Preparing search…";
+
 	return (
 		<>
 			<div className="flex flex-wrap items-end gap-4">
+				<div className="flex flex-col gap-1">
+					<span className="text-[10px] leading-none text-muted-foreground">
+						Mode
+					</span>
+					<Select
+						value={mode}
+						onValueChange={(next) =>
+							onModeChange(next === "team" ? "team" : "damage")
+						}
+						disabled={running}
+					>
+						<SelectTrigger size="sm" className="w-40">
+							{teamMode ? "Team damage" : "Own damage"}
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="damage">Own damage</SelectItem>
+							<SelectItem value="team">Team damage</SelectItem>
+						</SelectContent>
+					</Select>
+				</div>
 				<div className="flex flex-col gap-1">
 					<span className="text-[10px] leading-none text-muted-foreground">
 						Results kept
@@ -77,9 +122,14 @@ export function OptimizerRunBar({
 						onValueChange={(next) =>
 							onEngineChange(next === "gpu" ? "gpu" : "cpu")
 						}
+						disabled={teamMode}
 					>
 						<SelectTrigger size="sm" className="w-34">
-							{engine === "gpu" ? "GPU (WebGPU)" : "CPU (workers)"}
+							{teamMode
+								? "Exact simulation"
+								: engine === "gpu"
+									? "GPU (WebGPU)"
+									: "CPU (workers)"}
 						</SelectTrigger>
 						<SelectContent>
 							<SelectItem value="gpu" disabled={!gpuAvailable}>
@@ -102,7 +152,8 @@ export function OptimizerRunBar({
 						</>
 					) : (
 						<>
-							<Play className="size-4" /> Run optimizer
+							<Play className="size-4" />{" "}
+							{teamMode ? "Run team search" : "Run optimizer"}
 						</>
 					)}
 				</Button>
@@ -116,19 +167,7 @@ export function OptimizerRunBar({
 							style={{ width: `${progressPercent}%` }}
 						/>
 					</div>
-					<p className="text-[11px] text-muted-foreground">
-						{phase === "baseline"
-							? "Evaluating the current build…"
-							: progress
-								? `${progressPercent}% · ${Math.round(progress.processed).toLocaleString()}${
-										progress.total != null
-											? ` / ${progress.total.toLocaleString()}`
-											: ""
-									} builds · ${formatMs(progress.elapsedMs)} elapsed · ~${formatMs(
-										progress.remainingMs,
-									)} left`
-								: "Preparing search…"}
-					</p>
+					<p className="text-[11px] text-muted-foreground">{phaseLabel}</p>
 				</div>
 			)}
 		</>

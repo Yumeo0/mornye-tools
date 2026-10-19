@@ -1,6 +1,10 @@
 // Team and loadout state for the optimizer: the build catalog (saved data
 // plus unowned defaults), the three slot selections, per-character loadout
 // overrides and the rotation list.
+//
+// In team mode the rotation belongs to the *measured* teammate (the one whose
+// rotation is scored), not to the searched character, and the cross-character
+// effects of the measured rotation drive the metric.
 
 import { listResRttn } from "@wuwacalc/core/data/catalog/gameDataService";
 import type {
@@ -29,12 +33,21 @@ import {
 
 const EMPTY_TRANSLATION: AccountTranslation = { builds: [], errors: [] };
 
+/** Which teammate's rotation a team-damage search scores. */
+export type MeasuredSlot = "mateOne" | "mateTwo";
+
 export function useOptimizerTeam({
 	coreReady,
 	snapshot,
+	mode,
+	measuredSlot,
 }: {
 	coreReady: boolean;
 	snapshot: AccountSnapshot;
+	/** Search mode; team mode scores a teammate instead of the target. */
+	mode: "damage" | "team";
+	/** Slot measured in team mode. */
+	measuredSlot: MeasuredSlot;
 }) {
 	const translation: AccountTranslation = useMemo(
 		() => (coreReady ? translateAccount(snapshot) : EMPTY_TRANSLATION),
@@ -109,14 +122,23 @@ export function useOptimizerTeam({
 		}
 	}, [allBuilds, targetRoleId, mateOne, mateTwo, buildsByRoleId]);
 
+	// The teammate whose rotation a team-damage search scores. The rotation
+	// picker below always follows that character in team mode.
+	const measuredRoleId =
+		mode === "team" ? (measuredSlot === "mateOne" ? mateOne : mateTwo) : "";
+	const rotationSubjectRoleId = mode === "team" ? measuredRoleId : targetRoleId;
+	const measuredBuild = measuredRoleId
+		? buildsByRoleId.get(measuredRoleId)
+		: undefined;
+
 	const rotations: RotDef[] = useMemo(() => {
-		if (!coreReady || !targetRoleId) return [];
+		if (!coreReady || !rotationSubjectRoleId) return [];
 		try {
-			return listResRttn(targetRoleId);
+			return listResRttn(rotationSubjectRoleId);
 		} catch {
 			return [];
 		}
-	}, [coreReady, targetRoleId]);
+	}, [coreReady, rotationSubjectRoleId]);
 
 	const [rotationId, setRotationId] = useState("");
 	useEffect(() => {
@@ -142,9 +164,16 @@ export function useOptimizerTeam({
 		[mateOne, mateTwo, buildsByRoleId],
 	);
 
-	// Skill fallback for resonators without an authored rotation.
+	// Skill fallback for resonators without an authored rotation. In team mode
+	// the picker follows the measured teammate, so the searched character has
+	// no skill target here.
 	const targetSkillId = useMemo(() => {
-		if (!coreReady || rotations.length > 0 || !targetBuild?.runtime) {
+		if (
+			mode === "team" ||
+			!coreReady ||
+			rotations.length > 0 ||
+			!targetBuild?.runtime
+		) {
 			return null;
 		}
 		try {
@@ -152,7 +181,7 @@ export function useOptimizerTeam({
 		} catch {
 			return null;
 		}
-	}, [coreReady, rotations.length, targetBuild]);
+	}, [mode, coreReady, rotations.length, targetBuild]);
 
 	// Teammate runtimes with the full team slots filled in.
 	const companionRuntimes = useMemo(() => {
@@ -280,6 +309,8 @@ export function useOptimizerTeam({
 		targetBuild,
 		mateBuilds,
 		targetSkillId,
+		measuredRoleId,
+		measuredBuild,
 		companionRuntimes,
 		slotRoleIds,
 		setSlotRoleId,

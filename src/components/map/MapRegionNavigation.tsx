@@ -45,6 +45,7 @@ export function MapRegionNavigation({
 							delay={100}
 							closeDelay={150}
 							aria-label={region.name}
+							aria-current={active ? "location" : undefined}
 							className={cn(
 								"group flex min-w-0 flex-1 items-center gap-2 border border-transparent px-2 py-1.5 text-left outline-none transition-colors hover:bg-accent data-popup-open:bg-accent focus-visible:ring-1 focus-visible:ring-ring",
 								active && "border-border bg-secondary",

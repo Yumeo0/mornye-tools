@@ -44,10 +44,12 @@ export function itemType(reward: MapReward) {
 	return `${reward.kind}:${reward.name}:${reward.icon}`;
 }
 export function itemLabel(reward: MapReward) {
+	if (reward.name === "Windchimer") return "Windchimer (Bell)";
+	if (reward.name === "Frostbug") return "Frostbug (Worm)";
 	if (reward.kind !== "heritage") return reward.name;
 	const color = reward.icon.includes("blue")
 		? "Blue"
-		: reward.icon.includes("gold")
+		: reward.icon.includes("gold") || reward.icon.includes("yellow")
 			? "Gold"
 			: "Purple";
 	return `${reward.name} · ${color}`;

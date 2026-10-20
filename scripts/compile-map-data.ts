@@ -9,11 +9,96 @@ import type {
 } from "../src/lib/map/types";
 import { mapAssetSources } from "./lib/map-assets";
 import {
+	CHALLENGE_PROJECT,
+	challengeMarkerKeys,
+	explorationMarkerFor,
+} from "./map-exploration";
+import {
 	compileMapRegions,
 	type RegionArea,
 	type RegionCountry,
 	type RegionPlacement,
 } from "./map-regions";
+
+/**
+ * Level entities the client never exposes as open-world collectibles: activity
+ * chests, the 2.4 flag-placement "trophy" chests, gameplay flag drops, a quest
+ * gift box and backpack pickups. Community-site icon matches are wrong or
+ * missing for them (a monster head, the generic map pin), which is how they
+ * surfaced in the first place. Every entity in these blueprints is such a prop,
+ * so the family filter is exact.
+ */
+const PROP_BLUEPRINTS = new Set([
+	"Treasure026", // activity supply chests
+	"QuestObj1", // quest gift box
+	"Treasure031", // backpack pickup
+	"branch2.4_122_Treasure_2_4_01", // 2.4 trophy chests (flag placements)
+	"branch2.4_122_Treasure_2_4_02",
+	"branch2.4_122_Treasure_2_4_04",
+	"branch2.4_122_Treasure_2_4_05",
+	"branch2.4_143_Gameplay_2_4QQ36", // 2.4 gameplay flag drops
+	"branch2.4_143_Gameplay_2_4QQ37",
+]);
+
+/**
+ * Individual props whose blueprints are shared with real chests, keyed like
+ * catalogue rewards: a standard chest whose string entry reads "Advanced
+ * Supply Chest", and a hidden sea-chest the client gates.
+ */
+const PROP_ENTITIES = new Set(["8:136003236", "8:222700001"]);
+
+/**
+ * Chest rows read type-first: the game names lead with the tier ("Advanced
+ * Supply Pack"), which makes the list sort into rarity blocks. Only the
+ * display name changes; icon lookups keep the game's own wording.
+ */
+function chestLabel(name: string): string {
+	const match =
+		/^(\w+) (Supply Chest|Supply Pack|Trophy Chest|Sea Chest)$/.exec(name);
+	return match ? `${match[2]} · ${match[1]}` : name;
+}
+
+/**
+ * Display names (per reward kind) that mark props or unnamed pickup nodes.
+ * Caskets and resources mix real and prop entities inside shared blueprints,
+ * so those rows are matched by the name the catalogue gives them; the fallback
+ * labels cover every entity whose name the text tables never resolve.
+ */
+const PROP_NAMES = new Set([
+	"casket|Drone Grapple",
+	"casket|Exploration collectible",
+	"casket|Fixed Grapple",
+	"casket|???",
+	"casket|Hoo",
+	"casket|Lulu",
+	"casket|Shee",
+	"collection|Acceleration Ring",
+	"collection|Dauntless Evernight",
+	"collection|Destructible Wooden Crate",
+	"collection|Drifting Treasures",
+	"collection|Energy Depletion Circle",
+	"collection|Explore the Area",
+	"collection|Feed",
+	"collection|Floating Container",
+	"collection|Frostbiter",
+	"collection|Gameplay Center",
+	"collection|Gathering resource",
+	"collection|In the point circle",
+	"collection|Inspect",
+	"collection|Laurus Sprouts",
+	"collection|Pick up",
+	"collection|Read",
+	"collection|Reverberations of Nimbus Sanctum",
+	"collection|Rotor",
+	"collection|Rotor 1",
+	"collection|Score Ring",
+	"collection|Sea Bunny",
+	"collection|Spacetrek Convoy Supplies",
+	"collection|Spacetrek Convoy Transport Report",
+	"collection|Parts package",
+	"collection|Journal from the Grand Commander",
+	"collection|Research Records",
+]);
 
 export async function compileMapData(): Promise<void> {
 	const root = resolve(import.meta.dirname, "..");
@@ -53,6 +138,7 @@ export async function compileMapData(): Promise<void> {
 		chest: textureUrl("SP_IconMap_SJ_01_UI", "icons"),
 		heritage: collectibleIcon,
 		casket: collectibleIcon,
+		exploration: textureUrl(CHALLENGE_PROJECT.icon, "icons"),
 		collection: textureUrl("SP_IconMap_Play_113_UI", "icons"),
 	};
 	// Icon and name overrides from the wuthering.gg join (see scripts/fetch-map-icons.ts).
@@ -232,20 +318,72 @@ export async function compileMapData(): Promise<void> {
 	const rewards: MapReward[] = [];
 	const regionPlacements: RegionPlacement[] = [];
 	const rewardKeys = new Set<string>();
-	for (const row of (await json(
+	const entityRows = (await json(
 		"level_entity/levelentityconfig.json",
-	)) as Row[]) {
-		if (!maps.has(row.MapId)) continue;
-		const blueprint = blueprints.get(row.BlueprintType);
-		const kind = kindFor(blueprint?.EntityType);
+	)) as Row[];
+	const titleFor = (row: Row): string =>
+		text.get(
+			row.ComponentsData?.BaseInfoComponent?.TidName ??
+				templates.get(row.BlueprintType)?.BaseInfoComponent?.TidName,
+		) ?? "";
+	const degreeFor = (row: Row): number | undefined =>
+		row.ComponentsData?.BaseInfoComponent?.Category?.ExploratoryDegree ??
+		templates.get(row.BlueprintType)?.BaseInfoComponent?.Category
+			?.ExploratoryDegree;
+	const explorationFor = (row: Row) =>
+		explorationMarkerFor(
+			blueprints.get(row.BlueprintType)?.EntityType,
+			row.BlueprintType,
+			degreeFor(row),
+			titleFor(row),
+		);
+	const validEntities = entityRows.filter((row) => {
 		const transform = row.Transform?.[0];
-		if (
-			!kind ||
-			!transform ||
-			![transform.X, transform.Y, transform.Z].every(Number.isFinite)
-		)
-			continue;
+		return (
+			maps.has(row.MapId) &&
+			transform &&
+			[transform.X, transform.Y, transform.Z].every(Number.isFinite)
+		);
+	});
+	const challengeKeys = challengeMarkerKeys(
+		[...plays].map(([LevelPlayId, Data]) => ({
+			LevelPlayId,
+			Data: {
+				Type: Data.Type,
+				LevelId: Data.LevelId,
+				LevelPlayEntityId: Data.LevelPlayEntityId,
+			},
+		})),
+		validEntities
+			.filter(
+				(row) =>
+					blueprints.get(row.BlueprintType)?.EntityType ===
+						"ChallengeInteract" && explorationFor(row),
+			)
+			.map((row) => ({
+				key: `${row.MapId}:${row.EntityId}`,
+				mapId: row.MapId,
+				owner: owners.get(`${row.MapId}:${row.EntityId}`) ?? null,
+			})),
+	);
+	for (const row of validEntities) {
+		const blueprint = blueprints.get(row.BlueprintType);
 		const key = `${row.MapId}:${row.EntityId}`;
+		const owner = owners.get(key) ?? null;
+		const ownerType = owner === null ? null : plays.get(owner)?.Type;
+		let exploration = explorationFor(row);
+		if (blueprint?.EntityType === "ChallengeInteract") {
+			// A graph's controller and devices describe one challenge, not several.
+			if (
+				ownerType === "Quest" ||
+				(ownerType === "Challenge" && !challengeKeys.has(key))
+			)
+				exploration = null;
+		}
+		if (challengeKeys.has(key)) exploration ??= CHALLENGE_PROJECT;
+		const kind = exploration ? "exploration" : kindFor(blueprint?.EntityType);
+		if (!kind) continue;
+		const transform = row.Transform[0];
 		if (rewardKeys.has(key)) continue;
 		rewardKeys.add(key);
 		regionPlacements.push({
@@ -254,19 +392,13 @@ export async function compileMapData(): Promise<void> {
 			x: transform.X * 0.01,
 			y: transform.Y * 0.01,
 		});
-		const components = templates.get(row.BlueprintType) ?? {};
-		const owner = owners.get(key) ?? null;
 		const refresh = owner
 			? (plays.get(owner)?.LevelPlayRefreshConfig?.Type ?? "Unknown")
 			: "Unknown";
-		const degree =
-			row.ComponentsData?.BaseInfoComponent?.Category?.ExploratoryDegree ??
-			components.BaseInfoComponent?.Category?.ExploratoryDegree;
+		const degree = degreeFor(row);
 		const resolvedTitle =
-			text.get(
-				row.ComponentsData?.BaseInfoComponent?.TidName ??
-					components.BaseInfoComponent?.TidName,
-			) ||
+			exploration?.name ||
+			titleFor(row) ||
 			(kind === "heritage"
 				? "Tidal Heritage"
 				: kind === "casket"
@@ -280,9 +412,26 @@ export async function compileMapData(): Promise<void> {
 									3: "Advanced Supply Chest",
 									4: "Premium Supply Chest",
 								} as Record<number, string>
-							)[degree] ?? "Supply Chest"));
-		// English text is missing for a few 3.5 pickups; the overrides name them.
+							)[degree ?? 0] ?? "Supply Chest"));
+		// Overrides correct missing English text and internal pickup labels.
 		const name = iconOverrides.names?.[row.BlueprintType] ?? resolvedTitle;
+		// Props that are not collectibles: geometry above may still frame an
+		// area, but the placement is neither a marker nor a claim to track.
+		if (
+			PROP_BLUEPRINTS.has(row.BlueprintType) ||
+			PROP_ENTITIES.has(key) ||
+			PROP_NAMES.has(`${kind}|${name}`)
+		) {
+			rewardKeys.delete(key);
+			continue;
+		}
+		const label = kind === "chest" ? chestLabel(String(name)) : String(name);
+		const explorationIcon = exploration
+			? ((exploration.useIconOverride
+					? iconOverrides.types?.[`${kind}|${name}`]
+					: undefined) ?? textureUrl(exploration.icon, "icons"))
+			: null;
+		if (explorationIcon) icons.push(explorationIcon);
 		rewards.push({
 			key,
 			mapId: row.MapId,
@@ -291,19 +440,24 @@ export async function compileMapData(): Promise<void> {
 			y: transform.Y * 0.01,
 			z: transform.Z * 0.01,
 			kind,
-			name: String(name),
+			name: label,
 			blueprint: row.BlueprintType,
 			area: areas.get(row.AreaId) ?? `Area ${row.AreaId}`,
+			// A row is one name, so a named override decides the icon: several
+			// blueprint overrides disagree with their row's name (a "Tidal
+			// Supply Chest" carrying the advanced icon), which used to split
+			// one chest type into a second, smaller row.
 			icon:
-				kind === "heritage"
+				explorationIcon ??
+				(kind === "heritage"
 					? (iconOverrides.heritage?.[String(degree)] ??
 						iconOverrides.icons?.[row.BlueprintType] ??
 						iconOverrides.types?.[`${kind}|${name}`] ??
 						iconOverrides.heritage?.["13"] ??
 						iconFor.casket)
-					: (iconOverrides.icons?.[row.BlueprintType] ??
-						iconOverrides.types?.[`${kind}|${name}`] ??
-						iconFor[kind]),
+					: (iconOverrides.types?.[`${kind}|${name}`] ??
+						iconOverrides.icons?.[row.BlueprintType] ??
+						iconFor[kind])),
 			owner,
 			refresh,
 			hidden: Boolean(row.IsHidden),

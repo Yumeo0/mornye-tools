@@ -93,8 +93,15 @@ function TitleBar() {
 		>
 			<span
 				data-tauri-drag-region
-				className="flex items-center px-3 text-xs font-medium text-muted-foreground"
+				className="flex items-center gap-2 px-3 text-xs font-medium text-muted-foreground"
 			>
+				<span className="size-6 shrink-0 overflow-hidden rounded-md ring-1 ring-border">
+					<img
+						src="/mornye-chibi.webp"
+						alt=""
+						className="size-full scale-[1.3] object-cover"
+					/>
+				</span>
 				Mornye Tools
 			</span>
 			<div data-tauri-drag-region className="flex-1" />

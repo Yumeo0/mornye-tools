@@ -14,7 +14,7 @@ export function containsDestination(
 	);
 }
 
-/** Match a live position to its region even when several destinations share a map ID. */
+/** Match a player or camera position, including destinations sharing a map ID. */
 export function destinationAt(
 	regions: MapRegion[],
 	mapId: number,
@@ -38,6 +38,11 @@ export function destinationAt(
 				(b.bounds.right - b.bounds.left) * (b.bounds.bottom - b.bounds.top),
 		);
 		if (containing[0]) return containing[0];
+		// Bounds come from placements; gaps and open water use the nearest area.
+		const distance = ({ bounds: b }: MapDestination) =>
+			Math.max(b.left - position.x, 0, position.x - b.right) ** 2 +
+			Math.max(b.top - position.y, 0, position.y - b.bottom) ** 2;
+		destinations.sort((a, b) => distance(a) - distance(b));
 	}
 	return destinations[0] ?? null;
 }

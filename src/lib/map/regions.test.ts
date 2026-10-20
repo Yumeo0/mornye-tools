@@ -73,6 +73,12 @@ describe("region navigation", () => {
 		]);
 		expect(destinationAt(regions, 8, { x: 1500, y: 1500 })?.id).toBe("8:24");
 		expect(destinationAt(regions, 8, { x: 0, y: 0 })?.id).toBe("8:35");
+		// Panning off an area's placements keeps the nearby nation selected.
+		expect(destinationAt(regions, 8, { x: 2500, y: 1500 })?.id).toBe("8:24");
+		expect(destinationAt(regions, 8, { x: 1500, y: 2500 })?.id).toBe("8:24");
+		expect(destinationAt(regions, 8, { x: -500, y: 0 })?.id).toBe("8:35");
+		// A closer area on a different physical map must never win.
+		expect(destinationAt(regions, 8, { x: -5000, y: -5000 })?.id).toBe("8:35");
 		expect(regions[1].destinations[0].bounds).toEqual({
 			left: 1000,
 			top: 1000,

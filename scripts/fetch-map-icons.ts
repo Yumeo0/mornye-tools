@@ -35,8 +35,9 @@ interface Tally {
 	[stamp: string]: number;
 }
 
-/** Blueprints whose pickups ship without English text resolve to a known name. */
+/** Correct missing English names and internal labels in the game tables. */
 const NAME_OVERRIDES: Record<string, string> = {
+	Gameplay021: "Sonance Casket",
 	"branch3.5_21_Gameplay_3_0/Common4": "Unclaimed Rafter Kite",
 	"branch3.0_41_Gameplay_3_0/Common1": "Tape of Last Words",
 };
@@ -250,6 +251,10 @@ const itemMatch = (name: Set<string>) => {
 
 /** First acceptable icon for a reward: coordinates, then names. */
 const resolveFor = (reward: MapReward): string | undefined => {
+	// Exploration controllers can overlap a chest or monster. Only an exact
+	// marker title can replace their built-in artwork without mislabelling them.
+	if (reward.kind === "exploration")
+		return acceptable(soleStamp(titleIcons.get(words(nameOf(reward)))));
 	const byCoordinates = acceptable(majority(byBlueprint.get(reward.blueprint)));
 	if (byCoordinates) return byCoordinates;
 	const byKind = acceptable(

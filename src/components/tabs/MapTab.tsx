@@ -10,7 +10,6 @@ import { MapCanvas, type MapCanvasHandle } from "@/components/map/MapCanvas";
 import { MapFilters } from "@/components/map/MapFilters";
 import { MapRegionNavigation } from "@/components/map/MapRegionNavigation";
 import { QuestDetails } from "@/components/map/QuestDetails";
-import { QuestFilters } from "@/components/map/QuestFilters";
 import { RewardDetails } from "@/components/map/RewardDetails";
 import { Button } from "@/components/ui/button";
 import { useAccount } from "@/lib/account";
@@ -23,9 +22,10 @@ import {
 } from "@/lib/map/filters";
 import { useManualMapMarks } from "@/lib/map/manual";
 import { usePlayerPosition } from "@/lib/map/position";
-import { destinationAt } from "@/lib/map/regions";
+import { containsDestination, destinationAt } from "@/lib/map/regions";
 import {
 	EMPTY_EXPLORATION,
+	KIND_LABELS,
 	type MapDestination,
 	type MapReward,
 	type RewardState,
@@ -37,6 +37,7 @@ import {
 	questStatusRows,
 	sideQuestMarkers,
 } from "@/lib/progression/state";
+import type { QuestStatus } from "@/lib/progression/types";
 
 export function MapTab({ active }: { active: boolean }) {
 	const account = useAccount();
@@ -75,6 +76,19 @@ export function MapTab({ active }: { active: boolean }) {
 	const [mapId, setMapId] = useState(8);
 	const [navigationTarget, setNavigationTarget] =
 		useState<MapDestination | null>(null);
+	const [viewedDestination, setViewedDestination] =
+		useState<MapDestination | null>(null);
+	const regions = catalog?.regions;
+	const updateViewedDestination = useCallback(
+		(position: { mapId: number; x: number; y: number }) => {
+			const next = destinationAt(regions ?? [], position.mapId, position);
+			// Camera movement only needs to rerender the tab when the area changes.
+			setViewedDestination((current) =>
+				current?.id === next?.id ? current : next,
+			);
+		},
+		[regions],
+	);
 	const [layer, setLayer] = useState(0);
 	const [search, setSearch] = useState("");
 	const mapQuests = useMemo(
@@ -83,17 +97,13 @@ export function MapTab({ active }: { active: boolean }) {
 	);
 	// Status rows count this map's markers regardless of what is hidden.
 	const questRows = useMemo(() => questStatusRows(mapQuests), [mapQuests]);
-	const questMarkers = useMemo(() => {
-		const query = search.trim().toLowerCase();
-		return mapQuests.filter(
-			(marker) =>
-				isQuestStatusVisible(questOverrides, marker.status) &&
-				(!query ||
-					`${marker.quest.name} ${marker.quest.description} ${marker.point.area} ${marker.quest.id}`
-						.toLowerCase()
-						.includes(query)),
-		);
-	}, [mapQuests, search, questOverrides]);
+	const questMarkers = useMemo(
+		() =>
+			mapQuests.filter((marker) =>
+				isQuestStatusVisible(questOverrides, marker.status),
+			),
+		[mapQuests, questOverrides],
+	);
 	const selectedQuest =
 		allQuests.find(
 			(marker) =>
@@ -171,18 +181,14 @@ export function MapTab({ active }: { active: boolean }) {
 		for (const { type, state } of all) if (visible.has(type)) totals[state]++;
 		return totals;
 	}, [all, visible]);
-	const markers = useMemo(() => {
-		const query = search.trim().toLowerCase();
-		return all.filter(
-			({ reward: r, type, state }) =>
-				visible.has(type) &&
-				(visibility === "all" || state === visibility) &&
-				(!query ||
-					`${r.name} ${r.area} ${r.entityId} ${r.blueprint}`
-						.toLowerCase()
-						.includes(query)),
-		);
-	}, [all, visible, visibility, search]);
+	const markers = useMemo(
+		() =>
+			all.filter(
+				({ type, state }) =>
+					visible.has(type) && (visibility === "all" || state === visibility),
+			),
+		[all, visible, visibility],
+	);
 	const map = catalog?.maps.find((m) => m.id === mapId);
 	/** Artwork layers this map actually has tiles for. */
 	const artworkLayers = useMemo(
@@ -221,6 +227,23 @@ export function MapTab({ active }: { active: boolean }) {
 		setSearch("");
 		setQuestOverrides({});
 	};
+	const setTypesVisible = useCallback((types: string[], next: boolean) => {
+		setOverrides((values) => {
+			const updated = { ...values };
+			for (const type of types) updated[type] = next;
+			return updated;
+		});
+	}, []);
+	const setQuestStatusesVisible = useCallback(
+		(statuses: QuestStatus[], next: boolean) => {
+			setQuestOverrides((values) => {
+				const updated = { ...values };
+				for (const status of statuses) updated[status] = next;
+				return updated;
+			});
+		},
+		[],
+	);
 	if (error)
 		return (
 			<div className="flex flex-1 flex-col items-center justify-center gap-3">
@@ -240,18 +263,23 @@ export function MapTab({ active }: { active: boolean }) {
 				Loading field atlas…
 			</div>
 		);
-	const setTypesVisible = (types: string[], next: boolean) =>
-		setOverrides((values) => {
-			const updated = { ...values };
-			for (const type of types) updated[type] = next;
-			return updated;
-		});
-	const setQuestStatusesVisible = (statuses: string[], next: boolean) =>
-		setQuestOverrides((values) => {
-			const updated = { ...values };
-			for (const status of statuses) updated[status] = next;
-			return updated;
-		});
+	/** Navigation follows the viewport; travel targets remain separate camera commands. */
+	const destination =
+		viewedDestination?.mapId === mapId
+			? viewedDestination
+			: destinationAt(catalog.regions, mapId);
+	const region = catalog.regions.find((region) =>
+		region.destinations.some((item) =>
+			containsDestination(item, destination?.id),
+		),
+	);
+	const regionArea = region?.destinations.find((item) =>
+		containsDestination(item, destination?.id),
+	);
+	const subregion =
+		regionArea && destination && regionArea.name !== destination.name
+			? `${regionArea.name} · ${destination.name}`
+			: destination?.name;
 	return (
 		<section
 			className="flex min-h-0 flex-1 flex-col"
@@ -259,32 +287,49 @@ export function MapTab({ active }: { active: boolean }) {
 		>
 			<div className="flex min-h-0 flex-1 overflow-hidden border bg-card">
 				<MapFilters
-					questFilters={
-						<QuestFilters
-							rows={questRows}
-							overrides={questOverrides}
-							synced={
-								progression?.quests.listSyncedAt != null &&
-								progression?.quests.completedSyncedAt != null
-							}
-							error={progressionCatalog.error}
-							onStatusChange={setQuestStatusesVisible}
-						/>
-					}
 					itemRows={itemRows}
 					overrides={overrides}
 					visibility={visibility}
 					search={search}
 					markerCount={markers.length + questMarkers.length}
 					stateTotals={stateTotals}
+					questRows={questRows}
+					questOverrides={questOverrides}
+					questSynced={
+						progression?.quests.listSyncedAt != null &&
+						progression?.quests.completedSyncedAt != null
+					}
+					questError={progressionCatalog.error}
+					onQuestStatusChange={setQuestStatusesVisible}
 					onSearchChange={setSearch}
 					onVisibilityChange={setVisibility}
 					onTypesChange={setTypesVisible}
 					onReset={resetFilters}
 					onFirstMatch={() => {
-						const reward = markers[0]?.reward;
+						// The search narrows the filter list; this jumps to the
+						// first marker of a matching row (else the first shown).
+						const query = search.trim().toLowerCase();
+						const matches = (text: string) =>
+							text.toLowerCase().includes(query);
+						const types = new Set(
+							itemRows
+								.filter(
+									(row) => matches(row.label) || matches(KIND_LABELS[row.kind]),
+								)
+								.map((row) => row.type),
+						);
+						const statuses = new Set(
+							questRows
+								.filter((row) => matches(row.label))
+								.map((row) => row.status),
+						);
+						const reward =
+							markers.find(({ type }) => types.has(type))?.reward ??
+							markers[0]?.reward;
 						if (!reward) {
-							const quest = questMarkers[0];
+							const quest =
+								questMarkers.find((marker) => statuses.has(marker.status)) ??
+								questMarkers[0];
 							if (quest) {
 								setSelected(null);
 								setSelectedQuestId(quest.quest.id);
@@ -302,15 +347,7 @@ export function MapTab({ active }: { active: boolean }) {
 				<div className="flex min-w-0 flex-1 flex-col">
 					<MapRegionNavigation
 						regions={catalog.regions}
-						destination={
-							followPlayer || !navigationTarget
-								? destinationAt(
-										catalog.regions,
-										mapId,
-										playerPosition?.mapId === mapId ? playerPosition : null,
-									)
-								: navigationTarget
-						}
+						destination={destination}
 						onNavigate={navigate}
 					/>
 					<div className="relative flex min-h-0 flex-1 flex-col">
@@ -322,6 +359,7 @@ export function MapTab({ active }: { active: boolean }) {
 							target={
 								navigationTarget?.mapId === mapId ? navigationTarget : null
 							}
+							area={navigationTarget?.mapId === mapId ? navigationTarget : null}
 							markers={markers}
 							questMarkers={questMarkers}
 							selectedQuest={selectedQuestId}
@@ -336,8 +374,29 @@ export function MapTab({ active }: { active: boolean }) {
 							player={playerPosition?.mapId === mapId ? playerPosition : null}
 							followPlayer={followPlayer}
 							onPan={stopFollowing}
+							onViewChange={updateViewedDestination}
 							onSelect={selectReward}
 						/>
+						{region && (
+							<section
+								aria-label="Currently viewed region"
+								className="pointer-events-none absolute left-4 top-4 flex max-w-[calc(100%-2rem)] items-center gap-3 border bg-background/90 px-3 py-2 shadow-lg backdrop-blur-sm"
+							>
+								<img
+									src={region.icon}
+									alt=""
+									className="size-10 shrink-0 object-contain"
+								/>
+								<div className="flex min-w-0 flex-col gap-0.5">
+									<span className="truncate text-sm font-medium">
+										{region.name}
+									</span>
+									<span className="truncate text-xs text-muted-foreground">
+										{subregion}
+									</span>
+								</div>
+							</section>
+						)}
 
 						<div className="absolute bottom-12 right-3 flex flex-col gap-1 border bg-background/95 p-1 shadow-lg">
 							<Button

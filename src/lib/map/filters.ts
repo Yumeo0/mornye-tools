@@ -23,12 +23,12 @@ export interface ItemRow {
 	collected: number;
 }
 
-/** Gathering resources start hidden to keep the map readable. */
+/** All marker types start hidden until enabled in the filter list. */
 export function isItemVisible(
 	overrides: Record<string, boolean>,
 	row: ItemRow,
 ) {
-	return overrides[row.type] ?? row.kind !== "collection";
+	return overrides[row.type] ?? false;
 }
 
 /** One filter entry per item type, counted across the selected map. */

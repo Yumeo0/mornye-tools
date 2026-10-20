@@ -165,5 +165,46 @@
 	border-radius: 50%;
 	background: #9da6a1;
 }
-.map-state-dot.state-collected { background: #419f81; }
-.map-state-dot.state-remaining { background: #9da6a1; }
+.map-state-dot.state-collected {
+	background: #419f81;
+}
+.map-state-dot.state-remaining {
+	background: #9da6a1;
+}
+
+/* The selected map area: a quick colored flash that fades away. */
+.map-area-flash {
+	border: 2px solid color-mix(in oklab, var(--primary) 85%, white);
+	background: color-mix(in oklab, var(--primary) 6%, transparent);
+	box-shadow:
+		0 0 22px color-mix(in oklab, var(--primary) 50%, transparent),
+		inset 0 0 34px color-mix(in oklab, var(--primary) 14%, transparent);
+	animation: map-area-flash 1.7s ease-out forwards;
+}
+@keyframes map-area-flash {
+	0% {
+		opacity: 0;
+	}
+	12%,
+	35% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+/* No flashing under reduced motion; a plain fade still marks the area. */
+@keyframes map-area-fade {
+	0%,
+	15% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.map-area-flash {
+		animation: map-area-fade 2.2s linear forwards;
+	}
+}

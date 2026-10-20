@@ -73,11 +73,14 @@ Areas with districts open further menus to the right; each includes an
 **All of…** option for the parent area. Travel within the current map pans and
 zooms smoothly, honors reduced-motion preferences, and stops on manual input.
 
-Search by name, area or entity ID; toggle reward items and show all, collected, or
-not-collected placements. Drag to pan, scroll to zoom, and select a marker for
-its details and coordinates. Every placement is always shown; the 860 that the
-game data assigns to an underground terrain floor (joined from `multimap.json`
-by area id) carry a small cave badge in the marker's bottom-right corner.
+The filter panel searches and toggles the listed reward items and quest
+statuses; chest rows read type-first ("Supply Chest · Advanced"), and the
+list/box view is remembered across sessions. Show all, collected or
+not-collected placements with the status radios. Drag to pan, scroll to zoom,
+and select a marker for its details and coordinates. Every placement is always
+shown; the 860 that the game data assigns to an underground terrain floor
+(joined from `multimap.json` by area id) carry a small cave badge in the
+marker's bottom-right corner.
 Selecting such a collectible switches the artwork to its floor — surface tiles
 dim underneath — and selecting it again, or selecting any surface collectible,
 returns to the surface. Markers whose floor has no extracted artwork keep their
@@ -106,7 +109,26 @@ icon, and blueprint-specific matches win over type and name matches. The
 details panel also lists that spot's community notes from
 `https://api.wuthering.gg/comments/<id>`, where `<id>` is the sum of the
 placement's raw X and Y coordinates — the key the site computes for its own
-pins, so the same id can collide for points mirrored across the diagonal.
+pins, so the same id can collide for points mirrored across the diagonal. Level
+entities that are only props — activity, gameplay, quest and trophy props,
+unnamed pickup nodes, and casket/resource rows the game names generically — are
+filtered out of the catalogue (two chests that share a blueprint with real ones
+are excluded by entity id), so neither the map nor the sniffer's claim rules
+carry them; every placement still feeds the area bounds.
+
+The **Exploration** filters include Blobflies, Mutterfly swarms, Windchimers
+(bells), Frostbugs (worms), viewpoints, challenge projects and named Echo
+challenges. All map marker sections, including side quests, start disabled and
+collapsed. Section checkboxes control marker visibility; section headers expand
+or collapse their filter entries. Search expands matching sections without
+changing their normal expansion state. Exploration markers support per-account
+manual completion marks.
+The compiler identifies actors through their exploration category and blueprint,
+and challenges through their gameplay graphs, preferring an interaction device
+to its controller so each challenge has one marker. Mutterfly destination bases,
+unnamed challenge scenery and quest-only devices are excluded. A challenge's
+reward chest remains a separate collectible; completing a graph alone never
+marks either placement collected.
 
 The map also shows the controlled player's position and facing. Choose
 **Follow player** to keep the marker centered; dragging or using arrow keys
@@ -114,7 +136,8 @@ stops following, and zoom stays unchanged as you move. Movement uses a
 transient `player-position` event (up to four updates per second), without
 writing account.json. Tracking starts after a captured login and scene join,
 follows confirmed character switches, and clears when leaving the scene or
-ending capture.
+ending capture. Whenever the selected destination changes, its bounds flash on
+the map as a smoothed, rounded outline in the accent color and then fade away.
 
 Map tiles and atlas sprites live in the `wuwa-assets` checkout alongside the
 other game images. Its extractor includes map tiles, world-map icons and nation
@@ -136,11 +159,14 @@ rules to `src/configs/map_rules.json`. The tile size and alignment follow the
 client's `MapDefine.js` / `MapTileMgr.js`; the captured Jinzhou position falls
 inside city tile `0_-1`.
 
-Side quests appear as diamond markers, with client-synced availability and
-completion. Active quests use their current objective targets when those are
-known; otherwise an explicit quest giver is shown. Quests without a proven start
-or active target are not assigned a guessed location. Quest status is read-only.
-Start capture before logging in to receive the quest and completion lists.
+Side quests use the game's world-map pins — the ordinary marker, a gold variant
+for quests that are not available yet and a green variant once completed — with
+client-synced availability and completion. Active quests use their current
+objective targets when those are known; otherwise an explicit quest giver is
+shown. Quests without a proven start or active target are not assigned a guessed
+location. The side quest filter lists one row per status, toggleable exactly like
+the reward items; quest status itself is read-only. Start capture before logging
+in to receive the quest and completion lists.
 
 The **Achievements** tab reads the client's achievement snapshot and live updates,
 including progress, completion dates and reward-claimed state. The client requests

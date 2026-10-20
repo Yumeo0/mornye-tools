@@ -25,8 +25,28 @@ fn main() {
     }
 
     verify_bundled_key();
+    track_icons();
 
     tauri_build::try_build(attributes).expect("failed to run tauri-build");
+}
+
+/// Ask cargo to rebuild when an icon changes.
+///
+/// The icons are compiled into the executable (the `.ico` becomes the Windows
+/// resource and window icon; the PNGs feed the bundled context), but
+/// `tauri-build` emits no change tracking for them, so without this a new icon
+/// leaves every existing binary stale until a manual clean.
+fn track_icons() {
+    for icon in [
+        "icons/icon.ico",
+        "icons/icon.png",
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon.icns",
+    ] {
+        println!("cargo:rerun-if-changed={icon}");
+    }
 }
 
 /// Verify the bundled RSA key is present and looks like a PKCS#1 PEM key.

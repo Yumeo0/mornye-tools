@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { collectionState, parseManualMarks } from "./collection";
+import { collectionState, itemLabel, parseManualMarks } from "./collection";
 import type { ExplorationSnapshot, MapReward } from "./types";
 
 const reward = {
@@ -11,6 +11,25 @@ const snapshot = (): ExplorationSnapshot => ({
 	playerId: 1,
 	scene: null,
 	rewards: {},
+});
+
+test("Tidal Heritage labels recognize the yellow asset as gold", () => {
+	const heritage: MapReward = {
+		...reward,
+		kind: "heritage",
+		name: "Tidal Heritage",
+		icon: "/map/icons/gg/tidal-yellow.png",
+	};
+	for (const [file, color] of [
+		["tidal-yellow.png", "Gold"],
+		["tidal-gold.png", "Gold"],
+		["tidal-purple.png", "Purple"],
+		["tidal-blue.png", "Blue"],
+	]) {
+		expect(itemLabel({ ...heritage, icon: `/map/icons/gg/${file}` })).toBe(
+			`Tidal Heritage · ${color}`,
+		);
+	}
 });
 
 describe("reward collection state", () => {

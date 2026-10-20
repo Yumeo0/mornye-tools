@@ -64,6 +64,7 @@ export function MapCanvas({
 	map,
 	tileSize,
 	target,
+	area,
 	markers,
 	questMarkers,
 	selectedQuest,
@@ -73,12 +74,15 @@ export function MapCanvas({
 	player,
 	followPlayer,
 	onPan,
+	onViewChange,
 	onSelect,
 	ref,
 }: {
 	map: GameMap;
 	tileSize: number;
 	target: MapDestination | null;
+	/** The selected destination; outlined on the map so its extent stays visible. */
+	area: MapDestination | null;
 	markers: RewardMarker[];
 	questMarkers: QuestMarker[];
 	selectedQuest: number | null;
@@ -88,6 +92,7 @@ export function MapCanvas({
 	player: { x: number; y: number; yaw?: number | null } | null;
 	followPlayer: boolean;
 	onPan: () => void;
+	onViewChange: (position: { mapId: number; x: number; y: number }) => void;
 	onSelect: (reward: MapReward) => void;
 	ref: React.Ref<MapCanvasHandle>;
 }) {
@@ -193,6 +198,10 @@ export function MapCanvas({
 		if (followPlayer && playerX !== undefined && playerY !== undefined)
 			setView((v) => ({ ...v, x: playerX, y: playerY }));
 	}, [followPlayer, playerX, playerY, setView]);
+	useEffect(() => {
+		if (size.width <= 1 || size.height <= 1) return;
+		onViewChange({ mapId: map.id, x: view.x, y: view.y });
+	}, [map.id, view.x, view.y, size.width, size.height, onViewChange]);
 	useImperativeHandle(
 		ref,
 		() => ({
@@ -435,8 +444,53 @@ export function MapCanvas({
 		}
 		return nearest;
 	};
+	/** A selection arms a flash; it replays once the camera settles. */
+	const [flashKey, setFlashKey] = useState(0);
+	const [flashPending, setFlashPending] = useState(false);
+	useEffect(() => {
+		setFlashPending(area != null);
+	}, [area]);
+	// biome-ignore lint/correctness/useExhaustiveDependencies: `view` is the camera's progress; every update restarts the settle wait.
+	useEffect(() => {
+		if (!flashPending) return;
+		// Every camera update restarts the wait, so the flash lands after travel.
+		const timer = window.setTimeout(() => {
+			setFlashPending(false);
+			setFlashKey((key) => key + 1);
+		}, 140);
+		return () => window.clearTimeout(timer);
+	}, [flashPending, view]);
+	/** The selected area's bounds in screen space, with smoothed corners. */
+	const outline = (() => {
+		if (!area) return null;
+		const { left, top, right, bottom } = area.bounds;
+		const width = (right - left) * view.scale;
+		const height = (bottom - top) * view.scale;
+		if (width <= 0 || height <= 0) return null;
+		return {
+			left: (left - view.x) * view.scale + size.width / 2,
+			top: (top - view.y) * view.scale + size.height / 2,
+			width,
+			height,
+			radius: Math.min(64, Math.max(12, Math.min(width, height) * 0.08)),
+		};
+	})();
 	return (
 		<div className="relative min-h-0 flex-1 overflow-hidden bg-[#141e20]">
+			{outline && flashKey > 0 && (
+				<div
+					key={flashKey}
+					aria-hidden="true"
+					className="map-area-flash pointer-events-none absolute"
+					style={{
+						left: outline.left,
+						top: outline.top,
+						width: outline.width,
+						height: outline.height,
+						borderRadius: outline.radius,
+					}}
+				/>
+			)}
 			<QuestMarkers
 				markers={questMarkers}
 				view={view}

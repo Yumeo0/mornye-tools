@@ -1,8 +1,14 @@
-export type RewardKind = "chest" | "heritage" | "casket" | "collection";
+export type RewardKind =
+	| "chest"
+	| "heritage"
+	| "casket"
+	| "exploration"
+	| "collection";
 export const REWARD_KINDS: RewardKind[] = [
 	"chest",
 	"heritage",
 	"casket",
+	"exploration",
 	"collection",
 ];
 export type RewardState = "collected" | "remaining";
@@ -105,5 +111,6 @@ export const KIND_LABELS: Record<RewardKind, string> = {
 	chest: "Supply chests",
 	heritage: "Tidal Heritage",
 	casket: "Caskets & collectibles",
+	exploration: "Exploration",
 	collection: "Resources",
 };

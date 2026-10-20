@@ -1,6 +1,7 @@
 {
 	"source": "https://wuthering.gg (marker datasets and item database)",
 	"names": {
+		"Gameplay021": "Sonance Casket",
 		"branch3.5_21_Gameplay_3_0/Common4": "Unclaimed Rafter Kite",
 		"branch3.0_41_Gameplay_3_0/Common1": "Tape of Last Words"
 	},
@@ -156,6 +157,8 @@
 		"branch3.5_150_Treasure_3_5": "/map/icons/gg/T_IconGiftPack_006_UI.png"
 	},
 	"types": {
+		"exploration|Blobfly": "/map/icons/gg/blobfly.png",
+		"exploration|Mutterfly": "/map/icons/gg/mutterfly.png",
 		"collection|Gathering resource": "/map/icons/gg/T_IconGiftPack_005_UI.png",
 		"collection|Dewvetch": "/map/icons/gg/T_IconC_SM_Gat_08A_UI.png",
 		"collection|Loong's Pearl": "/map/icons/gg/T_IconC_030_UI.png",
@@ -176,7 +179,7 @@
 		"collection|Viola": "/map/icons/gg/T_IconC_SM_Gat_24A_UI.png",
 		"collection|Gloom Slough": "/map/icons/gg/T_IconC_SM_Gat_28A_UI.png",
 		"collection|Red Feather Butterfly": "/map/icons/gg/T_IconC_027_UI.png",
-		"casket|Mingzi": "/map/icons/gg/T_IconMst_006_UI.png",
+		"casket|Sonance Casket": "/map/icons/gg/T_IconMst_006_UI.png",
 		"chest|Advanced Supply Chest": "/map/icons/gg/T_IconGiftPack_005_UI.png",
 		"chest|Basic Supply Chest": "/map/icons/gg/T_IconGiftPack_003_UI.png",
 		"collection|Cliffrecluse": "/map/icons/gg/T_IconC_SM_Gat_12A_UI.png",

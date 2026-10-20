@@ -83,15 +83,12 @@ export interface QuestStatusRow {
 	total: number;
 }
 
-/**
- * Quest statuses are visible by default; completed starts hidden so the map
- * stays readable (the same reasoning as gathering items in the reward list).
- */
+/** Side quest markers start hidden, just like the other map sections. */
 export function isQuestStatusVisible(
 	overrides: Record<string, boolean>,
 	status: QuestStatus,
 ): boolean {
-	return overrides[status] ?? status !== "completed";
+	return overrides[status] ?? false;
 }
 
 export function questStatusRows(markers: QuestMarker[]): QuestStatusRow[] {

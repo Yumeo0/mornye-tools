@@ -197,6 +197,7 @@ pub fn run() {
             account::account_remove_manual_echo,
             account::account_set_equipped_override,
             sniffer::sniffer_get_status,
+            sniffer::position::sniffer_get_player_position,
             sniffer::sniffer_import_pcap,
         ])
         .run(tauri::generate_context!())

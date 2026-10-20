@@ -50,6 +50,10 @@ impl AccountStore {
         &self.snapshot
     }
 
+    pub fn exploration_mut(&mut self) -> &mut super::model::ExplorationSnapshot {
+        &mut self.snapshot.exploration
+    }
+
     /// Look up one echo by its instance id (`incr_id`).
     pub fn echo(&self, incr_id: i64) -> Option<Echo> {
         self.echo_index(incr_id)

@@ -24,7 +24,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAttack.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -66,7 +70,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCure.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -103,7 +111,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriThunder.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -145,7 +157,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFire.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -182,7 +198,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDark.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -224,7 +244,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFire.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -266,7 +290,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLight.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -308,7 +336,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWind.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -350,7 +382,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDark.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -387,7 +423,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIce.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -424,7 +464,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIce.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -562,7 +606,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIce.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -604,7 +652,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFire.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -646,7 +698,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLight.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -688,7 +744,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDark.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -956,7 +1016,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWind.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -1046,7 +1110,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLight.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -1088,7 +1156,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIce.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -1125,7 +1197,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDark.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -1167,7 +1243,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFire.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -1252,7 +1332,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDark.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -1424,7 +1508,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIce.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -1509,7 +1597,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFire.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -1590,7 +1682,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWind.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -1714,7 +1810,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAttack.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -1955,7 +2055,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWind.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -2084,7 +2188,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFire.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -2121,7 +2229,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIce.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -2236,7 +2348,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFire.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -2273,7 +2389,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCure.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -2527,7 +2647,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCooperate.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -2564,7 +2688,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDarkAssist.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -2601,7 +2729,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLightError.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -2638,7 +2770,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriEnergy.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -2675,7 +2811,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriEnergy.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -2712,7 +2852,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceUltimateSkill.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -2754,7 +2898,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDarkVision.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -2796,7 +2944,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -2833,7 +2985,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCooperate.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -2870,7 +3026,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceUltimateSkill.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -2907,7 +3067,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriEnergy.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -2949,7 +3113,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceUltimateSkill.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -3867,7 +4035,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -3909,7 +4081,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriShield.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -3946,7 +4122,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriEnergy.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -4138,7 +4318,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireUltimateSkill.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -4180,7 +4364,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireUltimateSkill.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -4217,7 +4405,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindErrorA.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -4259,7 +4451,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireUltimateSkill.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -4301,7 +4497,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireUltimateSkill.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -4338,7 +4538,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindErrorA.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -4472,7 +4676,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindErrorA.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -4509,7 +4717,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindErrorA.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -4551,7 +4763,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQianXiao.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -4593,7 +4809,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireUltimateSkill.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -4892,7 +5112,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDarkVision.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -4924,7 +5148,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDarkVision.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -5211,7 +5439,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriShield.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -5243,7 +5475,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriShield.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -5275,7 +5511,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -5307,7 +5547,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -5426,7 +5670,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -5458,7 +5706,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -5490,7 +5742,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQianXiao.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -5522,7 +5778,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQianXiao.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -5607,7 +5867,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceA1.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -5654,7 +5918,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport1.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -5701,7 +5969,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport1.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -5743,7 +6015,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA1.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -5790,7 +6066,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindVision.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -6652,7 +6932,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport1.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -6694,7 +6978,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceA1.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -6818,7 +7106,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIce.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -6972,7 +7264,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIce.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -7091,7 +7387,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIce.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -7220,7 +7520,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLight.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -7479,7 +7783,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDarkAssist.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -7599,7 +7907,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceUltimateSkill.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -7636,7 +7948,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLightError.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -8059,7 +8375,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA1.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -8096,7 +8416,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIce.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -8138,7 +8462,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIce.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -8228,7 +8556,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDark.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -8318,7 +8650,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWind.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -8568,7 +8904,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIce.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -8658,7 +8998,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLight.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -8695,7 +9039,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIce.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -8737,7 +9085,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIce.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -8822,7 +9174,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIce.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -8864,7 +9220,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWind.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -9135,7 +9495,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAttackWeakness.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -9602,7 +9966,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriYangyang.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -9639,7 +10007,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriThunderError.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -9676,7 +10048,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriThunderError.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -9713,7 +10089,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriThunderError.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -9750,7 +10130,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriXin.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -9787,7 +10171,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCureA.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -9824,7 +10212,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriThunderError.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -9861,7 +10253,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCureA.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -9898,7 +10294,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCureA.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -9935,7 +10335,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCureA.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -9972,7 +10376,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriXin.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -10009,7 +10417,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriXin.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -10041,7 +10453,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriYangyang.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -10320,7 +10736,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriYangyang.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -10352,7 +10772,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriXin.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -10520,7 +10944,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriXin.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",
@@ -10793,7 +11221,11 @@
 				"icon": "/wuwa-assets/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriYangyang.webp"
 			}
 		],
-		"possible_mainstats": ["ATK", "DEF", "HP"],
+		"possible_mainstats": [
+			"ATK",
+			"DEF",
+			"HP"
+		],
 		"possible_substats": [
 			"ATK",
 			"ATK%",

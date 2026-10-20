@@ -18,6 +18,7 @@ import { compileCharacterData } from "./compile_character_data.ts";
 import { compileEchoData } from "./compile_echo_data.ts";
 import { compileEchoProps } from "./compile_echo_props.ts";
 import { compileWeaponData } from "./compile_weapon_data.ts";
+import { compileMapData } from "./compile-map-data.ts";
 import { copyAssets } from "./copy_assets.ts";
 import { updateVersionField } from "./version_manifest.ts";
 
@@ -106,6 +107,8 @@ async function main(): Promise<void> {
 		console.warn(`warning: build guides not updated: ${error}`);
 	}
 
+	await compileMapData();
+
 	try {
 		console.log("Copying Assets to Public Folder...");
 		console.log("-".repeat(60));
@@ -121,8 +124,6 @@ async function main(): Promise<void> {
 	console.log("=".repeat(60));
 }
 
-if (import.meta.main) {
-	await main();
-}
+if (import.meta.main) await main();
 
 export { main as compileAllData, syncDataVersion };

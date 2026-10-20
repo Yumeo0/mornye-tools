@@ -8,6 +8,8 @@
 pub mod extract;
 pub mod keys;
 pub mod live;
+pub mod position;
+pub mod world;
 
 use std::collections::{BTreeSet, HashMap, VecDeque};
 use std::path::PathBuf;
@@ -112,6 +114,8 @@ pub struct SnifferState {
     /// When the last echo stat update (level-up/tuning) packet arrived; the
     /// scan waits out the tuning banner's intro animation before reading it.
     last_echo_update: Mutex<Option<Instant>>,
+    pub world: Mutex<world::WorldCapture>,
+    pub position: Mutex<position::PositionTracker>,
 }
 
 impl SnifferState {
@@ -146,6 +150,8 @@ impl SnifferState {
             func_value_generation: AtomicU64::new(0),
             last_func_value_change: Mutex::new(None),
             last_echo_update: Mutex::new(None),
+            world: Mutex::new(world::WorldCapture::default()),
+            position: Mutex::new(position::PositionTracker::default()),
         }
     }
 
@@ -412,6 +418,8 @@ fn spawn_supervisor(app: AppHandle) {
                 state.log(format!("capturing game process pid {pid}"));
                 let session_key = state.current_session_key();
                 let _ = live::run(app.clone(), pid, ports, pem, session_key, handle);
+                state.position.lock().clear();
+                *state.world.lock() = world::WorldCapture::default();
                 state.log("capture stopped");
                 std::thread::sleep(Duration::from_secs(1));
             }
@@ -430,6 +438,7 @@ fn spawn_debouncer(app: AppHandle) {
         std::thread::sleep(Duration::from_millis(250));
         let state = app.state::<SnifferState>();
         state.watch_stream_progress();
+        position::flush(&app);
         let sections = state.take_pending();
         if sections.is_empty() {
             continue;
@@ -494,7 +503,7 @@ fn cache_session_key(app: &AppHandle, sniffer: &spectrum::Sniffer) {
 /// Read the raw frames from a pcap or pcapng capture file; used by the
 /// offline import path.
 fn import_frames(path: &str) -> Result<Vec<Vec<u8>>, String> {
-    use std::io::{BufReader, Read};
+    use std::io::{BufReader, Read, Seek, SeekFrom};
     let mut file =
         BufReader::new(std::fs::File::open(path).map_err(|e| format!("cannot open {path}: {e}"))?);
     let mut head = [0u8; 4];
@@ -506,6 +515,9 @@ fn import_frames(path: &str) -> Result<Vec<Vec<u8>>, String> {
         Ok(pcapng_frames(&all))
     } else {
         use pcap_file::pcap::PcapReader;
+        // The magic probe above consumed the header; rewind before parsing.
+        file.seek(SeekFrom::Start(0))
+            .map_err(|e| format!("cannot rewind {path}: {e}"))?;
         let mut reader = PcapReader::new(file).map_err(|e| e.to_string())?;
         let mut out = Vec::new();
         while let Some(Ok(packet)) = reader.next_packet() {
@@ -606,4 +618,12 @@ pub fn sniffer_import_pcap(
     }
     state.log(format!("imported {decoded} game packets from {path}"));
     Ok(decoded)
+}
+
+/// Millisecond timestamps shared by persisted claims and transient capture events.
+pub(super) fn now_ms() -> u64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|duration| u64::try_from(duration.as_millis()).unwrap_or(u64::MAX))
+        .unwrap_or(0)
 }

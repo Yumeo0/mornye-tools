@@ -1,3 +1,4 @@
+import { isTauri } from "@tauri-apps/api/core";
 import { getAllWindows, getCurrentWindow } from "@tauri-apps/api/window";
 import { exit } from "@tauri-apps/plugin-process";
 import {
@@ -12,6 +13,7 @@ import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { CharactersTab } from "@/components/tabs/CharactersTab";
 import { EchoesTab } from "@/components/tabs/EchoesTab";
+import { MapTab } from "@/components/tabs/MapTab";
 import { OptimizerTab } from "@/components/tabs/OptimizerTab";
 import { SettingsTab } from "@/components/tabs/SettingsTab";
 import { WeaponsTab } from "@/components/tabs/WeaponsTab";
@@ -20,6 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { applyResolutionRegions } from "@/lib/scanRegions";
 import { readSetting } from "@/lib/settings";
 import { blockingErrors, getStatus, type SnifferStatus } from "@/lib/sniffer";
+import { cn } from "@/lib/utils";
 
 function WindowButton({
 	onClick,
@@ -47,6 +50,7 @@ const NAV_TABS = [
 	{ value: "echoes", title: "Echoes", icon: "/characters/echo.png" },
 	{ value: "weapons", title: "Weapons", icon: "/weapons.webp" },
 	{ value: "optimizer", title: "Optimizer", icon: "/optimizer.webp" },
+	{ value: "map", title: "Map", icon: "/map.webp" },
 ] as const;
 
 /** One sidebar tab button: icon plus label (hidden while collapsed). */
@@ -74,7 +78,7 @@ function NavTab({
 }
 
 function TitleBar() {
-	const win = getCurrentWindow();
+	const win = isTauri() ? getCurrentWindow() : null;
 
 	return (
 		<div
@@ -88,14 +92,14 @@ function TitleBar() {
 				Mornye Tools
 			</span>
 			<div data-tauri-drag-region className="flex-1" />
-			<WindowButton onClick={() => win.minimize()}>
+			<WindowButton onClick={() => win?.minimize()}>
 				<Minus className="size-4" />
 			</WindowButton>
-			<WindowButton onClick={() => win.toggleMaximize()}>
+			<WindowButton onClick={() => win?.toggleMaximize()}>
 				<Square className="size-3.5" />
 			</WindowButton>
 			<WindowButton
-				onClick={() => win.close()}
+				onClick={() => win?.close()}
 				hoverClass="hover:bg-destructive hover:text-destructive-foreground"
 			>
 				<X className="size-4" />
@@ -173,6 +177,7 @@ export default function MainWindow() {
 	// Initialize scan regions and overlay state on app start
 	useEffect(() => {
 		const initApp = async () => {
+			if (!isTauri()) return;
 			try {
 				// Initialize scan regions first (required for the overlay to
 				// function); an unknown saved resolution is ignored.
@@ -204,6 +209,7 @@ export default function MainWindow() {
 
 	// Close overlay when settings window closes
 	useEffect(() => {
+		if (!isTauri()) return;
 		const setupCloseHandler = async () => {
 			const currentWin = getCurrentWindow();
 			const unlisten = await currentWin.onCloseRequested(async () => {
@@ -231,6 +237,7 @@ export default function MainWindow() {
 			content: <OptimizerTab active={tab === "optimizer"} />,
 		},
 		{ value: "settings", content: <SettingsTab /> },
+		{ value: "map", content: <MapTab active={tab === "map"} /> },
 	];
 
 	return (
@@ -240,7 +247,7 @@ export default function MainWindow() {
 				orientation="vertical"
 				value={tab}
 				onValueChange={setTab}
-				className="flex min-h-0 flex-1 flex-row"
+				className={cn("flex min-h-0 flex-1 flex-row", tab === "map" && "gap-0")}
 			>
 				<TabsList
 					className={`group-data-[orientation=vertical]/tabs:h-full shrink-0 flex-col gap-1 rounded-none border-r bg-muted/30 p-2 transition-[width] ${
@@ -291,7 +298,12 @@ export default function MainWindow() {
 					/>
 				</TabsList>
 
-				<div className="flex min-h-0 flex-1 flex-col px-6 pt-4">
+				<div
+					className={cn(
+						"flex min-h-0 flex-1 flex-col",
+						tab !== "map" && "px-6 pt-4",
+					)}
+				>
 					{tabContents.map(({ value, content }) => (
 						<TabsContent
 							key={value}

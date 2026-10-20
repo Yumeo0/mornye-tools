@@ -4,7 +4,36 @@
 //! (`sniffer::extract`). Names are presentation only; identity is always a game
 //! id (role id, incr id, item id, monster id, set id).
 
+use std::collections::BTreeMap;
+
 use serde::{Deserialize, Serialize};
+
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ExplorationSnapshot {
+    pub player_id: i64,
+    pub scene: Option<ExplorationScene>,
+    #[serde(default)]
+    pub rewards: BTreeMap<String, RewardEvidence>,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ExplorationScene {
+    pub map_id: i32,
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RewardEvidence {
+    pub map_id: i32,
+    pub entity_id: i32,
+    pub source: String,
+    pub observed_at: u64,
+}
 
 /// Current schema version of `account.json`.
 pub const STORE_VERSION: u32 = 1;
@@ -193,6 +222,8 @@ pub struct AccountSnapshot {
     pub weapons: Vec<Weapon>,
     #[serde(default)]
     pub echoes: Vec<Echo>,
+    #[serde(default)]
+    pub exploration: ExplorationSnapshot,
 }
 
 impl Default for AccountSnapshot {
@@ -204,6 +235,7 @@ impl Default for AccountSnapshot {
             resonators: Vec::new(),
             weapons: Vec::new(),
             echoes: Vec::new(),
+            exploration: Default::default(),
         }
     }
 }

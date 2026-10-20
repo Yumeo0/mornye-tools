@@ -9,6 +9,8 @@
 		"build": "tsc && vite build",
 		"preview": "vite preview",
 		"test": "bun test ./src",
+		"map:compile": "bun scripts/compile-map-data.ts && bun scripts/copy_assets.ts",
+		"map:icons": "bun scripts/fetch-map-icons.ts",
 		"tauri": "tauri",
 		"update:data": "git submodule update --init --remote data/wuwa-assets data/wuwa-data && bun scripts/compile_all_data.ts"
 	},

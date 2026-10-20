@@ -12,6 +12,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { useSyncExternalStore } from "react";
+import type { ExplorationSnapshot } from "@/lib/map/types";
 
 export type StatKey =
 	| "hpFlat"
@@ -108,6 +109,7 @@ export interface AccountSnapshot {
 	resonators: Resonator[];
 	weapons: Weapon[];
 	echoes: Echo[];
+	exploration?: ExplorationSnapshot;
 }
 
 /** Human-readable label for a calculator stat key (used by the card UI). */

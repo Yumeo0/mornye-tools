@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
+import { AchievementsTab } from "@/components/tabs/AchievementsTab";
 import { CharactersTab } from "@/components/tabs/CharactersTab";
 import { EchoesTab } from "@/components/tabs/EchoesTab";
 import { MapTab } from "@/components/tabs/MapTab";
@@ -51,6 +52,11 @@ const NAV_TABS = [
 	{ value: "weapons", title: "Weapons", icon: "/weapons.webp" },
 	{ value: "optimizer", title: "Optimizer", icon: "/optimizer.webp" },
 	{ value: "map", title: "Map", icon: "/map.webp" },
+	{
+		value: "achievements",
+		title: "Achievements",
+		icon: "/wuwa-assets/UI/UIResources/Common/Atlas/TabIcon/SP_FuncIconAchievement.webp",
+	},
 ] as const;
 
 /** One sidebar tab button: icon plus label (hidden while collapsed). */
@@ -238,6 +244,10 @@ export default function MainWindow() {
 		},
 		{ value: "settings", content: <SettingsTab /> },
 		{ value: "map", content: <MapTab active={tab === "map"} /> },
+		{
+			value: "achievements",
+			content: <AchievementsTab active={tab === "achievements"} />,
+		},
 	];
 
 	return (
@@ -251,7 +261,7 @@ export default function MainWindow() {
 			>
 				<TabsList
 					className={`group-data-[orientation=vertical]/tabs:h-full shrink-0 flex-col gap-1 rounded-none border-r bg-muted/30 p-2 transition-[width] ${
-						sidebarOpen ? "w-44" : "w-12"
+						sidebarOpen ? "w-52" : "w-12"
 					}`}
 				>
 					<div className="mb-1 flex h-9 shrink-0 items-center justify-center">
@@ -301,7 +311,7 @@ export default function MainWindow() {
 				<div
 					className={cn(
 						"flex min-h-0 flex-1 flex-col",
-						tab !== "map" && "px-6 pt-4",
+						tab !== "map" && "px-4 pt-4",
 					)}
 				>
 					{tabContents.map(({ value, content }) => (

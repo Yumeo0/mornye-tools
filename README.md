@@ -136,6 +136,22 @@ rules to `src/configs/map_rules.json`. The tile size and alignment follow the
 client's `MapDefine.js` / `MapTileMgr.js`; the captured Jinzhou position falls
 inside city tile `0_-1`.
 
+Side quests appear as diamond markers, with client-synced availability and
+completion. Active quests use their current objective targets when those are
+known; otherwise an explicit quest giver is shown. Quests without a proven start
+or active target are not assigned a guessed location. Quest status is read-only.
+Start capture before logging in to receive the quest and completion lists.
+
+The **Achievements** tab reads the client's achievement snapshot and live updates,
+including progress, completion dates and reward-claimed state. The client requests
+that snapshot while loading into the game, so - like the quest lists - start
+capture before logging in; live updates keep arriving afterwards. Search,
+category/group filters and the hidden-achievement toggle only change the view;
+nothing changes game state. Before a relevant snapshot is captured, status remains
+unknown. The static quest and achievement catalogue is rebuilt with
+`bun run progression:compile` or the normal `update:data` pipeline; its images are
+published by `copy_assets.ts`.
+
 ## Overlay protocol
 
 The overlay is purely event-driven. A Rust supervisor (`src-tauri/src/overlay.rs`)

@@ -1,5 +1,13 @@
 {
 	"files": [
+		"UI/UIResources/Common/Atlas/TabIcon/SP_FuncIconAchievement.png",
+		"UI/UIResources/Common/Atlas/TabIcon/SP_IconAchievement1.png",
+		"UI/UIResources/Common/Atlas/TabIcon/SP_IconAchievement2.png",
+		"UI/UIResources/Common/Atlas/TabIcon/SP_IconAchievement3.png",
+		"UI/UIResources/Common/Atlas/TabIcon/SP_IconAchievement4.png",
+		"UI/UIResources/Common/Atlas/WorldMapIcon/SP_IconMap_Task_01_3_UI.png",
+		"UI/UIResources/Common/Atlas/WorldMapIcon/SP_IconMap_Task_02_3_UI.png",
+		"UI/UIResources/Common/Atlas/WorldMapIcon/SP_IconMap_Task_06_UI.png",
 		"UI/UIResources/Common/Image/Com/Icon/T_ComIconBroadblade.png",
 		"UI/UIResources/Common/Image/Com/Icon/T_ComIconGauntlets.png",
 		"UI/UIResources/Common/Image/Com/Icon/T_ComIconPistols.png",

@@ -9,6 +9,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MapCanvas, type MapCanvasHandle } from "@/components/map/MapCanvas";
 import { MapFilters } from "@/components/map/MapFilters";
 import { MapRegionNavigation } from "@/components/map/MapRegionNavigation";
+import { QuestDetails } from "@/components/map/QuestDetails";
+import { QuestFilters } from "@/components/map/QuestFilters";
 import { RewardDetails } from "@/components/map/RewardDetails";
 import { Button } from "@/components/ui/button";
 import { useAccount } from "@/lib/account";
@@ -28,9 +30,35 @@ import {
 	type MapReward,
 	type RewardState,
 } from "@/lib/map/types";
+import { useProgressionCatalog } from "@/lib/progression/catalog";
+import {
+	isQuestStatusVisible,
+	progressionFor,
+	questStatusRows,
+	sideQuestMarkers,
+} from "@/lib/progression/state";
 
 export function MapTab({ active }: { active: boolean }) {
 	const account = useAccount();
+	const progressionCatalog = useProgressionCatalog(active);
+	const progression = progressionFor(account.snapshot);
+	// Quest statuses are keyed in `questOverrides`; absent entries follow the default.
+	const [questOverrides, setQuestOverrides] = useState<Record<string, boolean>>(
+		{},
+	);
+	const [selectedQuestId, setSelectedQuestId] = useState<number | null>(null);
+	const [selectedQuestPoint, setSelectedQuestPoint] = useState<{
+		x: number;
+		y: number;
+	} | null>(null);
+	const allQuests = useMemo(
+		() =>
+			sideQuestMarkers(
+				progressionCatalog.catalog?.quests ?? [],
+				progression?.quests,
+			),
+		[progressionCatalog.catalog, progression?.quests],
+	);
 	const { catalog, error, retry } = useMapCatalog(active);
 	const positionStream = usePlayerPosition(active);
 	const livePosition =
@@ -49,6 +77,49 @@ export function MapTab({ active }: { active: boolean }) {
 		useState<MapDestination | null>(null);
 	const [layer, setLayer] = useState(0);
 	const [search, setSearch] = useState("");
+	const mapQuests = useMemo(
+		() => allQuests.filter((marker) => marker.point.mapId === mapId),
+		[allQuests, mapId],
+	);
+	// Status rows count this map's markers regardless of what is hidden.
+	const questRows = useMemo(() => questStatusRows(mapQuests), [mapQuests]);
+	const questMarkers = useMemo(() => {
+		const query = search.trim().toLowerCase();
+		return mapQuests.filter(
+			(marker) =>
+				isQuestStatusVisible(questOverrides, marker.status) &&
+				(!query ||
+					`${marker.quest.name} ${marker.quest.description} ${marker.point.area} ${marker.quest.id}`
+						.toLowerCase()
+						.includes(query)),
+		);
+	}, [mapQuests, search, questOverrides]);
+	const selectedQuest =
+		allQuests.find(
+			(marker) =>
+				marker.quest.id === selectedQuestId &&
+				marker.point.mapId === mapId &&
+				marker.point.x === selectedQuestPoint?.x &&
+				marker.point.y === selectedQuestPoint?.y,
+		) ??
+		allQuests.find(
+			(marker) =>
+				marker.quest.id === selectedQuestId && marker.point.mapId === mapId,
+		);
+	const nearbyQuests = selectedQuest
+		? [
+				...new Map(
+					allQuests
+						.filter(
+							(marker) =>
+								marker.point.mapId === mapId &&
+								Math.abs(marker.point.x - selectedQuest.point.x) < 0.1 &&
+								Math.abs(marker.point.y - selectedQuest.point.y) < 0.1,
+						)
+						.map((marker) => [marker.quest.id, marker]),
+				).values(),
+			]
+		: [];
 	// Item types are keyed in `overrides`; absent entries follow the kind default.
 	const [overrides, setOverrides] = useState<Record<string, boolean>>({});
 	const [visibility, setVisibility] = useState<MapVisibility>("all");
@@ -71,6 +142,7 @@ export function MapTab({ active }: { active: boolean }) {
 			setNavigationTarget(destinationAt(catalog.regions, 8));
 		}
 		setSelected(null);
+		setSelectedQuestId(null);
 		setLayer(0);
 	}, [sceneMapId, catalog]);
 	const all = useMemo(
@@ -123,6 +195,7 @@ export function MapTab({ active }: { active: boolean }) {
 	 */
 	const selectReward = useCallback(
 		(reward: MapReward) => {
+			setSelectedQuestId(null);
 			setSelected(reward);
 			const floor = reward.underground;
 			if (!floor) {
@@ -140,11 +213,13 @@ export function MapTab({ active }: { active: boolean }) {
 		setNavigationTarget({ ...destination });
 		setLayer(0);
 		setSelected(null);
+		setSelectedQuestId(null);
 	};
 	const resetFilters = () => {
 		setOverrides({});
 		setVisibility("all");
 		setSearch("");
+		setQuestOverrides({});
 	};
 	if (error)
 		return (
@@ -171,6 +246,12 @@ export function MapTab({ active }: { active: boolean }) {
 			for (const type of types) updated[type] = next;
 			return updated;
 		});
+	const setQuestStatusesVisible = (statuses: string[], next: boolean) =>
+		setQuestOverrides((values) => {
+			const updated = { ...values };
+			for (const status of statuses) updated[status] = next;
+			return updated;
+		});
 	return (
 		<section
 			className="flex min-h-0 flex-1 flex-col"
@@ -178,11 +259,23 @@ export function MapTab({ active }: { active: boolean }) {
 		>
 			<div className="flex min-h-0 flex-1 overflow-hidden border bg-card">
 				<MapFilters
+					questFilters={
+						<QuestFilters
+							rows={questRows}
+							overrides={questOverrides}
+							synced={
+								progression?.quests.listSyncedAt != null &&
+								progression?.quests.completedSyncedAt != null
+							}
+							error={progressionCatalog.error}
+							onStatusChange={setQuestStatusesVisible}
+						/>
+					}
 					itemRows={itemRows}
 					overrides={overrides}
 					visibility={visibility}
 					search={search}
-					markerCount={markers.length}
+					markerCount={markers.length + questMarkers.length}
 					stateTotals={stateTotals}
 					onSearchChange={setSearch}
 					onVisibilityChange={setVisibility}
@@ -190,7 +283,17 @@ export function MapTab({ active }: { active: boolean }) {
 					onReset={resetFilters}
 					onFirstMatch={() => {
 						const reward = markers[0]?.reward;
-						if (!reward) return;
+						if (!reward) {
+							const quest = questMarkers[0];
+							if (quest) {
+								setSelected(null);
+								setSelectedQuestId(quest.quest.id);
+								setSelectedQuestPoint(quest.point);
+								setFollowPlayer(false);
+								mapRef.current?.focus(quest.point.x, quest.point.y);
+							}
+							return;
+						}
 						setFollowPlayer(false);
 						selectReward(reward);
 						mapRef.current?.focus(reward.x, reward.y);
@@ -220,6 +323,14 @@ export function MapTab({ active }: { active: boolean }) {
 								navigationTarget?.mapId === mapId ? navigationTarget : null
 							}
 							markers={markers}
+							questMarkers={questMarkers}
+							selectedQuest={selectedQuestId}
+							onSelectQuest={(group) => {
+								setSelected(null);
+								setSelectedQuestId(group[0].quest.id);
+								setSelectedQuestPoint(group[0].point);
+								setFollowPlayer(false);
+							}}
 							layer={layer}
 							selected={selected?.key ?? null}
 							player={playerPosition?.mapId === mapId ? playerPosition : null}
@@ -310,6 +421,14 @@ export function MapTab({ active }: { active: boolean }) {
 									)
 								}
 								onClose={() => setSelected(null)}
+							/>
+						)}
+						{selectedQuest && (
+							<QuestDetails
+								marker={selectedQuest}
+								nearby={nearbyQuests}
+								onSelect={setSelectedQuestId}
+								onClose={() => setSelectedQuestId(null)}
 							/>
 						)}
 					</div>

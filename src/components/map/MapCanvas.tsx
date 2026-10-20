@@ -16,6 +16,8 @@ import type {
 	MapReward,
 	RewardState,
 } from "@/lib/map/types";
+import type { QuestMarker } from "@/lib/progression/types";
+import { QuestMarkers } from "./QuestMarkers";
 import { RewardGroupPicker } from "./RewardGroupPicker";
 
 export interface MapCanvasHandle {
@@ -63,6 +65,9 @@ export function MapCanvas({
 	tileSize,
 	target,
 	markers,
+	questMarkers,
+	selectedQuest,
+	onSelectQuest,
 	layer,
 	selected,
 	player,
@@ -75,6 +80,9 @@ export function MapCanvas({
 	tileSize: number;
 	target: MapDestination | null;
 	markers: RewardMarker[];
+	questMarkers: QuestMarker[];
+	selectedQuest: number | null;
+	onSelectQuest: (markers: QuestMarker[]) => void;
 	layer: number;
 	selected: string | null;
 	player: { x: number; y: number; yaw?: number | null } | null;
@@ -429,6 +437,13 @@ export function MapCanvas({
 	};
 	return (
 		<div className="relative min-h-0 flex-1 overflow-hidden bg-[#141e20]">
+			<QuestMarkers
+				markers={questMarkers}
+				view={view}
+				size={size}
+				selected={selectedQuest}
+				onSelect={onSelectQuest}
+			/>
 			<RewardGroupPicker
 				group={pickerGroup}
 				x={

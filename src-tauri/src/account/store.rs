@@ -54,6 +54,10 @@ impl AccountStore {
         &mut self.snapshot.exploration
     }
 
+    pub fn progression_mut(&mut self) -> &mut super::model::ProgressionSnapshot {
+        &mut self.snapshot.progression
+    }
+
     /// Look up one echo by its instance id (`incr_id`).
     pub fn echo(&self, incr_id: i64) -> Option<Echo> {
         self.echo_index(incr_id)

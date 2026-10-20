@@ -201,6 +201,7 @@ impl ExtractTables {
 /// Handle one decoded game packet, updating the account store and marking the
 /// changed sections for the debounced `account-updated` event.
 pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
+    crate::sniffer::progression::handle(app, gp);
     crate::sniffer::world::handle(app, gp);
     crate::sniffer::position::handle(app, gp);
 

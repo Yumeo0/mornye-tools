@@ -1,5 +1,6 @@
 import { GridViewIcon, LayoutListIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,7 @@ export function MapFilters({
 	onTypesChange,
 	onReset,
 	onFirstMatch,
+	questFilters,
 }: {
 	itemRows: ItemRow[];
 	overrides: Record<string, boolean>;
@@ -56,6 +58,7 @@ export function MapFilters({
 	onTypesChange: (types: string[], visible: boolean) => void;
 	onReset: () => void;
 	onFirstMatch: () => void;
+	questFilters?: ReactNode;
 }) {
 	const [filterView, setFilterView] = useState<"list" | "box">("list");
 	const countOf = (row: ItemRow) =>
@@ -119,7 +122,7 @@ export function MapFilters({
 					</span>
 				</div>
 				<Input
-					aria-label="Find rewards"
+					aria-label="Search map"
 					placeholder="Search name, area or ID…"
 					value={search}
 					onChange={(e) => onSearchChange(e.target.value)}
@@ -131,7 +134,7 @@ export function MapFilters({
 				)}
 				<section className="flex flex-col gap-2">
 					<h2 className="text-[10px] tracking-[.15em] text-muted-foreground">
-						SHOW
+						REWARD STATUS
 					</h2>
 					<fieldset className="flex flex-col gap-2">
 						<legend className="sr-only">Collection status</legend>
@@ -164,6 +167,7 @@ export function MapFilters({
 					</fieldset>
 				</section>
 			</div>
+			{questFilters}
 			<div className="flex items-center justify-between border-t px-4 pb-2 pt-3">
 				<h2 className="text-[10px] tracking-[.15em] text-muted-foreground">
 					ITEMS

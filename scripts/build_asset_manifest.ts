@@ -40,6 +40,7 @@ const RENDERED_FIELDS = new Set([
 	"weapon_type_icon", // weapon type glyphs (Com/Icon)
 	"echo_sets.icon", // sonata icons (IconElementAttri128 after transform)
 	"icon_middle", // echo icons (IconMonsterGoods160)
+	"categories.icon", // achievement category emblems
 ]);
 
 // Literal reference scan: "..."-quoted /wuwa-assets paths in TS/TSX sources.

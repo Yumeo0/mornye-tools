@@ -4,9 +4,47 @@
 //! (`sniffer::extract`). Names are presentation only; identity is always a game
 //! id (role id, incr id, item id, monster id, set id).
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 use serde::{Deserialize, Serialize};
+
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+#[serde(default, rename_all = "camelCase")]
+pub struct QuestSnapshot {
+    pub list_synced_at: Option<u64>,
+    pub completed_synced_at: Option<u64>,
+    pub states: BTreeMap<i32, i32>,
+    pub completed_ids: BTreeSet<i32>,
+    pub available_ids: BTreeSet<i32>,
+    pub active_nodes: BTreeMap<i32, BTreeSet<i32>>,
+}
+
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AchievementEntry {
+    pub finished_at: u32,
+    pub claimed: bool,
+    pub current: Option<i32>,
+    pub target: Option<i32>,
+}
+
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+#[serde(default, rename_all = "camelCase")]
+pub struct AchievementSnapshot {
+    pub synced_at: Option<u64>,
+    pub updated_at: Option<u64>,
+    pub entries: BTreeMap<i32, AchievementEntry>,
+    pub finished_count: i32,
+    pub star_count: i32,
+}
+
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+#[serde(default, rename_all = "camelCase")]
+pub struct ProgressionSnapshot {
+    pub player_id: i64,
+    pub quests: QuestSnapshot,
+    pub achievements: AchievementSnapshot,
+}
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -224,6 +262,8 @@ pub struct AccountSnapshot {
     pub echoes: Vec<Echo>,
     #[serde(default)]
     pub exploration: ExplorationSnapshot,
+    #[serde(default)]
+    pub progression: ProgressionSnapshot,
 }
 
 impl Default for AccountSnapshot {
@@ -236,6 +276,7 @@ impl Default for AccountSnapshot {
             weapons: Vec::new(),
             echoes: Vec::new(),
             exploration: Default::default(),
+            progression: Default::default(),
         }
     }
 }

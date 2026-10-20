@@ -19,6 +19,7 @@ import { compileEchoData } from "./compile_echo_data.ts";
 import { compileEchoProps } from "./compile_echo_props.ts";
 import { compileWeaponData } from "./compile_weapon_data.ts";
 import { compileMapData } from "./compile-map-data.ts";
+import { compileProgressionData } from "./compile-progression-data.ts";
 import { copyAssets } from "./copy_assets.ts";
 import { updateVersionField } from "./version_manifest.ts";
 
@@ -108,6 +109,7 @@ async function main(): Promise<void> {
 	}
 
 	await compileMapData();
+	await compileProgressionData();
 
 	try {
 		console.log("Copying Assets to Public Folder...");

@@ -1,7 +1,7 @@
 {
 	"name": "mornye-tools",
 	"private": true,
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"type": "module",
 	"scripts": {
 		"postinstall": "bun scripts/build-calc-core.ts && bun scripts/sync-calc-data.ts",

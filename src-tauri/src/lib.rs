@@ -163,6 +163,7 @@ pub fn run() {
     // MCP bridge for AI automation (debug builds only)
     let builder = tauri::Builder::default()
         .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_store::Builder::new().build());
     #[cfg(debug_assertions)]
     let builder = builder.plugin(tauri_plugin_mcp_bridge::init());

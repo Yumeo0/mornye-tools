@@ -2,6 +2,8 @@ import { isTauri } from "@tauri-apps/api/core";
 import { Store } from "@tauri-apps/plugin-store";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { type ManualMapMarks, parseManualMarks } from "./collection";
+import { mergeImportedMarks } from "./ghzs";
+import type { ExplorationSnapshot, MapReward } from "./types";
 
 let file: Promise<Store> | undefined;
 const store = () =>
@@ -13,6 +15,8 @@ const store = () =>
 		throw cause;
 	}));
 const EMPTY: ManualMapMarks = {};
+// Imports and map details share progress while both surfaces stay mounted.
+const subscribers = new Set<(playerId: number) => void>();
 
 /** Manual progress is separate from sniffer-owned account.json and scoped to the game account. */
 export function useManualMapMarks(playerId: number) {
@@ -43,24 +47,37 @@ export function useManualMapMarks(playerId: number) {
 	useEffect(() => {
 		void load();
 	}, [load]);
+	useEffect(() => {
+		const refresh = (changedPlayerId: number) => {
+			if (changedPlayerId === playerId) void load();
+		};
+		subscribers.add(refresh);
+		return () => {
+			subscribers.delete(refresh);
+		};
+	}, [load, playerId]);
 	const ready = data.playerId === playerId && data.ready;
 	const marks = data.playerId === playerId ? data.marks : EMPTY;
 	const write = async (next: ManualMapMarks) => {
-		if (!ready || busy.current) return;
+		if (!ready || busy.current || current.current !== playerId) return false;
 		busy.current = true;
 		setSaving(true);
 		setError(null);
 		try {
 			if (isTauri()) {
 				const target = await store();
+				if (current.current !== playerId) return false;
 				await target.set(key, next);
 				await target.save();
 			} else localStorage.setItem(`map-markers:${key}`, JSON.stringify(next));
 			if (current.current === playerId)
 				setData({ playerId, marks: next, ready: true });
+			for (const notify of subscribers) notify(playerId);
+			return true;
 		} catch (e) {
 			if (current.current === playerId)
 				setError(`Could not save manual marker: ${String(e)}`);
+			return false;
 		} finally {
 			busy.current = false;
 			setSaving(false);
@@ -77,5 +94,13 @@ export function useManualMapMarks(playerId: number) {
 		saving,
 		error,
 		setCollected,
+		mergeCollected: (rewards: MapReward[], snapshot: ExplorationSnapshot) => {
+			if (
+				playerId <= 0 ||
+				(snapshot.playerId !== 0 && snapshot.playerId !== playerId)
+			)
+				return Promise.resolve(false);
+			return write(mergeImportedMarks(marks, rewards, snapshot));
+		},
 	};
 }

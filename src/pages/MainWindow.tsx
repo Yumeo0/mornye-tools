@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
+import { MapImportController } from "@/components/map/MapImportController";
 import { AchievementsTab } from "@/components/tabs/AchievementsTab";
 import { CharactersTab } from "@/components/tabs/CharactersTab";
 import { EchoesTab } from "@/components/tabs/EchoesTab";
@@ -186,6 +187,7 @@ function SnifferIndicator({ compact }: { compact: boolean }) {
 export default function MainWindow() {
 	const [tab, setTab] = useState("characters");
 	const [sidebarOpen, setSidebarOpen] = useState(true);
+	const [importOpen, setImportOpen] = useState(false);
 
 	// Initialize scan regions and overlay state on app start
 	useEffect(() => {
@@ -249,7 +251,10 @@ export default function MainWindow() {
 			value: "optimizer",
 			content: <OptimizerTab active={tab === "optimizer"} />,
 		},
-		{ value: "settings", content: <SettingsTab /> },
+		{
+			value: "settings",
+			content: <SettingsTab onImport={() => setImportOpen(true)} />,
+		},
 		{ value: "map", content: <MapTab active={tab === "map"} /> },
 		{
 			value: "achievements",
@@ -317,7 +322,7 @@ export default function MainWindow() {
 
 				<div
 					className={cn(
-						"flex min-h-0 flex-1 flex-col",
+						"flex min-h-0 min-w-0 flex-1 flex-col",
 						tab !== "map" && "px-4 pt-4",
 					)}
 				>
@@ -326,13 +331,18 @@ export default function MainWindow() {
 							key={value}
 							value={value}
 							keepMounted
-							className="flex min-h-0 flex-1 flex-col"
+							className="flex min-h-0 min-w-0 flex-1 flex-col"
 						>
 							{content}
 						</TabsContent>
 					))}
 				</div>
 			</Tabs>
+			<MapImportController
+				mapActive={tab === "map"}
+				open={importOpen}
+				onOpenChange={setImportOpen}
+			/>
 		</div>
 	);
 }

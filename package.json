@@ -23,6 +23,7 @@
 		"@tailwindcss/vite": "^4.3.3",
 		"@tanstack/react-virtual": "^3.14.20",
 		"@tauri-apps/api": "^2.12.4",
+		"@tauri-apps/plugin-opener": "^2.7.2",
 		"@tauri-apps/plugin-process": "^2.4.0",
 		"@tauri-apps/plugin-store": "^2.5.0",
 		"@wuwacalc/core": "file:thewuwacalculator/packages/core",

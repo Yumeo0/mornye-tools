@@ -62,8 +62,8 @@ The session key cache survives restarts.
 
 ## Exploration map
 
-The **Map** tab displays extracted game tiles with 29,199 static chest, Tidal
-Heritage, collectible and gathering-resource placements across ten maps.
+The **Map** tab displays extracted game tiles with 22,376 static chest, Tidal
+Heritage, collectible, exploration and gathering-resource placements across ten maps.
 Hover a nation icon in the horizontal region bar to choose an area, or open it
 with a click or the keyboard. Choosing Jinzhou, Mengzhou, Ragunna or another
 area fits that area's bounds, including when they share the overworld map;
@@ -98,6 +98,41 @@ Manual marks are stored per account (`map-markers.json`) and only outrank live
 evidence that is older than the mark. Generic resource harvesting and a
 universal Tidal Heritage history are not established by the available captures.
 
+The first visit to **Map** offers a one-time progress import guide. Dismissing
+it is remembered on this device. Use **Settings → Import → Start import** to
+reopen the guide anytime and bring marked locations from the English
+[GHZS map](https://www.ghzs666.com/wutheringwaves-map#/) into the connected game
+account. The guide shows one step at a time: choose GHZS, open and sign in to the
+map, copy the export script, run it in GHZS's browser console, upload the downloaded
+`ghzs-progress.json`, then review and import the matches. **Next** advances each
+step and **Back** lets you revisit the instructions without losing your choices.
+Uncheck any matches you do not want before importing.
+The script reads the current GHZS account's loaded marks and public catalogs;
+it does not export login tokens, upload progress, or change GHZS marks.
+
+Imported locations merge into the account's manual marks, preserving existing
+progress and leaving the sniffer's `account.json` untouched. Reimporting the same
+locations is safe. An export can be previewed without connecting a game account,
+but saving requires one. The dialog resets its preview when accounts change.
+
+GHZS pins use Web Mercator coordinates over separately cropped map images.
+`src/configs/ghzs_maps.json` contains alignments calibrated against public
+collectible locations on 2026-10-20, and a view may repeat its ID once per
+artwork inset it stitches into one image; an inset can also name the single
+game artwork layer it shows. Matching requires the same physical map and marker
+type, a unique nearby game placement within 12 metres, and enough separation
+from alternatives. Neighbouring marks are assigned one placement each through a
+globally consistent one-to-one assignment, so a dense chest cluster no longer
+loses every mark to its neighbours; an assignment that a free alternative
+contradicts stays ambiguous, and floors are never guessed between. Missing
+pins, uncertain matches, gathering items, enemies, and quest markers are
+skipped and reported in the preview. Fourteen GHZS map views currently have
+alignments, Avinoleum through two insets and the Vault Underground through its
+surface plus four calibrated floors; the Roya Frostlands surface and Vault
+floors without enough marked locations remain unsupported. Marker IDs and map
+alignments can change independently of game data, so the importer validates
+versioned exports and never treats GHZS IDs as game entity IDs.
+
 Item icons and community notes come from [wuthering.gg](https://wuthering.gg).
 Our game tables do not map a blueprint to a specific UI icon, so `bun run
 map:icons` joins our placements to the site's marker datasets by their raw
@@ -123,6 +158,17 @@ collapsed. Section checkboxes control marker visibility; section headers expand
 or collapse their filter entries. Search expands matching sections without
 changing their normal expansion state. Exploration markers support per-account
 manual completion marks.
+They also include Musicflies, Moments Scattered to the Wind, Dreams of Cindertide,
+Dream Patrols, Mimic Chests, Overflowing Palettes, Crab Chests, Three Brothers,
+Boat Racing, Ace Wings, Flash Dodge, Elite Monsters, and book fragments/records.
+These families use the game's own map-marker targets and exploration graph
+categories, with one marker per activity. Crab altars reuse their reward chest's
+entity ID when there is a single chest; Musicflies use the activity start rather
+than placing a marker on every sound disc. Elite Monsters use `SpecialElite`
+encounters rather than every ordinary elite enemy. Book fragments and permanent
+field records use specific lore reward packages, excluding generic investigation
+loot. Individual patrol and Cindertide names appear in the details panel, while
+their filters stay grouped by activity. GHZS imports recognize these categories.
 The compiler identifies actors through their exploration category and blueprint,
 and challenges through their gameplay graphs, preferring an interaction device
 to its controller so each challenge has one marker. Mutterfly destination bases,

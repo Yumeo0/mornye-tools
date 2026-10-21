@@ -23,6 +23,8 @@ export interface MapReward {
 	kind: RewardKind;
 	name: string;
 	blueprint: string;
+	/** Individual activity name, while `name` groups its filter category. */
+	title?: string;
 	area: string;
 	icon: string;
 	owner: number | null;

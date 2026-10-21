@@ -1,8 +1,11 @@
+import { Download01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { FileJson, Monitor, Sparkles, Wrench } from "lucide-react";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { CaptureCard } from "@/components/settings/CaptureCard";
 import { ExportCard } from "@/components/settings/ExportCard";
+import { MapImportCard } from "@/components/settings/MapImportCard";
 import { OcrDebugPanel } from "@/components/settings/OcrDebugPanel";
 import { OcrResolutionCard } from "@/components/settings/OcrResolutionCard";
 import { OverlayToggleCard } from "@/components/settings/OverlayToggleCard";
@@ -16,6 +19,11 @@ const SECTIONS = [
 	{ value: "overlay", label: "Overlay", icon: <Monitor /> },
 	{ value: "assistant", label: "Upgrade Assistant", icon: <Sparkles /> },
 	{ value: "export", label: "Export", icon: <FileJson /> },
+	{
+		value: "import",
+		label: "Import",
+		icon: <HugeiconsIcon icon={Download01Icon} />,
+	},
 	{ value: "advanced", label: "Developer", icon: <Wrench /> },
 ] as const;
 
@@ -46,16 +54,16 @@ function SectionTab({
 	);
 }
 
-export function SettingsTab() {
+export function SettingsTab({ onImport }: { onImport: () => void }) {
 	const [section, setSection] = useState("overlay");
 
 	return (
 		<Tabs
 			value={section}
 			onValueChange={setSection}
-			className="flex min-h-0 flex-1 flex-col gap-4"
+			className="flex min-h-0 min-w-0 flex-1 flex-col gap-4"
 		>
-			<TabsList className="h-auto shrink-0 gap-0 bg-transparent p-0">
+			<TabsList className="h-auto max-w-full shrink-0 justify-start gap-0 overflow-x-auto bg-transparent p-0">
 				{SECTIONS.map((item) => (
 					<SectionTab
 						key={item.value}
@@ -86,6 +94,13 @@ export function SettingsTab() {
 				className="min-h-0 flex-1 space-y-6 overflow-y-auto pb-4"
 			>
 				<ExportCard />
+			</TabsContent>
+
+			<TabsContent
+				value="import"
+				className="min-h-0 flex-1 overflow-y-auto pb-4"
+			>
+				<MapImportCard onImport={onImport} />
 			</TabsContent>
 
 			<TabsContent

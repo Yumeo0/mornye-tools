@@ -8,6 +8,7 @@ import type {
 	RewardKind,
 } from "../src/lib/map/types";
 import { mapAssetSources } from "./lib/map-assets";
+import { additionalActivityMarkers } from "./map-activities";
 import {
 	CHALLENGE_PROJECT,
 	challengeMarkerKeys,
@@ -366,13 +367,50 @@ export async function compileMapData(): Promise<void> {
 				owner: owners.get(`${row.MapId}:${row.EntityId}`) ?? null,
 			})),
 	);
+	const activities = additionalActivityMarkers(
+		validEntities.map((row) => ({
+			key: `${row.MapId}:${row.EntityId}`,
+			mapId: row.MapId,
+			entityId: row.EntityId,
+			type: blueprints.get(row.BlueprintType)?.EntityType ?? "",
+			blueprint: row.BlueprintType,
+			title: titleFor(row),
+			rewardId:
+				row.ComponentsData?.RewardComponent?.RewardId ??
+				templates.get(row.BlueprintType)?.RewardComponent?.RewardId ??
+				0,
+			owner: owners.get(`${row.MapId}:${row.EntityId}`) ?? null,
+			packId:
+				row.ComponentsData?.BaseInfoComponent?.PackId ??
+				templates.get(row.BlueprintType)?.BaseInfoComponent?.PackId ??
+				0,
+		})),
+		[...plays].map(([id, play]) => ({
+			id,
+			mapId: play.LevelId,
+			entityId: play.LevelPlayEntityId,
+			type: play.Type,
+			internalName: play.Key ?? "",
+			title: text.get(play.TidName) ?? "",
+			degree: play.ExploratoryConfig?.AddType,
+			children: play.Children ?? [],
+			packId: play.PackId ?? 0,
+		})),
+		((await json("map_mark/mapmark.json")) as Row[]).map((mark) => ({
+			mapId: mark.MapId,
+			entityId: mark.EntityConfigId,
+			playId: mark.RelativeType === 1 ? mark.RelativeId : 0,
+			title: text.get(mark.MarkTitle) ?? "",
+		})),
+	);
 	for (const row of validEntities) {
 		const blueprint = blueprints.get(row.BlueprintType);
 		const key = `${row.MapId}:${row.EntityId}`;
 		const owner = owners.get(key) ?? null;
 		const ownerType = owner === null ? null : plays.get(owner)?.Type;
-		let exploration = explorationFor(row);
-		if (blueprint?.EntityType === "ChallengeInteract") {
+		const activity = activities.markers.get(key);
+		let exploration = activity ?? explorationFor(row);
+		if (!activity && blueprint?.EntityType === "ChallengeInteract") {
 			// A graph's controller and devices describe one challenge, not several.
 			if (
 				ownerType === "Quest" ||
@@ -380,7 +418,14 @@ export async function compileMapData(): Promise<void> {
 			)
 				exploration = null;
 		}
-		if (challengeKeys.has(key)) exploration ??= CHALLENGE_PROJECT;
+		// Specialized graph markers replace their generic Challenge Project device.
+		if (!activity && owner !== null && activities.playIds.has(owner))
+			exploration = null;
+		if (
+			challengeKeys.has(key) &&
+			(owner === null || !activities.playIds.has(owner))
+		)
+			exploration ??= CHALLENGE_PROJECT;
 		const kind = exploration ? "exploration" : kindFor(blueprint?.EntityType);
 		if (!kind) continue;
 		const transform = row.Transform[0];
@@ -414,7 +459,9 @@ export async function compileMapData(): Promise<void> {
 								} as Record<number, string>
 							)[degree ?? 0] ?? "Supply Chest"));
 		// Overrides correct missing English text and internal pickup labels.
-		const name = iconOverrides.names?.[row.BlueprintType] ?? resolvedTitle;
+		const name = activity
+			? activity.name
+			: (iconOverrides.names?.[row.BlueprintType] ?? resolvedTitle);
 		// Props that are not collectibles: geometry above may still frame an
 		// area, but the placement is neither a marker nor a claim to track.
 		if (
@@ -441,6 +488,9 @@ export async function compileMapData(): Promise<void> {
 			z: transform.Z * 0.01,
 			kind,
 			name: label,
+			...(activity?.title && activity.title !== label
+				? { title: activity.title }
+				: {}),
 			blueprint: row.BlueprintType,
 			area: areas.get(row.AreaId) ?? `Area ${row.AreaId}`,
 			// A row is one name, so a named override decides the icon: several

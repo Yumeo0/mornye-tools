@@ -46,6 +46,11 @@ export function RewardDetails({
 							{KIND_LABELS[reward.kind].toUpperCase()}
 						</p>
 						<h2 className="mt-1 text-sm font-medium">{itemLabel(reward)}</h2>
+						{reward.title && (
+							<p className="mt-1 text-xs text-muted-foreground">
+								{reward.title}
+							</p>
+						)}
 					</div>
 					<Button
 						variant="ghost"

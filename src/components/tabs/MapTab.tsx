@@ -136,7 +136,9 @@ export function MapTab({ active }: { active: boolean }) {
 	const [selected, setSelected] = useState<MapReward | null>(null);
 	const mapRef = useRef<MapCanvasHandle>(null);
 	const exploration = account.snapshot.exploration;
-	const manual = useManualMapMarks(account.snapshot.player?.playerId ?? 0);
+	const importPlayerId =
+		account.snapshot.player?.playerId ?? exploration?.playerId ?? 0;
+	const manual = useManualMapMarks(importPlayerId);
 	const snapshot = exploration ?? EMPTY_EXPLORATION;
 	const playerPosition = livePosition ?? snapshot.scene;
 	const sceneMapId = playerPosition?.mapId;

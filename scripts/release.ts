@@ -35,6 +35,24 @@ function gitInherit(...args: string[]) {
 	});
 }
 
+/** The remote that points at the GitHub repository the release workflow runs on. */
+function githubRemote(): string | null {
+	const remotes = git("remote")
+		.split("\n")
+		.map((line) => line.trim())
+		.filter(Boolean);
+	for (const remote of remotes) {
+		if (
+			/github\.com[:/]Yumeo0\/mornye-tools/i.test(
+				git("remote", "get-url", remote),
+			)
+		) {
+			return remote;
+		}
+	}
+	return null;
+}
+
 function bumpVersion(version: string, bump: Bump): string {
 	const match = /^(\d+)\.(\d+)\.(\d+)/.exec(version);
 	if (!match) fail(`Cannot parse version "${version}" — expected X.Y.Z`);
@@ -112,9 +130,22 @@ console.log(`\nReleased ${tag} (was ${current}).`);
 if (push) {
 	gitInherit("push", "origin", "HEAD");
 	gitInherit("push", "origin", tag);
-	console.log(
-		`Pushed ${tag}. The release workflow runs on GitHub once the tag lands in github.com/Yumeo0/mornye-tools.`,
-	);
+
+	// The release workflow runs on GitHub, and the Forgejo push mirror updates
+	// the refs there without creating a workflow run - so the tag is pushed
+	// straight to GitHub as well when a remote for it exists.
+	const github = githubRemote();
+	if (github) {
+		gitInherit("push", github, "HEAD");
+		gitInherit("push", github, tag);
+		console.log(
+			`Pushed ${tag} to origin and ${github} — the release workflow is running.`,
+		);
+	} else {
+		console.log(
+			`Pushed ${tag} to origin.\n\nThe release workflow runs on GitHub, where a mirror push does not start it.\nEither add a remote and push, or start it by hand in Actions:\n\n  git remote add github https://github.com/Yumeo0/mornye-tools.git\n  git push github HEAD\n  git push github ${tag}\n`,
+		);
+	}
 } else {
 	console.log(
 		`Push it to trigger the release workflow:\n\n  git push origin HEAD\n  git push origin ${tag}\n`,

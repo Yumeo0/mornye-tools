@@ -313,6 +313,7 @@ async function publish() {
 
 	const chosen = pickArtifact(artifacts);
 	const signature = (await file(`${chosen}.sig`).text()).trim();
+	const updaterName = publishedAssetName(chosen, target);
 	console.log(`Updater artifact for ${target}: ${basename(chosen)}`);
 	await uploadJson(release, `platform-${target}.json`, {
 		version,
@@ -321,7 +322,10 @@ async function publish() {
 		platforms: {
 			[target]: {
 				signature,
-				url: `https://github.com/${repository}/releases/download/${tag}/${encodeURIComponent(basename(chosen))}`,
+				// The published name, not the build name: installers are
+				// uploaded under their version-less alias, and for NSIS the
+				// signed installer *is* the updater artifact.
+				url: `https://github.com/${repository}/releases/download/${tag}/${encodeURIComponent(updaterName)}`,
 			},
 		},
 	});

@@ -52,15 +52,20 @@ commits, tags and pushes.
 bun release patch   # or minor / major; --no-push keeps it local
 ```
 
-The tag has to reach github.com/Yumeo0/mornye-tools - directly, or through the
-push mirror of git.yumeo.dev - for the workflow to run.
+The tag has to reach github.com/Yumeo0/mornye-tools for the workflow to run.
+Note that the Forgejo push mirror updates the refs there **without creating a
+workflow run**, so a release is started either by pushing the tag to GitHub
+directly (add a remote for it and `bun release` pushes both - see
+`scripts/release.ts`) or by hand: Actions -> Build and Release -> Run workflow,
+with the tag as the input.
 
 Installers are published under version-less aliases
 (`mornye-tools-windows-x86_64-setup.exe`, `mornye-tools-windows-x86_64.msi`,
 `mornye-tools-linux-x86_64.AppImage`, `.deb`, `.rpm`), so the README's download
 buttons can link to `releases/latest/download/<alias>` and always land on the
-newest build. The updater archives keep their versioned names, because
-`latest.json` points straight at them.
+newest build. The updater archives keep their versioned names, and for NSIS the
+signed installer *is* the updater artifact - `latest.json` points at whatever
+name each artifact was actually published under.
 
 The app checks that manifest on start (release builds only) and on demand in
 Settings -> Updates, where a newer release can be downloaded, installed and

@@ -53,22 +53,23 @@ if (!existsSync(coreDist)) {
 	process.exit(1);
 }
 
-// `file:` dependencies are installed as hardlinked copies (not symlinks), so
-// files added to the built dist after `bun install` are missing from
-// node_modules. Replace the installed dist with the freshly built one.
-const installedDist = join(
-	repoRoot,
-	"node_modules",
-	"@wuwacalc",
-	"core",
-	"dist",
-);
-if (existsSync(installedDist)) {
+// `file:` dependencies are installed as hardlinked copies (not symlinks) and
+// `packages/core/dist` is gitignored, so on a fresh install (CI, a new machine)
+// the installed copy has no `dist` at all, and files added to the built dist
+// after `bun install` are missing from an existing one. Either way the freshly
+// built dist is copied in, so `tsc` resolves the `@wuwacalc/core/...` subpaths.
+const installedCore = join(repoRoot, "node_modules", "@wuwacalc", "core");
+const installedDist = join(installedCore, "dist");
+if (existsSync(installedCore)) {
 	console.log(
 		"[build-calc-core] syncing dist into node_modules/@wuwacalc/core",
 	);
 	rmSync(installedDist, { recursive: true, force: true });
 	cpSync(coreDist, installedDist, { recursive: true });
+} else {
+	console.warn(
+		"[build-calc-core] node_modules/@wuwacalc/core is missing; run `bun install` first.",
+	);
 }
 
 console.log("[build-calc-core] @wuwacalc/core built");

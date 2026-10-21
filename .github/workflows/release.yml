@@ -30,6 +30,15 @@ on:
   push:
     tags:
       - "v*"
+  # A Forgejo push mirror updates the refs without creating a workflow run, so
+  # a release can also be started by hand: Actions -> Build and Release ->
+  # Run workflow, with the tag to build.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to build and publish, e.g. v0.1.2"
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -53,6 +62,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ inputs.tag || github.ref }}
 
       - name: Checkout calculator submodule
         shell: bash
@@ -102,8 +112,10 @@ jobs:
 
       - name: Stamp release version
         shell: bash
+        env:
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
         run: |
-          VERSION="${GITHUB_REF#refs/tags/v}"
+          VERSION="${RELEASE_TAG#v}"
           export VERSION
           bun -e "import { readFileSync, writeFileSync } from 'node:fs';
             for (const file of ['package.json', 'src-tauri/tauri.conf.json']) {
@@ -120,6 +132,18 @@ jobs:
         shell: bash
         run: rm -rf src-tauri/target/release/bundle
 
+      # Fail in seconds instead of after a full build: the updater signing key is
+      # only read at the very end of `tauri build`.
+      - name: Check the updater signing key
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: |
+          if [ -z "$TAURI_SIGNING_PRIVATE_KEY" ]; then
+            echo "::error::TAURI_SIGNING_PRIVATE_KEY is empty. Add the private updater key as a repository secret (see docs/DEVELOPMENT.md)."
+            exit 1
+          fi
+
       - name: Build bundles
         shell: bash
         env:
@@ -132,8 +156,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BUNDLE_DIR: src-tauri/target/release/bundle
           UPDATER_TARGET: ${{ matrix.target }}
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
         run: |
-          export RELEASE_TAG="${GITHUB_REF#refs/tags/}"
           export RELEASE_VERSION="${RELEASE_TAG#v}"
           bun scripts/github-release.ts publish
 
@@ -148,6 +172,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ inputs.tag || github.ref }}
 
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
@@ -157,7 +182,7 @@ jobs:
       - name: Update latest.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
         run: |
-          export RELEASE_TAG="${GITHUB_REF#refs/tags/}"
           export RELEASE_VERSION="${RELEASE_TAG#v}"
           bun scripts/github-release.ts latest

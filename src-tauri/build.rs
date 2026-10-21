@@ -8,9 +8,28 @@ fn main() {
     // elevated window is in the foreground. The packaged app therefore has to
     // run as administrator as well. Dev builds stay non-elevated so that
     // `tauri dev` keeps working from a normal shell.
+    //
+    // A custom manifest *replaces* the one tauri-build would embed, and that
+    // default is what binds the process to comctl32 v6 through the
+    // `Microsoft.Windows.Common-Controls` dependency below. Without it anything
+    // importing a v6-only export - `TaskDialogIndirect` comes in with the window
+    // stack - aborts at startup with "entry point not found", so the dependency
+    // is repeated here next to the elevation request.
     if std::env::var("PROFILE").as_deref() == Ok("release") {
         let manifest = r#"
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+  <dependency>
+    <dependentAssembly>
+      <assemblyIdentity
+        type="win32"
+        name="Microsoft.Windows.Common-Controls"
+        version="6.0.0.0"
+        processorArchitecture="*"
+        publicKeyToken="6595b64144ccf1df"
+        language="*"
+      />
+    </dependentAssembly>
+  </dependency>
   <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
     <security>
       <requestedPrivileges>

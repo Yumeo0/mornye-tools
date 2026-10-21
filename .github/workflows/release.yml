@@ -1,0 +1,163 @@
+name: Build and Release
+
+# Tag a release with `bun release patch|minor|major` (it commits, tags and
+# pushes) or by hand with `git tag vX.Y.Z && git push origin vX.Y.Z`. The tag
+# builds the desktop bundles, signs them for the Tauri updater and publishes
+# them to a GitHub release. The same release carries the `latest.json` manifest
+# the app polls for self-updates:
+#
+#   https://github.com/Yumeo0/mornye-tools/releases/latest/download/latest.json
+#
+# Required repository secret:
+#   TAURI_SIGNING_PRIVATE_KEY  content of the private updater key
+# Generate a keypair with `bunx tauri signer generate -w ~/.tauri/mornye-tools.key`
+# and put its public key into `plugins.updater.pubkey` in tauri.conf.json. The
+# key used here has no password; if you regenerate it with one, add a
+# TAURI_SIGNING_PRIVATE_KEY_PASSWORD secret and pass it to the build step.
+#
+# Build notes:
+#   - `bun install` runs the postinstall, which builds @wuwacalc/core from the
+#     `thewuwacalculator` submodule and syncs public/data, so the submodule has
+#     to be checked out first. Its URL is SSH for developer machines, so the
+#     runner rewrites github.com to HTTPS. The data/* checkouts only feed the
+#     data-compile scripts and are not needed here.
+#   - protoc is required by the vendored `spectrum` crate.
+#   - xberg builds tesseract/leptonica from source through cmake on both
+#     platforms; the Linux build additionally links xcap's pipewire/wayland/xcb
+#     stack, which is why the apt list below is longer than Tauri's minimum.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: linux-x86_64
+            bundles: deb,rpm,appimage
+          - os: windows-latest
+            target: windows-x86_64
+            bundles: nsis,msi
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout calculator submodule
+        shell: bash
+        run: |
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
+          git submodule update --init --recursive --depth 1 thewuwacalculator
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Set up protoc
+        uses: arduino/setup-protoc@v3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Linux bundle dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential curl file wget pkg-config cmake ninja-build \
+            libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev \
+            libssl-dev libxdo-dev patchelf \
+            libpipewire-0.3-dev libspa-0.2-dev libwayland-dev \
+            libxcb1-dev libxcb-randr0-dev libxcb-shape0-dev libxcb-xfixes0-dev
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
+      # The tesseract/leptonica sources xberg downloads are tiny but slow to
+      # fetch; keep them on their own key so a Cargo.lock change does not lose
+      # them.
+      - name: Cache tesseract sources
+        uses: actions/cache@v4
+        with:
+          path: src-tauri/target/xberg-tesseract-cache
+          key: ${{ runner.os }}-${{ matrix.target }}-tesseract-${{ hashFiles('src-tauri/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.target }}-tesseract-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Stamp release version
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          export VERSION
+          bun -e "import { readFileSync, writeFileSync } from 'node:fs';
+            for (const file of ['package.json', 'src-tauri/tauri.conf.json']) {
+              const json = JSON.parse(readFileSync(file, 'utf8'));
+              json.version = process.env.VERSION;
+              writeFileSync(file, JSON.stringify(json, null, 2) + '\n');
+            }"
+          sed -i -E "s/^version = \"[^\"]*\"/version = \"$VERSION\"/" src-tauri/Cargo.toml
+          echo "Building Mornye Tools $VERSION"
+
+      # A restored build cache can leave earlier runs' bundle directories
+      # behind; drop them so only this release's artifacts are uploaded.
+      - name: Clean cached bundles
+        shell: bash
+        run: rm -rf src-tauri/target/release/bundle
+
+      - name: Build bundles
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: bunx tauri build --bundles ${{ matrix.bundles }}
+
+      - name: Publish release assets
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BUNDLE_DIR: src-tauri/target/release/bundle
+          UPDATER_TARGET: ${{ matrix.target }}
+        run: |
+          export RELEASE_TAG="${GITHUB_REF#refs/tags/}"
+          export RELEASE_VERSION="${RELEASE_TAG#v}"
+          bun scripts/github-release.ts publish
+
+  # Merges every platform's updater entry into the release's latest.json.
+  # Runs after all builds so the manifest is complete.
+  manifest:
+    name: Publish updater manifest
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Update latest.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          export RELEASE_TAG="${GITHUB_REF#refs/tags/}"
+          export RELEASE_VERSION="${RELEASE_TAG#v}"
+          bun scripts/github-release.ts latest

@@ -1,4 +1,7 @@
-import { Download01Icon } from "@hugeicons/core-free-icons";
+import {
+	Download01Icon,
+	InstallingUpdates01Icon,
+} from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { FileJson, Monitor, Sparkles, Wrench } from "lucide-react";
 import type { ReactNode } from "react";
@@ -10,6 +13,7 @@ import { OcrDebugPanel } from "@/components/settings/OcrDebugPanel";
 import { OcrResolutionCard } from "@/components/settings/OcrResolutionCard";
 import { OverlayToggleCard } from "@/components/settings/OverlayToggleCard";
 import { PcapImportPanel } from "@/components/settings/PcapImportPanel";
+import { UpdatesCard } from "@/components/settings/UpdatesCard";
 import { UpgradeAssistantCard } from "@/components/settings/UpgradeAssistantCard";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -23,6 +27,11 @@ const SECTIONS = [
 		value: "import",
 		label: "Import",
 		icon: <HugeiconsIcon icon={Download01Icon} />,
+	},
+	{
+		value: "updates",
+		label: "Updates",
+		icon: <HugeiconsIcon icon={InstallingUpdates01Icon} />,
 	},
 	{ value: "advanced", label: "Developer", icon: <Wrench /> },
 ] as const;
@@ -63,7 +72,7 @@ export function SettingsTab({ onImport }: { onImport: () => void }) {
 			onValueChange={setSection}
 			className="flex min-h-0 min-w-0 flex-1 flex-col gap-4"
 		>
-			<TabsList className="h-auto max-w-full shrink-0 justify-start gap-0 overflow-x-auto bg-transparent p-0">
+			<TabsList className="h-auto max-w-full shrink-0 justify-start gap-0 overflow-x-auto overflow-y-clip bg-transparent p-0">
 				{SECTIONS.map((item) => (
 					<SectionTab
 						key={item.value}
@@ -101,6 +110,13 @@ export function SettingsTab({ onImport }: { onImport: () => void }) {
 				className="min-h-0 flex-1 overflow-y-auto pb-4"
 			>
 				<MapImportCard onImport={onImport} />
+			</TabsContent>
+
+			<TabsContent
+				value="updates"
+				className="min-h-0 flex-1 space-y-6 overflow-y-auto pb-4"
+			>
+				<UpdatesCard />
 			</TabsContent>
 
 			<TabsContent

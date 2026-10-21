@@ -1,0 +1,7 @@
+{
+	"$schema": "../gen/schemas/desktop-schema.json",
+	"identifier": "updater",
+	"description": "Self-updating: check for, download and install signed releases. Only the settings window drives it; the overlay stays untouched.",
+	"windows": ["settings"],
+	"permissions": ["updater:default"]
+}

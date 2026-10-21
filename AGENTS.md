@@ -15,6 +15,19 @@ drives the in-game overlay window.
   protos).
 - On Windows the app must run elevated for raw capture.
 
+## Releases
+
+- `v*` tags are built by `.github/workflows/release.yml` **on GitHub**
+  (`github.com/Yumeo0/mornye-tools`, mirrored from git.yumeo.dev); the app
+  self-updates from that repo's `releases/latest/download/latest.json`.
+- Cut releases with `bun release patch|minor|major` (bumps `package.json`,
+  `tauri.conf.json`, `Cargo.toml` and `Cargo.lock`, then commits, tags and
+  pushes). Never hand-edit those versions.
+- The updater's public key lives in `src-tauri/tauri.conf.json`; the matching
+  private key is the GitHub secret `TAURI_SIGNING_PRIVATE_KEY` (kept locally at
+  `~/.tauri/mornye-tools.key`, no password). The update UI is
+  `src/lib/updater.ts` + `src/components/settings/UpdatesCard.tsx`.
+
 ## Architecture rules
 
 - The sniffer fills one game-ID-based `account.json`; the overlay scan only
@@ -32,4 +45,4 @@ drives the in-game overlay window.
 - `bun run dev` also serves the UI in a plain browser with Tauri APIs
   degraded — handy for UI work without Rust.
 
-`README.md` documents the sniffer/overlay protocol in depth.
+`docs/DEVELOPMENT.md` documents the sniffer/overlay protocol in depth.

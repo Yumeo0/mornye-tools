@@ -1,6 +1,7 @@
 # Point the vendored `spectrum` crate's build script at the pinned protocol
 # artifacts committed in this repository. Refresh them by hand from a
-# `wuwa-protos` extraction (protos.proto + packetIds.json); see README.md.
+# `wuwa-protos` extraction (protos.proto + packetIds.json); see
+# docs/DEVELOPMENT.md.
 #
 # `relative = true` resolves the value against the parent directory of this
 # `.cargo` directory (i.e. `src-tauri/`), so `../data/wuwa-protos` is

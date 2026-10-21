@@ -19,11 +19,13 @@ import { MapTab } from "@/components/tabs/MapTab";
 import { OptimizerTab } from "@/components/tabs/OptimizerTab";
 import { SettingsTab } from "@/components/tabs/SettingsTab";
 import { WeaponsTab } from "@/components/tabs/WeaponsTab";
+import { UpdateBanner } from "@/components/UpdateBanner";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { applyResolutionRegions } from "@/lib/scanRegions";
 import { readSetting } from "@/lib/settings";
 import { blockingErrors, getStatus, type SnifferStatus } from "@/lib/sniffer";
+import { checkForUpdateOnStartup, useUpdateState } from "@/lib/updater";
 import { cn } from "@/lib/utils";
 
 function WindowButton({
@@ -188,6 +190,13 @@ export default function MainWindow() {
 	const [tab, setTab] = useState("characters");
 	const [sidebarOpen, setSidebarOpen] = useState(true);
 	const [importOpen, setImportOpen] = useState(false);
+	const { update } = useUpdateState();
+
+	// Silent update check on start (release builds only): a newer release lights
+	// the Settings tab dot and shows the update banner.
+	useEffect(() => {
+		void checkForUpdateOnStartup();
+	}, []);
 
 	// Initialize scan regions and overlay state on app start
 	useEffect(() => {
@@ -314,9 +323,16 @@ export default function MainWindow() {
 					</div>
 					<NavTab
 						value="settings"
-						title="Settings"
+						title={update ? "Settings — update available" : "Settings"}
 						sidebarOpen={sidebarOpen}
-						icon={<Cog className="size-5 shrink-0" />}
+						icon={
+							<span className="relative shrink-0">
+								<Cog className="size-5" />
+								{update && (
+									<span className="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-primary" />
+								)}
+							</span>
+						}
 					/>
 				</TabsList>
 
@@ -343,6 +359,7 @@ export default function MainWindow() {
 				open={importOpen}
 				onOpenChange={setImportOpen}
 			/>
+			<UpdateBanner />
 		</div>
 	);
 }

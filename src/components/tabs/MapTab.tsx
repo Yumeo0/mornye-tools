@@ -13,6 +13,11 @@ import { QuestDetails } from "@/components/map/QuestDetails";
 import { RewardDetails } from "@/components/map/RewardDetails";
 import { Button } from "@/components/ui/button";
 import { useAccount } from "@/lib/account";
+import {
+	formatHotkey,
+	hotkeyTargetBlocked,
+	matchesHotkey,
+} from "@/lib/hotkeys";
 import { useMapCatalog } from "@/lib/map/catalog";
 import { collectionState, itemType } from "@/lib/map/collection";
 import {
@@ -20,6 +25,7 @@ import {
 	type MapVisibility,
 	summarizeItems,
 } from "@/lib/map/filters";
+import { useMapCollectedHotkey } from "@/lib/map/hotkey";
 import { useManualMapMarks } from "@/lib/map/manual";
 import { usePlayerPosition } from "@/lib/map/position";
 import { containsDestination, destinationAt } from "@/lib/map/regions";
@@ -140,6 +146,59 @@ export function MapTab({ active }: { active: boolean }) {
 		account.snapshot.player?.playerId ?? exploration?.playerId ?? 0;
 	const manual = useManualMapMarks(importPlayerId);
 	const snapshot = exploration ?? EMPTY_EXPLORATION;
+	const { hotkey, loaded: hotkeyLoaded } = useMapCollectedHotkey();
+	const changeSelectedCollected = useCallback(
+		(collected: boolean) => {
+			if (
+				!selected ||
+				selected.kind === "collection" ||
+				selected.mapId !== mapId ||
+				!manual.ready ||
+				manual.saving
+			)
+				return;
+			void manual.setCollected(
+				selected.key,
+				collected,
+				snapshot.rewards[selected.key]?.observedAt ?? 0,
+			);
+		},
+		[selected, mapId, manual, snapshot],
+	);
+	useEffect(() => {
+		if (
+			!active ||
+			!hotkeyLoaded ||
+			!catalog ||
+			error ||
+			!selected ||
+			selected.kind === "collection" ||
+			selected.mapId !== mapId ||
+			!manual.ready ||
+			manual.saving
+		)
+			return;
+		const onKeyDown = (event: KeyboardEvent) => {
+			if (!matchesHotkey(event, hotkey) || hotkeyTargetBlocked(event)) return;
+			event.preventDefault();
+			changeSelectedCollected(
+				collectionState(selected, snapshot, manual.marks).state !== "collected",
+			);
+		};
+		window.addEventListener("keydown", onKeyDown);
+		return () => window.removeEventListener("keydown", onKeyDown);
+	}, [
+		active,
+		hotkeyLoaded,
+		hotkey,
+		catalog,
+		error,
+		selected,
+		mapId,
+		manual,
+		snapshot,
+		changeSelectedCollected,
+	]);
 	const playerPosition = livePosition ?? snapshot.scene;
 	const sceneMapId = playerPosition?.mapId;
 	useEffect(() => {
@@ -472,15 +531,10 @@ export function MapTab({ active }: { active: boolean }) {
 								key={selected.key}
 								reward={selected}
 								collection={collectionState(selected, snapshot, manual.marks)}
+								collectedShortcut={formatHotkey(hotkey)}
 								disabled={!manual.ready || manual.saving}
 								error={manual.error}
-								onCollectedChange={(collected) =>
-									void manual.setCollected(
-										selected.key,
-										collected,
-										snapshot.rewards[selected.key]?.observedAt ?? 0,
-									)
-								}
+								onCollectedChange={changeSelectedCollected}
 								onClose={() => setSelected(null)}
 							/>
 						)}

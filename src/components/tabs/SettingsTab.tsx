@@ -14,6 +14,7 @@ import { OcrResolutionCard } from "@/components/settings/OcrResolutionCard";
 import { OptimizerSettingsCard } from "@/components/settings/OptimizerSettingsCard";
 import { OverlayToggleCard } from "@/components/settings/OverlayToggleCard";
 import { PcapImportPanel } from "@/components/settings/PcapImportPanel";
+import { ShortcutsCard } from "@/components/settings/ShortcutsCard";
 import { UpdatesCard } from "@/components/settings/UpdatesCard";
 import { UpgradeAssistantCard } from "@/components/settings/UpgradeAssistantCard";
 import { Separator } from "@/components/ui/separator";
@@ -24,6 +25,7 @@ const SECTIONS = [
 	{ value: "overlay", label: "Overlay", icon: <Monitor /> },
 	{ value: "assistant", label: "Upgrade Assistant", icon: <Sparkles /> },
 	{ value: "optimizer", label: "Optimizer", icon: <Sparkles /> },
+	{ value: "shortcuts", label: "Shortcuts", icon: <Wrench /> },
 	{ value: "export", label: "Export", icon: <FileJson /> },
 	{
 		value: "import",
@@ -105,6 +107,13 @@ export function SettingsTab({ onImport }: { onImport: () => void }) {
 				className="min-h-0 flex-1 overflow-y-auto pb-4"
 			>
 				<OptimizerSettingsCard />
+			</TabsContent>
+
+			<TabsContent
+				value="shortcuts"
+				className="min-h-0 flex-1 overflow-y-auto pb-4"
+			>
+				<ShortcutsCard />
 			</TabsContent>
 
 			<TabsContent

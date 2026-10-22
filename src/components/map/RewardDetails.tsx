@@ -12,6 +12,7 @@ import { useWutheringComments, wutheringImageUrl } from "@/lib/map/wuthering";
 export function RewardDetails({
 	reward,
 	collection,
+	collectedShortcut,
 	disabled,
 	error,
 	onCollectedChange,
@@ -19,6 +20,7 @@ export function RewardDetails({
 }: {
 	reward: MapReward;
 	collection: CollectionState;
+	collectedShortcut: string;
 	disabled: boolean;
 	error: string | null;
 	onCollectedChange: (collected: boolean) => void;
@@ -63,9 +65,15 @@ export function RewardDetails({
 				</div>
 				{reward.kind !== "collection" && (
 					<div className="flex items-center justify-between gap-3 border-t pt-3 text-xs">
-						<span className="flex items-center gap-2">
+						<span className="flex min-w-0 flex-wrap items-center gap-2">
 							<span className={`map-state-dot state-${collection.state}`} />
 							<span>Collected</span>
+							<kbd
+								title="Change in Settings → Shortcuts"
+								className="max-w-full break-words border px-1.5 py-0.5 text-[10px] text-muted-foreground"
+							>
+								{collectedShortcut}
+							</kbd>
 						</span>
 						<Switch
 							aria-label="Collected"
@@ -79,22 +87,12 @@ export function RewardDetails({
 				<dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 border-t pt-3 text-[10px]">
 					<dt className="text-muted-foreground">Area</dt>
 					<dd>{reward.area}</dd>
-					<dt className="text-muted-foreground">Entity</dt>
-					<dd>{reward.key}</dd>
 					<dt className="text-muted-foreground">Position</dt>
 					<dd>
 						{Math.round(reward.x)}, {Math.round(reward.y)}
 					</dd>
 					<dt className="text-muted-foreground">Elevation</dt>
 					<dd>{Math.round(reward.z)}</dd>
-					{collection.at !== null && (
-						<>
-							<dt className="text-muted-foreground">
-								{collection.state === "collected" ? "Collected" : "Uncollected"}
-							</dt>
-							<dd>{new Date(collection.at).toLocaleString()}</dd>
-						</>
-					)}
 				</dl>
 				{reward.hidden && (
 					<Badge variant="outline">Hidden or gated placement</Badge>

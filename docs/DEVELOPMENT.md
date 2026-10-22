@@ -121,6 +121,11 @@ account, set `MORNYE_TEST_CAPTURE` to the capture path, optionally set
 
 ## Exploration map
 
+Select a trackable map item and press **C** to toggle its Collected status. Rebind
+the shortcut in Settings → Shortcuts; the current binding is shown beside the
+item's Collected switch. It is active only on the Map tab, ignores held keys and
+typing, and pauses while a dialog or menu is open.
+
 The **Map** tab displays extracted game tiles with 22,376 static chest, Tidal
 Heritage, collectible, exploration and gathering-resource placements across ten maps.
 Hover a nation icon in the horizontal region bar to choose an area, or open it

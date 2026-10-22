@@ -620,7 +620,7 @@
 	"Hsin": {
 		"character_id": 1311,
 		"roles": {
-			"Flare mDPS": {
+			"Unison mDPS": {
 				"echo_sets": {
 					"variant": "43311",
 					"sets": [
@@ -640,7 +640,7 @@
 					]
 				},
 				"substats_priority": "ER:110%>CR=CD>ATK%>Skill%>ATK",
-				"url": "https://tethys.gg/resonators/1311?role=Flare+mDPS"
+				"url": "https://tethys.gg/resonators/1311?role=Unison+mDPS"
 			}
 		}
 	},
@@ -1556,6 +1556,61 @@
 				},
 				"substats_priority": "ER:260%>CD>CR>HP%>BA%",
 				"url": "https://tethys.gg/resonators/1110?role=Support"
+			}
+		}
+	},
+	"Suoming": {
+		"character_id": 1312,
+		"roles": {
+			"Sub DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Soulfrayer",
+							"sonata": "Heart of Sworn Vigil",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Impermanence Heron",
+							"sonata": "Moonlit Clouds",
+							"value": "BIS"
+						}
+					],
+					"main_stats": [
+						"CR/CD",
+						"Electro%",
+						"Electro%/ATK%",
+						"ATK%",
+						"ATK%"
+					]
+				},
+				"substats_priority": "CR=CD>ATK%>BA%>ATK>Lib%",
+				"url": "https://tethys.gg/resonators/1312?role=Sub+DPS"
+			},
+			"Main DPS": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Reminiscence: Suhsin the Inevitable",
+							"sonata": "Heart of Sworn Vigil",
+							"value": "BIS"
+						}
+					],
+					"main_stats": [
+						"CR/CD",
+						"Electro%",
+						"Electro%/ATK%",
+						"ATK%",
+						"ATK%"
+					]
+				},
+				"substats_priority": "CR=CD>ATK%>BA%>ATK",
+				"url": "https://tethys.gg/resonators/1312?role=Main+DPS"
 			}
 		}
 	},

@@ -81,3 +81,8 @@ while you upgrade them.
 - [Development, releases and architecture](docs/DEVELOPMENT.md) - build and test
   commands, how releases are cut and self-updated, the packet-capture internals,
   the exploration-map data pipeline, the overlay protocol and the source layout.
+
+## Support
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F1F7WLWGA)
+[![Support me on Patreon](https://img.shields.io/badge/Support_me_on_Patreon-FF424D?style=for-the-badge&logo=patreon&logoColor=white)](https://patreon.com/yumeo0)

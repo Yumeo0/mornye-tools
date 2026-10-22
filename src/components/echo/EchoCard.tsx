@@ -8,12 +8,13 @@ import {
 } from "@/lib/account";
 import {
 	type CatalogCharacter,
-	type CatalogEcho,
 	catalogCharacters,
 	charactersById,
 	type EchoSet,
+	type EchoSpecies,
 	echoesByMonsterId,
 	echoSetsFor,
+	groupEchoSpecies,
 	sonataIcon128,
 } from "@/lib/catalog";
 import {
@@ -28,10 +29,10 @@ export const allCharacters: CatalogCharacter[] = [...catalogCharacters].sort(
 	(a, b) => a.character_name.localeCompare(b.character_name),
 );
 
-/** Every echo species (merged across sets), sorted by name. */
-export const allEchoSpecies: CatalogEcho[] = [
-	...echoesByMonsterId.values(),
-].sort((a, b) => a.echo_name.localeCompare(b.echo_name));
+/** Every visible species once, with all sets and their underlying game variants. */
+export const allEchoSpecies: EchoSpecies[] = groupEchoSpecies(
+	echoesByMonsterId.values(),
+).sort((a, b) => a.echo_name.localeCompare(b.echo_name));
 
 export function echoKey(echo: Echo): string {
 	return `incr:${echo.incrId}`;

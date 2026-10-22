@@ -39,6 +39,55 @@ export interface CatalogEcho {
 	echo_sets: EchoSet[];
 }
 
+/** One manual-picker species, retaining the game variants behind its sets. */
+export interface EchoSpecies extends CatalogEcho {
+	variants: CatalogEcho[];
+}
+
+/** Game data can have several item/monster IDs for the same visible species. */
+export function groupEchoSpecies(
+	entries: Iterable<CatalogEcho>,
+): EchoSpecies[] {
+	const groups = new Map<string, EchoSpecies>();
+	for (const entry of entries) {
+		if (entry.monster_id == null) continue;
+		const key = JSON.stringify([
+			entry.echo_name.trim().toLowerCase(),
+			entry.echo_cost,
+		]);
+		const existing = groups.get(key);
+		if (!existing) {
+			groups.set(key, {
+				...entry,
+				echo_sets: [...entry.echo_sets],
+				variants: [entry],
+			});
+			continue;
+		}
+		if (
+			!existing.variants.some(
+				(variant) => variant.monster_id === entry.monster_id,
+			)
+		)
+			existing.variants.push(entry);
+		for (const set of entry.echo_sets) {
+			if (!existing.echo_sets.some((saved) => saved.id === set.id))
+				existing.echo_sets.push(set);
+		}
+	}
+	return [...groups.values()];
+}
+
+/** Keep the submitted item/monster pair valid for the chosen Sonata set. */
+export function echoSpeciesVariantForSet(
+	species: EchoSpecies,
+	setId: number,
+): CatalogEcho | undefined {
+	return species.variants.find((variant) =>
+		variant.echo_sets.some((set) => set.id === setId),
+	);
+}
+
 /** Deduplicated characters (first entry wins), excluded forms dropped. */
 export const catalogCharacters: CatalogCharacter[] = (() => {
 	const seen = new Set<number>();

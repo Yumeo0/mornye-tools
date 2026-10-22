@@ -107,7 +107,7 @@ export function EchoesTab() {
 	);
 
 	const [filters, setFilters] = useState<EchoFilters>(EMPTY_ECHO_FILTERS);
-	const [sortBy, setSortBy] = useState<EchoSortKey>("none");
+	const [sortBy, setSortBy] = useState<EchoSortKey>("level");
 	const [sortAsc, setSortAsc] = useState(false);
 
 	const characterOptions: FilterOption[] = useMemo(

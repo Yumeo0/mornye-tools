@@ -23,7 +23,7 @@ import {
 	STAT_LABELS,
 	type StatKey,
 } from "@/lib/account";
-import type { CatalogEcho } from "@/lib/catalog";
+import { type EchoSpecies, echoSpeciesVariantForSet } from "@/lib/catalog";
 import { subStatRolls } from "@/lib/stats";
 import { cn } from "@/lib/utils";
 
@@ -86,7 +86,7 @@ export function AddEchoDialog({
 	onAdded: (echo: Echo) => void;
 }) {
 	const [search, setSearch] = useState("");
-	const [species, setSpecies] = useState<CatalogEcho | null>(null);
+	const [species, setSpecies] = useState<EchoSpecies | null>(null);
 	const [setId, setSetId] = useState<number | null>(null);
 	const [level, setLevel] = useState(25);
 	const [mainKey, setMainKey] = useState<StatKey>("critRate");
@@ -106,7 +106,7 @@ export function AddEchoDialog({
 
 	const sets = species?.echo_sets ?? [];
 
-	const pickSpecies = (entry: CatalogEcho) => {
+	const pickSpecies = (entry: EchoSpecies) => {
 		setSpecies(entry);
 		setSetId(entry.echo_sets?.[0]?.id ?? null);
 	};
@@ -136,15 +136,18 @@ export function AddEchoDialog({
 		setSubs((prev) => prev.filter((row) => row.id !== id));
 	};
 
-	const canSubmit =
-		species !== null && species.monster_id != null && setId !== null;
+	const variant =
+		species && setId !== null
+			? echoSpeciesVariantForSet(species, setId)
+			: undefined;
+	const canSubmit = variant?.monster_id != null;
 
 	const submit = () => {
-		if (!species || species.monster_id == null || setId === null) return;
+		if (!variant || variant.monster_id == null || setId === null) return;
 		onAdded({
 			incrId: 0,
-			itemId: species.echo_id,
-			monsterId: species.monster_id,
+			itemId: variant.echo_id,
+			monsterId: variant.monster_id,
 			setId,
 			level: Number.isFinite(level) ? level : 0,
 			funcValue: 0,

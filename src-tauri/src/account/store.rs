@@ -10,8 +10,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use crate::account::model::{
-    AccountSnapshot, Echo, EchoOverride, EchoSource, Overrides, PlayerInfo, Resonator, SkillNode,
-    Weapon, STORE_VERSION,
+    AccountSnapshot, Echo, EchoOverride, EchoSource, Overrides, PlayerInfo, Resonator, SavedTeam,
+    SkillNode, Weapon, STORE_VERSION,
 };
 
 const ACCOUNT_FILE: &str = "account.json";
@@ -48,6 +48,55 @@ impl AccountStore {
 
     pub fn snapshot(&self) -> &AccountSnapshot {
         &self.snapshot
+    }
+
+    /// A full formation response replaces the list, including deleted slots.
+    pub fn replace_teams(&mut self, teams: Vec<SavedTeam>) -> bool {
+        if self.snapshot.teams == teams {
+            return false;
+        }
+        self.snapshot.teams = teams;
+        true
+    }
+
+    pub fn upsert_team(&mut self, mut team: SavedTeam) -> bool {
+        let before = self.snapshot.teams.clone();
+        if team.is_current {
+            for saved in &mut self.snapshot.teams {
+                saved.is_current = false;
+            }
+        }
+        if let Some(saved) = self
+            .snapshot
+            .teams
+            .iter_mut()
+            .find(|saved| saved.id == team.id)
+        {
+            // Legacy messages omit names; keep the richer captured label.
+            if team.name.is_empty() {
+                team.name = saved.name.clone();
+            }
+            *saved = team;
+        } else {
+            self.snapshot.teams.push(team);
+        }
+        before != self.snapshot.teams
+    }
+
+    pub fn set_current_team(&mut self, id: i32) -> bool {
+        let mut changed = false;
+        for team in &mut self.snapshot.teams {
+            let current = team.id == id;
+            changed |= team.is_current != current;
+            team.is_current = current;
+        }
+        changed
+    }
+
+    pub fn remove_teams(&mut self, ids: &[i32]) -> bool {
+        let before = self.snapshot.teams.len();
+        self.snapshot.teams.retain(|team| !ids.contains(&team.id));
+        before != self.snapshot.teams.len()
     }
 
     pub fn exploration_mut(&mut self) -> &mut super::model::ExplorationSnapshot {
@@ -463,6 +512,40 @@ pub fn now_iso8601() -> String {
 mod tests {
     use super::*;
     use crate::account::model::{Echo, Resonator, Weapon};
+
+    #[test]
+    fn saved_teams_round_trip_and_full_refresh_removes_deleted_teams() {
+        let dir = temp_dir("teams");
+        let mut store = AccountStore::load(dir.clone());
+        let team = SavedTeam {
+            id: 1,
+            name: "Tower".into(),
+            role_ids: vec![1404, 1204, 1505],
+            is_current: true,
+        };
+        assert!(store.replace_teams(vec![team.clone()]));
+        assert!(!store.replace_teams(vec![team.clone()]));
+        store.save().unwrap();
+        let mut loaded = AccountStore::load(dir);
+        assert_eq!(loaded.snapshot().teams, vec![team.clone()]);
+        assert!(loaded.upsert_team(SavedTeam {
+            id: 2,
+            is_current: true,
+            ..team.clone()
+        }));
+        assert!(!loaded.snapshot().teams[0].is_current);
+        assert!(loaded.set_current_team(1));
+        assert!(loaded.snapshot().teams[0].is_current);
+        assert!(loaded.replace_teams(vec![]));
+        assert!(loaded.snapshot().teams.is_empty());
+    }
+
+    #[test]
+    fn legacy_accounts_default_to_no_saved_teams() {
+        let legacy = r#"{"version":1,"updatedAt":"","resonators":[],"weapons":[],"echoes":[]}"#;
+        let snapshot: AccountSnapshot = serde_json::from_str(legacy).unwrap();
+        assert!(snapshot.teams.is_empty());
+    }
 
     fn temp_dir(name: &str) -> PathBuf {
         let dir = std::env::temp_dir().join(format!("mny-account-{name}-{}", std::process::id()));

@@ -204,6 +204,7 @@ pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
     crate::sniffer::progression::handle(app, gp);
     crate::sniffer::world::handle(app, gp);
     crate::sniffer::position::handle(app, gp);
+    crate::sniffer::teams::handle(app, gp);
 
     // High-frequency traffic (combat, scene sync) never touches the store;
     // skip it before taking the lock so the capture loop stays responsive.

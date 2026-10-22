@@ -1,8 +1,10 @@
 "use client";
 
+import { useId } from "react";
 import {
 	Select,
 	SelectContent,
+	SelectGroup,
 	SelectItem,
 	SelectTrigger,
 } from "@/components/ui/select";
@@ -35,6 +37,7 @@ export function MultiSelect({
 	onChange: (values: string[]) => void;
 	className?: string;
 }) {
+	const labelId = useId();
 	const summary =
 		values.length === 0
 			? "Any"
@@ -46,10 +49,13 @@ export function MultiSelect({
 	return (
 		<div className={cn("flex min-w-0 flex-col gap-0.5", className)}>
 			{label !== undefined && (
-				<span className="text-[10px] text-muted-foreground">{label}</span>
+				<span id={labelId} className="text-[10px] text-muted-foreground">
+					{label}
+				</span>
 			)}
 			<Select multiple value={[...values]} onValueChange={onChange}>
 				<SelectTrigger
+					aria-labelledby={label !== undefined ? labelId : undefined}
 					size="sm"
 					title={summary}
 					className="w-full justify-between font-normal"
@@ -57,18 +63,20 @@ export function MultiSelect({
 					<span className="min-w-0 flex-1 truncate text-left">{summary}</span>
 				</SelectTrigger>
 				<SelectContent>
-					{options.map((option) => (
-						<SelectItem key={option.value} value={option.value}>
-							{option.icon && (
-								<img
-									src={option.icon}
-									alt=""
-									className="size-3.5 shrink-0 object-contain"
-								/>
-							)}
-							<span className="truncate">{option.label}</span>
-						</SelectItem>
-					))}
+					<SelectGroup>
+						{options.map((option) => (
+							<SelectItem key={option.value} value={option.value}>
+								{option.icon && (
+									<img
+										src={option.icon}
+										alt=""
+										className="size-3.5 shrink-0 object-contain"
+									/>
+								)}
+								<span className="truncate">{option.label}</span>
+							</SelectItem>
+						))}
+					</SelectGroup>
 				</SelectContent>
 			</Select>
 		</div>

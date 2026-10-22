@@ -1,8 +1,4 @@
-import {
-	FilterSelect,
-	MinLevelSlider,
-	MultiSelect,
-} from "@/components/filters";
+import { FilterSelect, MultiSelect } from "@/components/filters";
 import { formatDamage } from "@/components/optimizer/display";
 import {
 	EMPTY_OPTIMIZER_FILTERS,
@@ -15,6 +11,7 @@ import {
 	substatOptions,
 } from "@/components/optimizer/optimizerOptions";
 import { Button } from "@/components/ui/button";
+import { FieldGroup, FieldLegend, FieldSet } from "@/components/ui/field";
 
 /** Candidate-pool filters for the optimizer search. */
 export function OptimizerFilterRow({
@@ -38,91 +35,103 @@ export function OptimizerFilterRow({
 	countsHint?: string;
 }) {
 	return (
-		<div className="flex flex-wrap items-end gap-x-4 gap-y-2 border-t border-border/60 pt-3">
-			<div className="w-40">
-				<FilterSelect
-					label="Equipped Echoes"
-					value={filters.equipped}
-					options={EQUIPPED_OPTIONS}
-					onChange={(value) =>
-						onFiltersChange((prev) => ({
-							...prev,
-							equipped:
-								value === "exclude-others" || value === "exclude-all"
-									? value
-									: "include",
-						}))
-					}
-				/>
-			</div>
-			<div className="w-28">
-				<MinLevelSlider
-					value={filters.minLevel}
-					min={0}
-					max={MAX_ECHO_LEVEL}
-					plus
-					onChange={(minLevel) =>
-						onFiltersChange((prev) => ({ ...prev, minLevel }))
-					}
-				/>
-			</div>
-			<div className="w-44">
-				<MultiSelect
-					label="Echo Sets"
-					values={filters.sets}
-					options={optimizerSetOptions}
-					onChange={(values) =>
-						onFiltersChange((prev) => ({ ...prev, sets: values }))
-					}
-				/>
-			</div>
-			<div className="w-44">
-				<MultiSelect
-					label="Main Stats"
-					values={filters.mainStats}
-					options={mainStatOptions}
-					onChange={(values) =>
-						onFiltersChange((prev) => ({ ...prev, mainStats: values }))
-					}
-				/>
-			</div>
-			<div className="w-44">
-				<MultiSelect
-					label="Substats"
-					values={filters.substats}
-					options={substatOptions}
-					onChange={(values) =>
-						onFiltersChange((prev) => ({ ...prev, substats: values }))
-					}
-				/>
-			</div>
-			<Button
-				variant="outline"
-				size="sm"
-				title="Recommended echo filters: the main stats this resonator's kit cares about, max-level echoes only"
-				disabled={!recommendedEnabled}
-				onClick={onRecommended}
-			>
-				Recommended
-			</Button>
-			{hasOptimizerFilters(filters) && (
+		<div className="flex flex-col gap-3 border-t border-border/60 pt-4">
+			<FieldGroup className="grid gap-4 lg:grid-cols-[2fr_3fr]">
+				<FieldSet className="min-w-0 gap-2">
+					<FieldLegend variant="label">Echo pool</FieldLegend>
+					<div className="grid grid-cols-2 gap-3">
+						<FilterSelect
+							label="Equipped echoes"
+							value={filters.equipped}
+							options={EQUIPPED_OPTIONS}
+							onChange={(value) =>
+								onFiltersChange((prev) => ({
+									...prev,
+									equipped:
+										value === "exclude-others" || value === "exclude-all"
+											? value
+											: "include",
+								}))
+							}
+						/>
+						<FilterSelect
+							label="Minimum level"
+							value={String(filters.minLevel)}
+							options={Array.from(
+								{ length: MAX_ECHO_LEVEL + 1 },
+								(_, level) => ({
+									value: String(level),
+									label: level === 0 ? "Any level" : `+${level} or higher`,
+								}),
+							)}
+							onChange={(value) =>
+								onFiltersChange((prev) => ({
+									...prev,
+									minLevel: Number(value),
+								}))
+							}
+						/>
+					</div>
+				</FieldSet>
+				<FieldSet className="min-w-0 gap-2">
+					<FieldLegend variant="label">Set & stat requirements</FieldLegend>
+					<div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+						<MultiSelect
+							label="Echo sets"
+							values={filters.sets}
+							options={optimizerSetOptions}
+							onChange={(sets) =>
+								onFiltersChange((prev) => ({ ...prev, sets }))
+							}
+						/>
+						<MultiSelect
+							label="Main stats"
+							values={filters.mainStats}
+							options={mainStatOptions}
+							onChange={(mainStats) =>
+								onFiltersChange((prev) => ({ ...prev, mainStats }))
+							}
+						/>
+						<MultiSelect
+							label="Substats (any match)"
+							values={filters.substats}
+							options={substatOptions}
+							onChange={(substats) =>
+								onFiltersChange((prev) => ({ ...prev, substats }))
+							}
+						/>
+					</div>
+				</FieldSet>
+			</FieldGroup>
+			<div className="flex flex-wrap items-center gap-2">
 				<Button
-					variant="ghost"
+					variant="outline"
 					size="sm"
-					onClick={() => onFiltersChange(EMPTY_OPTIMIZER_FILTERS)}
+					title="Recommended echo filters: the main stats this resonator's kit cares about, max-level echoes only"
+					disabled={!recommendedEnabled}
+					onClick={onRecommended}
 				>
-					Reset filters
+					Use recommended filters
 				</Button>
-			)}
-			{counts && (
-				<span
-					className="ml-auto self-center text-[11px] text-muted-foreground"
-					title={countsHint}
-				>
-					{counts.eligible}/{counts.total} echoes ·{" "}
-					{formatDamage(counts.combos)} builds
-				</span>
-			)}
+				{hasOptimizerFilters(filters) && (
+					<Button
+						variant="ghost"
+						size="sm"
+						onClick={() => onFiltersChange(EMPTY_OPTIMIZER_FILTERS)}
+					>
+						Reset filters
+					</Button>
+				)}
+				{counts && (
+					<span
+						className="ml-auto self-center text-[11px] text-muted-foreground"
+						title={countsHint}
+					>
+						{counts.eligible}/{counts.total} echoes ·{" "}
+						{formatDamage(counts.combos)} builds
+					</span>
+				)}
+			</div>
 		</div>
 	);
 }

@@ -103,6 +103,13 @@ export interface Echo {
 /** Where an echo came from: the packet sniffer or a manual entry. */
 export type EchoSource = "sniffer" | "manual";
 
+export interface SavedTeam {
+	id: number;
+	name: string;
+	roleIds: number[];
+	isCurrent: boolean;
+}
+
 export interface AccountSnapshot {
 	version: number;
 	updatedAt: string;
@@ -110,6 +117,8 @@ export interface AccountSnapshot {
 	resonators: Resonator[];
 	weapons: Weapon[];
 	echoes: Echo[];
+	/** Saved in-game formations, captured passively by the sniffer. */
+	teams?: SavedTeam[];
 	exploration?: ExplorationSnapshot;
 	progression?: ProgressionSnapshot;
 }

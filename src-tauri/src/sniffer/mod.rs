@@ -10,6 +10,7 @@ pub mod keys;
 pub mod live;
 pub mod position;
 pub mod progression;
+pub mod teams;
 pub mod world;
 
 use std::collections::{BTreeSet, HashMap, VecDeque};
@@ -118,6 +119,7 @@ pub struct SnifferState {
     pub world: Mutex<world::WorldCapture>,
     pub position: Mutex<position::PositionTracker>,
     pub progression: Mutex<progression::ProgressionCapture>,
+    pub teams: Mutex<teams::TeamCapture>,
 }
 
 impl SnifferState {
@@ -155,6 +157,7 @@ impl SnifferState {
             world: Mutex::new(world::WorldCapture::default()),
             position: Mutex::new(position::PositionTracker::default()),
             progression: Mutex::new(progression::ProgressionCapture::default()),
+            teams: Mutex::new(teams::TeamCapture::default()),
         }
     }
 
@@ -424,6 +427,7 @@ fn spawn_supervisor(app: AppHandle) {
                 state.position.lock().clear();
                 *state.world.lock() = world::WorldCapture::default();
                 *state.progression.lock() = progression::ProgressionCapture::default();
+                *state.teams.lock() = teams::TeamCapture::default();
                 state.log("capture stopped");
                 std::thread::sleep(Duration::from_secs(1));
             }

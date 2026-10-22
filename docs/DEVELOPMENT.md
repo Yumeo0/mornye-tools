@@ -6,6 +6,7 @@ covers what the app does and where to download it.
 - [Build and test](#build-and-test)
 - [Releases and updates](#releases-and-updates)
 - [Packet capture](#packet-capture)
+- [Optimizer](#optimizer)
 - [Exploration map](#exploration-map)
 - [Overlay protocol](#overlay-protocol)
 - [Layout](#layout)
@@ -88,11 +89,35 @@ The session key cache survives restarts.
   `setcap cap_net_raw,cap_net_admin+eip` on the binary.
 - Because capture is passive, open the Character / Echo / Weapon menus once (or
   let the game request them on login) so the notifies arrive.
+- Capture login, then open team setup to load saved formations for the optimizer.
+  `UpdateFormationNotify` carries player-scoped teams with nested role information;
+  only the local player's teams are merged. An empty `GetFormationDataResponse`
+  is an acknowledgement and leaves them intact. Successful edits, switches and
+  explicit removals update individual teams. Login rebuilds the list so teams from
+  another account cannot linger. Teams are stored in `account.json`; selecting one
+  in the optimizer only changes its local character slots.
 - Capture health is visible in settings → Developer: frame / packet /
   decode error counters, plus a stall warning when frames keep arriving but
   nothing decodes. A stall means the passive KCP mirror lost a segment (it can
   never ask for a retransmit); account updates stay frozen until the game
   restarts its connection.
+
+## Optimizer
+
+Engine and result-count preferences live in Settings → Optimizer and persist in
+`settings.json`. Team presets keep the selected target and fill its two teammate
+slots using captured loadouts, or defaults for unowned characters.
+
+Tethys.gg recommendations are bundled in `src/configs/character_teams.json`.
+`bun scripts/compile_build_guides.ts` refreshes builds and teams together;
+`--teams-only` refreshes just the team presets. Slot alternatives expand into
+distinct compositions, and guide annotations remain visible as loadout advice.
+Team presets do not apply echo sets or rotations automatically.
+
+To verify saved-team extraction against a local PCAP without touching the live
+account, set `MORNYE_TEST_CAPTURE` to the capture path, optionally set
+`MORNYE_TEST_OUTPUT` to a JSON output path, and run from `src-tauri`:
+`cargo test --lib sniffer::teams::tests::replay_saved_teams -- --ignored`.
 
 ## Exploration map
 

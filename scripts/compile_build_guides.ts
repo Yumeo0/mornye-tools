@@ -17,6 +17,7 @@
  */
 
 import { join } from "node:path";
+import { compileTeamGuides, type TeamGuideResonator } from "./lib/teamGuides";
 
 const SCRIPTS_DIR = import.meta.dirname;
 const REPO_ROOT = join(SCRIPTS_DIR, "..");
@@ -46,7 +47,7 @@ interface Guide {
 	substatsPriority?: string | null;
 }
 
-interface Resonator {
+interface Resonator extends TeamGuideResonator {
 	name?: string;
 	guides?: Guide[];
 }
@@ -241,7 +242,7 @@ function compileGuides(
 	return builds;
 }
 
-async function main(): Promise<void> {
+async function main({ teamsOnly = false } = {}): Promise<void> {
 	console.log("=".repeat(60));
 	console.log("Build Guide Compiler (tethys.gg)");
 	console.log("=".repeat(60));
@@ -266,6 +267,19 @@ async function main(): Promise<void> {
 	console.log(`\nFound ${dataset.length} resonators in dataset`);
 
 	const characterIds = await loadCharacterIds();
+	const teams = compileTeamGuides(dataset, characterIds);
+	if (Object.keys(teams).length === 0)
+		throw new Error(
+			"No team guides found; keeping the previous recommendations.",
+		);
+	await Bun.write(
+		join(REPO_ROOT, "src/configs/character_teams.json"),
+		`${JSON.stringify(teams, null, "\t")}\n`,
+	);
+	console.log(
+		`Compiled team recommendations for ${Object.keys(teams).length} resonators`,
+	);
+	if (teamsOnly) return;
 	const builds = compileGuides(dataset, characterIds);
 
 	const rolesTotal = Object.values(builds).reduce(
@@ -286,7 +300,7 @@ async function main(): Promise<void> {
 }
 
 if (import.meta.main) {
-	await main();
+	await main({ teamsOnly: Bun.argv.includes("--teams-only") });
 }
 
 export { main as compileBuildGuides };

@@ -20,6 +20,7 @@ import { roleLabel } from "@/components/optimizer/display";
 import { weaponsById } from "@/components/weapon/WeaponCard";
 import type { AccountSnapshot } from "@/lib/account";
 import { withTeam } from "@/lib/calc/optimizer";
+import { teammatesForPreset } from "@/lib/calc/teamPresets";
 import {
 	type AccountTranslation,
 	buildOptimizerRuntime,
@@ -209,6 +210,15 @@ export function useOptimizerTeam({
 		else if (slot === "mateOne") setMateOne(roleId);
 		else setMateTwo(roleId);
 	}, []);
+	const applyTeamPreset = useCallback(
+		(roleIds: readonly string[]) => {
+			const mates = teammatesForPreset(targetRoleId, roleIds);
+			if (!mates || mates.some((id) => id && !buildsByRoleId.has(id))) return;
+			setMateOne(mates[0]);
+			setMateTwo(mates[1]);
+		},
+		[targetRoleId, buildsByRoleId],
+	);
 	const swapSlots = useCallback(
 		(a: SlotKey, b: SlotKey) => {
 			const roleA = slotRoleIds[a];
@@ -314,6 +324,7 @@ export function useOptimizerTeam({
 		companionRuntimes,
 		slotRoleIds,
 		setSlotRoleId,
+		applyTeamPreset,
 		swapSlots,
 		slotSummary,
 		ownedWeaponItemIds,

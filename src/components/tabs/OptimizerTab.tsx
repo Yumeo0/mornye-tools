@@ -21,6 +21,7 @@ import { LoadoutDialog } from "@/components/optimizer/LoadoutDialog";
 import { OptimizerFilterRow } from "@/components/optimizer/OptimizerFilterRow";
 import { OptimizerResultsPanel } from "@/components/optimizer/OptimizerResultsPanel";
 import { OptimizerRunBar } from "@/components/optimizer/OptimizerRunBar";
+import { TeamPresetPicker } from "@/components/optimizer/TeamPresetPicker";
 import { TeamSection } from "@/components/optimizer/TeamSection";
 import { CharacterPickerDialog } from "@/components/tabs/CharacterPickerDialog";
 import { type OptimizerMode, useOptimizerRun } from "@/hooks/useOptimizerRun";
@@ -84,8 +85,15 @@ export function OptimizerTab({ active }: { active: boolean }) {
 	const measuredName = measuredBuild ? roleLabel(measuredBuild) : null;
 
 	return (
-		<div className="flex min-h-0 flex-1 flex-col gap-4">
+		<div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-px pt-px">
 			<section className="bg-card text-card-foreground ring-foreground/10 flex shrink-0 flex-col gap-4 p-4 ring-1">
+				<div className="flex flex-col gap-1">
+					<h2 className="text-sm font-medium">Team & rotation</h2>
+					<p className="text-xs text-muted-foreground">
+						Choose the character to optimize, then build their team manually or
+						use a preset.
+					</p>
+				</div>
 				<TeamSection
 					slotRoleIds={slotRoleIds}
 					buildsByRoleId={buildsByRoleId}
@@ -104,6 +112,14 @@ export function OptimizerTab({ active }: { active: boolean }) {
 					onMeasuredSlotChange={setMeasuredSlot}
 				/>
 
+				<TeamPresetPicker
+					slotRoleIds={slotRoleIds}
+					buildsByRoleId={buildsByRoleId}
+					ownedRoleIds={ownedRoleIds}
+					teams={snapshot.teams ?? []}
+					onApply={team.applyTeamPreset}
+				/>
+
 				<OptimizerFilterRow
 					filters={run.filters}
 					onFiltersChange={run.setFilters}
@@ -120,16 +136,11 @@ export function OptimizerTab({ active }: { active: boolean }) {
 				<OptimizerRunBar
 					mode={mode}
 					onModeChange={setMode}
-					resultsLimit={run.resultsLimit}
-					onResultsLimitChange={run.setResultsLimit}
-					engine={run.engine}
-					onEngineChange={run.setEngine}
 					running={run.running}
 					phase={run.phase}
 					progress={run.progress}
 					progressPercent={run.progressPercent}
 					canRun={run.canRun}
-					gpuAvailable={run.gpuAvailable}
 					onRun={() => void run.handleRun()}
 					onCancel={run.handleCancel}
 				/>

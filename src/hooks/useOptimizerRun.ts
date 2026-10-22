@@ -21,7 +21,6 @@ import type {
 } from "@wuwacalc/core/engine/optimizer/types";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-	DEFAULT_RESULTS_LIMIT,
 	EMPTY_OPTIMIZER_FILTERS,
 	MAX_ECHO_LEVEL,
 	type OptimizerFilters,
@@ -54,6 +53,7 @@ import {
 	type TeamSearchProgress,
 } from "@/lib/calc/teamOptimizer";
 import { type TranslationError, toEchoInstance } from "@/lib/calc/translate";
+import { hasWebGpu, useOptimizerPreferences } from "@/lib/optimizerPreferences";
 
 /** Which objective a run maximizes. */
 export type OptimizerMode = "damage" | "team";
@@ -66,13 +66,6 @@ export interface OptimizerBaseline {
 	damage: number;
 	stats: OptResultStats | null;
 	uids: string[];
-}
-
-export function hasWebGpu(): boolean {
-	return (
-		typeof navigator !== "undefined" &&
-		(navigator as Navigator & { gpu?: unknown }).gpu != null
-	);
 }
 
 const waitForLoop = () =>
@@ -173,10 +166,9 @@ export function useOptimizerRun({
 		return errors;
 	}, [targetBuild, mateBuilds]);
 
-	const [resultsLimit, setResultsLimit] = useState(DEFAULT_RESULTS_LIMIT);
-	const [engine, setEngine] = useState<"gpu" | "cpu">(
-		hasWebGpu() ? "gpu" : "cpu",
-	);
+	const { preferences } = useOptimizerPreferences();
+	const resultsLimit = preferences.resultsLimit;
+	const engine = preferences.engine === "gpu" && hasWebGpu() ? "gpu" : "cpu";
 
 	const [running, setRunning] = useState(false);
 	const [phase, setPhase] = useState<
@@ -514,9 +506,7 @@ export function useOptimizerRun({
 		echoByUid,
 		selectionErrors,
 		resultsLimit,
-		setResultsLimit,
 		engine,
-		setEngine,
 		gpuAvailable: hasWebGpu(),
 		running,
 		phase,

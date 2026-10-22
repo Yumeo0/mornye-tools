@@ -1,0 +1,3718 @@
+{
+	"1102": [
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1604",
+				"1102",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1603",
+				"1102",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1206",
+				"1102",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1203",
+				"1102",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1105": [
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1107",
+				"1105",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1107",
+				"1105",
+				"1307"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1304",
+				"1105",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1304",
+				"1105",
+				"1307"
+			],
+			"notes": []
+		}
+	],
+	"1107": [
+		{
+			"name": "Break",
+			"role": "Main DPS",
+			"roleIds": [
+				"1107",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1107",
+				"1509",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1107",
+				"1509",
+				"1307"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1107",
+				"1105",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1107",
+				"1105",
+				"1307"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1107",
+				"1607",
+				"1505"
+			],
+			"notes": [
+				"Cantarella: Empyrean Anthem/Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1107",
+				"1607",
+				"1307"
+			],
+			"notes": [
+				"Cantarella: Empyrean Anthem/Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Quickswap",
+			"role": "Main DPS",
+			"roleIds": [
+				"1107",
+				"1206",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "Main DPS",
+			"roleIds": [
+				"1107",
+				"1305",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "Main DPS",
+			"roleIds": [
+				"1107",
+				"1205",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1108": [
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1108",
+				"1109",
+				"1110"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1108",
+				"1109",
+				"1508"
+			],
+			"notes": [
+				"Chisa: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1108",
+				"1109",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1108",
+				"1509",
+				"1110"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1108",
+				"1509",
+				"1508"
+			],
+			"notes": [
+				"Chisa: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1108",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		}
+	],
+	"1109": [
+		{
+			"name": "Hypercarry",
+			"role": "Chafe sDPS",
+			"roleIds": [
+				"1108",
+				"1109",
+				"1110"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Chafe sDPS",
+			"roleIds": [
+				"1108",
+				"1109",
+				"1508"
+			],
+			"notes": [
+				"Chisa: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Chafe sDPS",
+			"roleIds": [
+				"1108",
+				"1109",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Sigrika",
+			"role": "Echo sDPS",
+			"roleIds": [
+				"1412",
+				"1109",
+				"1505"
+			],
+			"notes": [
+				"Lucilla: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Galbrena",
+			"role": "Echo sDPS",
+			"roleIds": [
+				"1208",
+				"1109",
+				"1505"
+			],
+			"notes": [
+				"Lucilla: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Galbrena",
+			"role": "Echo sDPS",
+			"roleIds": [
+				"1208",
+				"1109",
+				"1411"
+			],
+			"notes": [
+				"Lucilla: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Phrolova",
+			"role": "Echo sDPS",
+			"roleIds": [
+				"1608",
+				"1109",
+				"1411"
+			],
+			"notes": [
+				"Lucilla: Dream of the Lost"
+			]
+		},
+		{
+			"name": "Phrolova",
+			"role": "Echo sDPS",
+			"roleIds": [
+				"1608",
+				"1109",
+				"1505"
+			],
+			"notes": [
+				"Lucilla: Dream of the Lost"
+			]
+		},
+		{
+			"name": "Phrolova",
+			"role": "Echo sDPS",
+			"roleIds": [
+				"1608",
+				"1109",
+				"1607"
+			],
+			"notes": [
+				"Lucilla: Dream of the Lost"
+			]
+		}
+	],
+	"1110": [
+		{
+			"name": "Hypercarry (Bane)",
+			"role": "Support",
+			"roleIds": [
+				"1610",
+				"1508",
+				"1110"
+			],
+			"notes": [
+				"Chisa: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry (Bane)",
+			"role": "Support",
+			"roleIds": [
+				"1610",
+				"1308",
+				"1110"
+			],
+			"notes": [
+				"Rebecca: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry (Chafe)",
+			"role": "Support",
+			"roleIds": [
+				"1108",
+				"1109",
+				"1110"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry (Chafe)",
+			"role": "Support",
+			"roleIds": [
+				"1108",
+				"1508",
+				"1110"
+			],
+			"notes": [
+				"Chisa: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry (Chafe)",
+			"role": "Support",
+			"roleIds": [
+				"1108",
+				"1509",
+				"1110"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry (Burst)",
+			"role": "Support",
+			"roleIds": [
+				"1210",
+				"1211",
+				"1110"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry (Erosion)",
+			"role": "Support",
+			"roleIds": [
+				"1409",
+				"1407",
+				"1110"
+			],
+			"notes": []
+		}
+	],
+	"1203": [
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1203",
+				"1102",
+				"1207"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1203",
+				"1102",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1203",
+				"1606",
+				"1207"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1203",
+				"1606",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "Main DPS",
+			"roleIds": [
+				"1203",
+				"1305",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "Main DPS",
+			"roleIds": [
+				"1203",
+				"1205",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "Main DPS",
+			"roleIds": [
+				"1203",
+				"1604",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "Main DPS",
+			"roleIds": [
+				"1203",
+				"1107",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "Main DPS",
+			"roleIds": [
+				"1203",
+				"1304",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "Main DPS",
+			"roleIds": [
+				"1203",
+				"1206",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1204": [
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1306",
+				"1204",
+				"1505"
+			],
+			"notes": [
+				"Mortefi: Empyrean Anthem/Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1404",
+				"1204",
+				"1505"
+			],
+			"notes": [
+				"Mortefi: Empyrean Anthem/Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Mono Fusion",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1208",
+				"1204",
+				"1207"
+			],
+			"notes": [
+				"Mortefi: Empyrean Anthem/Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Mono Fusion",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1208",
+				"1204",
+				"1505"
+			],
+			"notes": [
+				"Mortefi: Empyrean Anthem/Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Jinhsi Blender",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1304",
+				"1204",
+				"1405"
+			],
+			"notes": [
+				"Mortefi: Empyrean Anthem",
+				"Jianxin: Rejuvenating Glow"
+			]
+		}
+	],
+	"1205": [
+		{
+			"name": "Mono Fusion",
+			"role": "Main DPS",
+			"roleIds": [
+				"1205",
+				"1206",
+				"1207"
+			],
+			"notes": []
+		},
+		{
+			"name": "Mono Fusion",
+			"role": "Main DPS",
+			"roleIds": [
+				"1205",
+				"1206",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Mono Fusion",
+			"role": "Main DPS",
+			"roleIds": [
+				"1205",
+				"1207",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "Main DPS",
+			"roleIds": [
+				"1205",
+				"1206",
+				"1207"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "Main DPS",
+			"roleIds": [
+				"1205",
+				"1206",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "Main DPS",
+			"roleIds": [
+				"1205",
+				"1305",
+				"1207"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "Main DPS",
+			"roleIds": [
+				"1205",
+				"1305",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "Main DPS",
+			"roleIds": [
+				"1205",
+				"1304",
+				"1207"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "Main DPS",
+			"roleIds": [
+				"1205",
+				"1304",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1206": [
+		{
+			"name": "Mono Fusion",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1208",
+				"1206",
+				"1207"
+			],
+			"notes": []
+		},
+		{
+			"name": "Mono Fusion",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1208",
+				"1206",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Mono Fusion",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1205",
+				"1206",
+				"1207"
+			],
+			"notes": []
+		},
+		{
+			"name": "Mono Fusion",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1205",
+				"1206",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1206",
+				"1207",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1206",
+				"1102",
+				"1207"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1206",
+				"1102",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1206",
+				"1606",
+				"1207"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1206",
+				"1606",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1207": [
+		{
+			"name": "Burst",
+			"role": "Hybrid",
+			"roleIds": [
+				"1210",
+				"1211",
+				"1207"
+			],
+			"notes": [
+				"Denia: Flaming Clawprint",
+				"Lupa: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Mono Fusion",
+			"role": "Hybrid",
+			"roleIds": [
+				"1210",
+				"1207",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Mono Fusion",
+			"role": "Hybrid",
+			"roleIds": [
+				"1208",
+				"1207",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Hybrid",
+			"roleIds": [
+				"1208",
+				"1411",
+				"1207"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Hybrid",
+			"roleIds": [
+				"1208",
+				"1204",
+				"1207"
+			],
+			"notes": [
+				"Mortefi: Empyrean Anthem"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Hybrid",
+			"roleIds": [
+				"1208",
+				"1206",
+				"1207"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Hybrid",
+			"roleIds": [
+				"1208",
+				"1206",
+				"1207"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Hybrid",
+			"roleIds": [
+				"1208",
+				"1207",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Hybrid",
+			"roleIds": [
+				"1205",
+				"1206",
+				"1207"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Hybrid",
+			"roleIds": [
+				"1205",
+				"1207",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Hybrid",
+			"roleIds": [
+				"1206",
+				"1207",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1208": [
+		{
+			"name": "Hypercarry",
+			"role": "Echo mDPS",
+			"roleIds": [
+				"1208",
+				"1109",
+				"1505"
+			],
+			"notes": [
+				"Lucilla: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Echo mDPS",
+			"roleIds": [
+				"1208",
+				"1109",
+				"1207"
+			],
+			"notes": [
+				"Lucilla: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Echo mDPS",
+			"roleIds": [
+				"1208",
+				"1411",
+				"1505"
+			],
+			"notes": [
+				"Qiuyuan: Law of Harmony/Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Echo mDPS",
+			"roleIds": [
+				"1208",
+				"1411",
+				"1207"
+			],
+			"notes": [
+				"Qiuyuan: Law of Harmony/Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Mono Fusion",
+			"role": "Heavy mDPS",
+			"roleIds": [
+				"1208",
+				"1207",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Heavy mDPS",
+			"roleIds": [
+				"1208",
+				"1204",
+				"1207"
+			],
+			"notes": [
+				"Mortefi: Empyrean Anthem"
+			]
+		},
+		{
+			"name": "Alternative",
+			"role": "Heavy mDPS",
+			"roleIds": [
+				"1208",
+				"1204",
+				"1505"
+			],
+			"notes": [
+				"Mortefi: Empyrean Anthem"
+			]
+		},
+		{
+			"name": "Alternative",
+			"role": "Heavy mDPS",
+			"roleIds": [
+				"1208",
+				"1207",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Heavy mDPS",
+			"roleIds": [
+				"1208",
+				"1410",
+				"1207"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Heavy mDPS",
+			"roleIds": [
+				"1208",
+				"1410",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1209": [
+		{
+			"name": "Rupture",
+			"role": "Support",
+			"roleIds": [
+				"1210",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Rupture",
+			"role": "Support",
+			"roleIds": [
+				"1108",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Rupture",
+			"role": "Support",
+			"roleIds": [
+				"1410",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Rupture",
+			"role": "Support",
+			"roleIds": [
+				"1107",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Mono Fusion",
+			"role": "Support",
+			"roleIds": [
+				"1210",
+				"1207",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Mono Fusion",
+			"role": "Support",
+			"roleIds": [
+				"1208",
+				"1207",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Strain",
+			"role": "Support",
+			"roleIds": [
+				"1413",
+				"1211",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Strain",
+			"role": "Support",
+			"roleIds": [
+				"1413",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Strain",
+			"role": "Support",
+			"roleIds": [
+				"1510",
+				"1211",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Strain",
+			"role": "Support",
+			"roleIds": [
+				"1510",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		}
+	],
+	"1210": [
+		{
+			"name": "Hypercarry",
+			"role": "Rupture mDPS",
+			"roleIds": [
+				"1210",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Rupture mDPS",
+			"roleIds": [
+				"1210",
+				"1509",
+				"1508"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Rupture mDPS",
+			"roleIds": [
+				"1210",
+				"1509",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Mono Fusion",
+			"role": "Rupture mDPS",
+			"roleIds": [
+				"1210",
+				"1207",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Mono Fusion",
+			"role": "Rupture mDPS",
+			"roleIds": [
+				"1210",
+				"1205",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Mono Fusion",
+			"role": "Rupture mDPS",
+			"roleIds": [
+				"1210",
+				"1205",
+				"1207"
+			],
+			"notes": []
+		},
+		{
+			"name": "Mono Fusion",
+			"role": "Rupture mDPS",
+			"roleIds": [
+				"1210",
+				"1206",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Mono Fusion",
+			"role": "Rupture mDPS",
+			"roleIds": [
+				"1210",
+				"1206",
+				"1207"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Burst mDPS",
+			"roleIds": [
+				"1210",
+				"1211",
+				"1508"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Burst mDPS",
+			"roleIds": [
+				"1210",
+				"1211",
+				"1110"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Burst mDPS",
+			"roleIds": [
+				"1210",
+				"1509",
+				"1508"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Burst mDPS",
+			"roleIds": [
+				"1210",
+				"1509",
+				"1110"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Burst mDPS",
+			"roleIds": [
+				"1210",
+				"1207",
+				"1508"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Burst mDPS",
+			"roleIds": [
+				"1210",
+				"1207",
+				"1110"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Burst mDPS",
+			"roleIds": [
+				"1210",
+				"1211",
+				"1207"
+			],
+			"notes": [
+				"Denia: Flaming Clawprint",
+				"Lupa: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Mono Fusion",
+			"role": "Burst mDPS",
+			"roleIds": [
+				"1210",
+				"1205",
+				"1207"
+			],
+			"notes": []
+		}
+	],
+	"1211": [
+		{
+			"name": "Hypercarry",
+			"role": "Burst sDPS",
+			"roleIds": [
+				"1210",
+				"1211",
+				"1508"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Burst sDPS",
+			"roleIds": [
+				"1210",
+				"1211",
+				"1110"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Burst sDPS",
+			"roleIds": [
+				"1210",
+				"1211",
+				"1207"
+			],
+			"notes": [
+				"Denia: Flaming Clawprint",
+				"Lupa: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Strain sDPS",
+			"roleIds": [
+				"1413",
+				"1211",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Strain sDPS",
+			"roleIds": [
+				"1510",
+				"1211",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Strain sDPS",
+			"roleIds": [
+				"1413",
+				"1211",
+				"1505"
+			],
+			"notes": [
+				"Denia: Reel of Spliced Memories"
+			]
+		},
+		{
+			"name": "Alternative",
+			"role": "Strain sDPS",
+			"roleIds": [
+				"1510",
+				"1211",
+				"1505"
+			],
+			"notes": [
+				"Denia: Reel of Spliced Memories"
+			]
+		}
+	],
+	"1212": [
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1212",
+				"1410",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1212",
+				"1410",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1212",
+				"1207",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1212",
+				"1207",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1212",
+				"1308",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1212",
+				"1308",
+				"1209"
+			],
+			"notes": []
+		}
+	],
+	"1301": [
+		{
+			"name": "Rupture",
+			"role": "Main DPS",
+			"roleIds": [
+				"1301",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1301",
+				"1509",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1301",
+				"1302",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1301",
+				"1102",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "Main DPS",
+			"roleIds": [
+				"1301",
+				"1305",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "Main DPS",
+			"roleIds": [
+				"1301",
+				"1107",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "Main DPS",
+			"roleIds": [
+				"1301",
+				"1205",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1302": [
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1305",
+				"1302",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1304",
+				"1302",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1302",
+				"1304",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1302",
+				"1604",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1304": [
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1304",
+				"1311",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1304",
+				"1311",
+				"1307"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1304",
+				"1105",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1304",
+				"1105",
+				"1307"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1304",
+				"1607",
+				"1505"
+			],
+			"notes": [
+				"Cantarella: Empyrean Anthem/Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1304",
+				"1607",
+				"1307"
+			],
+			"notes": [
+				"Cantarella: Empyrean Anthem/Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Quickswap",
+			"role": "Main DPS",
+			"roleIds": [
+				"1304",
+				"1206",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "Main DPS",
+			"roleIds": [
+				"1304",
+				"1205",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "Main DPS",
+			"roleIds": [
+				"1304",
+				"1305",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1305": [
+		{
+			"name": "Rupture",
+			"role": "DPS",
+			"roleIds": [
+				"1305",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "DPS",
+			"roleIds": [
+				"1305",
+				"1509",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "DPS",
+			"roleIds": [
+				"1305",
+				"1302",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "DPS",
+			"roleIds": [
+				"1305",
+				"1304",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "DPS",
+			"roleIds": [
+				"1305",
+				"1205",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Quickswap",
+			"role": "DPS",
+			"roleIds": [
+				"1305",
+				"1107",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1306": [
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1306",
+				"1410",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1306",
+				"1410",
+				"1509"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1306",
+				"1204",
+				"1505"
+			],
+			"notes": [
+				"Mortefi: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1306",
+				"1204",
+				"1509"
+			],
+			"notes": [
+				"Mortefi: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Dual DPS",
+			"role": "Main DPS",
+			"roleIds": [
+				"1306",
+				"1608",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Dual DPS",
+			"role": "Main DPS",
+			"roleIds": [
+				"1306",
+				"1305",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1307": [
+		{
+			"name": "Hypercarry",
+			"role": "Support",
+			"roleIds": [
+				"1107",
+				"1105",
+				"1307"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Support",
+			"roleIds": [
+				"1107",
+				"1607",
+				"1307"
+			],
+			"notes": [
+				"Cantarella: Empyrean Anthem/Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Support",
+			"roleIds": [
+				"1304",
+				"1105",
+				"1307"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Support",
+			"roleIds": [
+				"1304",
+				"1607",
+				"1307"
+			],
+			"notes": [
+				"Cantarella: Empyrean Anthem/Moonlit Clouds"
+			]
+		}
+	],
+	"1308": [
+		{
+			"name": "Hypercarry (Xuanling)",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1610",
+				"1308",
+				"1508"
+			],
+			"notes": [
+				"Rebecca: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry (Xuanling)",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1610",
+				"1308",
+				"1110"
+			],
+			"notes": [
+				"Rebecca: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry (Lucy)",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1511",
+				"1308",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry (Lucy)",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1511",
+				"1308",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1306",
+				"1308",
+				"1505"
+			],
+			"notes": [
+				"Rebecca: Moonlit Clouds"
+			]
+		}
+	],
+	"1311": [
+		{
+			"name": "Standard",
+			"role": "Unison mDPS",
+			"roleIds": [
+				"1311",
+				"1312",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Standard",
+			"role": "Unison mDPS",
+			"roleIds": [
+				"1311",
+				"1312",
+				"1307"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Unison mDPS",
+			"roleIds": [
+				"1311",
+				"1304",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Unison mDPS",
+			"roleIds": [
+				"1311",
+				"1304",
+				"1503"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Flare mDPS",
+			"roleIds": [
+				"1311",
+				"1509",
+				"1110"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Flare mDPS",
+			"roleIds": [
+				"1311",
+				"1509",
+				"1508"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Flare mDPS",
+			"roleIds": [
+				"1311",
+				"1509",
+				"1307"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Flare mDPS",
+			"roleIds": [
+				"1311",
+				"1508",
+				"1110"
+			],
+			"notes": [
+				"Chisa: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Flare mDPS",
+			"roleIds": [
+				"1311",
+				"1508",
+				"1307"
+			],
+			"notes": [
+				"Chisa: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Flare mDPS",
+			"roleIds": [
+				"1311",
+				"1309",
+				"1110"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Flare mDPS",
+			"roleIds": [
+				"1311",
+				"1309",
+				"1508"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Flare mDPS",
+			"roleIds": [
+				"1311",
+				"1309",
+				"1307"
+			],
+			"notes": []
+		}
+	],
+	"1312": [
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1311",
+				"1312",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1311",
+				"1312",
+				"1307"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1312",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Main DPS",
+			"roleIds": [
+				"1312",
+				"1308",
+				"1505"
+			],
+			"notes": [
+				"Rebecca: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Alternative",
+			"role": "Main DPS",
+			"roleIds": [
+				"1312",
+				"1102",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1403": [
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1404",
+				"1403",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1404": [
+		{
+			"name": "Mono Aero",
+			"role": "Main DPS",
+			"roleIds": [
+				"1404",
+				"1410",
+				"1407"
+			],
+			"notes": [
+				"Ciaccona: Gusts of Welkin"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1404",
+				"1204",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1405": [
+		{
+			"name": "Hypercarry",
+			"role": "Support",
+			"roleIds": [
+				"1410",
+				"1407",
+				"1405"
+			],
+			"notes": [
+				"Ciaccona: Gusts of Welkin"
+			]
+		},
+		{
+			"name": "Jinhsi Blender",
+			"role": "Support",
+			"roleIds": [
+				"1304",
+				"1204",
+				"1405"
+			],
+			"notes": [
+				"Mortefi: Empyrean Anthem",
+				"Jianxin: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1305",
+				"1405",
+				"1505"
+			],
+			"notes": [
+				"Jianxin: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1301",
+				"1405",
+				"1505"
+			],
+			"notes": [
+				"Jianxin: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1604",
+				"1405",
+				"1505"
+			],
+			"notes": [
+				"Jianxin: Moonlit Clouds"
+			]
+		}
+	],
+	"1406": [
+		{
+			"name": "Hypercarry",
+			"role": "Support",
+			"roleIds": [
+				"1409",
+				"1407",
+				"1406"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Support",
+			"roleIds": [
+				"1409",
+				"1102",
+				"1406"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Support",
+			"roleIds": [
+				"1410",
+				"1407",
+				"1406"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1409",
+				"1406",
+				"1508"
+			],
+			"notes": [
+				"Rover: Aero: Gusts of Welkin",
+				"Chisa: Thread of Severed Fate"
+			]
+		},
+		{
+			"name": "Alternative",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1409",
+				"1406",
+				"1505"
+			],
+			"notes": [
+				"Rover: Aero: Windward Pilgrimage"
+			]
+		}
+	],
+	"1407": [
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1409",
+				"1407",
+				"1508"
+			],
+			"notes": [
+				"Chisa: Thread of Severed Fate"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1409",
+				"1407",
+				"1110"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1409",
+				"1407",
+				"1406"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1410",
+				"1407",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1410",
+				"1407",
+				"1406"
+			],
+			"notes": []
+		}
+	],
+	"1409": [
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1409",
+				"1407",
+				"1508"
+			],
+			"notes": [
+				"Chisa: Thread of Severed Fate"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1409",
+				"1407",
+				"1110"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1409",
+				"1407",
+				"1406"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1409",
+				"1406",
+				"1508"
+			],
+			"notes": [
+				"Chisa: Thread of Severed Fate"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1409",
+				"1406",
+				"1110"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1409",
+				"1102",
+				"1508"
+			],
+			"notes": [
+				"Chisa: Thread of Severed Fate"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1409",
+				"1102",
+				"1110"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1409",
+				"1102",
+				"1406"
+			],
+			"notes": []
+		}
+	],
+	"1410": [
+		{
+			"name": "Hypercarry (Jingran)",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1212",
+				"1410",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry (Jingran)",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1212",
+				"1410",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry (Augusta)",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1306",
+				"1410",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry (Augusta)",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1306",
+				"1410",
+				"1509"
+			],
+			"notes": []
+		},
+		{
+			"name": "Mono Aero",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1404",
+				"1410",
+				"1407"
+			],
+			"notes": [
+				"Ciaccona: Gusts of Welkin"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1410",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1410",
+				"1509",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Main DPS",
+			"roleIds": [
+				"1410",
+				"1407",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Main DPS",
+			"roleIds": [
+				"1410",
+				"1407",
+				"1406"
+			],
+			"notes": []
+		}
+	],
+	"1411": [
+		{
+			"name": "Sigrika",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1412",
+				"1411",
+				"1407"
+			],
+			"notes": []
+		},
+		{
+			"name": "Sigrika",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1412",
+				"1411",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Sigrika",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1412",
+				"1411",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Galbrena",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1208",
+				"1411",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Galbrena",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1208",
+				"1411",
+				"1207"
+			],
+			"notes": []
+		},
+		{
+			"name": "Phrolova",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1608",
+				"1109",
+				"1411"
+			],
+			"notes": [
+				"Lucilla: Dream of the Lost"
+			]
+		},
+		{
+			"name": "Phrolova",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1608",
+				"1411",
+				"1607"
+			],
+			"notes": [
+				"Cantarella: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Phrolova",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1608",
+				"1411",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1412": [
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1412",
+				"1109",
+				"1505"
+			],
+			"notes": [
+				"Lucilla: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Alternative",
+			"role": "Main DPS",
+			"roleIds": [
+				"1412",
+				"1411",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Main DPS",
+			"roleIds": [
+				"1412",
+				"1411",
+				"1407"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Main DPS",
+			"roleIds": [
+				"1412",
+				"1411",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Rupture",
+			"role": "Main DPS",
+			"roleIds": [
+				"1412",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		}
+	],
+	"1413": [
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1413",
+				"1211",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1413",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1413",
+				"1407",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Main DPS",
+			"roleIds": [
+				"1413",
+				"1211",
+				"1505"
+			],
+			"notes": [
+				"Denia: Reel of Spliced Memories"
+			]
+		},
+		{
+			"name": "Alternative",
+			"role": "Main DPS",
+			"roleIds": [
+				"1413",
+				"1509",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1501": [
+		{
+			"name": "Hypercarry",
+			"role": "Support",
+			"roleIds": [
+				"1507",
+				"1506",
+				"1501"
+			],
+			"notes": [
+				"Phoebe: Moonlit Clouds",
+				"Rover: Spectro: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Dual DPS",
+			"role": "DPS",
+			"roleIds": [
+				"1506",
+				"1501",
+				"1508"
+			],
+			"notes": [
+				"Phoebe: Eternal Radiance",
+				"Rover: Spectro: Eternal Radiance",
+				"Chisa: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Dual DPS",
+			"role": "DPS",
+			"roleIds": [
+				"1506",
+				"1501",
+				"1505"
+			],
+			"notes": [
+				"Phoebe: Eternal Radiance",
+				"Rover: Spectro: Eternal Radiance"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "DPS",
+			"roleIds": [
+				"1507",
+				"1501",
+				"1508"
+			],
+			"notes": [
+				"Rover: Spectro: Moonlit Clouds/Eternal Radiance",
+				"Chisa: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "DPS",
+			"roleIds": [
+				"1507",
+				"1501",
+				"1505"
+			],
+			"notes": [
+				"Rover: Spectro: Moonlit Clouds/Eternal Radiance"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "DPS",
+			"roleIds": [
+				"1506",
+				"1501",
+				"1508"
+			],
+			"notes": [
+				"Rover: Spectro: Moonlit Clouds/Eternal Radiance",
+				"Chisa: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "DPS",
+			"roleIds": [
+				"1506",
+				"1501",
+				"1505"
+			],
+			"notes": [
+				"Rover: Spectro: Moonlit Clouds/Eternal Radiance"
+			]
+		}
+	],
+	"1506": [
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1507",
+				"1506",
+				"1508"
+			],
+			"notes": [
+				"Chisa: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1507",
+				"1506",
+				"1501"
+			],
+			"notes": [
+				"Rover: Spectro: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1507",
+				"1506",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1506",
+				"1501",
+				"1508"
+			],
+			"notes": [
+				"Rover: Spectro: Moonlit Clouds",
+				"Chisa: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1506",
+				"1501",
+				"1505"
+			],
+			"notes": [
+				"Rover: Spectro: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Dual DPS",
+			"role": "Main DPS",
+			"roleIds": [
+				"1506",
+				"1501",
+				"1508"
+			],
+			"notes": [
+				"Rover: Spectro: Eternal Radiance",
+				"Chisa: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Dual DPS",
+			"role": "Main DPS",
+			"roleIds": [
+				"1506",
+				"1501",
+				"1505"
+			],
+			"notes": [
+				"Rover: Spectro: Eternal Radiance"
+			]
+		}
+	],
+	"1507": [
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1507",
+				"1506",
+				"1508"
+			],
+			"notes": [
+				"Chisa: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1507",
+				"1506",
+				"1501"
+			],
+			"notes": [
+				"Rover: Spectro: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1507",
+				"1506",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1507",
+				"1501",
+				"1508"
+			],
+			"notes": [
+				"Rover: Spectro: Moonlit Clouds/Eternal Radiance",
+				"Chisa: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1507",
+				"1501",
+				"1505"
+			],
+			"notes": [
+				"Rover: Spectro: Moonlit Clouds/Eternal Radiance"
+			]
+		}
+	],
+	"1508": [
+		{
+			"name": "Hypercarry (Flare)",
+			"role": "Hybrid",
+			"roleIds": [
+				"1311",
+				"1509",
+				"1508"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry (Flare)",
+			"role": "Hybrid",
+			"roleIds": [
+				"1311",
+				"1508",
+				"1110"
+			],
+			"notes": [
+				"Chisa: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry (Flare)",
+			"role": "Hybrid",
+			"roleIds": [
+				"1311",
+				"1508",
+				"1307"
+			],
+			"notes": [
+				"Chisa: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry (Flare)",
+			"role": "Hybrid",
+			"roleIds": [
+				"1311",
+				"1309",
+				"1508"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry (Bane)",
+			"role": "Hybrid",
+			"roleIds": [
+				"1610",
+				"1508",
+				"1110"
+			],
+			"notes": [
+				"Chisa: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry (Bane)",
+			"role": "Hybrid",
+			"roleIds": [
+				"1610",
+				"1308",
+				"1508"
+			],
+			"notes": [
+				"Rebecca: Moonlit Clouds",
+				"Chisa: Rejuvenating Glow/Thread of Severed Fate"
+			]
+		},
+		{
+			"name": "Hypercarry (Bane)",
+			"role": "Hybrid",
+			"roleIds": [
+				"1610",
+				"1509",
+				"1508"
+			],
+			"notes": [
+				"Chisa: Rejuvenating Glow/Thread of Severed Fate"
+			]
+		},
+		{
+			"name": "Hypercarry (Burst)",
+			"role": "Hybrid",
+			"roleIds": [
+				"1210",
+				"1211",
+				"1508"
+			],
+			"notes": [
+				"Chisa: Rejuvenating Glow/Thread of Severed Fate"
+			]
+		},
+		{
+			"name": "Hypercarry (Burst)",
+			"role": "Hybrid",
+			"roleIds": [
+				"1210",
+				"1509",
+				"1508"
+			],
+			"notes": [
+				"Chisa: Rejuvenating Glow/Thread of Severed Fate"
+			]
+		},
+		{
+			"name": "Hypercarry (Burst)",
+			"role": "Hybrid",
+			"roleIds": [
+				"1210",
+				"1207",
+				"1508"
+			],
+			"notes": [
+				"Chisa: Rejuvenating Glow/Thread of Severed Fate"
+			]
+		},
+		{
+			"name": "Hypercarry (Chafe)",
+			"role": "Hybrid",
+			"roleIds": [
+				"1108",
+				"1109",
+				"1508"
+			],
+			"notes": [
+				"Chisa: Rejuvenating Glow/Thread of Severed Fate"
+			]
+		},
+		{
+			"name": "Hypercarry (Chafe)",
+			"role": "Hybrid",
+			"roleIds": [
+				"1108",
+				"1509",
+				"1508"
+			],
+			"notes": [
+				"Chisa: Rejuvenating Glow/Thread of Severed Fate"
+			]
+		},
+		{
+			"name": "Hypercarry (Erosion)",
+			"role": "Hybrid",
+			"roleIds": [
+				"1409",
+				"1407",
+				"1508"
+			],
+			"notes": [
+				"Chisa: Thread of Severed Fate"
+			]
+		},
+		{
+			"name": "Hypercarry (Erosion)",
+			"role": "Hybrid",
+			"roleIds": [
+				"1409",
+				"1406",
+				"1508"
+			],
+			"notes": [
+				"Rover: Aero: Gusts of Welkin",
+				"Chisa: Thread of Severed Fate"
+			]
+		},
+		{
+			"name": "Hypercarry (Frazzle)",
+			"role": "Hybrid",
+			"roleIds": [
+				"1507",
+				"1506",
+				"1508"
+			],
+			"notes": [
+				"Chisa: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Hypercarry (Frazzle)",
+			"role": "Hybrid",
+			"roleIds": [
+				"1507",
+				"1501",
+				"1508"
+			],
+			"notes": [
+				"Rover: Spectro: Moonlit Clouds/Eternal Radiance",
+				"Chisa: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Hypercarry (Frazzle)",
+			"role": "Hybrid",
+			"roleIds": [
+				"1506",
+				"1501",
+				"1508"
+			],
+			"notes": [
+				"Phoebe: Eternal Radiance",
+				"Rover: Spectro: Moonlit Clouds/Eternal Radiance",
+				"Chisa: Rejuvenating Glow"
+			]
+		}
+	],
+	"1509": [
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1311",
+				"1509",
+				"1110"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1311",
+				"1509",
+				"1508"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1610",
+				"1509",
+				"1110"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1610",
+				"1509",
+				"1508"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1108",
+				"1509",
+				"1508"
+			],
+			"notes": [
+				"Chisa: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Alternative",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1108",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1108",
+				"1509",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Rupture",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1210",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Rupture",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1210",
+				"1509",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Rupture",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1410",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Rupture",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1410",
+				"1509",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Rupture",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1107",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Rupture",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1107",
+				"1509",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Strain",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1413",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Strain",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1413",
+				"1509",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Strain",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1510",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Strain",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1510",
+				"1509",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1510": [
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1510",
+				"1211",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1510",
+				"1509",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1510",
+				"1102",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Main DPS",
+			"roleIds": [
+				"1510",
+				"1509",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
+			"role": "Main DPS",
+			"roleIds": [
+				"1510",
+				"1211",
+				"1505"
+			],
+			"notes": [
+				"Denia: Reel of Spliced Memories"
+			]
+		},
+		{
+			"name": "Alternative",
+			"role": "Main DPS",
+			"roleIds": [
+				"1510",
+				"1102",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1511": [
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1511",
+				"1308",
+				"1209"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1511",
+				"1308",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1602": [
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1604",
+				"1602",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1603",
+				"1602",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1602",
+				"1410",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1602",
+				"1606",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1602",
+				"1204",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1603": [
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1603",
+				"1606",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1603",
+				"1102",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1603",
+				"1602",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1604": [
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1604",
+				"1102",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1604",
+				"1606",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1604",
+				"1602",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1604",
+				"1607",
+				"1505"
+			],
+			"notes": []
+		}
+	],
+	"1606": [
+		{
+			"name": "Hypercarry",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1608",
+				"1607",
+				"1606"
+			],
+			"notes": [
+				"Cantarella: Midnight Veil/Rejuvenating Glow",
+				"Roccia: Midnight Veil/Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry (Alternative)",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1603",
+				"1606",
+				"1505"
+			],
+			"notes": [
+				"Roccia: Midnight Veil/Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry (Alternative)",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1604",
+				"1606",
+				"1505"
+			],
+			"notes": [
+				"Roccia: Midnight Veil/Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry (Alternative)",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1203",
+				"1606",
+				"1505"
+			],
+			"notes": [
+				"Roccia: Midnight Veil/Moonlit Clouds"
+			]
+		}
+	],
+	"1607": [
+		{
+			"name": "Hypercarry",
+			"role": "Hybrid",
+			"roleIds": [
+				"1608",
+				"1109",
+				"1607"
+			],
+			"notes": [
+				"Lucilla: Dream of the Lost",
+				"Cantarella: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Hybrid",
+			"roleIds": [
+				"1608",
+				"1411",
+				"1607"
+			],
+			"notes": [
+				"Qiuyuan: Law of Harmony",
+				"Cantarella: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Core",
+			"role": "Hybrid",
+			"roleIds": [
+				"1608",
+				"1607",
+				"1606"
+			],
+			"notes": [
+				"Cantarella: Midnight Veil/Rejuvenating Glow",
+				"Roccia: Midnight Veil/Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Core",
+			"role": "Hybrid",
+			"roleIds": [
+				"1608",
+				"1607",
+				"1505"
+			],
+			"notes": [
+				"Cantarella: Midnight Veil/Rejuvenating Glow"
+			]
+		}
+	],
+	"1608": [
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1608",
+				"1109",
+				"1411"
+			],
+			"notes": [
+				"Lucilla: Dream of the Lost"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1608",
+				"1109",
+				"1607"
+			],
+			"notes": [
+				"Lucilla: Dream of the Lost",
+				"Cantarella: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1608",
+				"1109",
+				"1505"
+			],
+			"notes": [
+				"Lucilla: Dream of the Lost"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1608",
+				"1411",
+				"1607"
+			],
+			"notes": [
+				"Cantarella: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1608",
+				"1411",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Core",
+			"role": "Main DPS",
+			"roleIds": [
+				"1608",
+				"1607",
+				"1606"
+			],
+			"notes": [
+				"Cantarella: Midnight Veil/Rejuvenating Glow",
+				"Roccia: Midnight Veil/Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Core",
+			"role": "Main DPS",
+			"roleIds": [
+				"1608",
+				"1607",
+				"1505"
+			],
+			"notes": [
+				"Cantarella: Midnight Veil/Rejuvenating Glow"
+			]
+		}
+	],
+	"1610": [
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1610",
+				"1508",
+				"1110"
+			],
+			"notes": [
+				"Chisa: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1610",
+				"1308",
+				"1110"
+			],
+			"notes": [
+				"Rebecca: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1610",
+				"1308",
+				"1508"
+			],
+			"notes": [
+				"Rebecca: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1610",
+				"1509",
+				"1110"
+			],
+			"notes": []
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1610",
+				"1509",
+				"1508"
+			],
+			"notes": []
+		}
+	]
+}

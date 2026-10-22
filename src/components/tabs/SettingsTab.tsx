@@ -11,6 +11,7 @@ import { ExportCard } from "@/components/settings/ExportCard";
 import { MapImportCard } from "@/components/settings/MapImportCard";
 import { OcrDebugPanel } from "@/components/settings/OcrDebugPanel";
 import { OcrResolutionCard } from "@/components/settings/OcrResolutionCard";
+import { OptimizerSettingsCard } from "@/components/settings/OptimizerSettingsCard";
 import { OverlayToggleCard } from "@/components/settings/OverlayToggleCard";
 import { PcapImportPanel } from "@/components/settings/PcapImportPanel";
 import { UpdatesCard } from "@/components/settings/UpdatesCard";
@@ -22,6 +23,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 const SECTIONS = [
 	{ value: "overlay", label: "Overlay", icon: <Monitor /> },
 	{ value: "assistant", label: "Upgrade Assistant", icon: <Sparkles /> },
+	{ value: "optimizer", label: "Optimizer", icon: <Sparkles /> },
 	{ value: "export", label: "Export", icon: <FileJson /> },
 	{
 		value: "import",
@@ -96,6 +98,13 @@ export function SettingsTab({ onImport }: { onImport: () => void }) {
 				className="min-h-0 flex-1 space-y-6 overflow-y-auto pb-4"
 			>
 				<UpgradeAssistantCard />
+			</TabsContent>
+
+			<TabsContent
+				value="optimizer"
+				className="min-h-0 flex-1 overflow-y-auto pb-4"
+			>
+				<OptimizerSettingsCard />
 			</TabsContent>
 
 			<TabsContent

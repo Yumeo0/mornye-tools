@@ -54,7 +54,7 @@ export function OptimizerResultsPanel({
 	}, [results, baseline]);
 
 	return (
-		<section className="bg-card text-card-foreground ring-foreground/10 flex min-h-0 flex-1 flex-col ring-1">
+		<section className="bg-card text-card-foreground ring-foreground/10 flex min-h-40 flex-1 flex-col ring-1">
 			<header className="flex shrink-0 items-center justify-between gap-2 border-b border-border/60 px-3 py-2">
 				<h3 className="text-sm font-medium">{title}</h3>
 			</header>

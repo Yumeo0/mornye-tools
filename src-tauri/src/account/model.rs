@@ -246,6 +246,18 @@ fn default_stack_count() -> i32 {
     1
 }
 
+/// A saved in-game formation captured by the sniffer.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SavedTeam {
+    pub id: i32,
+    #[serde(default)]
+    pub name: String,
+    pub role_ids: Vec<i64>,
+    #[serde(default)]
+    pub is_current: bool,
+}
+
 /// The full account store persisted to `account.json`.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -261,6 +273,8 @@ pub struct AccountSnapshot {
     #[serde(default)]
     pub echoes: Vec<Echo>,
     #[serde(default)]
+    pub teams: Vec<SavedTeam>,
+    #[serde(default)]
     pub exploration: ExplorationSnapshot,
     #[serde(default)]
     pub progression: ProgressionSnapshot,
@@ -275,6 +289,7 @@ impl Default for AccountSnapshot {
             resonators: Vec::new(),
             weapons: Vec::new(),
             echoes: Vec::new(),
+            teams: Vec::new(),
             exploration: Default::default(),
             progression: Default::default(),
         }

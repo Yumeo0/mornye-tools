@@ -29,10 +29,10 @@ const COLORS: Record<RewardState, string> = {
 	collected: "#67c6aa",
 	remaining: "#c5c9c6",
 };
-/** Selected-and-collected markers glow brighter than the plain collected ring. */
+/** Selected-and-collected markers use a brighter highlight. */
 const SELECTED_COLLECTED = "#8ff5c0";
 /** Stacks that mix collected and uncollected items. */
-const MIXED_COLLECTED = "#f0a445";
+const MIXED_COLLECTED = "#ffffff";
 
 const clampScale = (scale: number) => Math.max(0.0001, Math.min(0.08, scale));
 
@@ -338,28 +338,28 @@ export function MapCanvas({
 				const collected = group.items.filter(
 					(i) => i.state === "collected",
 				).length;
-				// A stack that mixes collected and uncollected items reads orange.
+				// Partially collected stacks stay white until every item is collected.
 				const mixed =
 					group.items.length > 1 &&
 					collected > 0 &&
 					collected < group.items.length;
 				const allCollected = collected === group.items.length;
-				const radius = group.items.length > 1 ? 14 : 13;
 				ctx.globalAlpha = allCollected && !isSelected ? 0.65 : 1;
-				ctx.beginPath();
-				ctx.arc(group.x, group.y, radius, 0, Math.PI * 2);
-				ctx.fillStyle = mixed ? "#2a2014ee" : "#122025ee";
-				ctx.fill();
-				ctx.strokeStyle = isSelected
+				const highlight = isSelected
 					? chosen.state === "collected" && !mixed
 						? SELECTED_COLLECTED
 						: "#ffffff"
 					: mixed
 						? MIXED_COLLECTED
 						: COLORS[chosen.state];
-				ctx.lineWidth = isSelected ? 2.5 : 1.4;
-				ctx.stroke();
 				if (group.items.length > 1) {
+					ctx.beginPath();
+					ctx.arc(group.x, group.y, 14, 0, Math.PI * 2);
+					ctx.fillStyle = "#122025ee";
+					ctx.fill();
+					ctx.strokeStyle = highlight;
+					ctx.lineWidth = isSelected ? 2.5 : 1.4;
+					ctx.stroke();
 					ctx.fillStyle = mixed ? MIXED_COLLECTED : "#f0ece1";
 					ctx.font = "11px 'JetBrains Mono Variable', monospace";
 					ctx.textAlign = "center";
@@ -367,7 +367,23 @@ export function MapCanvas({
 					ctx.fillText(String(group.items.length), group.x, group.y);
 				} else {
 					const icon = load(chosen.reward.icon);
-					if (icon) ctx.drawImage(icon, group.x - 10, group.y - 10, 20, 20);
+					if (icon) {
+						ctx.save();
+						ctx.shadowColor = isSelected ? highlight : "#000000";
+						ctx.shadowBlur = isSelected ? 8 : 3;
+						const iconSize = isSelected ? 28 : 24;
+						const scale = iconSize / Math.max(icon.width, icon.height);
+						const width = icon.width * scale;
+						const height = icon.height * scale;
+						ctx.drawImage(
+							icon,
+							group.x - width / 2,
+							group.y - height / 2,
+							width,
+							height,
+						);
+						ctx.restore();
+					}
 				}
 				if (chosen.state === "collected" && !mixed) {
 					// Keep the dot clear of the underground badge's corner.

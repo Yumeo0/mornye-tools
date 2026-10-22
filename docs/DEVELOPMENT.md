@@ -204,8 +204,16 @@ map:icons` joins our placements to the site's marker datasets by their raw
 to unambiguous name matches against the site's marker and item databases, and
 writes `src/configs/map_icons.json` plus the downloaded images under
 `public/map/icons/gg/`. Everything it cannot prove keeps the built-in per-kind
-icon, and blueprint-specific matches win over type and name matches. The
-details panel also lists that spot's community notes from
+icon, and blueprint-specific matches win over type and name matches.
+
+To trim transparent padding from existing icons without fetching them again,
+use `python scripts/trim-transparent-padding.py icon.png` (requires Pillow).
+Pass several file paths or quoted globs such as `"public/map/icons/**/*.webp"`;
+`--dry-run` previews changes. The script updates PNG/WebP files in place with
+lossless encoding, preserving every nontransparent pixel. Fetching and compilation
+do not run this script automatically.
+
+The details panel also lists that spot's community notes from
 `https://api.wuthering.gg/comments/<id>`, where `<id>` is the sum of the
 placement's raw X and Y coordinates — the key the site computes for its own
 pins, so the same id can collide for points mirrored across the diagonal. Level

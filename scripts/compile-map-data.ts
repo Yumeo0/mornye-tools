@@ -48,6 +48,10 @@ const PROP_BLUEPRINTS = new Set([
  */
 const PROP_ENTITIES = new Set(["8:136003236", "8:222700001"]);
 
+// Thousandfold Petals use chest entities internally, but are exploration
+// collectibles in all three regions and all three growth stages.
+const PETAL_BLUEPRINT = /^branch3\.7_239_Gameplay_3_7\/GhostTitan(?:[2-9]|10)$/;
+
 /**
  * Chest rows read type-first: the game names lead with the tier ("Advanced
  * Supply Pack"), which makes the list sort into rarity blocks. Only the
@@ -426,7 +430,11 @@ export async function compileMapData(): Promise<void> {
 			(owner === null || !activities.playIds.has(owner))
 		)
 			exploration ??= CHALLENGE_PROJECT;
-		const kind = exploration ? "exploration" : kindFor(blueprint?.EntityType);
+		const kind = PETAL_BLUEPRINT.test(row.BlueprintType)
+			? "casket"
+			: exploration
+				? "exploration"
+				: kindFor(blueprint?.EntityType);
 		if (!kind) continue;
 		const transform = row.Transform[0];
 		if (rewardKeys.has(key)) continue;

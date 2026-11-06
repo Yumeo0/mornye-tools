@@ -34,6 +34,11 @@ cargo check
 cargo test
 ```
 
+The dev profile disables overflow checks only for the `kcp` dependency, as
+required by Spectrum's passive transport mirror. Its ACK timing arithmetic can
+overflow when remote timestamps use a different clock origin. Keep this package
+override when changing build profiles; application overflow checks stay enabled.
+
 ## Releases and updates
 
 Releases are built by `.github/workflows/release.yml` on GitHub

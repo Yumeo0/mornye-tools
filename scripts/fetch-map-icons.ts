@@ -40,6 +40,39 @@ const NAME_OVERRIDES: Record<string, string> = {
 	Gameplay021: "Sonance Casket",
 	"branch3.5_21_Gameplay_3_0/Common4": "Unclaimed Rafter Kite",
 	"branch3.0_41_Gameplay_3_0/Common1": "Tape of Last Words",
+	"branch3.7_239_Gameplay_3_7/GhostTitan2":
+		"Blossoming Thousandfold Petals (Flames)",
+	"branch3.7_239_Gameplay_3_7/GhostTitan3":
+		"Sprouting Thousandfold Petals (Flames)",
+	"branch3.7_239_Gameplay_3_7/GhostTitan4":
+		"Budding Thousandfold Petals (Flames)",
+	"branch3.7_239_Gameplay_3_7/GhostTitan5":
+		"Budding Thousandfold Petals (Frost)",
+	"branch3.7_239_Gameplay_3_7/GhostTitan6":
+		"Budding Thousandfold Petals (Bloom)",
+	"branch3.7_239_Gameplay_3_7/GhostTitan7":
+		"Sprouting Thousandfold Petals (Frost)",
+	"branch3.7_239_Gameplay_3_7/GhostTitan8":
+		"Sprouting Thousandfold Petals (Bloom)",
+	"branch3.7_239_Gameplay_3_7/GhostTitan9":
+		"Blossoming Thousandfold Petals (Frost)",
+	"branch3.7_239_Gameplay_3_7/GhostTitan10":
+		"Blossoming Thousandfold Petals (Bloom)",
+};
+
+// Verified through template RewardId -> drop package DropPreview -> iteminfo.Icon.
+// These pickups share a generic interaction title and can overlap chest markers,
+// so their item artwork must take precedence over coordinate/name guesses.
+const ITEM_ICON_OVERRIDES: Record<string, string> = {
+	"Budding Thousandfold Petals (Flames)": "T_IconTask_Task_252_UI.png",
+	"Sprouting Thousandfold Petals (Flames)": "T_IconTask_Task_253_UI.png",
+	"Blossoming Thousandfold Petals (Flames)": "T_IconTask_Task_263_UI.png",
+	"Budding Thousandfold Petals (Frost)": "T_IconTask_Task_256_UI.png",
+	"Sprouting Thousandfold Petals (Frost)": "T_IconTask_Task_257_UI.png",
+	"Blossoming Thousandfold Petals (Frost)": "T_IconTask_Task_265_UI.png",
+	"Budding Thousandfold Petals (Bloom)": "T_IconTask_Task_254_UI.png",
+	"Sprouting Thousandfold Petals (Bloom)": "T_IconTask_Task_255_UI.png",
+	"Blossoming Thousandfold Petals (Bloom)": "T_IconTask_Task_264_UI.png",
 };
 
 const words = (value: string) =>
@@ -249,8 +282,10 @@ const itemMatch = (name: Set<string>) => {
 	return undefined;
 };
 
-/** First acceptable icon for a reward: coordinates, then names. */
+/** Prefer verified item artwork, then coordinate and name matches. */
 const resolveFor = (reward: MapReward): string | undefined => {
+	const itemIcon = ITEM_ICON_OVERRIDES[nameOf(reward)];
+	if (itemIcon) return `${itemIcon}|0`;
 	// Exploration controllers can overlap a chest or monster. Only an exact
 	// marker title can replace their built-in artwork without mislabelling them.
 	if (reward.kind === "exploration")
@@ -318,7 +353,9 @@ const config: {
 for (const reward of catalog.rewards) {
 	if (config.icons[reward.blueprint]) continue;
 	const icon = await publishIcon(
-		acceptable(majority(byBlueprint.get(reward.blueprint))),
+		ITEM_ICON_OVERRIDES[nameOf(reward)]
+			? resolveFor(reward)
+			: acceptable(majority(byBlueprint.get(reward.blueprint))),
 	);
 	if (icon) config.icons[reward.blueprint] = icon;
 }

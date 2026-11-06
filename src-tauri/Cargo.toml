@@ -14,6 +14,11 @@ edition = "2021"
 name = "mornye_tools_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
+# Spectrum's passive KCP mirror needs wrapping arithmetic for remote timestamps.
+# Keep overflow checks enabled for application code and all other dependencies.
+[profile.dev.package.kcp]
+overflow-checks = false
+
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
 
@@ -33,10 +38,10 @@ tokio = { version = "1", features = ["rt", "macros"] }
 
 # Packet capture / account extraction
 spectrum = { path = "crates/spectrum" }
-parking_lot = "0.12"
+parking_lot = "0.13"
 pcap-file = "2"
 rsa = { version = "0.9.10", features = ["pem"] }
-sha2 = "0.10"
+sha2 = "0.11"
 # Save timestamps (`account.json`). Already in the tree via tauri's
 # cookie/plist dependencies; used for RFC3339 formatting only.
 time = { version = "0.3", features = ["formatting"] }
@@ -57,7 +62,7 @@ windows = { version = "0.62", features = [
     "Win32_UI_WindowsAndMessaging",
 ] }
 # Raw-socket packet capture (SIO_RCVALL), matching the reference wuwa-protos app.
-windows-sys = { version = "0.59", features = [
+windows-sys = { version = "0.61", features = [
     "Win32_Foundation",
     "Win32_NetworkManagement_IpHelper",
     "Win32_Networking_WinSock",

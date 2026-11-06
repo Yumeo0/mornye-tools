@@ -10,6 +10,7 @@ import { getResSeedBy } from "@wuwacalc/core/data/catalog/resonatorSeedService";
 import { createCoreWorker } from "@wuwacalc/core/data/coreEnvironment";
 import { getEchoSetDe } from "@wuwacalc/core/data/gameData/echoSets/effects";
 import { getGameDataMode } from "@wuwacalc/core/data/gameData/index";
+import type { OptResultStats } from "@wuwacalc/core/engine/search/score/core";
 import type { EnemyProfile } from "@wuwacalc/core/domain/entities/appState";
 import {
 	combatScenarioId,
@@ -25,10 +26,6 @@ import type {
 	ResRuntime,
 	TeamSlots,
 } from "@wuwacalc/core/domain/entities/runtime";
-import {
-	cloneSntSet,
-	DEF_SET_COND,
-} from "@wuwacalc/core/domain/entities/sonataSetConditionals";
 import type { RotationNode } from "@wuwacalc/core/domain/gameData/contracts";
 import type {
 	OptBaselineInput,
@@ -41,18 +38,17 @@ import { countOptCombos } from "@wuwacalc/core/engine/optimizer/search/counting"
 import {
 	makeStatWeights,
 	scrEchoByWgh,
-} from "@wuwacalc/core/engine/optimizer/search/filtering";
+} from "@wuwacalc/core/engine/search/score/statWeights";
 import { listOptTrgt } from "@wuwacalc/core/engine/optimizer/target/skills";
 import type {
 	OptPrgr,
 	OptRawResult,
 	OptResultEntry,
-	OptResultStats,
 	OptStartPay,
 	OptStoredResult,
 	PrepOptPay,
 } from "@wuwacalc/core/engine/optimizer/types";
-import { payloadTransfers } from "@wuwacalc/core/engine/optimizer/workers/payloadBuffers";
+import { payloadTransfers } from "@wuwacalc/core/engine/search/layout/buffers";
 import {
 	cnclActOptWr,
 	rstOptWrkrPo,
@@ -280,7 +276,6 @@ export async function runOptimizerBaseline(
 				payload,
 				// A build without a main echo (findIndex -> -1) scores from slot 0.
 				mainIndex: Math.max(0, mainIndex),
-				setConds: cloneSntSet(DEF_SET_COND),
 			} satisfies OptCompInMsg);
 		});
 		return message.result;

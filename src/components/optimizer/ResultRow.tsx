@@ -1,6 +1,7 @@
+import type { OptResultStats } from "@wuwacalc/core/engine/search/score/core";
 import type {
 	OptResultEntry,
-	OptResultStats,
+
 } from "@wuwacalc/core/engine/optimizer/types";
 import { ChevronDown } from "lucide-react";
 import {

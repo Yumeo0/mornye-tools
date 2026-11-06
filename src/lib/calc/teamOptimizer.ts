@@ -22,8 +22,8 @@ import type {
 	TeamSlots,
 } from "@wuwacalc/core/domain/entities/runtime";
 import type { RotationNode } from "@wuwacalc/core/domain/gameData/contracts";
-import { sumOptRotDmg } from "@wuwacalc/core/engine/optimizer/rules/eligibility";
-import type { OptResultStats } from "@wuwacalc/core/engine/optimizer/types";
+import { sumOptRotDmg } from "@wuwacalc/core/engine/search/score/eligibility";
+import type { OptResultStats } from "@wuwacalc/core/engine/search/score/core";
 import { materializeResRotation } from "@wuwacalc/core/engine/pipeline/index";
 import { makeSkillCtx } from "@wuwacalc/core/engine/pipeline/prepareRuntimeSkill";
 import { makeRuntimeMap } from "@wuwacalc/core/engine/runtime/runtimeAdapters";

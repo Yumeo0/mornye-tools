@@ -16,12 +16,14 @@ import EvaluationWorker from "@wuwacalc/core/engine/evaluation/buildEvaluation.w
 import OptimizerCompileWorker from "@wuwacalc/core/engine/optimizer/workers/compile.worker?worker";
 import OptimizerTaskWorker from "@wuwacalc/core/engine/optimizer/workers/task.worker?worker";
 import OptimizerTheoryWorker from "@wuwacalc/core/engine/optimizer/workers/theoryProducer.worker?worker";
+import SuggestionsCandidateWorker from "@wuwacalc/core/engine/suggestions/candidate.worker?worker";
 import SuggestionsWorker from "@wuwacalc/core/engine/suggestions/worker?worker";
 
 /** Worker roles mapped exactly like the calculator's `src/app/coreWorkers.ts`. */
 const CORE_WORKERS: Record<CoreWorkerRole, () => Worker> = {
 	evaluation: () => new EvaluationWorker(),
 	suggestions: () => new SuggestionsWorker(),
+	"suggestions-candidate": () => new SuggestionsCandidateWorker(),
 	"optimizer-task": () => new OptimizerTaskWorker(),
 	"optimizer-theory": () => new OptimizerTheoryWorker(),
 	"optimizer-compile": () => new OptimizerCompileWorker(),

@@ -1,3 +1,4 @@
+import type { OptResultStats } from "@wuwacalc/core/engine/search/score/core";
 // Search execution state for the optimizer: filters, the pruned candidate
 // inventory, the request plan, the worker run and its results.
 //
@@ -17,7 +18,7 @@ import { countOptCombos } from "@wuwacalc/core/engine/optimizer/search/counting"
 import type {
 	OptPrgr,
 	OptResultEntry,
-	OptResultStats,
+
 } from "@wuwacalc/core/engine/optimizer/types";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {

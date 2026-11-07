@@ -22,7 +22,7 @@ export function clusterMarkers<T extends PointMarker>(
 	markers: readonly T[],
 	level: number,
 ): MarkerCluster<T>[] {
-	const radius = 34 / ZOOM_STEP ** level;
+	const radius = 22 / ZOOM_STEP ** level;
 	const buckets = new Map<
 		string,
 		(MarkerCluster<T> & { seedX: number; seedY: number })[]

@@ -171,8 +171,8 @@ The first visit to **Map** offers a one-time progress import guide. Dismissing
 it is remembered on this device. Use **Settings → Import → Start import** to
 reopen the guide anytime and bring marked locations from the English
 [GHZS map](https://www.ghzs666.com/wutheringwaves-map#/) into the connected game
-account. The guide shows one step at a time: choose GHZS, open and sign in to the
-map, copy the export script, run it in GHZS's browser console, upload the downloaded
+account. The guide has five steps: choose GHZS, open and sign in to the
+map, copy and run the export script in GHZS's browser console, upload the downloaded
 `ghzs-progress.json`, then review and import the matches. **Next** advances each
 step and **Back** lets you revisit the instructions without losing your choices.
 Uncheck any matches you do not want before importing.
@@ -184,6 +184,20 @@ progress and leaving the sniffer's `account.json` untouched. Reimporting the sam
 locations is safe. An export can be previewed without connecting a game account,
 but saving requires one. The dialog resets its preview when accounts change.
 
+Checked matches also collect their directly linked challenge or reward chests,
+using explicit same-map catalog links in either direction. The preview and import
+count include these additions. Already-collected matches can still supply links
+and can be unchecked. Expansion stops after one link: importing a chest can mark
+its challenge, but does not then collect sibling chests or complete an entire
+quest. Quest membership and nearby coordinates do not imply collection links.
+
+The importer first consults an offline GHZS-to-game mapping generated from
+TH.GL's public matching service. A mapped game entity must still agree with
+the local catalog's coordinates; missing or conflicting entries are skipped.
+Regenerate the lookup with `bun run map:ghzs-mapping` when updating map data.
+This sends only public GHZS catalog IDs to TH.GL during development, never a
+player's progress. Unmapped IDs fall back to coordinate matching.
+
 GHZS pins use Web Mercator coordinates over separately cropped map images.
 `src/configs/ghzs_maps.json` contains alignments calibrated against public
 collectible locations on 2026-10-20, and a view may repeat its ID once per
@@ -193,7 +207,8 @@ type, a unique nearby game placement within 12 metres, and enough separation
 from alternatives. Neighbouring marks are assigned one placement each through a
 globally consistent one-to-one assignment, so a dense chest cluster no longer
 loses every mark to its neighbours; an assignment that a free alternative
-contradicts stays ambiguous, and floors are never guessed between. Missing
+contradicts stays ambiguous. Assignments also remain ambiguous when swapping
+two markers between held placements produces a comparable error. Missing
 pins, uncertain matches, gathering items, enemies, and quest markers are
 skipped and reported in the preview. Fourteen GHZS map views currently have
 alignments, Avinoleum through two insets and the Vault Underground through its
@@ -202,14 +217,26 @@ floors without enough marked locations remain unsupported. Marker IDs and map
 alignments can change independently of game data, so the importer validates
 versioned exports and never treats GHZS IDs as game entity IDs.
 
-Item icons and community notes come from [wuthering.gg](https://wuthering.gg).
-Our game tables do not map a blueprint to a specific UI icon, so `bun run
-map:icons` joins our placements to the site's marker datasets by their raw
+Pickup metadata comes first from native reward previews: the compiler joins
+merged entity/template `RewardComponent` data to `droppackage.DropPreview` and
+`iteminfo`. A single known preview item supplies its icon and a fallback name;
+meaningful plant/source names remain intact. Thousandfold Petals use their native
+item names for all nine variants. Extracted artwork is published through the
+asset manifest; if unavailable, an existing cached image with the exact native
+texture filename is used. Empty, unknown and multi-item previews retain fallbacks.
+
+Additional artwork and community notes come from [wuthering.gg](https://wuthering.gg).
+For placements without native item metadata, `bun run map:icons` joins our
+placements to the site's marker datasets by their raw
 `Transform` coordinates (their data uses the same unscaled values), falls back
 to unambiguous name matches against the site's marker and item databases, and
 writes `src/configs/map_icons.json` plus the downloaded images under
 `public/map/icons/gg/`. Everything it cannot prove keeps the built-in per-kind
 icon, and blueprint-specific matches win over type and name matches.
+Native item placements bypass this community artwork inference. Tidal Heritage
+tiers are preserved from native exploration degrees independently of artwork;
+only records without a native tier use the legacy icon-name fallback. Serving an
+item texture from local assets preserves its existing saved filter key.
 
 To trim transparent padding from existing icons without fetching them again,
 use `python scripts/trim-transparent-padding.py icon.png` (requires Pillow).
@@ -253,6 +280,44 @@ unnamed challenge scenery and quest-only devices are excluded. A challenge's
 reward chest remains a separate collectible; completing a graph alone never
 marks either placement collected.
 
+Exploration category names and icons are joined from
+`exploreprogress.SubTypeScore` to `exploretype`, using area ancestry and accepting
+only unambiguous mappings. Actor selection and preferred filter names remain UI
+choices; progress-only quest controllers and respawning bosses are not promoted
+to collectible activities. Standalone Training Dummies (formerly Obelisk Challenges) are discovered through
+merged `TargetGearGroupComponent` data, same-map strike mechanisms and explicit
+completion-state `UnlockEntity`/`AwakeEntity` actions targeting mapped chests.
+Hidden, packed and graph-owned variants are excluded to avoid duplicate or
+quest-only pins. No individual Training Dummy IDs or chest links are maintained by hand.
+
+Map details show native requirements in **Obtained through**, alongside a chest's
+quest and challenge sources. A shared resolver follows explicit spawn, unlock,
+and state-change dependencies across entities and nested gameplay graphs. It
+merges blueprint component defaults with instance overrides and resolves entity
+groups, gathering, combat, destruction, interactions, state checks, area triggers,
+and prerequisite gameplay. Ordered steps, alternative routes, and explicit
+completion counts retain their distinct meanings. Other conditions can use the
+game's localized objective text. Cycles, unresolved dynamic targets, and unknown
+logic are omitted rather than inferred from proximity or silently turned into
+mandatory steps. Requirements apply to any map marker type, including ownerless
+chests; they do not change collection state or import links.
+When a challenge is already shown as a linked source, its matching activation or
+completion requirement is hidden by native entity key. Independent requirements,
+alternative routes, and counted conditions remain visible.
+
+Resource filters are split into **Upgrade materials** and **Other resources**.
+The compiler joins gathering reward previews to native item `ShowTypes` to
+identify character, weapon, skill and Echo development materials; cooking,
+medicine, crafting ingredients and other pickups stay in the second group.
+Both sections retain the original item filter keys and saved visibility toggles.
+
+**Teleport points** groups Resonance Nexuses, Resonance Beacons, permanent domain
+entrances and named travel destinations such as The Grand Library. The compiler
+joins canonical `teleporter` IDs to native map marks and entity positions, avoiding
+quest-only entrance copies and event shortcuts. These locations use native icons,
+remain visible under either collection-status filter, and never enter collected
+totals, manual completion marks or sniffer claim rules.
+
 The map also shows the controlled player's position and facing. Choose
 **Follow player** to keep the marker centered; dragging or using arrow keys
 stops following, and zoom stays unchanged as you move. Movement uses a
@@ -290,6 +355,13 @@ shown. Quests without a proven start or active target are not assigned a guessed
 location. The side quest filter lists one row per status, toggleable exactly like
 the reward items; quest status itself is read-only. Start capture before logging
 in to receive the quest and completion lists.
+
+The **Quests** tab below Achievements lists all named, player-facing quest types,
+including quests without map locations, with their native type icons. Search and
+quest-type/status filters only change the view. Completion uses the same account
+snapshot as the side-quest map pins; missing progress remains **Not synced** until
+both login lists arrive. Hidden/internal and test tasks are excluded from the
+catalog. The map continues to show only side quests with proven locations.
 
 The **Achievements** tab reads the client's achievement snapshot and live updates,
 including progress, completion dates and reward-claimed state. The client requests

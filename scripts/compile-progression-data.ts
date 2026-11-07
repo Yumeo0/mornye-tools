@@ -2,6 +2,7 @@
 import { join, resolve } from "node:path";
 import type {
 	ProgressionCatalog,
+	QuestDefinition,
 	QuestPoint,
 	SideQuest,
 } from "../src/lib/progression/types";
@@ -58,6 +59,73 @@ export async function compileProgressionData(): Promise<void> {
 		"QuestData/questdata.json",
 	);
 	const questById = new Map(questRows.map((row) => [row.QuestId, row.Data]));
+	const questTypes = new Map(
+		(
+			await read<{ Id: number; MainId: number; QuestTypeName: string }[]>(
+				"questtype/questtype.json",
+			)
+		).map((row) => [row.Id, row]),
+	);
+	const mainTypes = new Map(
+		(
+			await read<{ Id: number; MainTypeName: string; TrackIconId: number }[]>(
+				"questtype/questmaintype.json",
+			)
+		).map((row) => [row.Id, row]),
+	);
+	const marks = new Map(
+		(
+			await read<{ MarkId: number; MarkPic: string }[]>(
+				"map_mark/taskmark.json",
+			)
+		).map((row) => [row.MarkId, row]),
+	);
+	const presentations = new Map<
+		number,
+		Pick<QuestDefinition, "typeName" | "icon">
+	>();
+	const fallbackPresentation = {
+		typeName: "Quest",
+		icon: "/wuwa-assets/UI/UIResources/Common/Atlas/WorldMapIcon/SP_IconMap_Task_01_UI.webp",
+	};
+	for (const [type, subtype] of questTypes) {
+		const main = mainTypes.get(subtype.MainId) ?? mainTypes.get(0);
+		const mark = marks.get(main?.TrackIconId ?? 2);
+		let icon = unrealPathToRelative(mark?.MarkPic);
+		if (
+			!icon ||
+			!(await Bun.file(
+				join(
+					root,
+					"data",
+					icon
+						.replace("/wuwa-assets/", "wuwa-assets/")
+						.replace(/\.webp$/, ".png"),
+				),
+			).exists())
+		)
+			icon = fallbackPresentation.icon;
+		const typeName =
+			label(subtype.QuestTypeName) || label(main?.MainTypeName ?? "");
+		presentations.set(type, {
+			typeName: typeName && typeName !== "None" ? typeName : "Quest",
+			icon,
+		});
+	}
+	const allQuests: QuestDefinition[] = questRows.flatMap(({ Data: config }) => {
+		const name = label(config.TidName);
+		if (config.Type === 100 || config.IsHideInTaskList || !name) return [];
+		const presentation = presentations.get(config.Type) ?? fallbackPresentation;
+		return [
+			{
+				id: config.Id,
+				name,
+				description: label(config.TidDesc),
+				type: config.Type,
+				...presentation,
+			},
+		];
+	});
 	const instances = new Map(
 		(
 			await read<{ Id: number; MapConfigId: number }[]>(
@@ -210,6 +278,7 @@ export async function compileProgressionData(): Promise<void> {
 			hidden: row.Hidden,
 		}));
 	const catalog: ProgressionCatalog = {
+		allQuests,
 		quests: [...quests.values()],
 		achievements,
 		categories,
@@ -220,7 +289,7 @@ export async function compileProgressionData(): Promise<void> {
 		`${JSON.stringify(catalog)}\n`,
 	);
 	console.log(
-		`Progression: ${catalog.quests.length} side quests (${catalog.quests.filter((quest) => quest.start).length} acceptance locations), ${achievements.length} achievements.`,
+		`Progression: ${allQuests.length} quests, ${catalog.quests.length} side quests (${catalog.quests.filter((quest) => quest.start).length} acceptance locations), ${achievements.length} achievements.`,
 	);
 }
 

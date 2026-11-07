@@ -1,19 +1,6 @@
 {
 	"source": "https://wuthering.gg (marker datasets and item database)",
-	"names": {
-		"Gameplay021": "Sonance Casket",
-		"branch3.5_21_Gameplay_3_0/Common4": "Unclaimed Rafter Kite",
-		"branch3.0_41_Gameplay_3_0/Common1": "Tape of Last Words",
-		"branch3.7_239_Gameplay_3_7/GhostTitan6": "Budding Thousandfold Petals (Bloom)",
-		"branch3.7_239_Gameplay_3_7/GhostTitan8": "Sprouting Thousandfold Petals (Bloom)",
-		"branch3.7_239_Gameplay_3_7/GhostTitan10": "Blossoming Thousandfold Petals (Bloom)",
-		"branch3.7_239_Gameplay_3_7/GhostTitan2": "Blossoming Thousandfold Petals (Flames)",
-		"branch3.7_239_Gameplay_3_7/GhostTitan4": "Budding Thousandfold Petals (Flames)",
-		"branch3.7_239_Gameplay_3_7/GhostTitan3": "Sprouting Thousandfold Petals (Flames)",
-		"branch3.7_239_Gameplay_3_7/GhostTitan9": "Blossoming Thousandfold Petals (Frost)",
-		"branch3.7_239_Gameplay_3_7/GhostTitan7": "Sprouting Thousandfold Petals (Frost)",
-		"branch3.7_239_Gameplay_3_7/GhostTitan5": "Budding Thousandfold Petals (Frost)"
-	},
+	"names": {},
 	"icons": {
 		"Collect102": "/map/icons/gg/T_IconC_SM_Gat_08A_UI.png",
 		"Collect_CXS09": "/map/icons/gg/T_IconC_030_UI.png",
@@ -163,16 +150,7 @@
 		"branch2.8_Collect_SBS1": "/map/icons/gg/T_IconC_060_UI.png",
 		"branch3.7_232_Collect_3_8": "/map/icons/gg/T_IconC_088_UI.png",
 		"branch3.7_232_Collect_3_9": "/map/icons/gg/T_IconC_089_UI.png",
-		"branch3.5_150_Treasure_3_5": "/map/icons/gg/T_IconGiftPack_006_UI.png",
-		"branch3.7_239_Gameplay_3_7/GhostTitan6": "/map/icons/gg/T_IconTask_Task_254_UI.png",
-		"branch3.7_239_Gameplay_3_7/GhostTitan8": "/map/icons/gg/T_IconTask_Task_255_UI.png",
-		"branch3.7_239_Gameplay_3_7/GhostTitan10": "/map/icons/gg/T_IconTask_Task_264_UI.png",
-		"branch3.7_239_Gameplay_3_7/GhostTitan2": "/map/icons/gg/T_IconTask_Task_263_UI.png",
-		"branch3.7_239_Gameplay_3_7/GhostTitan4": "/map/icons/gg/T_IconTask_Task_252_UI.png",
-		"branch3.7_239_Gameplay_3_7/GhostTitan3": "/map/icons/gg/T_IconTask_Task_253_UI.png",
-		"branch3.7_239_Gameplay_3_7/GhostTitan9": "/map/icons/gg/T_IconTask_Task_265_UI.png",
-		"branch3.7_239_Gameplay_3_7/GhostTitan7": "/map/icons/gg/T_IconTask_Task_257_UI.png",
-		"branch3.7_239_Gameplay_3_7/GhostTitan5": "/map/icons/gg/T_IconTask_Task_256_UI.png"
+		"branch3.5_150_Treasure_3_5": "/map/icons/gg/T_IconGiftPack_006_UI.png"
 	},
 	"types": {
 		"exploration|Blobfly": "/map/icons/gg/blobfly.png",
@@ -284,16 +262,7 @@
 		"chest|Astrite": "/map/icons/gg/T_IconA_zcpq_UI.png",
 		"collection|Summer Flower": "/map/icons/gg/T_IconC_060_UI.png",
 		"collection|Bloom of Hearkening": "/map/icons/gg/T_IconC_088_UI.png",
-		"collection|Miasmic Branch": "/map/icons/gg/T_IconC_089_UI.png",
-		"casket|Budding Thousandfold Petals (Bloom)": "/map/icons/gg/T_IconTask_Task_254_UI.png",
-		"casket|Sprouting Thousandfold Petals (Bloom)": "/map/icons/gg/T_IconTask_Task_255_UI.png",
-		"casket|Blossoming Thousandfold Petals (Bloom)": "/map/icons/gg/T_IconTask_Task_264_UI.png",
-		"casket|Blossoming Thousandfold Petals (Flames)": "/map/icons/gg/T_IconTask_Task_263_UI.png",
-		"casket|Budding Thousandfold Petals (Flames)": "/map/icons/gg/T_IconTask_Task_252_UI.png",
-		"casket|Sprouting Thousandfold Petals (Flames)": "/map/icons/gg/T_IconTask_Task_253_UI.png",
-		"casket|Blossoming Thousandfold Petals (Frost)": "/map/icons/gg/T_IconTask_Task_265_UI.png",
-		"casket|Sprouting Thousandfold Petals (Frost)": "/map/icons/gg/T_IconTask_Task_257_UI.png",
-		"casket|Budding Thousandfold Petals (Frost)": "/map/icons/gg/T_IconTask_Task_256_UI.png"
+		"collection|Miasmic Branch": "/map/icons/gg/T_IconC_089_UI.png"
 	},
 	"heritage": {
 		"12": "/map/icons/gg/tidal-blue.png",

@@ -1,6 +1,12 @@
 import { z } from "zod";
 import mapDefinitions from "@/configs/ghzs_maps.json";
-import { collectionState, type ManualMapMarks } from "./collection";
+import thglMapping from "@/configs/ghzs_thgl_mapping.json";
+import {
+	collectionState,
+	heritageTier,
+	type ManualMapMarks,
+	tracksCollection,
+} from "./collection";
 import type { ExplorationSnapshot, MapCatalog, MapReward } from "./types";
 
 export const GHZS_MAX_FILE_SIZE = 20 * 1024 * 1024;
@@ -109,6 +115,9 @@ function categoryPredicate(
 ): ((reward: MapReward) => boolean) | null {
 	const name = category.trim().toLowerCase();
 	if (name === "supply chest") return (r) => r.kind === "chest";
+	if (name === "sonance casket")
+		return (r) =>
+			r.kind === "casket" && /^(Grapple )?Sonance Casket(?::|$)/.test(r.name);
 	if (name.startsWith("tidal heritage")) {
 		const color = name.includes("gold")
 			? "yellow"
@@ -119,23 +128,20 @@ function categoryPredicate(
 					: null;
 		return (r) =>
 			r.kind === "heritage" &&
-			(!color ||
-				r.icon.includes(color) ||
-				(color === "yellow" && r.icon.includes("gold")));
+			(!color || heritageTier(r) === (color === "yellow" ? "gold" : color));
 	}
 	const aliases: Record<string, string[]> = {
 		musicfly: ["Musicfly"],
 		"moments scattered to the wind": ["Moments Scattered to the Wind"],
 		"dream of cindertides": ["Dream of Cindertides"],
 		"dream patrol": ["Dream Patrol"],
-		"mimic chest": ["Mimic Chest"],
+		"dream contagion": ["Dream Contagion"],
 		"overflowing palette": ["Overflowing Palette"],
 		"crab chest": ["Crab Chest"],
 		"three brothers": ["Three Brothers"],
 		"boat racing": ["Boat Racing"],
 		"ace wings": ["Ace Wings"],
 		"flash dodge": ["Flash Dodge"],
-		"elite monster": ["Elite Monster"],
 		"book fragments/records": ["Book fragments/records"],
 		"sonance casket": ["Sonance Casket", "Grapple Sonance Casket"],
 		tape: ["Tape of Last Words"],
@@ -145,12 +151,53 @@ function categoryPredicate(
 		bell: ["Windchimer"],
 		worm: ["Frostbug"],
 		viewpoint: ["Viewpoint"],
-		"challenge project": ["Challenge Project"],
+		"challenge project": [
+			"Challenge Project",
+			"Combat Challenge",
+			"Shooting Challenge",
+			"Timed Shooting Challenge",
+			"Challenge Tower",
+			"Obelisk Challenge",
+			"Training Dummies",
+			"Hide and Seek",
+			"Moon Shooter",
+			"Flying Eaves Dash",
+			"No-Climbing Challenge",
+			"Backflip Challenge",
+			"Inferno Rider Challenge",
+			"Explosive Spear Challenge",
+			"Device Activation Challenge",
+			"Light Beam Puzzle",
+			"Pressure Plate Puzzle",
+			"Light Collection Challenge",
+			"Censure Cage",
+			"Hanakage Investigation",
+			"Protect Lenie",
+			"Yhoran's Tactical Trial",
+			"Swim, Gulpuff, Swim",
+			"Rescue Challenge",
+			"Treasure Store Lucky Draw",
+			"Hua Lielang Duel",
+			"Echo Challenge: Clang Bang",
+			"Tactical Hologram: Vitreum Dancer",
+			"Motorcycle Race",
+			"Boat Racing",
+			"Race Challenge",
+			"Ski Challenge",
+		],
+		"race challenge": ["Race Challenge"],
+		"shooting challenge": ["Shooting Challenge", "Timed Shooting Challenge"],
+		"challenge tower": ["Challenge Tower"],
+		"obelisk challenge": ["Training Dummies", "Obelisk Challenge"],
+		"training dummies": ["Training Dummies", "Obelisk Challenge"],
+		"training dummy": ["Training Dummies", "Obelisk Challenge"],
+		"ski challenge": ["Ski Challenge"],
+		"combat challenge": ["Combat Challenge"],
 		"tacet field": ["Tacet Fields"],
 		"tacet fields": ["Tacet Fields"],
 	};
 	if (aliases[name])
-		return (r) => r.kind !== "collection" && aliases[name].includes(r.name);
+		return (r) => tracksCollection(r) && aliases[name].includes(r.name);
 	if (name === "nightmare nest")
 		return (r) => /^(Nightmare Nest|Tacet Discord Nest:)/.test(r.name);
 	if (name.startsWith("tactical hologram"))
@@ -187,10 +234,43 @@ function layerPredicate(layer?: number) {
 export function matchGhzsExport(
 	data: GhzsExport,
 	catalog: MapCatalog,
+	mapping: Record<string, string> = thglMapping,
 ): GhzsImportRow[] {
+	const rewardsByEntity = new Map<string, MapReward[]>();
+	for (const reward of catalog.rewards) {
+		if (!tracksCollection(reward)) continue;
+		const id = String(reward.entityId);
+		const list = rewardsByEntity.get(id) ?? [];
+		list.push(reward);
+		rewardsByEntity.set(id, list);
+	}
+	const mapped = new Map<string, MapReward>();
+	const reserved = new Set<string>();
+	const owners = new Map<string, string>();
+	const conflicts = new Set<string>();
+	for (const sourceId of new Set(data.markedIds)) {
+		const match = /^(\d+)@(-?\d+(?:\.\d+)?):(-?\d+(?:\.\d+)?)$/.exec(
+			mapping[sourceId] ?? "",
+		);
+		if (!match) continue;
+		const candidates = (rewardsByEntity.get(match[1]) ?? []).filter(
+			(reward) =>
+				Math.hypot(reward.y - Number(match[2]), reward.x - Number(match[3])) <
+				0.01,
+		);
+		if (candidates.length === 1) {
+			mapped.set(sourceId, candidates[0]);
+			reserved.add(candidates[0].key);
+			const owner = owners.get(candidates[0].key);
+			if (owner) {
+				conflicts.add(owner);
+				conflicts.add(sourceId);
+			} else owners.set(candidates[0].key, sourceId);
+		}
+	}
 	const grid = new Map<string, MapReward[]>();
 	for (const reward of catalog.rewards) {
-		if (reward.kind === "collection") continue;
+		if (!tracksCollection(reward) || reserved.has(reward.key)) continue;
 		const key = `${reward.mapId}:${Math.floor(reward.x / CELL)}:${Math.floor(reward.y / CELL)}`;
 		const cell = grid.get(key) ?? [];
 		cell.push(reward);
@@ -214,6 +294,21 @@ export function matchGhzsExport(
 			reason: "Missing marker details",
 		};
 		rows.push(row);
+		if (conflicts.has(sourceId)) {
+			row.reason = "Ambiguous location";
+			continue;
+		}
+		const direct = mapped.get(sourceId);
+		if (direct) {
+			row.reward = direct;
+			delete row.reason;
+			continue;
+		}
+		// A known external mapping must never be replaced with a guessed target.
+		if (mapping[sourceId]) {
+			row.reason = "No nearby marker";
+			continue;
+		}
 		if (!records.length) continue;
 		let unsupportedMap = false;
 		let unsupportedCategory = false;
@@ -336,6 +431,30 @@ export function matchGhzsExport(
 		for (const [sourceId, candidate] of result) {
 			const proposer = byId.get(sourceId);
 			if (!proposer) continue;
+			// Held placements are alternatives too: two pins can be swapped
+			// without changing the set of claimed placements. Do not infer a
+			// particular assignment when the swap has comparable total error.
+			for (const other of active) {
+				if (other.row.id === sourceId) continue;
+				const otherAssignment = result.get(other.row.id);
+				if (!otherAssignment) continue;
+				const alternate = proposer.candidates.find(
+					(entry) => entry.reward.key === otherAssignment.reward.key,
+				);
+				const reverse = other.candidates.find(
+					(entry) => entry.reward.key === candidate.reward.key,
+				);
+				if (!alternate || !reverse) continue;
+				const extra =
+					alternate.distance +
+					reverse.distance -
+					candidate.distance -
+					otherAssignment.distance;
+				if (extra < SEPARATION) {
+					failures.add(sourceId);
+					failures.add(other.row.id);
+				}
+			}
 			// Two marked spots cannot claim one placement, and near ties stay
 			// unknown instead of silently picking one.
 			for (const other of proposers) {
@@ -398,7 +517,7 @@ export function mergeImportedMarks(
 	const next = { ...marks };
 	for (const reward of rewards) {
 		if (
-			reward.kind === "collection" ||
+			!tracksCollection(reward) ||
 			collectionState(reward, snapshot, next).state === "collected"
 		)
 			continue;

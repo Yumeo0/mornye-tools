@@ -1,8 +1,7 @@
 // Build `src/configs/map_icons.json` and download item icons from wuthering.gg.
 //
-// The game tables do not map a placement's blueprint to a specific UI icon, so
-// our catalogue falls back to one icon per reward kind. wuthering.gg already
-// solved that mapping for its interactive map: a placement appears there with
+// Native reward items already provide pickup names and icons. For placements
+// without that metadata, wuthering.gg supplies additional artwork: a pin appears with
 // the same raw Transform coordinates and a per-item icon. This script joins
 // our placements to theirs by coordinates, falls back to unambiguous name
 // matches against their marker and item databases, downloads the icons it can
@@ -13,6 +12,7 @@
 //   bun scripts/fetch-map-icons.ts
 import { existsSync, mkdirSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { heritageTier } from "../src/lib/map/collection";
 import type { MapReward } from "../src/lib/map/types";
 
 const root = resolve(import.meta.dirname, "..");
@@ -34,46 +34,6 @@ interface IconRef {
 interface Tally {
 	[stamp: string]: number;
 }
-
-/** Correct missing English names and internal labels in the game tables. */
-const NAME_OVERRIDES: Record<string, string> = {
-	Gameplay021: "Sonance Casket",
-	"branch3.5_21_Gameplay_3_0/Common4": "Unclaimed Rafter Kite",
-	"branch3.0_41_Gameplay_3_0/Common1": "Tape of Last Words",
-	"branch3.7_239_Gameplay_3_7/GhostTitan2":
-		"Blossoming Thousandfold Petals (Flames)",
-	"branch3.7_239_Gameplay_3_7/GhostTitan3":
-		"Sprouting Thousandfold Petals (Flames)",
-	"branch3.7_239_Gameplay_3_7/GhostTitan4":
-		"Budding Thousandfold Petals (Flames)",
-	"branch3.7_239_Gameplay_3_7/GhostTitan5":
-		"Budding Thousandfold Petals (Frost)",
-	"branch3.7_239_Gameplay_3_7/GhostTitan6":
-		"Budding Thousandfold Petals (Bloom)",
-	"branch3.7_239_Gameplay_3_7/GhostTitan7":
-		"Sprouting Thousandfold Petals (Frost)",
-	"branch3.7_239_Gameplay_3_7/GhostTitan8":
-		"Sprouting Thousandfold Petals (Bloom)",
-	"branch3.7_239_Gameplay_3_7/GhostTitan9":
-		"Blossoming Thousandfold Petals (Frost)",
-	"branch3.7_239_Gameplay_3_7/GhostTitan10":
-		"Blossoming Thousandfold Petals (Bloom)",
-};
-
-// Verified through template RewardId -> drop package DropPreview -> iteminfo.Icon.
-// These pickups share a generic interaction title and can overlap chest markers,
-// so their item artwork must take precedence over coordinate/name guesses.
-const ITEM_ICON_OVERRIDES: Record<string, string> = {
-	"Budding Thousandfold Petals (Flames)": "T_IconTask_Task_252_UI.png",
-	"Sprouting Thousandfold Petals (Flames)": "T_IconTask_Task_253_UI.png",
-	"Blossoming Thousandfold Petals (Flames)": "T_IconTask_Task_263_UI.png",
-	"Budding Thousandfold Petals (Frost)": "T_IconTask_Task_256_UI.png",
-	"Sprouting Thousandfold Petals (Frost)": "T_IconTask_Task_257_UI.png",
-	"Blossoming Thousandfold Petals (Frost)": "T_IconTask_Task_265_UI.png",
-	"Budding Thousandfold Petals (Bloom)": "T_IconTask_Task_254_UI.png",
-	"Sprouting Thousandfold Petals (Bloom)": "T_IconTask_Task_255_UI.png",
-	"Blossoming Thousandfold Petals (Bloom)": "T_IconTask_Task_264_UI.png",
-};
 
 const words = (value: string) =>
 	value
@@ -189,8 +149,21 @@ const catalog = (await Bun.file(
 ).json()) as {
 	rewards: MapReward[];
 };
-const nameOf = (reward: MapReward) =>
-	NAME_OVERRIDES[reward.blueprint] ?? reward.name;
+const nativeItemIcons = new Map<number, string>(
+	(
+		await Bun.file(
+			join(root, "data/wuwa-data/BinData/item/iteminfo.json"),
+		).json()
+	)
+		.filter((item: { Icon: string }) => Boolean(item.Icon))
+		.map((item: { Id: number; Icon: string }) => [
+			item.Id,
+			`${item.Icon.split("/").at(-1)?.split(".")[0]}.png`,
+		]),
+);
+const hasNativeArtwork = (reward: MapReward) =>
+	Boolean(reward.itemId && reward.icon.startsWith("/wuwa-assets/"));
+const nameOf = (reward: MapReward) => reward.name;
 const tallyInto = <K>(map: Map<K, Tally>, key: K, stamp: string) => {
 	const tally = map.get(key) ?? {};
 	tally[stamp] = (tally[stamp] ?? 0) + 1;
@@ -214,11 +187,7 @@ for (const reward of catalog.rewards) {
 	if (reward.kind === "heritage")
 		tallyInto(
 			byHeritage,
-			reward.icon.includes("blue")
-				? 12
-				: reward.icon.includes("gold") || reward.icon.includes("yellow")
-					? 14
-					: 13,
+			{ blue: 12, purple: 13, gold: 14 }[heritageTier(reward)],
 			stamp,
 		);
 }
@@ -284,7 +253,7 @@ const itemMatch = (name: Set<string>) => {
 
 /** Prefer verified item artwork, then coordinate and name matches. */
 const resolveFor = (reward: MapReward): string | undefined => {
-	const itemIcon = ITEM_ICON_OVERRIDES[nameOf(reward)];
+	const itemIcon = reward.itemId && nativeItemIcons.get(reward.itemId);
 	if (itemIcon) return `${itemIcon}|0`;
 	// Exploration controllers can overlap a chest or monster. Only an exact
 	// marker title can replace their built-in artwork without mislabelling them.
@@ -344,16 +313,16 @@ const config: {
 	heritage: Record<string, string>;
 } = {
 	source: `${site} (marker datasets and item database)`,
-	names: NAME_OVERRIDES,
+	names: {},
 	icons: {},
 	types: {},
 	heritage: {},
 };
 
 for (const reward of catalog.rewards) {
-	if (config.icons[reward.blueprint]) continue;
+	if (hasNativeArtwork(reward) || config.icons[reward.blueprint]) continue;
 	const icon = await publishIcon(
-		ITEM_ICON_OVERRIDES[nameOf(reward)]
+		reward.itemId
 			? resolveFor(reward)
 			: acceptable(majority(byBlueprint.get(reward.blueprint))),
 	);
@@ -361,6 +330,7 @@ for (const reward of catalog.rewards) {
 }
 const sampleByType = new Map<string, MapReward>();
 for (const reward of catalog.rewards) {
+	if (hasNativeArtwork(reward)) continue;
 	const type = `${reward.kind}|${nameOf(reward)}`;
 	if (!sampleByType.has(type)) sampleByType.set(type, reward);
 }
@@ -379,16 +349,23 @@ await Bun.write(
 	`${JSON.stringify(config, null, "\t")}\n`,
 );
 const covered = catalog.rewards.filter(
-	(r) => config.icons[r.blueprint] || config.types[`${r.kind}|${nameOf(r)}`],
+	(r) =>
+		hasNativeArtwork(r) ||
+		config.icons[r.blueprint] ||
+		config.types[`${r.kind}|${nameOf(r)}`],
 ).length;
 console.log(
 	`Wrote src/configs/map_icons.json: ${Object.keys(config.icons).length} blueprint icons, ${Object.keys(config.types).length} type icons, ${Object.keys(config.heritage).length} heritage colors, ${downloaded.size} files${unavailable ? `, ${unavailable} unavailable` : ""}.`,
 );
 console.log(
-	`  ${covered}/${catalog.rewards.length} placements now resolve to a wuthering.gg icon (${((covered / catalog.rewards.length) * 100).toFixed(1)}%).`,
+	`  ${covered}/${catalog.rewards.length} placements resolve to native or community artwork (${((covered / catalog.rewards.length) * 100).toFixed(1)}%).`,
 );
 const missingTypes = [
-	...new Set(catalog.rewards.map((r) => `${r.kind}|${nameOf(r)}`)),
+	...new Set(
+		catalog.rewards
+			.filter((r) => !hasNativeArtwork(r))
+			.map((r) => `${r.kind}|${nameOf(r)}`),
+	),
 ].filter(
 	(type) =>
 		!config.types[type] &&

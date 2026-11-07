@@ -3,10 +3,17 @@ import {
 	type ActivityEntity,
 	type ActivityPlay,
 	ADDITIONAL_MARKERS,
-	additionalActivityMarkers,
+	additionalActivityMarkers as classifyActivities,
 } from "../../../scripts/map-activities";
 import { ghzsPosition, matchGhzsExport } from "./ghzs";
+import { nativeCategories } from "./test-fixtures/native-categories";
 import type { MapCatalog } from "./types";
+
+const additionalActivityMarkers: typeof classifyActivities = (
+	entities,
+	plays,
+	marks,
+) => classifyActivities(entities, plays, marks, nativeCategories);
 
 const entity = (
 	id: number,
@@ -108,12 +115,12 @@ describe("additional map activities", () => {
 			"Ace Wings",
 			"Boat Racing",
 			"Flash Dodge",
-			"Dream Patrol",
+			"Dream Contagion",
 			"Dream of Cindertides",
 			"Dream of Cindertides",
 		]);
 	});
-	test("SpecialElite contributes one encounter rather than every monster or ordinary elite spawn", () => {
+	test("elite monster encounters are excluded from the map", () => {
 		const result = additionalActivityMarkers(
 			[
 				entity(142900000),
@@ -128,8 +135,7 @@ describe("additional map activities", () => {
 			],
 			[],
 		);
-		expect([...result.markers.keys()]).toEqual(["8:142900000"]);
-		expect(result.markers.get("8:142900000")?.name).toBe("Elite Monster");
+		expect(result.markers.size).toBe(0);
 	});
 	test("crab altars reuse the reward chest's native key", () => {
 		const result = additionalActivityMarkers(
@@ -148,7 +154,7 @@ describe("additional map activities", () => {
 		expect([...result.markers.keys()]).toEqual(["8:170700513"]);
 		expect(result.markers.get("8:170700513")?.name).toBe("Crab Chest");
 	});
-	test("mimics exclude quest actors and lore excludes generic investigation loot", () => {
+	test("mimics are excluded and lore excludes generic investigation loot", () => {
 		const result = additionalActivityMarkers(
 			[
 				entity(1, { type: "Monster", blueprint: "branch2.0_Monster187" }),
@@ -176,13 +182,8 @@ describe("additional map activities", () => {
 			[play(100, 100, { type: "Quest" })],
 			[],
 		);
-		expect([...result.markers.keys()]).toEqual([
-			"8:1",
-			"8:142800006",
-			"8:111901591",
-		]);
+		expect([...result.markers.keys()]).toEqual(["8:142800006", "8:111901591"]);
 		expect([...result.markers.values()].map((x) => x.name)).toEqual([
-			"Mimic Chest",
 			"Book fragments/records",
 			"Book fragments/records",
 		]);
@@ -254,4 +255,72 @@ describe("additional map activities", () => {
 			expect(row.reward?.key, name).toBe(reward.key);
 		}
 	});
+});
+
+test("Dream Contagion uses native titles and suppresses linked replay controllers", () => {
+	const result = additionalActivityMarkers(
+		[entity(1), entity(2), entity(3, { mapId: 906, key: "906:3" })],
+		[
+			play(10, 1, { type: "Challenge", degree: 40 }),
+			play(11, 2, {
+				type: "Challenge",
+				internalName: "replay复刷",
+				predecessors: [10],
+			}),
+			play(12, 3, { mapId: 906, predecessors: [10] }),
+		],
+		[
+			{
+				mapId: 8,
+				entityId: 1,
+				playId: 10,
+				title: "Dream Contagion: Three Tigers of Septimont",
+			},
+		],
+	);
+	expect(result.markers.get("8:1")).toMatchObject({
+		name: "Dream Contagion",
+		title: "Dream Contagion: Three Tigers of Septimont",
+	});
+	expect([...result.playIds]).toEqual([10, 11]);
+	expect(result.markers.has("8:2")).toBe(false);
+});
+
+test("published map excludes elite and mimic markers and resolves Dream Contagion encounters", async () => {
+	const catalog: MapCatalog = await Bun.file(
+		new URL("../../../public/map/catalog.json", import.meta.url),
+	).json();
+	expect(
+		catalog.rewards.some((r) =>
+			["Elite Monster", "Mimic Chest"].includes(r.name),
+		),
+	).toBe(false);
+	for (const [key, title] of [
+		["8:169850022", "Dream Contagion: Three Tigers of Septimont"],
+		["8:157850010", "Dream Contagion: Ultimate Winged Dragon"],
+	]) {
+		expect(catalog.rewards.find((r) => r.key === key)).toMatchObject({
+			name: "Dream Contagion",
+			title,
+		});
+	}
+	expect(
+		catalog.rewards.some((r) => ["8:169850035", "8:169850065"].includes(r.key)),
+	).toBe(false);
+});
+
+test("named Dream Patrol encounters replace replay duplicates at the reported coordinates", async () => {
+	const catalog: MapCatalog = await Bun.file(
+		new URL("../../../public/map/catalog.json", import.meta.url),
+	).json();
+	for (const [x, y, title] of [
+		[729457, 494146, "Dream Patrol: Whisperwind Haven"],
+		[839269, 501259, "Dream Patrol: Penitent's End"],
+	] as const) {
+		const nearby = catalog.rewards.filter(
+			(reward) => Math.abs(reward.x - x) < 1 && Math.abs(reward.y - y) < 1,
+		);
+		expect(nearby).toHaveLength(1);
+		expect(nearby[0]).toMatchObject({ name: "Dream Patrol", title });
+	}
 });

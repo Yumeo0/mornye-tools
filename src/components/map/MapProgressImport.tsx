@@ -24,6 +24,7 @@ import {
 	parseGhzsExport,
 } from "@/lib/map/ghzs";
 import exportScript from "@/lib/map/ghzs-export.js?raw";
+import { pendingImportedRewards } from "@/lib/map/import";
 import type {
 	ExplorationSnapshot,
 	MapCatalog,
@@ -35,8 +36,7 @@ const GHZS_URL = "https://www.ghzs666.com/wutheringwaves-map#/";
 const STEPS = [
 	"Choose your map",
 	"Open GHZS",
-	"Copy the export script",
-	"Run the export script",
+	"Copy and run the export script",
 	"Upload your export",
 	"Review your locations",
 ];
@@ -92,17 +92,22 @@ export function MapProgressImport({
 			row.reward &&
 				collectionState(row.reward, snapshot, marks).state === "collected",
 		);
-	const selected = useMemo(
-		() =>
-			(rows ?? []).flatMap((row) =>
-				row.reward &&
-				!excluded.has(row.id) &&
-				collectionState(row.reward, snapshot, marks).state !== "collected"
-					? [row.reward]
-					: [],
-			),
-		[rows, excluded, snapshot, marks],
-	);
+	const { selected, linked } = useMemo(() => {
+		const matches = (rows ?? []).flatMap((row) =>
+			row.reward && !excluded.has(row.id) ? [row.reward] : [],
+		);
+		const selected = pendingImportedRewards(
+			matches,
+			catalog?.rewards ?? [],
+			snapshot,
+			marks,
+		);
+		const matchedKeys = new Set(matches.map((reward) => reward.key));
+		return {
+			selected,
+			linked: selected.filter((reward) => !matchedKeys.has(reward.key)).length,
+		};
+	}, [rows, excluded, catalog, snapshot, marks]);
 	const matched = rows?.filter((row) => row.reward).length ?? 0;
 	const existing = rows?.filter(alreadyCollected).length ?? 0;
 	const preview = (value: string) => {
@@ -156,7 +161,7 @@ export function MapProgressImport({
 		}
 	};
 	const nextDisabled =
-		(step === 0 && !source) || (step === 4 && (!rows || loading));
+		(step === 0 && !source) || (step === 3 && (!rows || loading));
 	return (
 		<Dialog.Root
 			open
@@ -299,8 +304,8 @@ export function MapProgressImport({
 									{step === 2 && (
 										<>
 											<p>
-												Copy this script. You will run it on the GHZS page in
-												the next step to download your progress.
+												Copy the script below, then run it on the GHZS page to
+												download your progress.
 											</p>
 											<Button
 												variant="outline"
@@ -309,23 +314,6 @@ export function MapProgressImport({
 											>
 												{copied ? "Script copied" : "Copy export script"}
 											</Button>
-											<p className="text-xs text-muted-foreground">
-												The script reads your marks and the public map catalog.
-												It does not change your GHZS progress or export login
-												tokens.
-											</p>
-											<details className="text-xs text-muted-foreground">
-												<summary className="cursor-pointer py-1">
-													View export script
-												</summary>
-												<pre className="mt-2 max-h-44 overflow-auto border bg-background p-3 text-[10px]">
-													{exportScript}
-												</pre>
-											</details>
-										</>
-									)}
-									{step === 3 && (
-										<>
 											<p>
 												On the GHZS page, press{" "}
 												<kbd className="border px-1.5 py-0.5 text-xs">F12</kbd>{" "}
@@ -345,16 +333,22 @@ export function MapProgressImport({
 												signed in and your marks have loaded, then run the
 												script again.
 											</p>
-											<Button
-												variant="outline"
-												className="self-start"
-												onClick={() => void copyScript()}
-											>
-												Copy script again
-											</Button>
+											<p className="text-xs text-muted-foreground">
+												The script reads your marks and the public map catalog.
+												It does not change your GHZS progress or export login
+												tokens.
+											</p>
+											<details className="text-xs text-muted-foreground">
+												<summary className="cursor-pointer py-1">
+													View export script
+												</summary>
+												<pre className="mt-2 max-h-44 overflow-auto border bg-background p-3 text-[10px]">
+													{exportScript}
+												</pre>
+											</details>
 										</>
 									)}
-									{step === 4 && (
+									{step === 3 && (
 										<>
 											<p>
 												Choose the <strong>ghzs-progress.json</strong> file you
@@ -437,7 +431,7 @@ export function MapProgressImport({
 											)}
 										</>
 									)}
-									{step === 5 && rows && (
+									{step === 4 && rows && (
 										<>
 											<div className="flex flex-col gap-2">
 												<p className="text-xs">
@@ -446,13 +440,15 @@ export function MapProgressImport({
 														: "Connect a game account to save imported progress. You can review your export now."}
 												</p>
 												<p className="font-medium">
-													{selected.length.toLocaleString()} ready ·{" "}
+													{selected.length.toLocaleString()} ready (
+													{linked.toLocaleString()} linked) ·{" "}
 													{existing.toLocaleString()} already collected ·{" "}
 													{(rows.length - matched).toLocaleString()} skipped
 												</p>
 												<p className="text-xs text-muted-foreground">
-													Uncheck any locations you do not want to import. Your
-													existing marks are preserved.
+													Each checked match also includes its directly linked
+													challenges or reward chests. Uncheck matches you do
+													not want to use. Your existing marks are preserved.
 												</p>
 											</div>
 											<VirtualGrid
@@ -469,7 +465,7 @@ export function MapProgressImport({
 															<input
 																type="checkbox"
 																aria-label={`Import ${row.reward ? itemLabel(row.reward) : row.category} ${row.id}`}
-																disabled={!row.reward || existing || saving}
+																disabled={!row.reward || saving}
 																checked={Boolean(
 																	row.reward && !excluded.has(row.id),
 																)}
@@ -495,7 +491,9 @@ export function MapProgressImport({
 																	{row.reason ??
 																		(existing
 																			? "Already collected"
-																			: `Matched · ${((row.distance ?? 0) / 100).toFixed(1)} m away`)}
+																			: row.distance === undefined
+																				? "Matched by ID"
+																				: `Matched · ${(row.distance / 100).toFixed(1)} m away`)}
 																</span>
 															</span>
 														</label>
@@ -507,20 +505,20 @@ export function MapProgressImport({
 													About skipped locations
 												</summary>
 												<p className="mt-2">
-													Only well separated matches within 12 m are offered,
-													and nearby marks are assigned one placement each. The
-													Roya Frostlands surface has no reliable alignment, and
-													Vault Underground floors without enough marked
-													locations cannot be aligned yet. Unsupported types and
-													uncertain locations are skipped.
+													Known IDs use an offline mapping; other markers need a
+													well separated match within 12 m. The Roya Frostlands
+													surface has no reliable alignment, and Vault
+													Underground floors without enough marked locations
+													cannot be aligned yet. Unsupported types and uncertain
+													locations are skipped.
 												</p>
 											</details>
 										</>
 									)}
 								</section>
-								{(error || (step === 5 && saveError)) && (
+								{(error || (step === 4 && saveError)) && (
 									<p role="alert" className="text-xs text-destructive">
-										{(step === 5 && saveError) || error}
+										{(step === 4 && saveError) || error}
 									</p>
 								)}
 							</div>

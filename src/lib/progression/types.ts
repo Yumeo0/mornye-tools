@@ -17,6 +17,16 @@ export interface SideQuest {
 	hiddenAccept: boolean;
 }
 
+/** All player-facing quest types, including quests without a world-map marker. */
+export interface QuestDefinition {
+	id: number;
+	name: string;
+	description: string;
+	type: number;
+	typeName: string;
+	icon: string;
+}
+
 export interface Achievement {
 	id: number;
 	groupId: number;
@@ -26,6 +36,8 @@ export interface Achievement {
 }
 
 export interface ProgressionCatalog {
+	allQuests: QuestDefinition[];
+	/** Only side quests have acceptance/objective markers on the map. */
 	quests: SideQuest[];
 	achievements: Achievement[];
 	categories: { id: number; name: string; icon: string }[];

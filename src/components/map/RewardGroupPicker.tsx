@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { VirtualGrid } from "@/components/VirtualGrid";
 import type { MarkerCluster } from "@/lib/map/clustering";
-import { itemLabel } from "@/lib/map/collection";
+import { itemLabel, tracksCollection } from "@/lib/map/collection";
 import type { RewardMarker } from "@/lib/map/filters";
 import { type MapReward, STATE_LABELS } from "@/lib/map/types";
 
@@ -93,7 +93,9 @@ export function RewardGroupPicker({
 												{reward.entityId} · Z {Math.round(reward.z)}
 											</span>
 											<span className="text-[10px] text-muted-foreground">
-												{STATE_LABELS[state]}
+												{tracksCollection(reward)
+													? STATE_LABELS[state]
+													: "View location"}
 											</span>
 										</span>
 									</button>

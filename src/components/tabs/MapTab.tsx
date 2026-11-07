@@ -19,13 +19,19 @@ import {
 	matchesHotkey,
 } from "@/lib/hotkeys";
 import { useMapCatalog } from "@/lib/map/catalog";
-import { collectionState, itemType } from "@/lib/map/collection";
+import {
+	collectionState,
+	itemType,
+	tracksCollection,
+} from "@/lib/map/collection";
 import {
 	isItemVisible,
 	type MapVisibility,
+	matchesMapVisibility,
 	summarizeItems,
 } from "@/lib/map/filters";
 import { useMapCollectedHotkey } from "@/lib/map/hotkey";
+import { chestChallengeIndex } from "@/lib/map/links";
 import { useManualMapMarks } from "@/lib/map/manual";
 import { usePlayerPosition } from "@/lib/map/position";
 import { containsDestination, destinationAt } from "@/lib/map/regions";
@@ -140,18 +146,58 @@ export function MapTab({ active }: { active: boolean }) {
 	const [overrides, setOverrides] = useState<Record<string, boolean>>({});
 	const [visibility, setVisibility] = useState<MapVisibility>("all");
 	const [selected, setSelected] = useState<MapReward | null>(null);
+	const challengeIndex = useMemo(
+		() => chestChallengeIndex(catalog?.rewards ?? []),
+		[catalog],
+	);
+	const linkedChallenges =
+		selected?.kind === "chest" ? (challengeIndex.get(selected.key) ?? []) : [];
+	const linkedChests = useMemo(() => {
+		const keys = new Set(selected?.chestKeys ?? []);
+		return (catalog?.rewards ?? []).filter(
+			(reward) =>
+				keys.has(reward.key) &&
+				reward.kind === "chest" &&
+				reward.mapId === selected?.mapId,
+		);
+	}, [catalog, selected]);
 	const mapRef = useRef<MapCanvasHandle>(null);
 	const exploration = account.snapshot.exploration;
 	const importPlayerId =
 		account.snapshot.player?.playerId ?? exploration?.playerId ?? 0;
 	const manual = useManualMapMarks(importPlayerId);
 	const snapshot = exploration ?? EMPTY_EXPLORATION;
+	const [bulkSelection, setBulkSelection] = useState<{
+		mapId: number;
+		playerId: number;
+		rewards: MapReward[];
+	} | null>(null);
+	const bulkRewards = useMemo(
+		() =>
+			bulkSelection?.mapId === mapId &&
+			bulkSelection.playerId === importPlayerId
+				? bulkSelection.rewards
+				: [],
+		[bulkSelection, mapId, importPlayerId],
+	);
+	const selectedKeys = useMemo(
+		() => new Set(bulkRewards.map((reward) => reward.key)),
+		[bulkRewards],
+	);
+	const bulkCollected = bulkRewards.filter(
+		(reward) =>
+			collectionState(reward, snapshot, manual.marks).state === "collected",
+	).length;
+	const changeBulkCollected = (collected: boolean) => {
+		if (!bulkRewards.length || !manual.ready || manual.saving) return;
+		void manual.setManyCollected(bulkRewards, collected, snapshot);
+	};
 	const { hotkey, loaded: hotkeyLoaded } = useMapCollectedHotkey();
 	const changeSelectedCollected = useCallback(
 		(collected: boolean) => {
 			if (
 				!selected ||
-				selected.kind === "collection" ||
+				!tracksCollection(selected) ||
 				selected.mapId !== mapId ||
 				!manual.ready ||
 				manual.saving
@@ -172,7 +218,7 @@ export function MapTab({ active }: { active: boolean }) {
 			!catalog ||
 			error ||
 			!selected ||
-			selected.kind === "collection" ||
+			!tracksCollection(selected) ||
 			selected.mapId !== mapId ||
 			!manual.ready ||
 			manual.saving
@@ -239,14 +285,15 @@ export function MapTab({ active }: { active: boolean }) {
 	}, [itemRows, overrides]);
 	const stateTotals = useMemo(() => {
 		const totals: Record<RewardState, number> = { collected: 0, remaining: 0 };
-		for (const { type, state } of all) if (visible.has(type)) totals[state]++;
+		for (const { reward, type, state } of all)
+			if (visible.has(type) && tracksCollection(reward)) totals[state]++;
 		return totals;
 	}, [all, visible]);
 	const markers = useMemo(
 		() =>
 			all.filter(
-				({ type, state }) =>
-					visible.has(type) && (visibility === "all" || state === visibility),
+				(marker) =>
+					visible.has(marker.type) && matchesMapVisibility(marker, visibility),
 			),
 		[all, visible, visibility],
 	);
@@ -262,6 +309,7 @@ export function MapTab({ active }: { active: boolean }) {
 	 */
 	const selectReward = useCallback(
 		(reward: MapReward) => {
+			setBulkSelection(null);
 			setSelectedQuestId(null);
 			setSelected(reward);
 			const floor = reward.underground;
@@ -275,6 +323,7 @@ export function MapTab({ active }: { active: boolean }) {
 		[artworkLayers],
 	);
 	const navigate = (destination: MapDestination) => {
+		setBulkSelection(null);
 		setFollowPlayer(false);
 		setMapId(destination.mapId);
 		setNavigationTarget({ ...destination });
@@ -393,6 +442,7 @@ export function MapTab({ active }: { active: boolean }) {
 								questMarkers[0];
 							if (quest) {
 								setSelected(null);
+								setBulkSelection(null);
 								setSelectedQuestId(quest.quest.id);
 								setSelectedQuestPoint(quest.point);
 								setFollowPlayer(false);
@@ -426,12 +476,24 @@ export function MapTab({ active }: { active: boolean }) {
 							selectedQuest={selectedQuestId}
 							onSelectQuest={(group) => {
 								setSelected(null);
+								setBulkSelection(null);
 								setSelectedQuestId(group[0].quest.id);
 								setSelectedQuestPoint(group[0].point);
 								setFollowPlayer(false);
 							}}
 							layer={layer}
 							selected={selected?.key ?? null}
+							selectedKeys={selectedKeys}
+							onSelectMany={(rewards) => {
+								setSelected(null);
+								setSelectedQuestId(null);
+								setBulkSelection({ mapId, playerId: importPlayerId, rewards });
+							}}
+							onClearSelection={() => {
+								setBulkSelection(null);
+								setSelected(null);
+								setSelectedQuestId(null);
+							}}
 							player={playerPosition?.mapId === mapId ? playerPosition : null}
 							followPlayer={followPlayer}
 							onPan={stopFollowing}
@@ -526,10 +588,81 @@ export function MapTab({ active }: { active: boolean }) {
 								<HugeiconsIcon icon={Target01Icon} />
 							</Button>
 						</div>
+						{bulkRewards.length > 0 && (
+							<section
+								aria-label="Selected rewards"
+								onKeyDown={(event) => {
+									if (event.key === "Escape") setBulkSelection(null);
+								}}
+								className="absolute right-3 top-3 flex w-72 flex-col gap-3 border bg-background/95 p-4 shadow-xl max-[1000px]:w-60"
+							>
+								<div className="flex items-center justify-between gap-2">
+									<h2 className="text-sm font-medium" aria-live="polite">
+										{bulkRewards.length} rewards selected
+									</h2>
+									<Button
+										variant="ghost"
+										size="icon-xs"
+										aria-label="Clear selection"
+										onClick={() => setBulkSelection(null)}
+									>
+										×
+									</Button>
+								</div>
+								<p className="text-xs text-muted-foreground">
+									{bulkCollected} collected ·{" "}
+									{bulkRewards.length - bulkCollected} remaining
+								</p>
+								<div className="flex flex-wrap gap-2">
+									<Button
+										size="sm"
+										disabled={
+											!manual.ready ||
+											manual.saving ||
+											bulkCollected === bulkRewards.length
+										}
+										onClick={() => changeBulkCollected(true)}
+									>
+										Collect all
+									</Button>
+									<Button
+										size="sm"
+										variant="outline"
+										disabled={
+											!manual.ready || manual.saving || bulkCollected === 0
+										}
+										onClick={() => changeBulkCollected(false)}
+									>
+										Uncollect all
+									</Button>
+								</div>
+								{manual.error && (
+									<p role="alert" className="text-xs text-destructive">
+										{manual.error}
+									</p>
+								)}
+								<p className="text-[10px] text-muted-foreground">
+									Shift-drag to replace selection · Esc to clear
+								</p>
+							</section>
+						)}
 						{selected && (
 							<RewardDetails
 								key={selected.key}
 								reward={selected}
+								linkedChallenges={linkedChallenges.map((reward) => ({
+									reward,
+									state: collectionState(reward, snapshot, manual.marks).state,
+								}))}
+								linkedChests={linkedChests.map((reward) => ({
+									reward,
+									state: collectionState(reward, snapshot, manual.marks).state,
+								}))}
+								onSelectReward={(chest) => {
+									setFollowPlayer(false);
+									selectReward(chest);
+									mapRef.current?.focus(chest.x, chest.y);
+								}}
 								collection={collectionState(selected, snapshot, manual.marks)}
 								collectedShortcut={formatHotkey(hotkey)}
 								disabled={!manual.ready || manual.saving}

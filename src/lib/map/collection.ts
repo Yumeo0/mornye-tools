@@ -12,6 +12,11 @@ export interface CollectionState {
 	at: number | null;
 }
 
+/** Whether a placement supports persistent collected/completed progress. */
+export function tracksCollection(reward: Pick<MapReward, "kind">) {
+	return !["collection", "combat", "teleport"].includes(reward.kind);
+}
+
 /**
  * One boolean per placement: collected or not. Live claim evidence starts it
  * collected, and the player's own toggle is simply the later of the two, so a
@@ -22,8 +27,8 @@ export function collectionState(
 	snapshot: ExplorationSnapshot,
 	manual: ManualMapMarks,
 ): CollectionState {
-	// Gathering resources are nodes, not rewards: they are never tracked.
-	if (reward.kind === "collection") return { state: "remaining", at: null };
+	// Resources, repeatable combat and teleport locations have no collection progress.
+	if (!tracksCollection(reward)) return { state: "remaining", at: null };
 	const evidence = snapshot.rewards[reward.key];
 	const live =
 		evidence &&
@@ -40,19 +45,58 @@ export function collectionState(
 	return { state: "remaining", at: null };
 }
 
-export function itemType(reward: MapReward) {
-	return `${reward.kind}:${reward.name}:${reward.icon}`;
+export function isEchoFlight(reward: MapReward) {
+	return (
+		reward.kind === "exploration" &&
+		/^Echo Challenge: Flight(?: [IVX]+)?$/.test(reward.name)
+	);
 }
+
+export function isTacticalHologram(reward: MapReward) {
+	return (
+		reward.kind === "exploration" &&
+		/^(Tactical Hologram|Overlord Challenge)(?::|$)/.test(reward.name)
+	);
+}
+
+export function itemType(reward: MapReward) {
+	if (isTacticalHologram(reward)) return "exploration:Tactical Holograms";
+	if (isEchoFlight(reward)) return "exploration:Echo Challenge: Flight";
+	// Preserve saved filter keys when a known item texture moves to local assets.
+	const icon =
+		reward.itemId && reward.icon.startsWith("/wuwa-assets/")
+			? `/map/icons/gg/${reward.icon
+					.split("/")
+					.at(-1)
+					?.replace(/\.webp$/, ".png")}`
+			: reward.icon;
+	return `${reward.kind}:${reward.name}:${icon}`;
+}
+export function itemFilterLabel(reward: MapReward) {
+	if (isEchoFlight(reward)) return "Echo Challenge: Flight";
+	if (isTacticalHologram(reward)) return "Tactical Holograms";
+	return itemLabel(reward);
+}
+
 export function itemLabel(reward: MapReward) {
 	if (reward.name === "Windchimer") return "Windchimer (Bell)";
 	if (reward.name === "Frostbug") return "Frostbug (Worm)";
 	if (reward.kind !== "heritage") return reward.name;
-	const color = reward.icon.includes("blue")
-		? "Blue"
-		: reward.icon.includes("gold") || reward.icon.includes("yellow")
-			? "Gold"
-			: "Purple";
+	const tier = heritageTier(reward);
+	const color = tier === "blue" ? "Blue" : tier === "gold" ? "Gold" : "Purple";
 	return `${reward.name} · ${color}`;
+}
+
+/** Older catalogues and native rows with no degree retain the illustration fallback. */
+export function heritageTier(reward: MapReward) {
+	return (
+		reward.heritageTier ??
+		(reward.icon.includes("blue")
+			? "blue"
+			: reward.icon.includes("gold") || reward.icon.includes("yellow")
+				? "gold"
+				: "purple")
+	);
 }
 
 export function parseManualMarks(value: unknown): ManualMapMarks {
@@ -66,4 +110,26 @@ export function parseManualMarks(value: unknown): ManualMapMarks {
 				Number.isFinite(mark.updatedAt),
 		),
 	);
+}
+
+/** Apply a batch in one save, later than any live evidence for each reward. */
+export function markRewards(
+	marks: ManualMapMarks,
+	rewards: MapReward[],
+	collected: boolean,
+	snapshot: ExplorationSnapshot,
+	now = Date.now(),
+): ManualMapMarks {
+	const next = { ...marks };
+	for (const reward of rewards) {
+		if (!tracksCollection(reward)) continue;
+		next[reward.key] = {
+			collected,
+			updatedAt: Math.max(
+				now,
+				(snapshot.rewards[reward.key]?.observedAt ?? 0) + 1,
+			),
+		};
+	}
+	return next;
 }

@@ -1,7 +1,11 @@
 import { isTauri } from "@tauri-apps/api/core";
 import { Store } from "@tauri-apps/plugin-store";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { type ManualMapMarks, parseManualMarks } from "./collection";
+import {
+	type ManualMapMarks,
+	markRewards,
+	parseManualMarks,
+} from "./collection";
 import { mergeImportedMarks } from "./ghzs";
 import type { ExplorationSnapshot, MapReward } from "./types";
 
@@ -94,6 +98,11 @@ export function useManualMapMarks(playerId: number) {
 		saving,
 		error,
 		setCollected,
+		setManyCollected: (
+			rewards: MapReward[],
+			collected: boolean,
+			snapshot: ExplorationSnapshot,
+		) => write(markRewards(marks, rewards, collected, snapshot)),
 		mergeCollected: (rewards: MapReward[], snapshot: ExplorationSnapshot) => {
 			if (
 				playerId <= 0 ||

@@ -41,6 +41,7 @@ const RENDERED_FIELDS = new Set([
 	"echo_sets.icon", // sonata icons (IconElementAttri128 after transform)
 	"icon_middle", // echo icons (IconMonsterGoods160)
 	"categories.icon", // achievement category emblems
+	"allQuests.icon", // native quest-type markers
 ]);
 
 // Literal reference scan: "..."-quoted /wuwa-assets paths in TS/TSX sources.
@@ -98,6 +99,12 @@ async function collectRefs(): Promise<string[]> {
 	for (const config of readdirSync(CONFIGS_DIR).sort()) {
 		if (!config.endsWith(".json")) continue;
 		walkJson(await Bun.file(join(CONFIGS_DIR, config)).json(), [], refs);
+	}
+	const mapCatalog = Bun.file(join(ROOT, "public/map/catalog.json"));
+	if (await mapCatalog.exists()) {
+		const catalog = await mapCatalog.json();
+		for (const icon of catalog.icons ?? [])
+			if (icon.startsWith("/wuwa-assets/")) refs.add(icon);
 	}
 
 	for (const source of sourceFiles(SRC_DIR)) {

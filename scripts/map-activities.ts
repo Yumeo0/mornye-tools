@@ -1,3 +1,4 @@
+import type { ExplorationCategoryLookup } from "./map-categories";
 import type { ExplorationMarker } from "./map-exploration";
 
 export const ADDITIONAL_MARKERS = {
@@ -8,14 +9,13 @@ export const ADDITIONAL_MARKERS = {
 	},
 	cindertide: { name: "Dream of Cindertides", icon: "SP_IconMap_Play_48_UI" },
 	patrol: { name: "Dream Patrol", icon: "SP_IconMap_Play_19_UI" },
-	mimic: { name: "Mimic Chest", icon: "SP_IconMonsterHead_31048_UI" },
+	contagion: { name: "Dream Contagion", icon: "SP_IconMap_Play_19_UI" },
 	palette: { name: "Overflowing Palette", icon: "SP_IconMap_Play_18_UI" },
 	crab: { name: "Crab Chest", icon: "SP_IconMap_SJ_01_UI" },
 	brothers: { name: "Three Brothers", icon: "SP_IconMap_Play_20_UI" },
 	boat: { name: "Boat Racing", icon: "SP_IconMap_Play_36_UI" },
 	wings: { name: "Ace Wings", icon: "SP_IconMap_Play_37_UI" },
 	dodge: { name: "Flash Dodge", icon: "SP_IconMap_Play_33_UI" },
-	elite: { name: "Elite Monster", icon: "SP_IconMap_Boss_00_UI" },
 	books: { name: "Book fragments/records", icon: "SP_IconMap_Task_18_UI" },
 } satisfies Record<string, ExplorationMarker>;
 
@@ -39,7 +39,10 @@ export interface ActivityPlay {
 	internalName: string;
 	title: string;
 	degree?: number;
+	areaId?: number;
 	children: string[];
+	/** Explicit prerequisite graphs, used to identify replay variants. */
+	predecessors?: number[];
 	packId: number;
 }
 export interface ActivityMapMark {
@@ -57,8 +60,8 @@ export function activityForTitle(title: string): ExplorationMarker | null {
 	if (/^Dreams? of Cindertides?(?::|$)/.test(title))
 		return ADDITIONAL_MARKERS.cindertide;
 	if (/^Dream Patrol(?::|$)/.test(title)) return ADDITIONAL_MARKERS.patrol;
-	if (title === "Chest Mimic" || title === "Mimic Chest")
-		return ADDITIONAL_MARKERS.mimic;
+	if (/^Dream Contagion(?::|$)/.test(title))
+		return ADDITIONAL_MARKERS.contagion;
 	if (title === "Overflowing Palette") return ADDITIONAL_MARKERS.palette;
 	if (title === "The Three Fratellis' Challenge")
 		return ADDITIONAL_MARKERS.brothers;
@@ -68,19 +71,6 @@ export function activityForTitle(title: string): ExplorationMarker | null {
 	if (title === "Experiment Records") return ADDITIONAL_MARKERS.books;
 	return null;
 }
-
-const PLAY_DEGREES: Record<number, ExplorationMarker> = {
-	20: ADDITIONAL_MARKERS.palette,
-	22: ADDITIONAL_MARKERS.patrol,
-	23: ADDITIONAL_MARKERS.brothers,
-	25: ADDITIONAL_MARKERS.musicfly,
-	36: ADDITIONAL_MARKERS.wings,
-	37: ADDITIONAL_MARKERS.boat,
-	39: ADDITIONAL_MARKERS.dodge,
-	40: ADDITIONAL_MARKERS.patrol,
-	47: ADDITIONAL_MARKERS.cindertide,
-	48: ADDITIONAL_MARKERS.cindertide,
-};
 
 // Reward packages shared by the game's paper fragments and permanent field
 // records, on Gameplay603 / Treasure035. Do not expose generic Investigate loot.
@@ -94,6 +84,7 @@ export function additionalActivityMarkers(
 	entities: ActivityEntity[],
 	plays: ActivityPlay[],
 	mapMarks: ActivityMapMark[],
+	categoryFor?: ExplorationCategoryLookup,
 ): { markers: Map<string, Marker>; playIds: Set<number> } {
 	const byKey = new Map(entities.map((e) => [e.key, e]));
 	const playById = new Map(plays.map((p) => [p.id, p]));
@@ -118,17 +109,21 @@ export function additionalActivityMarkers(
 			add(entity, { ...marker, title: mark.title }, mark.playId || undefined);
 	}
 	for (const play of plays) {
-		if (selected.has(play.id) || play.packId) continue;
+		if (selected.has(play.id) || play.packId || play.type === "SpecialElite")
+			continue;
+		// Progress can aggregate quest bookkeeping and respawning bosses under the
+		// same display category as a collectible encounter.
+		const category = ["Quest", "RebornBoss"].includes(play.type)
+			? undefined
+			: categoryFor?.(play.degree, play.areaId);
+		const categoryMarker = category && activityForTitle(category.name);
 		const marker =
-			play.type === "SpecialElite"
-				? ADDITIONAL_MARKERS.elite
-				: (PLAY_DEGREES[play.degree ?? -1] ??
-					activityForTitle(play.title) ??
-					// Native crab-altar graphs, including their later Sanguis variants.
-					(play.type === "Riddle" &&
-					/螃蟹.*祭坛|螃蟹后日谈/.test(play.internalName)
-						? ADDITIONAL_MARKERS.crab
-						: null));
+			(categoryMarker && { ...categoryMarker, icon: category.icon }) ??
+			activityForTitle(play.title) ??
+			// Native crab-altar graphs, including their later Sanguis variants.
+			(play.type === "Riddle" && /螃蟹.*祭坛|螃蟹后日谈/.test(play.internalName)
+				? ADDITIONAL_MARKERS.crab
+				: null);
 		if (!marker) continue;
 		// Crab chests are actual supply chests, so reuse the reward's key instead
 		// of adding a second activity pin for the same collectible.
@@ -155,15 +150,7 @@ export function additionalActivityMarkers(
 	}
 	for (const entity of entities) {
 		if (entity.packId || markers.has(entity.key)) continue;
-		if (
-			entity.type === "Monster" &&
-			(entity.blueprint === "branch2.0_Monster187" ||
-				entity.title === "Chest Mimic")
-		) {
-			if (entity.owner !== null && playById.get(entity.owner)?.type === "Quest")
-				continue;
-			add(entity, ADDITIONAL_MARKERS.mimic);
-		}
+
 		if (
 			["Gameplay603", "Treasure035"].includes(entity.blueprint) &&
 			LORE_REWARDS.has(entity.rewardId)
@@ -176,5 +163,25 @@ export function additionalActivityMarkers(
 			});
 		}
 	}
-	return { markers, playIds: new Set(selected.keys()) };
+	const playIds = new Set(selected.keys());
+	// Dream Patrol/Contagion replays reuse the original encounter marker.
+	// Suppress their otherwise generic challenge controllers via explicit graph links.
+	for (const play of plays) {
+		if (play.packId || !play.internalName.includes("复刷")) continue;
+		if (
+			play.predecessors?.some((id) => {
+				const original = selected.get(id);
+				return (
+					original &&
+					[
+						ADDITIONAL_MARKERS.contagion.name,
+						ADDITIONAL_MARKERS.patrol.name,
+					].includes(original.marker.name) &&
+					original.entity.mapId === play.mapId
+				);
+			})
+		)
+			playIds.add(play.id);
+	}
+	return { markers, playIds };
 }

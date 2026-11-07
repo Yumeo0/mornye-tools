@@ -1,5 +1,12 @@
 import { describe, expect, test } from "bun:test";
-import { collectionState, itemLabel, parseManualMarks } from "./collection";
+import {
+	collectionState,
+	itemLabel,
+	itemType,
+	markRewards,
+	parseManualMarks,
+} from "./collection";
+import { matchesMapVisibility, summarizeItems } from "./filters";
 import type { ExplorationSnapshot, MapReward } from "./types";
 
 const reward = {
@@ -138,4 +145,120 @@ describe("manual mark persistence", () => {
 		expect(parseManualMarks(null)).toEqual({});
 		expect(parseManualMarks([1])).toEqual({});
 	});
+});
+
+test("bulk marks collect and uncollect mixed rewards without changing other marks or resources", () => {
+	const live = snapshot();
+	live.rewards[reward.key] = {
+		mapId: reward.mapId,
+		entityId: reward.entityId,
+		source: "reward-response",
+		observedAt: 500,
+	};
+	const other = { ...reward, key: "906:2" };
+	const resource = { ...reward, key: "906:3", kind: "collection" } as MapReward;
+	const existing = { "906:4": { collected: true, updatedAt: 1 } };
+	const rewards = [reward, other, resource];
+	const collected = markRewards(existing, rewards, true, live, 100);
+	expect(collectionState(reward, live, collected).state).toBe("collected");
+	expect(collectionState(other, live, collected).state).toBe("collected");
+	expect(collected[resource.key]).toBeUndefined();
+	expect(collected["906:4"]).toEqual(existing["906:4"]);
+	expect(existing).toEqual({ "906:4": { collected: true, updatedAt: 1 } });
+	const uncollected = markRewards(collected, rewards, false, live, 101);
+	expect(collectionState(reward, live, uncollected).state).toBe("remaining");
+	expect(collectionState(other, live, uncollected).state).toBe("remaining");
+	expect(live.rewards[reward.key].observedAt).toBe(500);
+});
+
+test("flight variants share one filter, keeping individual detail names and other Echo challenges separate", () => {
+	const flights = [
+		{
+			...reward,
+			kind: "exploration",
+			name: "Echo Challenge: Flight II",
+			icon: "/map/icons/SP_IconMap_Play_23_UI.webp",
+		},
+		{
+			...reward,
+			kind: "exploration",
+			name: "Echo Challenge: Flight VII",
+			icon: "/map/icons/SP_IconMap_Activity_13_UI.webp",
+		},
+	] as MapReward[];
+	const gulpuff = { ...flights[0], name: "Echo Challenge: Gulpuff" };
+	expect(itemType(flights[0])).toBe(itemType(flights[1]));
+	expect(itemType(gulpuff)).not.toBe(itemType(flights[0]));
+	const rows = summarizeItems([
+		{ reward: flights[0], state: "collected" },
+		{ reward: flights[1], state: "remaining" },
+		{ reward: gulpuff, state: "remaining" },
+	]);
+	expect(rows).toHaveLength(2);
+	expect(
+		rows.find((row) => row.label === "Echo Challenge: Flight"),
+	).toMatchObject({ total: 2, collected: 1, remaining: 1 });
+	expect(itemLabel(flights[0])).toBe("Echo Challenge: Flight II");
+});
+
+test("Tactical Holograms share one filter while detail names stay specific", () => {
+	const holograms = [
+		{
+			...reward,
+			kind: "exploration",
+			name: "Tactical Hologram: Crownless",
+			icon: "boss1",
+		},
+		{
+			...reward,
+			kind: "exploration",
+			name: "Tactical Hologram: Inferno Rider",
+			icon: "boss2",
+		},
+		{
+			...reward,
+			kind: "exploration",
+			name: "Overlord Challenge",
+			icon: "boss3",
+		},
+	] as MapReward[];
+	const rows = summarizeItems(
+		holograms.map((reward) => ({ reward, state: "remaining" })),
+	);
+	expect(rows).toHaveLength(1);
+	expect(rows[0]).toMatchObject({ label: "Tactical Holograms", total: 3 });
+	expect(itemLabel(holograms[0])).toBe("Tactical Hologram: Crownless");
+});
+
+test("repeatable combat locations ignore progress and never enter collection totals or bulk saves", () => {
+	const nest = {
+		...reward,
+		kind: "combat",
+		name: "Nightmare Nest",
+	} as MapReward;
+	const live = snapshot();
+	live.rewards[nest.key] = {
+		mapId: nest.mapId,
+		entityId: nest.entityId,
+		source: "reward-response",
+		observedAt: 10,
+	};
+	const marks = { [nest.key]: { collected: true, updatedAt: 20 } };
+	expect(collectionState(nest, live, marks)).toEqual({
+		state: "remaining",
+		at: null,
+	});
+	expect(markRewards({}, [nest], true, live)).toEqual({});
+	const marker = { reward: nest, state: "remaining" as const };
+	expect(summarizeItems([marker])[0]).toMatchObject({
+		kind: "combat",
+		total: 1,
+		collected: 0,
+		remaining: 0,
+	});
+	for (const visibility of ["all", "remaining", "collected"] as const)
+		expect(matchesMapVisibility(marker, visibility)).toBe(true);
+	expect(
+		matchesMapVisibility({ reward, state: "remaining" }, "collected"),
+	).toBe(false);
 });

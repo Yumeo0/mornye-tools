@@ -9,6 +9,7 @@ import {
 import { useMapCamera } from "@/lib/map/camera";
 import { clusterMarkers, clusterZoomLevel } from "@/lib/map/clustering";
 import type { RewardMarker } from "@/lib/map/filters";
+import { rewardsInBox } from "@/lib/map/selection";
 import { tileBounds } from "@/lib/map/tiles";
 import type {
 	GameMap,
@@ -71,6 +72,9 @@ export function MapCanvas({
 	onSelectQuest,
 	layer,
 	selected,
+	selectedKeys,
+	onSelectMany,
+	onClearSelection,
 	player,
 	followPlayer,
 	onPan,
@@ -89,6 +93,9 @@ export function MapCanvas({
 	onSelectQuest: (markers: QuestMarker[]) => void;
 	layer: number;
 	selected: string | null;
+	selectedKeys: ReadonlySet<string>;
+	onSelectMany: (rewards: MapReward[]) => void;
+	onClearSelection: () => void;
 	player: { x: number; y: number; yaw?: number | null } | null;
 	followPlayer: boolean;
 	onPan: () => void;
@@ -141,6 +148,14 @@ export function MapCanvas({
 		y: number;
 		ox: number;
 		oy: number;
+		selecting: boolean;
+		pointerId: number;
+	} | null>(null);
+	const [selectionBox, setSelectionBox] = useState<{
+		x: number;
+		y: number;
+		width: number;
+		height: number;
 	} | null>(null);
 	const redraw = useRef<() => void>(() => {});
 	const fit = useCallback(() => {
@@ -233,6 +248,7 @@ export function MapCanvas({
 		if (!el) return;
 		const wheel = (e: WheelEvent) => {
 			e.preventDefault();
+			if (drag.current) return;
 			const rect = el.getBoundingClientRect();
 			const px = e.clientX - rect.left - size.width / 2;
 			const py = e.clientY - rect.top - size.height / 2;
@@ -308,8 +324,10 @@ export function MapCanvas({
 			hits.current = clusters
 				.map((group) => {
 					const chosen =
-						group.items.find((i) => i.reward.key === selected) ??
-						group.items[0];
+						group.items.find(
+							(i) =>
+								i.reward.key === selected || selectedKeys.has(i.reward.key),
+						) ?? group.items[0];
 					const candidate =
 						chosen.reward.underground ??
 						group.items.find((i) => i.reward.underground)?.reward.underground ??
@@ -334,7 +352,17 @@ export function MapCanvas({
 				);
 			for (const group of hits.current) {
 				const { chosen } = group;
-				const isSelected = chosen.reward.key === selected;
+				const isSelected =
+					chosen.reward.key === selected || selectedKeys.has(chosen.reward.key);
+				if (isSelected) {
+					ctx.beginPath();
+					ctx.arc(group.x, group.y, 19, 0, Math.PI * 2);
+					ctx.fillStyle = "#8ff5c026";
+					ctx.fill();
+					ctx.strokeStyle = SELECTED_COLLECTED;
+					ctx.lineWidth = 2;
+					ctx.stroke();
+				}
 				const collected = group.items.filter(
 					(i) => i.state === "collected",
 				).length;
@@ -442,6 +470,7 @@ export function MapCanvas({
 		size,
 		layer,
 		selected,
+		selectedKeys,
 		player,
 	]);
 	const hitAt = (clientX: number, clientY: number) => {
@@ -534,11 +563,25 @@ export function MapCanvas({
 				ref={canvas}
 				className="block size-full touch-none outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
 				tabIndex={0}
-				aria-label="Reward map. Drag or use arrow keys to pan, scroll to zoom. Select a marker or group to view and change collection status."
+				aria-label="Reward map. Drag or use arrow keys to pan, scroll to zoom. Hold Shift and drag to select multiple rewards. Escape clears selection. Select a marker or group to view and change collection status."
 				style={{
-					cursor: drag.current ? "grabbing" : hover ? "pointer" : "grab",
+					cursor: selectionBox
+						? "crosshair"
+						: drag.current
+							? "grabbing"
+							: hover
+								? "pointer"
+								: "grab",
 				}}
 				onKeyDown={(e) => {
+					if (e.key === "Escape") {
+						drag.current = null;
+						setSelectionBox(null);
+						closeGroup();
+						onClearSelection();
+						return;
+					}
+					if (drag.current?.selecting) return;
 					const direction: Record<string, [number, number]> = {
 						ArrowLeft: [-1, 0],
 						ArrowRight: [1, 0],
@@ -565,16 +608,35 @@ export function MapCanvas({
 				}}
 				onPointerDown={(e) => {
 					if (e.button !== 0) return;
+					if (drag.current) return;
+					e.currentTarget.focus();
 					e.currentTarget.setPointerCapture(e.pointerId);
+					if (e.shiftKey) {
+						onPan();
+						closeGroup();
+					}
 					drag.current = {
 						x: e.clientX,
 						y: e.clientY,
 						ox: view.x,
 						oy: view.y,
+						selecting: e.shiftKey,
+						pointerId: e.pointerId,
 					};
 				}}
 				onPointerMove={(e) => {
 					const d = drag.current;
+					if (d && d.pointerId !== e.pointerId) return;
+					if (d?.selecting) {
+						const rect = e.currentTarget.getBoundingClientRect();
+						setSelectionBox({
+							x: Math.min(d.x, e.clientX) - rect.left,
+							y: Math.min(d.y, e.clientY) - rect.top,
+							width: Math.abs(e.clientX - d.x),
+							height: Math.abs(e.clientY - d.y),
+						});
+						return;
+					}
 					if (d) {
 						if (Math.hypot(e.clientX - d.x, e.clientY - d.y) > 4) {
 							onPan();
@@ -599,7 +661,21 @@ export function MapCanvas({
 				}}
 				onPointerUp={(e) => {
 					const d = drag.current;
+					if (!d || d.pointerId !== e.pointerId) return;
 					drag.current = null;
+					setSelectionBox(null);
+					e.currentTarget.releasePointerCapture(e.pointerId);
+					if (d.selecting) {
+						const rect = e.currentTarget.getBoundingClientRect();
+						onSelectMany(
+							rewardsInBox(
+								hits.current,
+								{ x: d.x - rect.left, y: d.y - rect.top },
+								{ x: e.clientX - rect.left, y: e.clientY - rect.top },
+							),
+						);
+						return;
+					}
 					// Tiny pointer drift still counts as a click; only real pans skip it.
 					if (!d || Math.hypot(e.clientX - d.x, e.clientY - d.y) > 8) return;
 					const hit = hitAt(e.clientX, e.clientY);
@@ -615,10 +691,27 @@ export function MapCanvas({
 						onSelect(hit.items[0].reward);
 					}
 				}}
+				onLostPointerCapture={() => {
+					drag.current = null;
+					setSelectionBox(null);
+				}}
 				onPointerCancel={() => {
 					drag.current = null;
+					setSelectionBox(null);
 				}}
 			/>
+			{selectionBox && (
+				<div
+					aria-hidden="true"
+					className="pointer-events-none absolute border border-primary bg-primary/15"
+					style={{
+						left: selectionBox.x,
+						top: selectionBox.y,
+						width: selectionBox.width,
+						height: selectionBox.height,
+					}}
+				/>
+			)}
 			<div className="pointer-events-none absolute bottom-3 left-4 flex items-center gap-3 text-[10px] text-[#e5e5d5]/70">
 				<span className="tracking-[.2em]">N ↑</span>
 				<span>Drag to explore · Scroll to zoom</span>

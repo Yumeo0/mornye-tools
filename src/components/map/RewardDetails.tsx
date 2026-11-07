@@ -5,12 +5,22 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { Switch } from "@/components/ui/switch";
-import { type CollectionState, itemLabel } from "@/lib/map/collection";
+import {
+	type CollectionState,
+	itemLabel,
+	tracksCollection,
+} from "@/lib/map/collection";
+import type { RewardMarker } from "@/lib/map/filters";
 import { KIND_LABELS, type MapReward } from "@/lib/map/types";
 import { useWutheringComments, wutheringImageUrl } from "@/lib/map/wuthering";
+import { ObtainedThrough } from "./ObtainedThrough";
+import { RewardLinks } from "./RewardLinks";
 
 export function RewardDetails({
 	reward,
+	linkedChests,
+	linkedChallenges,
+	onSelectReward,
 	collection,
 	collectedShortcut,
 	disabled,
@@ -19,6 +29,9 @@ export function RewardDetails({
 	onClose,
 }: {
 	reward: MapReward;
+	linkedChests: RewardMarker[];
+	linkedChallenges: RewardMarker[];
+	onSelectReward: (chest: MapReward) => void;
 	collection: CollectionState;
 	collectedShortcut: string;
 	disabled: boolean;
@@ -34,7 +47,7 @@ export function RewardDetails({
 	return (
 		<>
 			<section
-				className="absolute right-3 top-3 flex max-h-[calc(100%-5rem)] w-72 flex-col gap-3 overflow-auto border bg-background/95 p-4 shadow-xl max-[1000px]:w-60"
+				className="absolute right-3 top-3 flex max-h-[calc(100%-5rem)] w-88 max-w-[calc(100%-1.5rem)] flex-col gap-3 overflow-auto border bg-background/95 p-4 shadow-xl *:shrink-0 max-[1000px]:w-80"
 				aria-label="Reward details"
 			>
 				<div className="flex items-start gap-2">
@@ -63,7 +76,7 @@ export function RewardDetails({
 						×
 					</Button>
 				</div>
-				{reward.kind !== "collection" && (
+				{tracksCollection(reward) && (
 					<div className="flex items-center justify-between gap-3 border-t pt-3 text-xs">
 						<span className="flex min-w-0 flex-wrap items-center gap-2">
 							<span className={`map-state-dot state-${collection.state}`} />
@@ -94,6 +107,16 @@ export function RewardDetails({
 					<dt className="text-muted-foreground">Elevation</dt>
 					<dd>{Math.round(reward.z)}</dd>
 				</dl>
+				<ObtainedThrough
+					reward={reward}
+					challenges={linkedChallenges.map((item) => item.reward)}
+					onSelect={onSelectReward}
+				/>
+				<RewardLinks
+					label="Reward chests"
+					items={linkedChests}
+					onSelect={onSelectReward}
+				/>
 				{reward.hidden && (
 					<Badge variant="outline">Hidden or gated placement</Badge>
 				)}

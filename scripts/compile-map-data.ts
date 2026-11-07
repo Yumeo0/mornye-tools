@@ -1,5 +1,6 @@
 // Compile map placements and texture URLs from the data/ checkouts.
 // Asset conversion and publishing live in copy_assets.ts.
+import { existsSync } from "node:fs";
 import { join, resolve } from "node:path";
 import type {
 	GameMap,
@@ -7,19 +8,36 @@ import type {
 	MapReward,
 	RewardKind,
 } from "../src/lib/map/types";
+import { assetPath } from "./lib/compile-data-util";
 import { mapAssetSources } from "./lib/map-assets";
 import { additionalActivityMarkers } from "./map-activities";
+import { explorationCategoryLookup } from "./map-categories";
+import { challengeGraphEvidence } from "./map-challenge-evidence";
+import { challengeChestLinks, questChestLinks } from "./map-challenge-rewards";
 import {
 	CHALLENGE_PROJECT,
+	challengeMapMarkers,
 	challengeMarkerKeys,
 	explorationMarkerFor,
+	graphChallengeMarker,
+	referencedChallengeOwners,
 } from "./map-exploration";
+import { rewardItemLookup } from "./map-items";
+import { obeliskMarkers } from "./map-obelisks";
 import {
 	compileMapRegions,
 	type RegionArea,
 	type RegionCountry,
 	type RegionPlacement,
 } from "./map-regions";
+import {
+	mapRequirements,
+	mergeRequirementComponents,
+	type RequirementEntity,
+	type RequirementNode,
+} from "./map-requirements";
+import { resourceUsageLookup } from "./map-resources";
+import { teleportMarkers } from "./map-teleports";
 
 /**
  * Level entities the client never exposes as open-world collectibles: activity
@@ -46,7 +64,21 @@ const PROP_BLUEPRINTS = new Set([
  * catalogue rewards: a standard chest whose string entry reads "Advanced
  * Supply Chest", and a hidden sea-chest the client gates.
  */
-const PROP_ENTITIES = new Set(["8:136003236", "8:222700001"]);
+const PROP_ENTITIES = new Set([
+	"8:136003236",
+	"8:222700001",
+	"8:200000001", // Tacet Field: Central Plains duplicates its Resonance Cord placement.
+	// Remnant Residence controllers without standalone exploration challenges.
+	"8:135001791",
+	"8:135001796",
+	"8:135001797",
+	"8:135001809",
+	// Heron Wetland environmental mud controllers, not challenge devices.
+	"8:138000155",
+	"8:138700185",
+	"8:138700143", // Crate releases Blobfly 8:138000765, already mapped separately.
+	"8:146000950", // Only checks the reward chest for Race Challenge 8:146000921.
+]);
 
 // Thousandfold Petals use chest entities internally, but are exploration
 // collectibles in all three regions and all three growth stages.
@@ -70,6 +102,27 @@ function chestLabel(name: string): string {
  * labels cover every entity whose name the text tables never resolve.
  */
 const PROP_NAMES = new Set([
+	// Event and side-quest activities excluded from the exploration map.
+	"exploration|Device Activation Challenge",
+	"exploration|Rescue Challenge",
+	"exploration|Motorcycle Race",
+	"exploration|Hua Lielang Duel",
+	"exploration|Hide and Seek",
+	"exploration|Inferno Rider Challenge",
+	"exploration|Swim, Gulpuff, Swim",
+	// Expired limited-time events; their challenges are no longer obtainable.
+	"exploration|Moon Shooter",
+	"exploration|Overdash Club",
+	"exploration|Solaris Weather Forecast",
+	"exploration|Ragunna Weather Forecast",
+	"exploration|Septimont Weather Forecast",
+	"exploration|Rift Runner",
+	"exploration|Rift Runner I",
+	"exploration|Rift Runner II",
+	"exploration|Rift Runner III",
+	"exploration|Rift Runner IV",
+	"exploration|Rift Runner V",
+	"exploration|Rift Runner VI",
 	"casket|Drone Grapple",
 	"casket|Exploration collectible",
 	"casket|Fixed Grapple",
@@ -144,7 +197,9 @@ export async function compileMapData(): Promise<void> {
 		heritage: collectibleIcon,
 		casket: collectibleIcon,
 		exploration: textureUrl(CHALLENGE_PROJECT.icon, "icons"),
+		combat: textureUrl("SP_IconMap_WYQ_05_UI", "icons"),
 		collection: textureUrl("SP_IconMap_Play_113_UI", "icons"),
+		teleport: textureUrl("SP_IconMap_CS_02_UI", "icons"),
 	};
 	// Icon and name overrides from the wuthering.gg join (see scripts/fetch-map-icons.ts).
 	// Their data carries per-item artwork that the game tables do not map by blueprint.
@@ -245,6 +300,16 @@ export async function compileMapData(): Promise<void> {
 			x.ComponentsData,
 		]),
 	);
+	const itemData = await json("item/iteminfo.json");
+	const dropPackages = await json("drop/droppackage.json");
+	const resourceUsage = resourceUsageLookup(itemData, dropPackages);
+	const resourceUsageFor = (row: Row) => {
+		const reward = row.ComponentsData?.RewardComponent;
+		const defaults = templates.get(row.BlueprintType)?.RewardComponent;
+		return (reward?.RewardType ?? defaults?.RewardType) === 2
+			? resourceUsage(reward?.RewardId ?? defaults?.RewardId ?? 0)
+			: "other";
+	};
 	const plays = new Map<number, Row>(
 		(await json("LevelPlayData/levelplaydata.json")).map((x: Row) => [
 			x.LevelPlayId,
@@ -259,6 +324,11 @@ export async function compileMapData(): Promise<void> {
 			(x: Row) => x.Type === "LevelPlay",
 		);
 		if (owner) owners.set(row.Guid.replace("_", ":"), owner.LevelPlayId);
+	}
+	// Controllers are not always included in EntityOwnerData (notably Dream Contagion).
+	for (const [id, play] of plays) {
+		const key = `${play.LevelId}:${play.LevelPlayEntityId}`;
+		if (!owners.has(key)) owners.set(key, id);
 	}
 	// Underground artwork layers keyed by map and area; floor 0 rows carry no areas.
 	const undergroundByArea = new Map<string, { floor: number; layer: number }>();
@@ -277,8 +347,39 @@ export async function compileMapData(): Promise<void> {
 			).json()
 		).map((x: Row) => [x.Id, x.Content]),
 	);
+	const playNodes = (await json(
+		"LevelPlayNodeData/levelplaynodedata.json",
+	)) as Row[];
+	const graphEvidence = challengeGraphEvidence(
+		playNodes as { Key: string; Data: unknown }[],
+		text,
+	);
 	const areaRows = (await json("area/area.json")) as RegionArea[];
 	const countries = (await json("influence/country.json")) as RegionCountry[];
+	const categoryFor = explorationCategoryLookup(
+		await json("explore_progress/exploreprogress.json"),
+		await json("explore_progress/exploretype.json"),
+		text,
+		areaRows,
+	);
+	const nativeItem = rewardItemLookup(itemData, dropPackages, text);
+	const nativeIconCache = new Map<string, string | undefined>();
+	const nativeItemIcon = (unrealPath: string): string | undefined => {
+		if (nativeIconCache.has(unrealPath)) return nativeIconCache.get(unrealPath);
+		const url = assetPath(unrealPath, assets);
+		const source =
+			url &&
+			join(assets, url.replace("/wuwa-assets/", "").replace(/\.webp$/, ".png"));
+		const cached = `/map/icons/gg/${unrealPath.split("/").at(-1)?.split(".")[0]}.png`;
+		const icon =
+			source && existsSync(source)
+				? (url ?? undefined)
+				: existsSync(join(root, "public", cached.slice(1)))
+					? cached
+					: undefined;
+		nativeIconCache.set(unrealPath, icon);
+		return icon;
+	};
 	for (const name of new Set(
 		countries
 			.filter((country) => country.Icon)
@@ -321,11 +422,45 @@ export async function compileMapData(): Promise<void> {
 		return null;
 	};
 	const rewards: MapReward[] = [];
+	const challengeRewards = new Set<string>();
 	const regionPlacements: RegionPlacement[] = [];
 	const rewardKeys = new Set<string>();
 	const entityRows = (await json(
 		"level_entity/levelentityconfig.json",
 	)) as Row[];
+	const componentCache = new Map<Row, Row>();
+	const componentsFor = (row: Row): Row => {
+		let components = componentCache.get(row);
+		if (!components) {
+			components = mergeRequirementComponents(
+				templates.get(row.BlueprintType) ?? {},
+				row.ComponentsData ?? {},
+			);
+			componentCache.set(row, components);
+		}
+		return components;
+	};
+	const entityBlueprints = new Map(
+		entityRows.map((row) => [
+			`e_${row.MapId}_${row.EntityId}`,
+			row.BlueprintType,
+		]),
+	);
+	const referencedOwners = referencedChallengeOwners(
+		[...plays].map(([id, play]) => ({
+			id,
+			mapId: play.LevelId,
+			type: play.Type,
+			references: play.Reference ?? [],
+		})),
+	);
+	for (const row of entityRows) {
+		if (blueprints.get(row.BlueprintType)?.EntityType !== "ChallengeInteract")
+			continue;
+		const key = `${row.MapId}:${row.EntityId}`;
+		const owner = referencedOwners.get(key);
+		if (!owners.has(key) && owner !== undefined) owners.set(key, owner);
+	}
 	const titleFor = (row: Row): string =>
 		text.get(
 			row.ComponentsData?.BaseInfoComponent?.TidName ??
@@ -335,12 +470,51 @@ export async function compileMapData(): Promise<void> {
 		row.ComponentsData?.BaseInfoComponent?.Category?.ExploratoryDegree ??
 		templates.get(row.BlueprintType)?.BaseInfoComponent?.Category
 			?.ExploratoryDegree;
+	const graphEntities = new Set<string>();
+	for (const play of plays.values()) {
+		graphEntities.add(`${play.LevelId}:${play.LevelPlayEntityId}`);
+		for (const ref of [...(play.Reference ?? []), ...(play.Children ?? [])]) {
+			const match = /^e_(\d+)_(\d+)$/.exec(ref);
+			if (match) graphEntities.add(`${match[1]}:${match[2]}`);
+		}
+	}
+	const obelisks = obeliskMarkers(
+		entityRows.map((row) => {
+			const key = `${row.MapId}:${row.EntityId}`;
+			const components = componentsFor(row);
+			return {
+				key,
+				mapId: row.MapId,
+				blueprint: row.BlueprintType,
+				components,
+				excluded:
+					!maps.has(row.MapId) ||
+					Boolean(row.IsHidden) ||
+					Boolean(components.BaseInfoComponent?.PackId) ||
+					owners.has(key) ||
+					graphEntities.has(key),
+			};
+		}),
+		new Set(
+			entityRows
+				.filter(
+					(row) =>
+						kindFor(blueprints.get(row.BlueprintType)?.EntityType) ===
+							"chest" &&
+						!PROP_BLUEPRINTS.has(row.BlueprintType) &&
+						!PROP_ENTITIES.has(`${row.MapId}:${row.EntityId}`),
+				)
+				.map((row) => `${row.MapId}:${row.EntityId}`),
+		),
+	);
 	const explorationFor = (row: Row) =>
+		obelisks.get(`${row.MapId}:${row.EntityId}`) ??
 		explorationMarkerFor(
 			blueprints.get(row.BlueprintType)?.EntityType,
 			row.BlueprintType,
 			degreeFor(row),
 			titleFor(row),
+			(degree) => categoryFor(degree, row.AreaId),
 		);
 	const validEntities = entityRows.filter((row) => {
 		const transform = row.Transform?.[0];
@@ -371,6 +545,23 @@ export async function compileMapData(): Promise<void> {
 				owner: owners.get(`${row.MapId}:${row.EntityId}`) ?? null,
 			})),
 	);
+	const mapMarks = (await json("map_mark/mapmark.json")) as Row[];
+	const nativeChallengeMarker = challengeMapMarkers(
+		mapMarks.map((mark) => {
+			const icon =
+				String(mark.UnlockMarkPic || mark.LockMarkPic || "")
+					.split("/")
+					.at(-1)
+					?.split(".")[0] ?? "";
+			return {
+				mapId: mark.MapId,
+				entityId: mark.EntityConfigId,
+				playId: mark.RelativeType === 1 ? mark.RelativeId : 0,
+				title: text.get(mark.MarkTitle) ?? "",
+				icon: byName.has(icon) ? icon : "",
+			};
+		}),
+	);
 	const activities = additionalActivityMarkers(
 		validEntities.map((row) => ({
 			key: `${row.MapId}:${row.EntityId}`,
@@ -397,15 +588,20 @@ export async function compileMapData(): Promise<void> {
 			internalName: play.Key ?? "",
 			title: text.get(play.TidName) ?? "",
 			degree: play.ExploratoryConfig?.AddType,
+			areaId: play.AreaId,
 			children: play.Children ?? [],
+			predecessors: (play.LevelPlayOpenCondition?.Conditions ?? [])
+				.filter((condition: Row) => condition.Type === "PreLevelPlay")
+				.map((condition: Row) => condition.PreLevelPlay),
 			packId: play.PackId ?? 0,
 		})),
-		((await json("map_mark/mapmark.json")) as Row[]).map((mark) => ({
+		mapMarks.map((mark) => ({
 			mapId: mark.MapId,
 			entityId: mark.EntityConfigId,
 			playId: mark.RelativeType === 1 ? mark.RelativeId : 0,
 			title: text.get(mark.MarkTitle) ?? "",
 		})),
+		categoryFor,
 	);
 	for (const row of validEntities) {
 		const blueprint = blueprints.get(row.BlueprintType);
@@ -430,10 +626,47 @@ export async function compileMapData(): Promise<void> {
 			(owner === null || !activities.playIds.has(owner))
 		)
 			exploration ??= CHALLENGE_PROJECT;
+		// The map label/icon is more specific than the shared device template.
+		// Enrich an existing challenge only; display entities must not add duplicates.
+		const nativeChallenge =
+			!activity &&
+			exploration &&
+			(blueprint?.EntityType === "ChallengeInteract" || challengeKeys.has(key))
+				? nativeChallengeMarker(row.MapId, row.EntityId, owner)
+				: undefined;
+		if (nativeChallenge) exploration = nativeChallenge;
+		if (exploration === CHALLENGE_PROJECT && owner !== null) {
+			const play = plays.get(owner);
+			if (play)
+				exploration =
+					graphChallengeMarker(
+						text.get(play.TidName) ?? "",
+						(play.Children ?? []).flatMap((ref: string) => {
+							const blueprint = entityBlueprints.get(ref);
+							return blueprint ? [blueprint] : [];
+						}),
+						(play.Reference ?? []).flatMap((ref: string) => {
+							if (!ref.startsWith(`e_${row.MapId}_`)) return [];
+							const blueprint = entityBlueprints.get(ref);
+							return blueprint ? [blueprint] : [];
+						}),
+						graphEvidence.get(owner),
+						play.Key ?? "",
+					) ?? exploration;
+		}
+		if (
+			exploration &&
+			(challengeKeys.has(key) || blueprint?.EntityType === "ChallengeInteract")
+		)
+			challengeRewards.add(key);
 		const kind = PETAL_BLUEPRINT.test(row.BlueprintType)
 			? "casket"
 			: exploration
-				? "exploration"
+				? /^(Tacet Fields?(?::|$)|Tacet Discord Nest:|Nightmare Nest)/.test(
+						exploration.name,
+					)
+					? "combat"
+					: "exploration"
 				: kindFor(blueprint?.EntityType);
 		if (!kind) continue;
 		const transform = row.Transform[0];
@@ -449,6 +682,19 @@ export async function compileMapData(): Promise<void> {
 			? (plays.get(owner)?.LevelPlayRefreshConfig?.Type ?? "Unknown")
 			: "Unknown";
 		const degree = degreeFor(row);
+		const item =
+			kind === "collection" || PETAL_BLUEPRINT.test(row.BlueprintType)
+				? nativeItem(componentsFor(row).RewardComponent)
+				: undefined;
+		const category =
+			kind === "casket" ? categoryFor(degree, row.AreaId) : undefined;
+		const categoryName =
+			kind === "casket" &&
+			/^(Grapple )?Sonance Casket(?::|$)/.test(titleFor(row))
+				? titleFor(row)
+				: category?.name === "Unclaimed Rafter Kites"
+					? "Unclaimed Rafter Kite"
+					: category?.name.replace(/^Sonance Casket:.*$/, "Sonance Casket");
 		const resolvedTitle =
 			exploration?.name ||
 			titleFor(row) ||
@@ -466,27 +712,41 @@ export async function compileMapData(): Promise<void> {
 									4: "Premium Supply Chest",
 								} as Record<number, string>
 							)[degree ?? 0] ?? "Supply Chest"));
-		// Overrides correct missing English text and internal pickup labels.
-		const name = activity
-			? activity.name
-			: (iconOverrides.names?.[row.BlueprintType] ?? resolvedTitle);
+		// Apply curated prop exclusions before reward metadata can give a generic
+		// investigation node the name of its currency/material drop.
+		const placementName =
+			activity?.name ??
+			nativeChallenge?.name ??
+			(kind === "casket" ? (item?.name ?? categoryName) : undefined) ??
+			iconOverrides.names?.[row.BlueprintType] ??
+			resolvedTitle;
 		// Props that are not collectibles: geometry above may still frame an
 		// area, but the placement is neither a marker nor a claim to track.
 		if (
 			PROP_BLUEPRINTS.has(row.BlueprintType) ||
 			PROP_ENTITIES.has(key) ||
-			PROP_NAMES.has(`${kind}|${name}`)
+			PROP_NAMES.has(`${kind}|${placementName}`)
 		) {
 			rewardKeys.delete(key);
 			continue;
 		}
+		const name =
+			activity?.name ??
+			nativeChallenge?.name ??
+			(kind === "collection" ? titleFor(row) || item?.name : item?.name) ??
+			categoryName ??
+			placementName;
 		const label = kind === "chest" ? chestLabel(String(name)) : String(name);
 		const explorationIcon = exploration
-			? ((exploration.useIconOverride
+			? (exploration.iconUrl ??
+				(exploration.useIconOverride
 					? iconOverrides.types?.[`${kind}|${name}`]
-					: undefined) ?? textureUrl(exploration.icon, "icons"))
+					: undefined) ??
+				textureUrl(exploration.icon, "icons"))
 			: null;
 		if (explorationIcon) icons.push(explorationIcon);
+		const itemIcon = item && nativeItemIcon(item.icon);
+		if (itemIcon) icons.push(itemIcon);
 		rewards.push({
 			key,
 			mapId: row.MapId,
@@ -496,8 +756,19 @@ export async function compileMapData(): Promise<void> {
 			z: transform.Z * 0.01,
 			kind,
 			name: label,
-			...(activity?.title && activity.title !== label
-				? { title: activity.title }
+			...(item ? { itemId: item.id } : {}),
+			...(kind === "collection"
+				? { resourceUsage: resourceUsageFor(row) }
+				: {}),
+			...(kind === "heritage" && [12, 13, 14].includes(degree ?? 0)
+				? {
+						heritageTier: ({ 12: "blue", 13: "purple", 14: "gold" } as const)[
+							degree as 12 | 13 | 14
+						],
+					}
+				: {}),
+			...(exploration?.title && exploration.title !== label
+				? { title: exploration.title }
 				: {}),
 			blueprint: row.BlueprintType,
 			area: areas.get(row.AreaId) ?? `Area ${row.AreaId}`,
@@ -506,6 +777,7 @@ export async function compileMapData(): Promise<void> {
 			// Supply Chest" carrying the advanced icon), which used to split
 			// one chest type into a second, smaller row.
 			icon:
+				itemIcon ??
 				explorationIcon ??
 				(kind === "heritage"
 					? (iconOverrides.heritage?.[String(degree)] ??
@@ -523,10 +795,191 @@ export async function compileMapData(): Promise<void> {
 		});
 	}
 
+	const dungeons = new Map<number, Row>(
+		((await json("instance_dungeon/instancedungeon.json")) as Row[]).map(
+			(row) => [row.Id, row],
+		),
+	);
+	const weeklyDomainMarks = new Set<number>(
+		((await json("instance_dungeon/instancedungeonentrance.json")) as Row[])
+			.filter((entrance) =>
+				entrance.InstanceDungeonList.some(
+					(id: number) => dungeons.get(id)?.InstSubType === 4,
+				),
+			)
+			.map((entrance) => entrance.MarkId),
+	);
+	const travelMarkers = teleportMarkers(
+		await json("teleporter/teleporter.json"),
+		mapMarks as Parameters<typeof teleportMarkers>[1],
+		weeklyDomainMarks,
+		text,
+	);
+	const placementKeys = new Set(rewards.map((reward) => reward.key));
+	for (const row of validEntities) {
+		const key = `${row.MapId}:${row.EntityId}`;
+		const marker = travelMarkers.get(key);
+		if (!marker || placementKeys.has(key)) continue;
+		const transform = row.Transform[0];
+		const icon = textureUrl(marker.icon, "icons");
+		icons.push(icon);
+		placementKeys.add(key);
+		rewards.push({
+			key,
+			mapId: row.MapId,
+			entityId: row.EntityId,
+			x: transform.X * 0.01,
+			y: transform.Y * 0.01,
+			z: transform.Z * 0.01,
+			kind: "teleport",
+			name: marker.name,
+			...(marker.title ? { title: marker.title } : {}),
+			blueprint: row.BlueprintType,
+			area: areas.get(row.AreaId) ?? `Area ${row.AreaId}`,
+			icon,
+			owner: null,
+			refresh: "None",
+			hidden: Boolean(row.IsHidden),
+			underground: undergroundByArea.get(`${row.MapId}:${row.AreaId}`) ?? null,
+		});
+	}
+
+	const chestLinks = challengeChestLinks(
+		rewards,
+		challengeRewards,
+		[...plays].map(([id, play]) => ({
+			id,
+			mapId: play.LevelId,
+			references: [...(play.Reference ?? []), ...(play.Children ?? [])],
+		})),
+	);
+	for (const reward of rewards) {
+		const keys =
+			obelisks
+				.get(reward.key)
+				?.chestKeys.filter((key) => rewardKeys.has(key)) ??
+			chestLinks.get(reward.key);
+		if (keys && reward.kind !== "combat") reward.chestKeys = keys;
+	}
+
+	const questTypes = new Map<number, Row>(
+		((await json("questtype/questtype.json")) as Row[]).map((row) => [
+			row.Id,
+			row,
+		]),
+	);
+	const questMainTypes = new Map<number, Row>(
+		((await json("questtype/questmaintype.json")) as Row[]).map((row) => [
+			row.Id,
+			row,
+		]),
+	);
+	const questMarks = new Map<number, Row>(
+		((await json("map_mark/taskmark.json")) as Row[]).map((row) => [
+			row.MarkId,
+			row,
+		]),
+	);
+	const questPresentation = (type: number) => {
+		const subtype = questTypes.get(type);
+		const main =
+			questMainTypes.get(subtype?.MainId ?? 0) ?? questMainTypes.get(0);
+		const mark = questMarks.get(main?.TrackIconId ?? 2);
+		const name =
+			String(mark?.MarkPic ?? "")
+				.split("/")
+				.at(-1)
+				?.split(".")[0] ?? "";
+		const icon = textureUrl(
+			byName.has(name) ? name : "SP_IconMap_Task_01_UI",
+			"icons",
+		);
+		icons.push(icon);
+		const typeName =
+			text.get(subtype?.QuestTypeName) ??
+			text.get(main?.MainTypeName) ??
+			"Quest";
+		return {
+			type,
+			typeName: !typeName || typeName === "None" ? "Quest" : typeName,
+			icon,
+		};
+	};
+	const questLinks = questChestLinks(
+		rewards,
+		[...plays].map(([id, play]) => ({
+			id,
+			mapId: play.LevelId,
+			references: [...(play.Reference ?? []), ...(play.Children ?? [])],
+		})),
+		((await json("QuestData/questdata.json")) as Row[])
+			.filter((row) => row.Data.Type !== 100 && !row.Data.IsHideInTaskList)
+			.map((row) => ({
+				id: row.QuestId,
+				...questPresentation(row.Data.Type),
+				name: (text.get(row.Data.TidName) ?? "").replace(/<[^>]*>/g, "").trim(),
+				references: [
+					...(row.Data.Reference ?? []),
+					...(row.Data.Children ?? []),
+				],
+			})),
+	);
+	for (const reward of rewards) {
+		const links = questLinks.get(reward.key);
+		if (links) reward.questLinks = links;
+	}
+	const gatheringNames = new Map(
+		rewards
+			.filter((reward) => reward.kind === "collection")
+			.map((reward) => [reward.key, reward.name]),
+	);
+	const requirementEntities: RequirementEntity[] = entityRows.map((row) => {
+		const type = blueprints.get(row.BlueprintType)?.EntityType;
+		const components = componentsFor(row);
+		const action =
+			type === "Monster"
+				? "defeat"
+				: gatheringNames.has(`${row.MapId}:${row.EntityId}`)
+					? "collect"
+					: components.DestructibleItem
+						? "destroy"
+						: undefined;
+		const name = (
+			gatheringNames.get(`${row.MapId}:${row.EntityId}`) || titleFor(row)
+		)
+			.replace(/<[^>]*>/g, "")
+			.trim();
+		return {
+			key: `${row.MapId}:${row.EntityId}`,
+			mapId: row.MapId,
+			entityId: row.EntityId,
+			name: ["Investigate", "Gathering resource"].includes(name) ? "" : name,
+			action,
+			asleep: Boolean(row.InSleep),
+			components,
+		};
+	});
+	const requirements = mapRequirements(
+		rewards,
+		[...plays].map(([id, play]) => ({
+			id,
+			mapId: play.LevelId,
+			name: text
+				.get(play.TidName)
+				?.replace(/<[^>]*>/g, "")
+				.trim(),
+		})),
+		playNodes as RequirementNode[],
+		requirementEntities,
+		text,
+	);
+	for (const reward of rewards) {
+		const steps = requirements.get(reward.key);
+		if (steps) reward.requirements = steps;
+	}
+
 	const claimChecks: Record<string, string[]> = {};
-	for (const node of (await json(
-		"LevelPlayNodeData/levelplaynodedata.json",
-	)) as Row[]) {
+	for (const node of playNodes) {
 		const split = node.Key.lastIndexOf("_");
 		const graphId = Number(node.Key.slice(0, split));
 		const condition = node.Data?.Condition?.Condition;

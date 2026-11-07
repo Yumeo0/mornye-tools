@@ -3,7 +3,7 @@ import { collectionState } from "./collection";
 import {
 	type GhzsExport,
 	ghzsPosition,
-	matchGhzsExport,
+	matchGhzsExport as matchExport,
 	mergeImportedMarks,
 	parseGhzsExport,
 } from "./ghzs";
@@ -51,6 +51,8 @@ const catalog = (rewards = [reward]): MapCatalog => ({
 	missingTiles: [],
 	rewards,
 });
+const matchGhzsExport = (input: GhzsExport, map: MapCatalog) =>
+	matchExport(input, map, {});
 /** Inverse of the Huanglong alignment, to place a mark near a game position. */
 const pinAt = (x: number, y: number): [number, number] => {
 	const lng = (x - 42558.21765097) / 13236.63390182;
@@ -61,6 +63,49 @@ const pinAt = (x: number, y: number): [number, number] => {
 };
 
 describe("GHZS progress import", () => {
+	test("training dummies accept their new name and legacy obelisk and generic challenge categories", () => {
+		const dummy = {
+			...reward,
+			kind: "exploration",
+			name: "Training Dummies",
+		} as MapReward;
+		for (const category of [
+			"Training Dummies",
+			"Training Dummy",
+			"Obelisk Challenge",
+			"Challenge Project",
+		])
+			expect(
+				matchGhzsExport(data([{ ...point, category }]), catalog([dummy]))[0]
+					.reward?.key,
+			).toBe(dummy.key);
+	});
+	test("uses a verified ID mapping and reserves its placement from guesses", () => {
+		const rows = matchExport(
+			data([point, { ...point, id: "guess" }]),
+			catalog(),
+			{ [point.id]: `${reward.entityId}@${reward.y}:${reward.x}` },
+		);
+		expect(rows[0].reward?.key).toBe(reward.key);
+		expect(rows[1].reward).toBeUndefined();
+	});
+
+	test("does not guess when a mapped placement is absent or coordinates conflict", () => {
+		const rows = matchExport(data(), catalog(), {
+			[point.id]: `${reward.entityId}@${reward.y + 1}:${reward.x}`,
+		});
+		expect(rows[0].reward).toBeUndefined();
+	});
+
+	test("rejects two mapped IDs that claim the same placement", () => {
+		const destination = `${reward.entityId}@${reward.y}:${reward.x}`;
+		const rows = matchExport(
+			data([point, { ...point, id: "other" }]),
+			catalog(),
+			{ [point.id]: destination, other: destination },
+		);
+		expect(rows.every((row) => row.reason === "Ambiguous location")).toBe(true);
+	});
 	test("validates format, coordinates, and size and discards unrelated fields", () => {
 		expect(
 			parseGhzsExport(
@@ -166,7 +211,7 @@ describe("GHZS progress import", () => {
 		).toBe("Ambiguous location");
 	});
 
-	test("assigns neighbouring marks to separate placements instead of dropping both", () => {
+	test("leaves interchangeable neighbouring assignments ambiguous", () => {
 		const left = { ...reward, key: "8:left" };
 		const right = { ...reward, key: "8:right", x: reward.x + 700 };
 		const rows = matchGhzsExport(
@@ -180,9 +225,24 @@ describe("GHZS progress import", () => {
 			]),
 			catalog([left, right]),
 		);
-		expect(rows[0].reward?.key).toBe("8:left");
-		expect(rows[1].reward?.key).toBe("8:right");
-		expect(rows.every((row) => row.reason === undefined)).toBe(true);
+		expect(rows.every((row) => row.reason === "Ambiguous location")).toBe(true);
+	});
+
+	test("assigns neighbouring marks when swapping them is clearly worse", () => {
+		const left = { ...reward, key: "8:left" };
+		const right = { ...reward, key: "8:right", x: reward.x + 700 };
+		const rows = matchGhzsExport(
+			data([
+				{ ...point, coordinates: pinAt(reward.x + 50, reward.y) },
+				{
+					...point,
+					id: "second-pin",
+					coordinates: pinAt(reward.x + 650, reward.y),
+				},
+			]),
+			catalog([left, right]),
+		);
+		expect(rows.map((row) => row.reward?.key)).toEqual(["8:left", "8:right"]);
 	});
 
 	test("keeps the closer mark and leaves its neighbour unassigned", () => {
@@ -385,6 +445,11 @@ test("calibrated insets resolve real GHZS pins on Avinoleum and in the Vault Und
 	for (const fixture of calibratedPins) {
 		const row = rows.find((entry) => entry.id === fixture.pin);
 		if (!row) throw new Error(`missing row for ${fixture.pin}`);
+		if (fixture.category === "Mimic Chest") {
+			expect(row.reward).toBeUndefined();
+			expect(row.reason).toBe("Unsupported category");
+			continue;
+		}
 		expect(row.reward?.key).toBe(fixture.reward);
 		expect(row.reason).toBeUndefined();
 		expect(row.distance).toBeLessThanOrEqual(fixture.maxDistance);
@@ -478,4 +543,15 @@ test("GHZS exporter reads only the current account's IDs and never uploads progr
 			(call) => !call.init.method && call.init.credentials === "omit",
 		),
 	).toBe(true);
+});
+
+test("progress imports cannot collect repeatable combat locations", () => {
+	const location = { key: "8:123", kind: "combat" } as MapReward;
+	expect(
+		mergeImportedMarks({}, [location], {
+			playerId: 1,
+			scene: null,
+			rewards: {},
+		}),
+	).toEqual({});
 });

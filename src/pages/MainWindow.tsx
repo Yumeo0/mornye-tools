@@ -17,6 +17,7 @@ import { CharactersTab } from "@/components/tabs/CharactersTab";
 import { EchoesTab } from "@/components/tabs/EchoesTab";
 import { MapTab } from "@/components/tabs/MapTab";
 import { OptimizerTab } from "@/components/tabs/OptimizerTab";
+import { QuestsTab } from "@/components/tabs/QuestsTab";
 import { SettingsTab } from "@/components/tabs/SettingsTab";
 import { WeaponsTab } from "@/components/tabs/WeaponsTab";
 import { UpdateBanner } from "@/components/UpdateBanner";
@@ -59,6 +60,11 @@ const NAV_TABS = [
 		value: "achievements",
 		title: "Achievements",
 		icon: "/wuwa-assets/UI/UIResources/Common/Atlas/TabIcon/SP_FuncIconAchievement.webp",
+	},
+	{
+		value: "quests",
+		title: "Quests",
+		icon: "/wuwa-assets/UI/UIResources/Common/Atlas/TabIcon/SP_IconQuest.webp",
 	},
 ] as const;
 
@@ -269,6 +275,7 @@ export default function MainWindow() {
 			value: "achievements",
 			content: <AchievementsTab active={tab === "achievements"} />,
 		},
+		{ value: "quests", content: <QuestsTab active={tab === "quests"} /> },
 	];
 
 	return (

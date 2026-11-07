@@ -9,17 +9,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { chunkIntoRows, VirtualGrid } from "@/components/VirtualGrid";
+import { tracksCollection } from "@/lib/map/collection";
 import {
+	groupItemRows,
 	type ItemRow,
 	isItemVisible,
 	type MapVisibility,
 } from "@/lib/map/filters";
-import {
-	KIND_LABELS,
-	REWARD_KINDS,
-	type RewardState,
-	STATE_LABELS,
-} from "@/lib/map/types";
+import { type RewardState, STATE_LABELS } from "@/lib/map/types";
 import {
 	isQuestStatusVisible,
 	type QuestStatusRow,
@@ -117,7 +114,9 @@ export function MapFilters({
 	const filterRows = useMemo(() => {
 		const result: FilterRow[] = [];
 		const countOf = (row: ItemRow) =>
-			visibility === "all" ? row.total : row[visibility];
+			visibility === "all" || !tracksCollection(row)
+				? row.total
+				: row[visibility];
 		/** Append list rows or boxed rows for one block of entries. */
 		const addEntries = (entries: FilterEntry[], prefix: string) => {
 			if (filterView === "list") {
@@ -185,22 +184,16 @@ export function MapFilters({
 					"quests",
 				);
 		}
-		for (const kind of REWARD_KINDS) {
-			const rows = itemRows.filter(
-				(row) =>
-					row.kind === kind &&
-					(matches(row.label) || matches(KIND_LABELS[kind])),
-			);
-			if (!rows.length) continue;
-			const disclosure = expansion(kind);
+		for (const { id, label, rows } of groupItemRows(itemRows, search)) {
+			const disclosure = expansion(id);
 			const visibleCount = rows.filter((row) =>
 				isItemVisible(overrides, row),
 			).length;
 			result.push({
-				id: `kind:${kind}`,
+				id: `kind:${id}`,
 				view: "header",
 				...disclosure,
-				label: KIND_LABELS[kind],
+				label,
 				count: rows.reduce((sum, row) => sum + countOf(row), 0),
 				checked: visibleCount === rows.length,
 				indeterminate: visibleCount > 0 && visibleCount < rows.length,
@@ -220,7 +213,7 @@ export function MapFilters({
 						checked: isItemVisible(overrides, row),
 						onToggle: (visible: boolean) => onTypesChange([row.type], visible),
 					})),
-					kind,
+					id,
 				);
 		}
 		if (!questSynced)

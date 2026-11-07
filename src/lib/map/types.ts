@@ -3,15 +3,51 @@ export type RewardKind =
 	| "heritage"
 	| "casket"
 	| "exploration"
-	| "collection";
+	| "collection"
+	| "combat"
+	| "teleport";
 export const REWARD_KINDS: RewardKind[] = [
 	"chest",
 	"heritage",
 	"casket",
 	"exploration",
 	"collection",
+	"combat",
+	"teleport",
 ];
 export type RewardState = "collected" | "remaining";
+export type ResourceUsage = "upgrade" | "other";
+export type HeritageTier = "blue" | "purple" | "gold";
+
+export type RequirementAction =
+	| "collect"
+	| "defeat"
+	| "destroy"
+	| "interact"
+	| "activate"
+	| "complete";
+
+export type MapRequirement =
+	| {
+			action: RequirementAction;
+			targets: { name: string; count: number; entityKey?: string }[];
+	  }
+	| { action: "objective"; text: string }
+	| {
+			action: "all" | "any" | "sequence" | "atLeast" | "exactly";
+			requirements: MapRequirement[];
+			count?: number;
+	  };
+
+export interface MapQuestLink {
+	id: number;
+	name: string;
+	type?: number;
+	typeName?: string;
+	icon?: string;
+	/** Same-map gameplay graphs through which this quest provides the chest. */
+	playIds?: number[];
+}
 
 export interface MapReward {
 	key: string;
@@ -21,6 +57,12 @@ export interface MapReward {
 	y: number;
 	z: number;
 	kind: RewardKind;
+	/** Gathering resources used for character, weapon, skill or Echo development. */
+	resourceUsage?: ResourceUsage;
+	/** Unambiguous native reward preview item used for the pickup's name and icon. */
+	itemId?: number;
+	/** Native exploration tier, retained independently of the chosen illustration. */
+	heritageTier?: HeritageTier;
 	name: string;
 	blueprint: string;
 	/** Individual activity name, while `name` groups its filter category. */
@@ -28,6 +70,12 @@ export interface MapReward {
 	area: string;
 	icon: string;
 	owner: number | null;
+	/** Reward chest placements explicitly linked to this challenge gameplay. */
+	chestKeys?: string[];
+	/** Named quests explicitly referencing this chest or its owning gameplay. */
+	questLinks?: MapQuestLink[];
+	/** Explicit prerequisites from native entity components and gameplay graphs. */
+	requirements?: MapRequirement[];
 	refresh: string;
 	hidden: boolean;
 	/**
@@ -115,4 +163,6 @@ export const KIND_LABELS: Record<RewardKind, string> = {
 	casket: "Caskets & collectibles",
 	exploration: "Exploration",
 	collection: "Resources",
+	combat: "Tacet Fields & Nests",
+	teleport: "Teleport points",
 };

@@ -2,6 +2,7 @@ import type { ComponentProps } from "react";
 import {
 	FilterField,
 	FilterIconButton,
+	FilterPanel,
 	FilterSearch,
 	FilterSummary,
 	RangeFilter,
@@ -9,7 +10,6 @@ import {
 	toggleInArray,
 } from "@/components/filters";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import {
 	CHAIN_RANGE,
@@ -21,11 +21,10 @@ import {
 } from "@/lib/characterFilters";
 import { elementOptions, weaponTypeOptions } from "@/lib/characters";
 import { rarityTextClass } from "@/lib/rarity";
-import { cn } from "@/lib/utils";
 
 /**
- * Filter and sort controls above the character grid: search, element, weapon
- * type, rarity, ownership, level/chain ranges and the sort buttons. The
+ * Vertical character filters: search, element, weapon type, rarity, ownership,
+ * level/chain ranges and sorting. The
  * optimizer's picker dialog reuses this bar with restyled chrome (`className`)
  * and its own search-input behaviour (`searchInputProps`).
  */
@@ -52,9 +51,9 @@ export function CharacterFilterBar({
 	onSortChange: (key: CharacterSortKey, desc: boolean) => void;
 	resultCount: number;
 	totalCount: number;
-	/** Extra classes on the card (dialogs restyle the chrome). */
+	/** Extra classes on the panel (dialogs restyle the chrome). */
 	className?: string;
-	/** Extra classes on the content row. */
+	/** Extra classes on the vertical control stack. */
 	contentClassName?: string;
 	/** Forwarded to the search input (focus, key handling, styling). */
 	searchInputProps?: ComponentProps<"input">;
@@ -82,128 +81,121 @@ export function CharacterFilterBar({
 	};
 
 	return (
-		<Card className={cn("shrink-0", className)}>
-			<CardContent
-				className={cn(
-					"flex flex-wrap items-end gap-x-4 gap-y-2",
-					contentClassName,
-				)}
-			>
-				<FilterSearch
-					value={filters.search}
-					onChange={(search) =>
-						onFiltersChange((prev) => ({ ...prev, search }))
-					}
-					placeholder="Character name..."
-					inputProps={searchInputProps}
-				/>
+		<FilterPanel
+			label="Character filters"
+			className={className}
+			contentClassName={contentClassName}
+		>
+			<FilterSearch
+				value={filters.search}
+				onChange={(search) => onFiltersChange((prev) => ({ ...prev, search }))}
+				placeholder="Character name..."
+				inputProps={searchInputProps}
+			/>
 
-				<FilterField label="Element">
-					<div className="flex gap-1">
-						{elementOptions.map((option) => (
-							<FilterIconButton
-								key={option.value}
-								icon={option.icon ?? ""}
-								title={option.value}
-								colored
-								pressed={filters.elements.includes(option.value)}
-								onClick={() => toggleFilterValue("elements", option.value)}
-							/>
-						))}
-					</div>
-				</FilterField>
-
-				<FilterField label="Weapon">
-					<div className="flex gap-1">
-						{weaponTypeOptions.map((option) => (
-							<FilterIconButton
-								key={option.value}
-								icon={option.icon ?? ""}
-								title={option.value}
-								pressed={filters.weaponTypes.includes(option.value)}
-								onClick={() => toggleFilterValue("weaponTypes", option.value)}
-							/>
-						))}
-					</div>
-				</FilterField>
-
-				<FilterField label="Rarity">
-					<div className="flex gap-1">
-						{[4, 5].map((rarity) => (
-							<Button
-								key={rarity}
-								type="button"
-								variant={
-									filters.rarity.includes(rarity) ? "default" : "outline"
-								}
-								size="sm"
-								title={`${rarity}★ only`}
-								className={rarityTextClass(rarity)}
-								onClick={() => toggleRarity(rarity)}
-							>
-								{rarity}★
-							</Button>
-						))}
-					</div>
-				</FilterField>
-
-				<FilterField label="Ownership">
-					<span className="flex h-7 items-center gap-1.5 text-xs">
-						<Switch
-							checked={filters.ownedOnly}
-							onCheckedChange={(checked) =>
-								onFiltersChange((prev) => ({ ...prev, ownedOnly: checked }))
-							}
+			<FilterField label="Element">
+				<div className="flex flex-wrap gap-1">
+					{elementOptions.map((option) => (
+						<FilterIconButton
+							key={option.value}
+							icon={option.icon ?? ""}
+							title={option.value}
+							colored
+							pressed={filters.elements.includes(option.value)}
+							onClick={() => toggleFilterValue("elements", option.value)}
 						/>
-						Owned
-					</span>
-				</FilterField>
+					))}
+				</div>
+			</FilterField>
 
-				<div className="flex w-full flex-wrap items-end gap-x-6 gap-y-2 border-t pt-2">
-					<div className="w-48">
-						<RangeFilter
-							label="Lvl"
-							min={LEVEL_RANGE[0]}
-							max={LEVEL_RANGE[1]}
-							value={filters.levelRange}
-							onChange={(levelRange) =>
-								onFiltersChange((prev) => ({ ...prev, levelRange }))
-							}
+			<FilterField label="Weapon">
+				<div className="flex flex-wrap gap-1">
+					{weaponTypeOptions.map((option) => (
+						<FilterIconButton
+							key={option.value}
+							icon={option.icon ?? ""}
+							title={option.value}
+							pressed={filters.weaponTypes.includes(option.value)}
+							onClick={() => toggleFilterValue("weaponTypes", option.value)}
 						/>
-					</div>
+					))}
+				</div>
+			</FilterField>
 
-					<div className="w-40">
-						<RangeFilter
-							label="Chain"
-							min={CHAIN_RANGE[0]}
-							max={CHAIN_RANGE[1]}
-							value={filters.chainRange}
-							onChange={(chainRange) =>
-								onFiltersChange((prev) => ({ ...prev, chainRange }))
-							}
-						/>
-					</div>
+			<FilterField label="Rarity">
+				<div className="flex flex-wrap gap-1">
+					{[4, 5].map((rarity) => (
+						<Button
+							key={rarity}
+							type="button"
+							variant={filters.rarity.includes(rarity) ? "default" : "outline"}
+							size="sm"
+							title={`${rarity}★ only`}
+							className={rarityTextClass(rarity)}
+							onClick={() => toggleRarity(rarity)}
+						>
+							{rarity}★
+						</Button>
+					))}
+				</div>
+			</FilterField>
 
-					<SortButtons
-						options={CHARACTER_SORT_OPTIONS}
-						value={sortKey}
-						desc={sortDesc}
-						onChange={onSortChange}
+			<FilterField label="Ownership">
+				<span className="flex h-7 items-center gap-1.5 text-xs">
+					<Switch
+						checked={filters.ownedOnly}
+						onCheckedChange={(checked) =>
+							onFiltersChange((prev) => ({ ...prev, ownedOnly: checked }))
+						}
 					/>
+					Owned
+				</span>
+			</FilterField>
 
-					<FilterSummary
-						label={`Showing ${resultCount} of ${totalCount}`}
-						onReset={
-							hasActiveFilters
-								? () => {
-										onFiltersChange(DEFAULT_FILTERS);
-										onSortChange("name", false);
-									}
-								: undefined
+			<div className="flex min-w-0 flex-col gap-4">
+				<div className="w-full">
+					<RangeFilter
+						label="Lvl"
+						min={LEVEL_RANGE[0]}
+						max={LEVEL_RANGE[1]}
+						value={filters.levelRange}
+						onChange={(levelRange) =>
+							onFiltersChange((prev) => ({ ...prev, levelRange }))
 						}
 					/>
 				</div>
-			</CardContent>
-		</Card>
+
+				<div className="w-full">
+					<RangeFilter
+						label="Chain"
+						min={CHAIN_RANGE[0]}
+						max={CHAIN_RANGE[1]}
+						value={filters.chainRange}
+						onChange={(chainRange) =>
+							onFiltersChange((prev) => ({ ...prev, chainRange }))
+						}
+					/>
+				</div>
+
+				<SortButtons
+					options={CHARACTER_SORT_OPTIONS}
+					value={sortKey}
+					desc={sortDesc}
+					onChange={onSortChange}
+				/>
+
+				<FilterSummary
+					label={`Showing ${resultCount} of ${totalCount}`}
+					onReset={
+						hasActiveFilters
+							? () => {
+									onFiltersChange(DEFAULT_FILTERS);
+									onSortChange("name", false);
+								}
+							: undefined
+					}
+				/>
+			</div>
+		</FilterPanel>
 	);
 }

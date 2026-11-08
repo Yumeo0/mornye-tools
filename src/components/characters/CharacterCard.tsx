@@ -92,7 +92,7 @@ export function CharacterCard({
 							</CardBadge>
 							<CardBadge title="Echoes equipped">
 								<img
-									src="/echoes.webp"
+									src="/icons/inventory/echoes.webp"
 									alt=""
 									className="size-3.5 object-contain"
 								/>

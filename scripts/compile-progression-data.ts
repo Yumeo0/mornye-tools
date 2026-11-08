@@ -7,6 +7,7 @@ import type {
 	SideQuest,
 } from "../src/lib/progression/types";
 import { unrealPathToRelative } from "./lib/compile-data-util";
+import { prepareCatalog } from "./lib/public-assets";
 
 interface QuestConfig {
 	Id: number;
@@ -286,7 +287,7 @@ export async function compileProgressionData(): Promise<void> {
 	};
 	await Bun.write(
 		join(root, "src/configs/progression.json"),
-		`${JSON.stringify(catalog)}\n`,
+		`${JSON.stringify(prepareCatalog(catalog))}\n`,
 	);
 	console.log(
 		`Progression: ${allQuests.length} quests, ${catalog.quests.length} side quests (${catalog.quests.filter((quest) => quest.start).length} acceptance locations), ${achievements.length} achievements.`,

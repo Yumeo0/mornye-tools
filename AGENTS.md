@@ -6,6 +6,8 @@ drives the in-game overlay window.
 
 ## Setup gotchas
 
+- Public assets use Git LFS. Run `git lfs install` and `git lfs pull` after
+  cloning so builds receive real files rather than LFS pointers.
 - Use `bun run dev` / `bun run build`, never raw `vite`: the `postinstall`
   hook builds the `thewuwacalculator` submodule's `@wuwacalc/core` and syncs
   live game data into the gitignored `public/data`. Both are hard
@@ -30,12 +32,14 @@ drives the in-game overlay window.
 
 ## Architecture rules
 
-- The sniffer fills one game-ID-based `account.json`; the overlay scan only
-  reads it and never writes. Keep the two data paths separate.
+- Account data is stored per account/server profile under `profiles/`. The
+  passive sniffer and the opt-in active session both write through the shared
+  converters; the overlay scan only reads the selected profile and never writes.
+  Keep profile selection separate from packet routing.
 - Never edit vendored or generated code: `src-tauri/crates/spectrum/`
   (including generated protos), `thewuwacalculator/`, `data/` checkouts.
 - The main window lives in `src/pages/MainWindow.tsx` (tab shell with
-  Characters / Echoes / Weapons / Optimizer / Settings tabs in
+  Overview / Characters / Echoes / Weapons / Optimizer / Settings tabs in
   `src/components/tabs/`); the overlay is a separate Vite entry
   (`overlay.html` → `overlay-main.tsx` → `src/pages/Overlay.tsx`).
 - UI primitives in `src/components/ui` are Base UI + Hugeicons (shadcn

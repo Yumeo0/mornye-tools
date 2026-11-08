@@ -64,12 +64,13 @@ export function itemType(reward: MapReward) {
 	if (isEchoFlight(reward)) return "exploration:Echo Challenge: Flight";
 	// Preserve saved filter keys when a known item texture moves to local assets.
 	const icon =
-		reward.itemId && reward.icon.startsWith("/wuwa-assets/")
+		reward.filterIcon ??
+		(reward.itemId && reward.icon.startsWith("/wuwa-assets/")
 			? `/map/icons/gg/${reward.icon
 					.split("/")
 					.at(-1)
 					?.replace(/\.webp$/, ".png")}`
-			: reward.icon;
+			: reward.icon);
 	return `${reward.kind}:${reward.name}:${icon}`;
 }
 export function itemFilterLabel(reward: MapReward) {

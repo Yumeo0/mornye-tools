@@ -16,9 +16,12 @@ covers what the app does and where to download it.
 Prerequisites:
 
 - Bun, Node and Rust (stable)
+- Git LFS (all tracked files under `public/` use LFS)
 - `protoc` (the vendored `spectrum` crate compiles the pinned protos)
 
 ```sh
+git lfs install
+git lfs pull       # download public assets after cloning an existing checkout
 bun install        # postinstall: builds @wuwacalc/core + syncs public/data
 bun run dev
 bun run build      # tsc + vite
@@ -61,8 +64,9 @@ bun release patch   # or minor / major; --no-push keeps it local
 The tag has to reach github.com/Yumeo0/mornye-tools for the workflow to run.
 Note that the Forgejo push mirror updates the refs there **without creating a
 workflow run**, so a release is started either by pushing the tag to GitHub
-directly (add a remote for it and `bun release` pushes both - see
-`scripts/release.ts`) or by hand: Actions -> Build and Release -> Run workflow,
+directly (add a remote for it and `bun release` pushes GitHub before origin to
+avoid racing the mirror - see `scripts/release.ts`) or by hand:
+Actions -> Build and Release -> Run workflow,
 with the tag as the input.
 
 Installers are published under version-less aliases
@@ -99,13 +103,138 @@ The session key cache survives restarts.
   only the local player's teams are merged. An empty `GetFormationDataResponse`
   is an acknowledgement and leaves them intact. Successful edits, switches and
   explicit removals update individual teams. Login rebuilds the list so teams from
-  another account cannot linger. Teams are stored in `account.json`; selecting one
-  in the optimizer only changes its local character slots.
+  another account cannot linger. Teams are stored in the account's profile;
+  selecting one in the optimizer only changes its local character slots.
 - Capture health is visible in settings → Developer: frame / packet /
   decode error counters, plus a stall warning when frames keep arriving but
   nothing decodes. A stall means the passive KCP mirror lost a segment (it can
   never ask for a retransmit); account updates stay frozen until the game
   restarts its connection.
+
+## Account profiles and active sessions
+
+Account data lives under `profiles/<serverId>-<playerId>/` (`account.json` plus
+`overrides.json`); `profiles.json` lists the identities and the profile the UI
+currently shows. Profiles are keyed by the verified player ID and the official
+server ID, so accounts and regions cannot overwrite each other. `Profiles` in
+`src-tauri/src/account/profiles.rs` owns the stores, the passive-source pointer
+and the UI selection. The passive sniffer follows the first captured login and
+keeps writing that player's store. The selector only changes which store the UI
+reads; ingestion targets are explicit, and a save from an older revision is
+discarded by `PreparedSave`.
+
+A migrated legacy store and a passive-only capture have no official server ID.
+The UI asks for the player name, player ID and server/region the first time such
+a profile contains data; the entered region becomes a provisional server key and
+the profile moves under `profiles/<server>-<player>/`. The next active connection
+on that account adopts the provisional profile and replaces the key and region
+with the official server values.
+
+The optional active session (`src-tauri/src/dangerous.rs`) authenticates with a
+global Kuro account, selects an official server, and joins the world. It requests
+`NormalItem`, `PhantomItem`, `WeaponItem`, role list, formations and achievements.
+Own-player name, level, world level and signature come from `BasicInfoNotify`
+and `PlayerAttrNotify`; the public `PlayerBasicInfoGetRequest` rejects looking
+up yourself with code 400003 (`ErrCanNotGetSelfBasicInfo`). The session feeds
+every handled packet through `account/ingest.rs` and the same converters as
+passive capture. Inventory is
+stored as `inventory` in the profile snapshot. The active worker writes only its
+own profile. Passwords and short-lived game tokens are never persisted. Saved
+accounts keep nonsecret email/server metadata and profile associations in
+`dangerous-features.json`; each account has a separate device ID and OS credential
+store entry managed by `dangerous/credentials.rs`. The previous single-account
+preferences and vault entry remain usable without signing in again. Restart
+restores sign-in only, not a world connection. Sign-out clears only the selected
+account's authorization; disabling the feature clears all saved authorizations.
+Each account's durable restore gate prevents a failed OS deletion from restoring
+a signed-out session. An unavailable secure
+store produces a warning and never falls back to storing tokens in app JSON.
+
+Settings shows a saved-account dropdown plus Add/Manage player profile dialogs.
+Adding authenticates the login, uses the official catalogue's `GARUrl` and
+`UserRegion/GetUserInfo` to locate existing characters, then briefly probes only
+those servers for authenticated name, Union level and UID. Invalid/rejected GAR
+responses fail discovery rather than implying empty servers. Probes use the
+shared player-attribute converter without ingesting inventory. The backend caches
+verified candidates for that login; cancelling or changing accounts invalidates
+them. Choosing a candidate registers/selects its profile and persists its login
+association. Removing a profile unregisters it without deleting its cached store
+or map progress; re-adding the same UID/server reuses those files.
+Selecting a linked player profile selects its login context while idle; Connect
+resolves the association again in Rust and uses that profile's official server.
+The authenticated UID/server must match before ingestion starts. Browsing another
+profile during a connection never reroutes that socket's packets. Profile selection
+does not join the world automatically.
+
+Settings Export includes a `map` section by default: profile identity, player ID,
+captured exploration/scene and the selected UID's manual map marks from
+`map-markers.json`. It preserves imported marks and explicit uncollected overrides.
+The export is blocked until that UID's manual marks load, avoiding partial backups.
+
+The active transport reads the game frame length as a three-byte little-endian
+integer, excluding the prefix itself. The high byte is significant for large
+inventory responses; treating it as reserved truncates frames above 64 KiB.
+Split frames remain buffered until complete, with a 4 MiB receive limit and
+CRC validation before decrypting normal data frames. Exception envelopes (types
+3/19) are rejected with numeric frame type/length only: live type 3 can be just
+14 bytes, so its body must not be interpreted as a normal RPC response header.
+The rejected frame is consumed once; its opaque body is never decoded or stored.
+
+Echo upgrades use a bounded command queue on the same active worker; IPC never
+exposes arbitrary game RPCs. `tools/session-probe/src/echo_upgrade.rs` plans each
+stage from the connected session's echo/material state and the compiled
+`src/configs/echo_upgrade.json` tables (`bun scripts/compile_echo_upgrade.ts`).
+Execution revalidates the plan, sends `PhantomLevelUpRequest` with one tuning
+slot or `PhantomIdentifyRequest` for an already unlocked slot, and reconciles
+echoes and materials through the shared converters. Discard echo EXP uses the
+game's refund ratio. Locked/equipped echoes and all selected instance IDs are
+excluded from consumption. Failed mutations are never retried. Stack splits
+follow the server's operated-copy instance ID and add it to the protected IDs.
+`src/lib/echoUpgradeBatch.ts` owns the sequential batch independently of mounted
+tabs; rating uses the same guide/maximum-potential calculation as the overlay.
+`live_inventory.rs` starts with the initial inventory snapshots, then applies
+server notifications and successful operation responses in transport order.
+Repeated inventory initialization RPCs can be rejected by the server, so preview,
+revalidation and reconciliation use a heartbeat acknowledgment to drain pending
+updates instead. A stage waits for fresh authoritative updates for every spent
+material and expected echo fodder removals as well as verified substats. Material
+counts include refunds from consumed tuned echoes; they need not equal the old
+count minus the cost. Missing consumption updates stop the batch.
+The next mutation also requires a passing rating verdict.
+Profile changes, disconnects and Stop prevent further stages.
+
+The main sidebar separates Inventory (Characters, Echoes, Weapons, Achievements,
+Quests) from Tools (Optimizer, Map, Echo Upgrader). The dedicated upgrader uses
+an echo picker modal and a queue beside the rules/progress panel. The queue only
+shows selected copies with the shared inventory echo cards, follows operated
+copies and confirmed remainders after stack splits, and highlights and scrolls
+to the echo currently being upgraded. Stack quantities are selected in the picker.
+Connection errors appear in dismissible toasts rather than below the sidebar button.
+Batch rules (threshold, discard fodder, EXP material rarities and auto-discard) are
+saved in `settings.json` under `echoUpgradeRules`, independently of the overlay's
+upgrade assistant. Saved rules are validated before use and writes are serialized
+across tab mounts. The overlay threshold supplies the initial migration default.
+Each batch captures a fixed
+`MaterialPolicy`: discard echo fodder and the four EXP tube IDs are independent
+choices, enforced by the Rust planner during preview and execution. Optional
+auto-discard uses `ItemDisuseRequest` (`Oper = 1`), whose `ErrCode` is checked.
+The worker checks current equipment and echo state before marking, preserves
+locks/equipment/unsplit stacks, and waits for the server's mark notification.
+Mark updates follow the same inventory converters and fixed connection
+profile as upgrades. Failed targets stay protected as fodder until the batch ends.
+
+The default **Overview** page shows the selected profile's name, region, Union
+and World levels, signature, last update and collection totals. The UID is not
+rendered until its reveal button is clicked; changing profiles or leaving the
+page hides it again. Characters now contains only the roster and character
+details. The profile portrait comes from `PlayerAttrKey.HeadPhoto`, captured on
+login and on attribute updates, and persists as `player.headId`. Older snapshots
+without it use a placeholder until the next capture.
+
+`bun scripts/compile_profile_data.ts` compiles the head-item-to-image mapping from
+`PlayerHead/playerheadre.json` and `role/roleskin.json`, including skin and event
+portraits. It runs as part of `compile_all_data.ts`. The existing asset manifest
+and copy step publish those referenced portraits alongside character artwork.
 
 ## Optimizer
 
@@ -158,7 +287,7 @@ absent from the installed game and are reported rather than replaced with
 invented terrain.
 
 The map shows only the live account: the sniffer writes exploration evidence
-into `account.json` and the tab refreshes through `account-updated`. A
+into the active account profile and the tab refreshes through `account-updated`. A
 successful reward RPC or an exact live `CheckTreasureBeenClaimed` completion
 marks a placement collected; everything else starts as not collected. There is
 no inference from completed graphs, spawn presence or spawn absence, so markers
@@ -180,7 +309,7 @@ The script reads the current GHZS account's loaded marks and public catalogs;
 it does not export login tokens, upload progress, or change GHZS marks.
 
 Imported locations merge into the account's manual marks, preserving existing
-progress and leaving the sniffer's `account.json` untouched. Reimporting the same
+progress and leaving the sniffer's profile store untouched. Reimporting the same
 locations is safe. An export can be previewed without connecting a game account,
 but saving requires one. The dialog resets its preview when accounts change.
 
@@ -231,7 +360,7 @@ placements to the site's marker datasets by their raw
 `Transform` coordinates (their data uses the same unscaled values), falls back
 to unambiguous name matches against the site's marker and item databases, and
 writes `src/configs/map_icons.json` plus the downloaded images under
-`public/map/icons/gg/`. Everything it cannot prove keeps the built-in per-kind
+`public/images/map-items/` as WebP. Everything it cannot prove keeps the built-in per-kind
 icon, and blueprint-specific matches win over type and name matches.
 Native item placements bypass this community artwork inference. Tidal Heritage
 tiers are preserved from native exploration degrees independently of artwork;
@@ -240,7 +369,7 @@ item texture from local assets preserves its existing saved filter key.
 
 To trim transparent padding from existing icons without fetching them again,
 use `python scripts/trim-transparent-padding.py icon.png` (requires Pillow).
-Pass several file paths or quoted globs such as `"public/map/icons/**/*.webp"`;
+Pass several file paths or quoted globs such as `"public/icons/map/**/*.webp"`;
 `--dry-run` previews changes. The script updates PNG/WebP files in place with
 lossless encoding, preserving every nontransparent pixel. Fetching and compilation
 do not run this script automatically.
@@ -341,8 +470,10 @@ bun run map:compile
 
 The normal `update:data` pipeline compiles map metadata with the other game data.
 `copy_assets.ts` publishes the referenced images from `wuwa-assets`, including
-WebP tiles, low-resolution overview tiles, nation icons and the world-map icon
-atlas in `public/map`. The map compiler also writes the sniffer's exact claim
+WebP tiles and low-resolution overview tiles in `public/images/maps/tiles/` and
+`public/images/maps/thumbnails/`, nation artwork in `public/images/maps/regions/`,
+and only the referenced world-map sprites in `public/icons/map/`.
+The map compiler also writes the sniffer's exact claim
 rules to `src/configs/map_rules.json`. The tile size and alignment follow the
 client's `MapDefine.js` / `MapTileMgr.js`; the captured Jinzhou position falls
 inside city tile `0_-1`.
@@ -373,6 +504,34 @@ unknown. The static quest and achievement catalogue is rebuilt with
 `bun run progression:compile` or the normal `update:data` pipeline; its images are
 published by `copy_assets.ts`.
 
+## Public asset layout
+
+- `public/icons/`: reusable UI glyphs, grouped by navigation, inventory, echo
+  marks, elements, stats, weapon types, rarity quality, achievements and map pins.
+- `public/images/`: game-data artwork, grouped into resonator portraits, artwork
+  and sequences; profile portraits; echoes; echo sets; weapons; item families;
+  community map-item artwork; and map regions, tiles and thumbnails.
+- `public/templates/`: recognition templates used by the Rust overlay.
+- `public/map/`: compiled map metadata (`catalog.json`).
+- `public/data/live/`: gitignored calculator JSON, synced by `bun install`.
+
+Run `bun scripts/copy_assets.ts` after changing image references. All data
+compilers produce the same canonical paths, so `bun run update:data` maintains
+this layout. Images use readable lowercase names; weapon images retain their
+item IDs, and map filenames preserve signed tile coordinates. Calculator weapon
+artwork is used by item ID because several native weapon texture IDs differ
+from their inventory item IDs.
+
+The publisher builds `data/asset_manifest.json` from rendered catalogue fields
+and UI references, validates source-name collisions, reuses current WebP
+encodings, and converts changed sources. Identical source artwork at the same
+resolution and byte-identical published images share one file;
+`src/configs/asset_aliases.json` records the aliases. Only after all referenced
+files exist does it prune unused images and legacy directories. Saved map
+filters retain their original `filterIcon` identity independently of image
+renames and deduplication. Account snapshots and map collection marks are not
+part of image publication.
+
 ## Overlay protocol
 
 The overlay is purely event-driven. A Rust supervisor (`src-tauri/src/overlay.rs`)
@@ -397,12 +556,17 @@ visible:
   the discard key itself.
 
 Account data has a single frontend source of truth as well: `src/lib/account.ts`
-mirrors the Rust store (one fetch path, one `account-updated` subscription,
-all writes through its mutation functions) and exposes it via `useAccount`.
+mirrors the selected Rust profile (one fetch path, one `account-updated`
+subscription, all writes through its mutation functions) and exposes it via
+`useAccount`. `AccountProfileSelector` switches profiles through
+`account_select_profile`.
 
 ## Layout
 
-- `src-tauri/src/account/` - account model, store and overrides
+- `src-tauri/src/account/` - profile registry, account model/store, overrides
+  and active-session ingestion
+- `src-tauri/src/dangerous.rs` - opt-in account login, server discovery and the
+  active session
 - `src-tauri/src/sniffer/` - capture lifecycle, keys, extraction, live modules
 - `src-tauri/src/overlay.rs` - overlay scan supervisor, mark presses, events
 - `src-tauri/src/echo_panel.rs` - trigger-region OCR and template matching

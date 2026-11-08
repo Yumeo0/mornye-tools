@@ -34,7 +34,7 @@ test("Heron Wetland chest is obtained through Stygian Lacrimosa with the Explora
 			name: "Stygian Lacrimosa",
 			type: 9,
 			typeName: "Exploration Quests",
-			icon: "/map/icons/SP_IconMap_Task_10_UI.webp",
+			icon: "/icons/map/task-10.webp",
 		},
 	});
 	expect(
@@ -237,15 +237,15 @@ test("compiled chest quests have published native icons for their quest types", 
 	).json();
 	const quests = catalog.rewards.flatMap((reward) => reward.questLinks ?? []);
 	for (const [type, icon] of [
-		[1, "SP_IconMap_Task_01_UI"],
-		[2, "SP_IconMap_Task_02_UI"],
-		[3, "SP_IconMap_Task_03_UI"],
-		[9, "SP_IconMap_Task_10_UI"],
+		[1, "task-01"],
+		[2, "task-02"],
+		[3, "task-03"],
+		[9, "task-10"],
 	] as const) {
 		const entries = quests.filter((quest) => quest.type === type);
 		expect(entries.length).toBeGreaterThan(0);
 		expect(
-			entries.every((quest) => quest.icon === `/map/icons/${icon}.webp`),
+			entries.every((quest) => quest.icon === `/icons/map/${icon}.webp`),
 		).toBe(true);
 	}
 	for (const icon of new Set(quests.map((quest) => quest.icon))) {

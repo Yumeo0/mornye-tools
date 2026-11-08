@@ -1,3 +1,4 @@
+import { assetUrl } from "./assets";
 // Raw catalog tables derived from the bundled JSON configs.
 //
 // The card, rating, build-guide and optimizer modules all need the same
@@ -148,10 +149,7 @@ export function echoSetsFor(entry: CatalogEcho, setId: number): EchoSet[] {
 
 /** Sonata icon assets only ship in the IconElementAttri128 resolution. */
 export function sonataIcon128(icon: string): string {
-	return icon.replace(
-		"IconElementAttri/T_IconElementAttri",
-		"IconElementAttri128/T_IconElementAttri128_",
-	);
+	return assetUrl(icon);
 }
 
 /** First sonata icon per set name (build cards, set filter). */

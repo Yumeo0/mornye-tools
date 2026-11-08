@@ -61,26 +61,39 @@ while you upgrade them.
 
 ## Features
 
-- **Live account sync** - your profile, resonators, weapons and echoes stay current
-  as you play.
+- **Overview** - your selected profile's portrait, levels, signature and collection
+  totals, with a click-to-reveal UID.
+- **Live account sync** - separate profiles per account and server keep your
+  resonators, weapons, echoes and inventory current as you play.
 - **Characters, Echoes, Weapons** - browse your inventory, with substat ratings,
-  lock/discard marks and stack counts (×N) on each echo card.
+  lock/discard marks and stack counts (×N) on each echo card. Filter echoes by
+  minimum and maximum level, including an exact level such as +0.
 - **Build calculator** - evaluates a build's damage.
 - **Optimizer** - finds the best loadout for a target from your echo inventory.
 - **Overlay echo scan** - shows substat value while upgrading the echo in-game.
-- **Echo Upgrade Assistant** - re-rates an echo after each upgrade or tuning and marks.
-  it for discard once it can no longer reach your threshold.
+- **Echo Upgrade Assistant** - re-rates an echo after each upgrade or tuning and
+  marks it for discard once it can no longer reach your threshold.
+- **Automatic echo upgrades** - select echoes in **Tools → Echo Upgrader**, then level and tune them through
+  the active connection until their rating threshold becomes unreachable. Uses
+  your choice of discard-marked echoes and EXP tube rarities, with optional
+  discard marking when an echo can no longer reach the threshold.
 - **Exploration map** - chests, Tidal Heritage, collectible, quest and
   gathering placements across all maps, with your live progress and a GHZS
   import (WIP) for marks you already have.
 - **Achievements** - the client's achievement snapshot and live updates, with
   search, group filters and a hidden-achievement toggle.
+- **Dangerous Features (optional)** - sign in to a global Kuro account, select
+  a server and explicitly connect to the game world; the session fills that
+  account/server profile with the same data the passive scan captures.
 
 ## Documentation
 
 - [Development, releases and architecture](docs/DEVELOPMENT.md) - build and test
   commands, how releases are cut and self-updated, the packet-capture internals,
   the exploration-map data pipeline, the overlay protocol and the source layout.
+- [Dangerous Features](docs/DANGEROUS_FEATURES.md) - activation, account login,
+  server selection, account profiles, connection controls and credential
+  handling.
 
 ## Support
 

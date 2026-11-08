@@ -9,6 +9,7 @@ export {
 export * from "./EquippedCharacterFilter";
 export * from "./FilterField";
 export * from "./FilterIconButton";
+export * from "./FilterPanel";
 export * from "./FilterSearch";
 export * from "./FilterSelect";
 export * from "./FilterSummary";

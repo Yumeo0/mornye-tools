@@ -87,7 +87,7 @@ export function ObtainedThrough({
 								src={
 									quest?.icon ??
 									challenge?.icon ??
-									"/map/icons/SP_IconMap_Task_01_UI.webp"
+									"/icons/map/task-01.webp"
 								}
 								alt=""
 								className={cn(

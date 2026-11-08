@@ -425,6 +425,9 @@ fn spawn_supervisor(app: AppHandle) {
                 let session_key = state.current_session_key();
                 let _ = live::run(app.clone(), pid, ports, pem, session_key, handle);
                 state.position.lock().clear();
+                if let Ok(mut profiles) = app.state::<AccountState>().store.lock() {
+                    profiles.reset_passive();
+                }
                 *state.world.lock() = world::WorldCapture::default();
                 *state.progression.lock() = progression::ProgressionCapture::default();
                 *state.teams.lock() = teams::TeamCapture::default();
@@ -455,11 +458,13 @@ fn spawn_debouncer(app: AppHandle) {
         // writes happen after releasing it so the capture loop is never
         // blocked on disk I/O.
         let prepared = match app.state::<AccountState>().store.lock() {
-            Ok(mut store) => Some(store.prepare_save()),
+            Ok(mut store) => Some(store.prepare_saves()),
             Err(_) => None,
         };
         if let Some(prepared) = prepared {
-            let _ = prepared.write();
+            for save in prepared {
+                let _ = save.write();
+            }
         }
         let refs: Vec<&str> = sections.iter().map(|s| s.as_str()).collect();
         emit_updated(&app, &refs);

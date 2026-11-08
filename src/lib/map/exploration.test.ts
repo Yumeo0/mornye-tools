@@ -111,7 +111,7 @@ describe("exploration placements", () => {
 			z: 30,
 			kind: "exploration",
 			name: "Windchimer",
-			icon: "/map/icons/SP_IconMap_Play_12_UI.webp",
+			icon: "/icons/map/play-12.webp",
 			blueprint: "Gameplay_CXS_4",
 			area: "Mt. Firmament",
 			owner: null,
@@ -174,7 +174,7 @@ test("published Flight II uses the game's name and icon at its original device p
 	);
 	expect(flight).toMatchObject({
 		name: "Echo Challenge: Flight II",
-		icon: "/map/icons/SP_IconMap_Play_23_UI.webp",
+		icon: "/icons/map/echo-flight.webp",
 		x: 1113250,
 		y: 1123110,
 		owner: 166850018,
@@ -230,7 +230,7 @@ test("expired event challenges are absent and the Septimont flight device resolv
 	).toBe(false);
 	expect(rewards.find((reward) => reward.key === "8:938850000")).toMatchObject({
 		name: "Echo Challenge: Flight I",
-		icon: "/map/icons/SP_IconMap_Play_23_UI.webp",
+		icon: "/icons/map/echo-flight.webp",
 		x: 1082872.25,
 		y: 1040358,
 		owner: 938850000,
@@ -260,14 +260,14 @@ test("combat training devices use the combat category and their native hovering 
 		name: "Combat Challenge",
 		x: 234476,
 		y: 283758,
-		icon: "/map/icons/combat-challenge.svg",
+		icon: "/icons/map/combat-challenge.svg",
 		chestKeys: ["8:136905701"],
 	});
-	expect(catalog.icons).toContain("/map/icons/combat-challenge.svg");
+	expect(catalog.icons).toContain("/icons/map/combat-challenge.svg");
 	expect(
 		await Bun.file(
 			new URL(
-				"../../../public/map/icons/combat-challenge.svg",
+				"../../../public/icons/map/combat-challenge.svg",
 				import.meta.url,
 			),
 		).exists(),
@@ -295,7 +295,7 @@ test("Vitreum Dancer devices resolve their native name and icon", async () => {
 		),
 	).toMatchObject({
 		name: "Tactical Hologram: Vitreum Dancer",
-		icon: "/map/icons/SP_IconMap_Play_17_UI.webp",
+		icon: "/icons/map/play-17.webp",
 		owner: 161900014,
 	});
 });
@@ -323,23 +323,23 @@ test("race and ski challenges use their in-world emblems and expired Overdash ev
 	const rewards = catalog.rewards as MapReward[];
 	expect(rewards.find((reward) => reward.key === "8:136904880")).toMatchObject({
 		name: "Race Challenge",
-		icon: "/map/icons/race-challenge.svg",
+		icon: "/icons/map/race-challenge.svg",
 		x: 250043.89,
 		y: 298698.96,
 		chestKeys: ["8:136904883"],
 	});
 	expect(rewards.find((reward) => reward.key === "8:133900566")).toMatchObject({
 		name: "Ski Challenge",
-		icon: "/map/icons/ski-challenge.svg",
+		icon: "/icons/map/ski-challenge.svg",
 		x: 269710,
 		y: 350377,
 	});
 	expect(rewards.some((reward) => reward.name === "Overdash Club")).toBe(false);
 	for (const name of ["race-challenge", "ski-challenge"]) {
-		expect(catalog.icons).toContain(`/map/icons/${name}.svg`);
+		expect(catalog.icons).toContain(`/icons/map/${name}.svg`);
 		expect(
 			await Bun.file(
-				new URL(`../../../public/map/icons/${name}.svg`, import.meta.url),
+				new URL(`../../../public/icons/map/${name}.svg`, import.meta.url),
 			).exists(),
 		).toBe(true);
 	}
@@ -363,16 +363,16 @@ test("shooting training devices use their own category and native floating emble
 		),
 	).toMatchObject({
 		name: "Shooting Challenge",
-		icon: "/map/icons/shooting-challenge.svg",
+		icon: "/icons/map/shooting-challenge.svg",
 		x: 73930,
 		y: 289250,
 		chestKeys: ["8:146000522"],
 	});
-	expect(catalog.icons).toContain("/map/icons/shooting-challenge.svg");
+	expect(catalog.icons).toContain("/icons/map/shooting-challenge.svg");
 	expect(
 		await Bun.file(
 			new URL(
-				"../../../public/map/icons/shooting-challenge.svg",
+				"../../../public/icons/map/shooting-challenge.svg",
 				import.meta.url,
 			),
 		).exists(),
@@ -408,7 +408,7 @@ test("reported graph controllers retain IDs and linked reward chests when rename
 	});
 	expect(rewards.find((reward) => reward.key === "8:136800082")).toMatchObject({
 		name: "Challenge Tower",
-		icon: "/map/icons/SP_IconMap_Activity_08_UI.webp",
+		icon: "/icons/map/activity-08.webp",
 		x: 91987.16,
 		y: -88173.61,
 		chestKeys: ["8:136800083"],
@@ -434,7 +434,7 @@ test("Desorock's moving-platform target challenge joins the timed shooting categ
 		),
 	).toMatchObject({
 		name: "Timed Shooting Challenge",
-		icon: "/map/icons/shooting-challenge.svg",
+		icon: "/icons/map/shooting-challenge.svg",
 		x: -36372,
 		y: 2353,
 		chestKeys: ["8:109006727"],
@@ -458,7 +458,7 @@ test("state-matching strike mechanisms classify as obelisk challenges through na
 		),
 	).toMatchObject({
 		name: "Training Dummies",
-		icon: "/map/icons/SP_IconMap_Activity_Navigation_10_UI.webp",
+		icon: "/icons/map/activity-navigation-10.webp",
 		x: -54024,
 		y: -48996,
 		chestKeys: ["8:109005775"],

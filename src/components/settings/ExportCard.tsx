@@ -19,6 +19,7 @@ import {
 	exportFileName,
 	exportPartCount,
 } from "@/lib/accountExport";
+import { useManualMapMarks } from "@/lib/map/manual";
 
 /** How long a copy/save confirmation stays on screen. */
 const STATUS_TIMEOUT_MS = 2400;
@@ -30,6 +31,7 @@ const ALL_PARTS_SELECTED: ExportSelection = {
 	resonators: true,
 	weapons: true,
 	echoes: true,
+	map: true,
 };
 
 function entryCountLabel(count: number): string {
@@ -39,6 +41,9 @@ function entryCountLabel(count: number): string {
 /** Account export: type selection plus clipboard/file output. */
 export function ExportCard() {
 	const { snapshot, error } = useAccount();
+	const manual = useManualMapMarks(
+		snapshot.profile?.playerId ?? snapshot.player?.playerId ?? 0,
+	);
 	const [selection, setSelection] =
 		useState<ExportSelection>(ALL_PARTS_SELECTED);
 	const [status, setStatus] = useState<string | null>(null);
@@ -67,27 +72,37 @@ export function ExportCard() {
 
 	const copyJson = useCallback(async () => {
 		try {
-			const json = accountExportJson(snapshot, selectedParts);
+			const json = accountExportJson(
+				snapshot,
+				selectedParts,
+				new Date(),
+				manual.marks,
+			);
 			await navigator.clipboard.writeText(json);
 			showStatus(`Copied ${selectedLabel} JSON to clipboard`);
 		} catch (copyError) {
 			console.error("Export copy failed:", copyError);
 			showStatus(`Copy failed: ${String(copyError)}`);
 		}
-	}, [snapshot, selectedParts, selectedLabel, showStatus]);
+	}, [snapshot, selectedParts, selectedLabel, showStatus, manual.marks]);
 
 	const saveJson = useCallback(() => {
 		try {
 			const fileName = exportFileName();
-			downloadTextFile(fileName, accountExportJson(snapshot, selectedParts));
+			downloadTextFile(
+				fileName,
+				accountExportJson(snapshot, selectedParts, new Date(), manual.marks),
+			);
 			showStatus(`Saved ${fileName}`);
 		} catch (saveError) {
 			console.error("Export save failed:", saveError);
 			showStatus(`Save failed: ${String(saveError)}`);
 		}
-	}, [snapshot, selectedParts, showStatus]);
+	}, [snapshot, selectedParts, showStatus, manual.marks]);
 
 	const nothingSelected = selectedParts.length === 0;
+	const mapUnavailable =
+		selection.map && (!manual.ready || Boolean(manual.error));
 
 	return (
 		<Card>
@@ -96,6 +111,13 @@ export function ExportCard() {
 					<Label className="flex items-center gap-2 text-base font-medium">
 						<FileJson className="size-4" /> Export account data
 					</Label>
+					{snapshot.profile && (
+						<p className="text-xs text-muted-foreground">
+							{snapshot.player?.name || "Player"} · {snapshot.profile.playerId}{" "}
+							· {snapshot.profile.region}. Export each player profile separately
+							using the sidebar selector.
+						</p>
+					)}
 				</div>
 
 				<div className="space-y-2">
@@ -111,7 +133,11 @@ export function ExportCard() {
 							</div>
 							<div className="flex items-center gap-3">
 								<span className="text-xs text-muted-foreground tabular-nums">
-									{entryCountLabel(exportPartCount(snapshot, part))}
+									{part === "map" && !manual.ready
+										? "Loading…"
+										: entryCountLabel(
+												exportPartCount(snapshot, part, manual.marks),
+											)}
 								</span>
 								<Switch
 									id={`export-part-${part}`}
@@ -132,7 +158,7 @@ export function ExportCard() {
 					<Button
 						size="sm"
 						onClick={() => void copyJson()}
-						disabled={nothingSelected}
+						disabled={nothingSelected || mapUnavailable}
 					>
 						<ClipboardCopy /> Copy JSON
 					</Button>
@@ -140,7 +166,7 @@ export function ExportCard() {
 						variant="outline"
 						size="sm"
 						onClick={saveJson}
-						disabled={nothingSelected}
+						disabled={nothingSelected || mapUnavailable}
 					>
 						<Download /> Save file
 					</Button>
@@ -158,6 +184,11 @@ export function ExportCard() {
 				{error && (
 					<p className="text-xs text-destructive">
 						Account data may be stale: {error}
+					</p>
+				)}
+				{selection.map && manual.error && (
+					<p role="alert" className="text-xs text-destructive">
+						{manual.error}. Map export is blocked until all marks can be read.
 					</p>
 				)}
 			</CardContent>

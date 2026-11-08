@@ -1,3 +1,4 @@
+import { prepareCatalog } from "./lib/public-assets";
 /**
  * Compile character (resonator) data for the Account UI.
  *
@@ -311,7 +312,7 @@ async function compileCharacterData(): Promise<void> {
 	console.log(`\nWriting ${processed} characters to ${OUTPUT_PATH}...`);
 	await Bun.write(
 		OUTPUT_PATH,
-		`${JSON.stringify(characterList, null, "\t")}\n`,
+		`${JSON.stringify(prepareCatalog(characterList), null, "\t")}\n`,
 	);
 
 	console.log(`✓ Successfully compiled character data to ${OUTPUT_PATH}`);

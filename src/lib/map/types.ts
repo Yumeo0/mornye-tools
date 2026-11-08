@@ -69,6 +69,8 @@ export interface MapReward {
 	title?: string;
 	area: string;
 	icon: string;
+	/** Saved filter identity, independent of renamed/deduplicated artwork. */
+	filterIcon?: string;
 	owner: number | null;
 	/** Reward chest placements explicitly linked to this challenge gameplay. */
 	chestKeys?: string[];

@@ -2,36 +2,44 @@
 
 import { echoCost, echoName, echoSet } from "@/components/echo/EchoCard";
 import type { Echo } from "@/lib/account";
+import { type EchoMark, echoMark } from "@/lib/echoMark";
 import { sortByKey } from "@/lib/sorting";
 
 export interface EchoFilters {
 	search: string;
 	minLevel: number;
+	maxLevel: number;
 	cost: number[];
 	set: string[];
 	mainStat: string;
 	substat: string[];
 	character: string[];
+	marks: EchoMark[];
 }
 
 export const EMPTY_ECHO_FILTERS: EchoFilters = {
 	search: "",
 	minLevel: 0,
+	maxLevel: 25,
 	cost: [],
 	set: [],
 	mainStat: "any",
 	substat: [],
 	character: [],
+	marks: [],
 };
 
 export function matchesEchoFilters(echo: Echo, filters: EchoFilters): boolean {
+	if (filters.marks.length > 0 && !filters.marks.includes(echoMark(echo))) {
+		return false;
+	}
 	if (
 		filters.search &&
 		!echoName(echo).toLowerCase().includes(filters.search.toLowerCase())
 	) {
 		return false;
 	}
-	if (echo.level < filters.minLevel) {
+	if (echo.level < filters.minLevel || echo.level > filters.maxLevel) {
 		return false;
 	}
 

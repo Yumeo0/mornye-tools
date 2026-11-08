@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { FilterLayout, FilterPanel } from "@/components/filters";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
@@ -44,7 +45,8 @@ function QuestFilter({
 	onChange: (value: string) => void;
 }) {
 	return (
-		<Field className="w-48">
+		<Field>
+			<FieldLabel>{label}</FieldLabel>
 			<Select
 				items={items}
 				value={value}
@@ -185,69 +187,76 @@ export function QuestsTab({ active }: { active: boolean }) {
 	return (
 		<section
 			aria-label="Quests"
-			className="flex min-h-0 flex-1 flex-col gap-4 pb-4"
+			className="flex min-h-0 min-w-0 flex-1 flex-col"
 		>
-			<header className="flex flex-wrap items-baseline justify-between gap-2">
-				<h1 className="text-lg font-medium">Quests</h1>
-				<p className="text-xs text-muted-foreground">
-					{unknown === entries.length ? "—" : completed.toLocaleString()} /{" "}
-					{entries.length.toLocaleString()} completed
-				</p>
-			</header>
-			<FieldGroup className="flex-row flex-wrap gap-3">
-				<Field className="min-w-48 flex-1">
-					<FieldLabel htmlFor="quest-search" className="sr-only">
-						Search quests
-					</FieldLabel>
-					<Input
-						id="quest-search"
-						placeholder="Search quests, descriptions or ID…"
-						value={search}
-						onChange={(event) => setSearch(event.target.value)}
+			<FilterLayout
+				filters={
+					<FilterPanel label="Quest filters">
+						<header className="flex flex-col gap-2">
+							<h1 className="text-lg font-medium">Quests</h1>
+							<p className="text-xs text-muted-foreground">
+								{unknown === entries.length ? "—" : completed.toLocaleString()}{" "}
+								/ {entries.length.toLocaleString()} completed
+							</p>
+						</header>
+						<FieldGroup className="gap-4">
+							<Field>
+								<FieldLabel htmlFor="quest-search">Search quests</FieldLabel>
+								<Input
+									id="quest-search"
+									placeholder="Search quests…"
+									title="Search quests, descriptions or ID"
+									value={search}
+									onChange={(event) => setSearch(event.target.value)}
+								/>
+							</Field>
+							<QuestFilter
+								label="Quest type"
+								items={types}
+								value={type}
+								onChange={setType}
+							/>
+							<QuestFilter
+								label="Quest status"
+								items={STATUSES}
+								value={status}
+								onChange={setStatus}
+							/>
+						</FieldGroup>
+						<div className="flex flex-col gap-3 text-xs text-muted-foreground">
+							<p>
+								{unknown > 0
+									? "Log in with account sync enabled to load all quest completion data."
+									: "Completion synced from your current account."}
+							</p>
+							<span>{quests.length.toLocaleString()} shown</span>
+						</div>
+					</FilterPanel>
+				}
+			>
+				{quests.length ? (
+					<VirtualGrid
+						items={quests}
+						columns={columns}
+						minItemWidth={420}
+						gap={10}
+						estimateRowHeight={160}
+						getItemKey={(entry) => entry.quest.id}
+						className="min-h-0 flex-1 overflow-y-auto pr-1"
+						renderItem={(entry) => (
+							<QuestRow
+								key={entry.quest.id}
+								quest={entry.quest}
+								status={entry.status}
+							/>
+						)}
 					/>
-				</Field>
-				<QuestFilter
-					label="Quest type"
-					items={types}
-					value={type}
-					onChange={setType}
-				/>
-				<QuestFilter
-					label="Quest status"
-					items={STATUSES}
-					value={status}
-					onChange={setStatus}
-				/>
-			</FieldGroup>
-			<div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
-				<p>
-					{unknown > 0
-						? "Log in with account sync enabled to load all quest completion data."
-						: "Completion synced from your current account."}
-				</p>
-				<span>{quests.length.toLocaleString()} shown</span>
-			</div>
-			{quests.length ? (
-				<VirtualGrid
-					items={quests}
-					columns={columns}
-					gap={10}
-					estimateRowHeight={160}
-					getItemKey={(entry) => entry.quest.id}
-					className="min-h-0 flex-1 overflow-y-auto pr-1"
-					renderItem={(entry) => (
-						<QuestRow
-							key={entry.quest.id}
-							quest={entry.quest}
-							status={entry.status}
-						/>
-					)}
-				/>
-			) : (
-				<p className="grid flex-1 place-items-center text-sm text-muted-foreground">
-					No quests match these filters.
-				</p>
-			)}
+				) : (
+					<p className="grid flex-1 place-items-center text-sm text-muted-foreground">
+						No quests match these filters.
+					</p>
+				)}
+			</FilterLayout>
 		</section>
 	);
 }

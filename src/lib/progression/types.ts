@@ -105,15 +105,15 @@ export const QUEST_STATUS_ORDER: QuestStatus[] = [
  */
 export const QUEST_STATUS_ICONS: Record<QuestStatus, string> = {
 	available:
-		"/wuwa-assets/UI/UIResources/Common/Atlas/WorldMapIcon/SP_IconMap_Task_02_3_UI.webp",
+		"/icons/map/task-02-3.webp",
 	active:
-		"/wuwa-assets/UI/UIResources/Common/Atlas/WorldMapIcon/SP_IconMap_Task_02_3_UI.webp",
+		"/icons/map/task-02-3.webp",
 	locked:
-		"/wuwa-assets/UI/UIResources/Common/Atlas/WorldMapIcon/SP_IconMap_Task_01_3_UI.webp",
+		"/icons/map/task-01-3.webp",
 	completed:
-		"/wuwa-assets/UI/UIResources/Common/Atlas/WorldMapIcon/SP_IconMap_Task_06_UI.webp",
+		"/icons/map/task-06.webp",
 	unknown:
-		"/wuwa-assets/UI/UIResources/Common/Atlas/WorldMapIcon/SP_IconMap_Task_02_3_UI.webp",
+		"/icons/map/task-02-3.webp",
 };
 
 export interface QuestMarker {

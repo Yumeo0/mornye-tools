@@ -55,4 +55,12 @@ function ContextMenuItem({
 	);
 }
 
-export { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger };
+const ContextMenuGroup = ContextMenuPrimitive.Group;
+
+export {
+	ContextMenu,
+	ContextMenuContent,
+	ContextMenuGroup,
+	ContextMenuItem,
+	ContextMenuTrigger,
+};

@@ -140,7 +140,7 @@ impl SortIconTemplate {
     /// Decode the bundled template; `None` when the resource is missing or
     /// corrupt.
     fn load(app: &AppHandle) -> Option<Self> {
-        let bytes = crate::config::load_binary_resource(app, "public/sort_icon.png").ok()?;
+        let bytes = crate::config::load_binary_resource(app, "public/templates/echo-sort.png").ok()?;
         let image = image::load_from_memory(&bytes).ok()?;
         Some(Self::new(image))
     }

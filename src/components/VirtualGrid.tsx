@@ -86,8 +86,10 @@ export function useResponsiveColumns(
 export interface VirtualGridProps<T> {
 	items: readonly T[];
 	renderItem: (item: T, index: number) => ReactNode;
-	/** Column count, e.g. from `useResponsiveColumns`. */
+	/** Maximum column count, e.g. from `useResponsiveColumns`. */
 	columns: number;
+	/** Reduce columns to keep cards readable when a filter rail takes space. */
+	minItemWidth?: number;
 	/** Card gap in px (matches the previous `gap-*` class). */
 	gap: number;
 	/** Row height in px used until a row has been measured. */
@@ -104,6 +106,8 @@ export interface VirtualGridProps<T> {
 	/** Stable per-item key; rows key off their first item. */
 	getItemKey: (item: T, index: number) => Key;
 	overscan?: number;
+	/** Keep the active item visible when it changes (e.g. an upgrade queue). */
+	scrollToIndex?: number;
 	/** Classes for the scroll container (sizing/overflow), e.g.
 	 * `min-h-0 flex-1 overflow-y-auto pr-1`. */
 	className?: string;
@@ -112,16 +116,41 @@ export interface VirtualGridProps<T> {
 export function VirtualGrid<T>({
 	items,
 	renderItem,
-	columns,
+	columns: maxColumns,
+	minItemWidth,
 	gap,
 	estimateRowHeight,
 	minRowHeight,
 	onMeasuredRowHeight,
 	getItemKey,
 	overscan = 2,
+	scrollToIndex,
 	className,
 }: VirtualGridProps<T>) {
 	const scrollRef = useRef<HTMLDivElement>(null);
+	const [containerWidth, setContainerWidth] = useState<number | null>(null);
+	useEffect(() => {
+		const element = scrollRef.current;
+		if (!element || !minItemWidth) return;
+		const measure = () => {
+			// Inactive tab panels have no width. Keep their last useful layout.
+			if (element.clientWidth > 0) setContainerWidth(element.clientWidth);
+		};
+		const observer = new ResizeObserver(measure);
+		observer.observe(element);
+		measure();
+		return () => observer.disconnect();
+	}, [minItemWidth]);
+	const columns =
+		minItemWidth && containerWidth != null
+			? Math.max(
+					1,
+					Math.min(
+						maxColumns,
+						Math.floor((containerWidth + gap) / (minItemWidth + gap)),
+					),
+				)
+			: maxColumns;
 
 	const rows = useMemo(() => {
 		const chunked = chunkIntoRows(items, columns);
@@ -156,6 +185,18 @@ export function VirtualGrid<T>({
 		overscan,
 		gap,
 	});
+
+	useEffect(() => {
+		if (
+			scrollToIndex != null &&
+			scrollToIndex >= 0 &&
+			scrollToIndex < items.length
+		) {
+			virtualizer.scrollToIndex(Math.floor(scrollToIndex / columns), {
+				align: "auto",
+			});
+		}
+	}, [scrollToIndex, columns, items.length, virtualizer]);
 
 	// Report each rendered row's height so the caller can keep the uniform
 	// minimum in sync. `getBoundingClientRect` (not `offsetHeight`) keeps this

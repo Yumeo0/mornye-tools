@@ -178,7 +178,7 @@ test("Heron Wetland obelisks use their native group and chest, separate from the
 		catalog.rewards.find((reward) => reward.key === "8:118001239"),
 	).toMatchObject({
 		name: "Training Dummies",
-		icon: "/map/icons/SP_IconMap_Activity_Navigation_10_UI.webp",
+		icon: "/icons/map/activity-navigation-10.webp",
 		x: 40974.87,
 		y: 289725.96,
 		chestKeys: ["8:118001243"],

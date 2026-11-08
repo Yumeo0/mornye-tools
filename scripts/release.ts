@@ -128,16 +128,18 @@ gitInherit("tag", tag);
 
 console.log(`\nReleased ${tag} (was ${current}).`);
 if (push) {
-	gitInherit("push", "origin", "HEAD");
-	gitInherit("push", "origin", tag);
-
-	// The release workflow runs on GitHub, and the Forgejo push mirror updates
-	// the refs there without creating a workflow run - so the tag is pushed
-	// straight to GitHub as well when a remote for it exists.
+	// Push GitHub first: pushing origin starts the Forgejo mirror, which can
+	// race our direct push or copy the tag before it can trigger the workflow.
 	const github = githubRemote();
 	if (github) {
 		gitInherit("push", github, "HEAD");
 		gitInherit("push", github, tag);
+	}
+
+	gitInherit("push", "origin", "HEAD");
+	gitInherit("push", "origin", tag);
+
+	if (github) {
 		console.log(
 			`Pushed ${tag} to origin and ${github} — the release workflow is running.`,
 		);

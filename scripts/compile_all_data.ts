@@ -17,6 +17,8 @@ import { compileBuildGuides } from "./compile_build_guides.ts";
 import { compileCharacterData } from "./compile_character_data.ts";
 import { compileEchoData } from "./compile_echo_data.ts";
 import { compileEchoProps } from "./compile_echo_props.ts";
+import { compileEchoUpgrade } from "./compile_echo_upgrade.ts";
+import { compileProfileData } from "./compile_profile_data.ts";
 import { compileWeaponData } from "./compile_weapon_data.ts";
 import { compileMapData } from "./compile-map-data.ts";
 import { compileProgressionData } from "./compile-progression-data.ts";
@@ -54,6 +56,7 @@ async function main(): Promise<void> {
 	console.log();
 
 	await syncDataVersion();
+	await compileEchoUpgrade();
 	console.log();
 
 	try {
@@ -110,6 +113,7 @@ async function main(): Promise<void> {
 
 	await compileMapData();
 	await compileProgressionData();
+	await compileProfileData();
 
 	try {
 		console.log("Copying Assets to Public Folder...");

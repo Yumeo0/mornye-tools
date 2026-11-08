@@ -23,19 +23,19 @@ test("quest catalog includes the player-facing quest types beyond the map's side
 
 test("quest catalog uses native type icons and publishes every referenced image", async () => {
 	for (const [type, icon] of [
-		[1, "SP_IconMap_Task_01_UI"],
-		[2, "SP_IconMap_Task_02_UI"],
-		[3, "SP_IconMap_Task_03_UI"],
-		[9, "SP_IconMap_Task_10_UI"],
-		[10, "SP_IconMap_Task_14_UI"],
-		[16, "SP_IconMap_Task_17_1_UI"],
-		[17, "SP_IconMap_Task_18_UI"],
+		[1, "task-01"],
+		[2, "task-02"],
+		[3, "task-03"],
+		[9, "task-10"],
+		[10, "task-14"],
+		[16, "task-17-1"],
+		[17, "task-18"],
 	] as const) {
 		const quests = catalog.allQuests.filter((quest) => quest.type === type);
 		expect(quests.length).toBeGreaterThan(0);
-		expect(quests.every((quest) => quest.icon.endsWith(`/${icon}.webp`))).toBe(
-			true,
-		);
+		expect(
+			quests.every((quest) => quest.icon === `/icons/map/${icon}.webp`),
+		).toBe(true);
 	}
 	for (const icon of new Set(catalog.allQuests.map((quest) => quest.icon))) {
 		expect(

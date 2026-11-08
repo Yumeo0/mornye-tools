@@ -54,7 +54,7 @@ pub(crate) fn load_json_resource<T: serde::de::DeserializeOwned>(
 }
 
 /// Load a binary resource (e.g. an icon template); `relative_path` is relative
-/// to the repository root (e.g. `public/sort_icon.png`).
+/// to the repository root (e.g. `public/templates/echo-sort.png`).
 pub(crate) fn load_binary_resource(
     app_handle: &AppHandle,
     relative_path: &str,

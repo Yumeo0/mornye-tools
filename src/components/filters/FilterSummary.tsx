@@ -13,7 +13,7 @@ export function FilterSummary({
 	children?: ReactNode;
 }) {
 	return (
-		<div className="ml-auto flex items-center gap-2">
+		<div className="flex flex-col items-start gap-2">
 			<span className="text-xs text-muted-foreground">{label}</span>
 			{children}
 			{onReset && (

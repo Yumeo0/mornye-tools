@@ -1,9 +1,10 @@
-//! `account.json` persistence, merge policy and overrides.
+//! Profile `account.json` persistence, merge policy and overrides.
 //!
-//! Only [`AccountStore`] mutates the account snapshot. Packet extraction
-//! (`sniffer::extract`) is the sole production writer of captured data; the UI
-//! may only write `overrides.json` (equipped-by / slot adjustments) and manual
-//! echoes (`source: Manual`, synthetic negative instance ids).
+//! Only [`AccountStore`] mutates the account snapshot. Passive extraction
+//! (`sniffer::extract`) and the active session (`account::ingest`) are the two
+//! production writers of captured data; the UI may only write `overrides.json`
+//! (equipped-by / slot adjustments) and manual echoes (`source: Manual`,
+//! synthetic negative instance ids).
 
 use std::collections::HashMap;
 use std::fs;
@@ -23,6 +24,8 @@ pub struct AccountStore {
     dir: PathBuf,
     snapshot: AccountSnapshot,
     overrides: Overrides,
+    save_order: std::sync::Arc<std::sync::Mutex<u64>>,
+    next_revision: u64,
 }
 
 impl AccountStore {
@@ -40,6 +43,8 @@ impl AccountStore {
             dir,
             snapshot,
             overrides,
+            save_order: Default::default(),
+            next_revision: 0,
         };
         store.snapshot.version = STORE_VERSION;
         store.apply_overrides();
@@ -48,6 +53,50 @@ impl AccountStore {
 
     pub fn snapshot(&self) -> &AccountSnapshot {
         &self.snapshot
+    }
+
+    pub fn set_profile(&mut self, profile: super::model::ProfileIdentity) {
+        self.snapshot.profile = Some(profile);
+    }
+    pub fn relocate(&mut self, dir: PathBuf) -> Result<(), String> {
+        fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
+        let previous = std::mem::replace(&mut self.dir, dir);
+        if let Err(error) = self.save() {
+            self.dir = previous;
+            return Err(error);
+        }
+        Ok(())
+    }
+    pub fn replace_inventory(&mut self, items: Vec<super::model::InventoryItem>) {
+        self.snapshot.inventory = items;
+    }
+    pub fn upsert_inventory(&mut self, items: Vec<super::model::InventoryItem>) {
+        for item in items {
+            if let Some(existing) = self.snapshot.inventory.iter_mut().find(|i| i.id == item.id) {
+                *existing = item;
+            } else {
+                self.snapshot.inventory.push(item);
+            }
+        }
+    }
+    pub fn remove_inventory(&mut self, ids: &[i32]) {
+        self.snapshot
+            .inventory
+            .retain(|item| !ids.contains(&item.id));
+    }
+    pub fn replace_resonators(&mut self, roles: Vec<Resonator>) {
+        self.snapshot.resonators.clear();
+        self.upsert_resonators(roles);
+    }
+    pub fn replace_weapons(&mut self, weapons: Vec<Weapon>) {
+        self.snapshot.weapons.clear();
+        self.upsert_weapons(weapons);
+    }
+    pub fn replace_echoes(&mut self, echoes: Vec<Echo>) {
+        self.snapshot
+            .echoes
+            .retain(|echo| echo.source == EchoSource::Manual);
+        self.upsert_echoes(echoes);
     }
 
     /// A full formation response replaces the list, including deleted slots.
@@ -139,13 +188,21 @@ impl AccountStore {
 
     /// Replace the player info.
     pub fn upsert_player(&mut self, mut player: PlayerInfo) {
-        if let Some(existing) = self.snapshot.player.as_ref() {
+        if let Some(existing) = self
+            .snapshot
+            .player
+            .as_ref()
+            .filter(|p| p.player_id == player.player_id)
+        {
             // Keep a previously captured name/signature if the new packet omits it.
             if player.name.is_empty() {
                 player.name = existing.name.clone();
             }
             if player.signature.is_none() {
                 player.signature = existing.signature.clone();
+            }
+            if player.head_id.is_none() {
+                player.head_id = existing.head_id;
             }
         }
         self.snapshot.player = Some(player);
@@ -456,12 +513,15 @@ impl AccountStore {
     /// [`PreparedSave::write`] after the caller released the store lock, so
     /// the capture loop is never blocked on disk I/O.
     pub fn prepare_save(&mut self) -> PreparedSave {
+        self.next_revision += 1;
         self.snapshot.version = STORE_VERSION;
         self.snapshot.updated_at = now_iso8601();
         PreparedSave {
             dir: self.dir.clone(),
             snapshot: self.snapshot.clone(),
             overrides: self.overrides.clone(),
+            save_order: self.save_order.clone(),
+            revision: self.next_revision,
         }
     }
 
@@ -477,13 +537,23 @@ pub struct PreparedSave {
     dir: PathBuf,
     snapshot: AccountSnapshot,
     overrides: Overrides,
+    save_order: std::sync::Arc<std::sync::Mutex<u64>>,
+    revision: u64,
 }
 
 impl PreparedSave {
     /// Persist `account.json` and `overrides.json` atomically.
     pub fn write(&self) -> Result<(), String> {
+        let mut last = self
+            .save_order
+            .lock()
+            .map_err(|_| "Account persistence is unavailable.")?;
+        if self.revision < *last {
+            return Ok(());
+        }
         atomic_write_json(&self.dir.join(ACCOUNT_FILE), &self.snapshot)?;
         atomic_write_json(&self.dir.join(OVERRIDES_FILE), &self.overrides)?;
+        *last = self.revision;
         Ok(())
     }
 }

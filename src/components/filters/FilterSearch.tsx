@@ -19,7 +19,7 @@ export function FilterSearch({
 	className?: string;
 }) {
 	return (
-		<FilterField label="Search" className={cn("min-w-44 flex-1", className)}>
+		<FilterField label="Search" className={cn("w-full", className)}>
 			<Input
 				type="text"
 				{...inputProps}

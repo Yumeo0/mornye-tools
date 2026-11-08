@@ -46,13 +46,22 @@ sha2 = "0.11"
 # cookie/plist dependencies; used for RFC3339 formatting only.
 time = { version = "0.3", features = ["formatting"] }
 tauri-plugin-opener = "2"
+session-probe = { path = "../tools/session-probe" }
+keyring = { version = "3.6.3", default-features = false }
+zeroize = "1"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 libc = "0.2"
+# Persistent desktop Secret Service, with pure-Rust DBus/crypto (no libdbus link).
+keyring = { version = "3.6.3", features = ["async-secret-service", "async-io", "crypto-rust"] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+keyring = { version = "3.6.3", features = ["apple-native"] }
 
 # Windows Graphics Capture for the OCR path, plus the window
 # enumeration/geometry helpers it needs.
 [target.'cfg(windows)'.dependencies]
+keyring = { version = "3.6.3", features = ["windows-native"] }
 windows-capture = "2"
 windows = { version = "0.62", features = [
     "Win32_Foundation",

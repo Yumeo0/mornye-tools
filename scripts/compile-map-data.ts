@@ -2,6 +2,7 @@
 // Asset conversion and publishing live in copy_assets.ts.
 import { existsSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { assetUrl } from "../src/lib/assets";
 import type {
 	GameMap,
 	MapCatalog,
@@ -10,6 +11,7 @@ import type {
 } from "../src/lib/map/types";
 import { assetPath } from "./lib/compile-data-util";
 import { mapAssetSources } from "./lib/map-assets";
+import { prepareMapCatalog } from "./lib/public-assets";
 import { additionalActivityMarkers } from "./map-activities";
 import { explorationCategoryLookup } from "./map-categories";
 import { challengeGraphEvidence } from "./map-challenge-evidence";
@@ -370,7 +372,10 @@ export async function compileMapData(): Promise<void> {
 		const source =
 			url &&
 			join(assets, url.replace("/wuwa-assets/", "").replace(/\.webp$/, ".png"));
-		const cached = `/map/icons/gg/${unrealPath.split("/").at(-1)?.split(".")[0]}.png`;
+		const cached = assetUrl(
+			`/map/icons/gg/${unrealPath.split("/").at(-1)?.split(".")[0]}.png`,
+			false,
+		);
 		const icon =
 			source && existsSync(source)
 				? (url ?? undefined)
@@ -1013,7 +1018,17 @@ export async function compileMapData(): Promise<void> {
 		icons: [...new Set(icons)].sort(),
 		missingTiles,
 	};
-	await Bun.write(join(out, "catalog.json"), JSON.stringify(catalog));
+	await Bun.write(
+		join(out, "catalog.json"),
+		JSON.stringify(
+			prepareMapCatalog(
+				catalog,
+				await Bun.file(join(out, "catalog.json"))
+					.json()
+					.catch(() => undefined),
+			),
+		),
+	);
 	await Bun.write(
 		join(root, "src/configs/map_rules.json"),
 		JSON.stringify({

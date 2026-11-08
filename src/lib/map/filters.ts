@@ -98,9 +98,9 @@ export function summarizeItems(markers: RewardMarker[]): ItemRow[] {
 					? { resourceUsage: reward.resourceUsage ?? "other" }
 					: {}),
 				icon: isEchoFlight(reward)
-					? "/map/icons/SP_IconMap_Play_23_UI.webp"
+					? "/icons/map/echo-flight.webp"
 					: isTacticalHologram(reward)
-						? "/map/icons/SP_IconMap_Play_10_UI.webp"
+						? "/icons/map/tactical-hologram.webp"
 						: reward.icon,
 				total: 0,
 				remaining: 0,

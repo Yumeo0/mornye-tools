@@ -153,7 +153,7 @@ export function CharacterDetail({
 				<Card>
 					<CardContent className="p-4 space-y-3">
 						<Label className="text-base font-medium flex items-center gap-2">
-							<img src="/echoes.webp" alt="" className="size-5" /> Equipped
+							<img src="/icons/inventory/echoes.webp" alt="" className="size-5" /> Equipped
 							Echoes
 						</Label>
 						<div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">

@@ -1,8 +1,9 @@
 // The single source of truth for account data in the frontend.
 //
-// One module-level mirror of the Rust account store: a single snapshot cache
-// fed by `account_get_snapshot` and kept fresh by the backend's
-// `account-updated` event. Every read goes through `useAccount` (React) or
+// One module-level mirror of the selected Rust account profile: a single
+// snapshot cache fed by `account_get_view` (snapshot plus profile list) and
+// kept fresh by the backend's `account-updated` event. Every read goes through
+// `useAccount` (React) or
 // `readAccount` (plain code); every write goes through the mutation functions
 // at the bottom - no other module should invoke account commands. The Rust
 // store (`src-tauri/src/account`) stays authoritative; this only mirrors it.
@@ -56,6 +57,7 @@ export interface PlayerInfo {
 	name: string;
 	level: number;
 	worldLevel: number;
+	headId?: number | null;
 	signature?: string | null;
 }
 
@@ -111,16 +113,36 @@ export interface SavedTeam {
 }
 
 export interface AccountSnapshot {
+	profile?: ProfileIdentity | null;
 	version: number;
 	updatedAt: string;
 	player?: PlayerInfo | null;
 	resonators: Resonator[];
 	weapons: Weapon[];
 	echoes: Echo[];
+	inventory?: { id: number; count: number }[];
 	/** Saved in-game formations, captured passively by the sniffer. */
 	teams?: SavedTeam[];
 	exploration?: ExplorationSnapshot;
 	progression?: ProgressionSnapshot;
+}
+
+export interface ProfileIdentity {
+	id: string;
+	playerId: number;
+	serverId: string;
+	region: string;
+	/** A user-supplied region or passive capture, not an official server ID. */
+	provisional?: boolean;
+}
+export interface AccountProfile extends ProfileIdentity {
+	name: string;
+	level?: number;
+	updatedAt: string;
+}
+interface AccountView {
+	snapshot: AccountSnapshot;
+	profiles: { selected: string; profiles: AccountProfile[] };
 }
 
 /** Human-readable label for a calculator stat key (used by the card UI). */
@@ -224,12 +246,18 @@ export function echoesForResonator(
 export interface AccountState {
 	snapshot: AccountSnapshot;
 	error: string | null;
+	profiles: AccountProfile[];
 }
 
-let state: AccountState = { snapshot: EMPTY_ACCOUNT, error: null };
+let state: AccountState = {
+	snapshot: EMPTY_ACCOUNT,
+	error: null,
+	profiles: [],
+};
 const listeners = new Set<() => void>();
 let started = false;
 let refreshInFlight: Promise<void> | null = null;
+let refreshRequested = false;
 
 function emitChange(): void {
 	for (const listener of [...listeners]) listener();
@@ -237,18 +265,28 @@ function emitChange(): void {
 
 async function fetchSnapshot(): Promise<void> {
 	try {
-		const snapshot = await invoke<AccountSnapshot>("account_get_snapshot");
-		state = { snapshot, error: null };
+		const view = await invoke<AccountView>("account_get_view");
+		state = {
+			snapshot: view.snapshot,
+			profiles: view.profiles.profiles,
+			error: null,
+		};
 	} catch (error) {
 		// Keep serving the last good snapshot; surface why it is stale.
-		state = { snapshot: state.snapshot, error: String(error) };
+		state = { ...state, error: String(error) };
 	}
 	emitChange();
 }
 
 /** Refresh the mirror; concurrent calls share one fetch. */
 export function refreshAccount(): Promise<void> {
-	refreshInFlight ??= fetchSnapshot().finally(() => {
+	refreshRequested = true;
+	refreshInFlight ??= (async () => {
+		do {
+			refreshRequested = false;
+			await fetchSnapshot();
+		} while (refreshRequested);
+	})().finally(() => {
 		refreshInFlight = null;
 	});
 	return refreshInFlight;
@@ -289,14 +327,20 @@ export function useAccount(): AccountState {
 
 /** Add an echo entered by hand; the backend assigns the synthetic instance id. */
 export async function addManualEcho(echo: Echo): Promise<Echo> {
-	const added = await invoke<Echo>("account_add_manual_echo", { echo });
+	const added = await invoke<Echo>("account_add_manual_echo", {
+		echo,
+		profileId: state.snapshot.profile?.id,
+	});
 	await refreshAccount();
 	return added;
 }
 
 /** Remove a manually added echo. */
 export async function removeManualEcho(incrId: number): Promise<void> {
-	await invoke("account_remove_manual_echo", { incr_id: incrId });
+	await invoke("account_remove_manual_echo", {
+		incr_id: incrId,
+		profile_id: state.snapshot.profile?.id,
+	});
 	await refreshAccount();
 }
 
@@ -310,9 +354,26 @@ export async function setEquippedOverride(
 	slot: number | null,
 ): Promise<void> {
 	await invoke("account_set_equipped_override", {
+		profile_id: state.snapshot.profile?.id,
 		incr_id: incrId,
 		equipped_by: equippedBy,
 		slot,
 	});
+	await refreshAccount();
+}
+
+export async function selectAccountProfile(profileId: string): Promise<void> {
+	await invoke("account_select_profile", { profileId });
+	await refreshAccount();
+}
+
+/** Give a migrated or passively captured profile its account and server. */
+export async function identifyAccountProfile(input: {
+	profileId: string;
+	playerId: number;
+	region: string;
+	name: string;
+}): Promise<void> {
+	await invoke("account_identify_profile", input);
 	await refreshAccount();
 }

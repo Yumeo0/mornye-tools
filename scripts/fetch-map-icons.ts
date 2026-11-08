@@ -12,11 +12,12 @@
 //   bun scripts/fetch-map-icons.ts
 import { existsSync, mkdirSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { assetUrl } from "../src/lib/assets";
 import { heritageTier } from "../src/lib/map/collection";
 import type { MapReward } from "../src/lib/map/types";
 
 const root = resolve(import.meta.dirname, "..");
-const outDir = join(root, "public/map/icons/gg");
+const outDir = join(root, "public/images/map-items");
 const site = "https://wuthering.gg";
 const backtick = String.fromCharCode(96);
 const CHUNK_LIMIT = 600;
@@ -162,7 +163,12 @@ const nativeItemIcons = new Map<number, string>(
 		]),
 );
 const hasNativeArtwork = (reward: MapReward) =>
-	Boolean(reward.itemId && reward.icon.startsWith("/wuwa-assets/"));
+	Boolean(
+		reward.itemId &&
+			(reward.icon.startsWith("/wuwa-assets/") ||
+				(reward.icon.startsWith("/images/") &&
+					!reward.icon.startsWith("/images/map-items/"))),
+	);
 const nameOf = (reward: MapReward) => reward.name;
 const tallyInto = <K>(map: Map<K, Tally>, key: K, stamp: string) => {
 	const tally = map.get(key) ?? {};
@@ -279,9 +285,10 @@ const publishIcon = async (stamp: string | undefined) => {
 	const [pic, monster] = stamp.split("|");
 	const ref = iconRef(pic, monster === "1");
 	if (downloaded.has(ref.file)) return downloaded.get(ref.file);
-	const destination = join(outDir, ref.file);
+	const publishedUrl = assetUrl(`/map/icons/gg/${ref.file}`, false);
+	const destination = join(root, "public", publishedUrl.slice(1));
 	if (existsSync(destination)) {
-		const path = `/map/icons/gg/${ref.file}`;
+		const path = publishedUrl;
 		downloaded.set(ref.file, path);
 		return path;
 	}
@@ -292,8 +299,10 @@ const publishIcon = async (stamp: string | undefined) => {
 			response.ok &&
 			response.headers.get("content-type")?.startsWith("image/")
 		) {
-			await Bun.write(join(outDir, ref.file), await response.arrayBuffer());
-			path = `/map/icons/gg/${ref.file}`;
+			await new Bun.Image(Buffer.from(await response.arrayBuffer()))
+				.webp({ lossless: true })
+				.write(destination);
+			path = publishedUrl;
 		} else {
 			unavailable++;
 			console.warn(`  unavailable: ${iconUrl(ref)} (${response.status})`);

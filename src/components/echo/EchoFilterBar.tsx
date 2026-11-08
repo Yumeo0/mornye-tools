@@ -1,4 +1,5 @@
 import { Plus } from "lucide-react";
+import type { ReactNode } from "react";
 import {
 	ECHO_SORT_OPTIONS,
 	type EchoFilters,
@@ -9,16 +10,19 @@ import {
 	EquippedCharacterFilter,
 	FilterField,
 	type FilterOption,
+	FilterPanel,
 	FilterSearch,
 	FilterSummary,
-	MinLevelSlider,
 	MultiSelect,
+	RangeFilter,
 	SortButtons,
 	statFilterOptions,
 	toggleInArray,
 } from "@/components/filters";
 import { Button } from "@/components/ui/button";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { sonataIconByName } from "@/lib/catalog";
+import { ECHO_MARK_ICONS, type EchoMark } from "@/lib/echoMark";
 import echoData from "../../configs/echo_data.json";
 
 interface EchoCostEntry {
@@ -45,7 +49,7 @@ const costOptions: FilterOption[] = [
 
 const mainStatOptions = statFilterOptions();
 
-/** Filter and sort controls above the echo grid, plus the "Add echo" action. */
+/** Vertical echo filters and sorting, plus the "Add echo" action. */
 export function EchoFilterBar({
 	filters,
 	onFiltersChange,
@@ -56,6 +60,7 @@ export function EchoFilterBar({
 	totalCount,
 	characterOptions,
 	onAddEcho,
+	children,
 }: {
 	filters: EchoFilters;
 	onFiltersChange: (
@@ -67,7 +72,8 @@ export function EchoFilterBar({
 	resultCount: number;
 	totalCount: number;
 	characterOptions: FilterOption[];
-	onAddEcho: () => void;
+	onAddEcho?: () => void;
+	children?: ReactNode;
 }) {
 	const hasActiveFilters =
 		JSON.stringify(filters) !== JSON.stringify(EMPTY_ECHO_FILTERS) ||
@@ -79,8 +85,8 @@ export function EchoFilterBar({
 	};
 
 	return (
-		<div className="bg-card text-card-foreground ring-foreground/10 flex flex-col gap-2 rounded-none py-3 ring-1">
-			<div className="flex flex-wrap items-end gap-x-4 gap-y-2 px-4">
+		<FilterPanel label="Echo filters">
+			<div className="flex min-w-0 flex-col gap-4">
 				<FilterSearch
 					value={filters.search}
 					onChange={(search) =>
@@ -88,6 +94,39 @@ export function EchoFilterBar({
 					}
 					placeholder="Echo name..."
 				/>
+				<FilterField label="Marks" active={filters.marks.length > 0}>
+					<ToggleGroup
+						multiple
+						value={filters.marks}
+						spacing={1}
+						aria-label="Filter echo marks"
+						onValueChange={(marks) =>
+							onFiltersChange((prev) => ({
+								...prev,
+								marks: marks as EchoMark[],
+							}))
+						}
+					>
+						{(
+							[
+								["none", "Unmarked echoes", ECHO_MARK_ICONS.unlocked],
+								["locked", "Locked echoes", ECHO_MARK_ICONS.locked],
+								["discarded", "Discarded echoes", ECHO_MARK_ICONS.discarded],
+							] as const
+						).map(([value, label, icon]) => (
+							<ToggleGroupItem
+								key={value}
+								value={value}
+								size="icon-sm"
+								variant="outline"
+								title={label}
+								aria-label={label}
+							>
+								<img src={icon} alt="" className="size-5 object-contain" />
+							</ToggleGroupItem>
+						))}
+					</ToggleGroup>
+				</FilterField>
 
 				<FilterField label="Cost" active={filters.cost.length > 0}>
 					<div className="flex gap-1">
@@ -115,14 +154,14 @@ export function EchoFilterBar({
 					</div>
 				</FilterField>
 
-				<div className="w-32">
-					<MinLevelSlider
-						value={filters.minLevel}
+				<div className="w-full">
+					<RangeFilter
+						label="Lvl"
+						value={[filters.minLevel, filters.maxLevel]}
 						min={0}
 						max={25}
-						plus
-						onChange={(minLevel) =>
-							onFiltersChange((prev) => ({ ...prev, minLevel }))
+						onChange={([minLevel, maxLevel]) =>
+							onFiltersChange((prev) => ({ ...prev, minLevel, maxLevel }))
 						}
 					/>
 				</div>
@@ -159,8 +198,8 @@ export function EchoFilterBar({
 				</FilterField>
 			</div>
 
-			<div className="flex flex-wrap items-end gap-x-4 gap-y-2 border-t px-4 pt-2">
-				<div className="w-48">
+			<div className="flex min-w-0 flex-col gap-4">
+				<div className="w-full">
 					<MultiSelect
 						label="Echo Sets"
 						values={filters.set}
@@ -169,7 +208,7 @@ export function EchoFilterBar({
 					/>
 				</div>
 
-				<div className="w-44">
+				<div className="w-full">
 					<MultiSelect
 						label="Substats"
 						values={filters.substat}
@@ -202,11 +241,14 @@ export function EchoFilterBar({
 							: undefined
 					}
 				>
-					<Button size="sm" onClick={onAddEcho}>
-						<Plus className="mr-1 size-3.5" /> Add echo
-					</Button>
+					{onAddEcho && (
+						<Button size="sm" onClick={onAddEcho}>
+							<Plus className="mr-1 size-3.5" /> Add echo
+						</Button>
+					)}
 				</FilterSummary>
 			</div>
-		</div>
+			{children}
+		</FilterPanel>
 	);
 }

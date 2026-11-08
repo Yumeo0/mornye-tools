@@ -3,6 +3,7 @@ import {
 	FilterField,
 	FilterIconButton,
 	type FilterOption,
+	FilterPanel,
 	FilterSearch,
 	FilterSummary,
 	MinLevelSlider,
@@ -39,7 +40,7 @@ const weaponRarityOptions: FilterOption[] = [
 	.sort((a, b) => b - a)
 	.map((rarity) => ({ value: String(rarity), label: `${rarity}★` }));
 
-/** Filter and sort controls above the weapon grid. */
+/** Vertical weapon filters and sorting. */
 export function WeaponFilterBar({
 	filters,
 	onFiltersChange,
@@ -67,8 +68,8 @@ export function WeaponFilterBar({
 		sortAsc;
 
 	return (
-		<div className="bg-card text-card-foreground ring-foreground/10 flex flex-col gap-2 rounded-none py-3 ring-1">
-			<div className="flex flex-wrap items-end gap-x-4 gap-y-2 px-4">
+		<FilterPanel label="Weapon filters">
+			<div className="flex min-w-0 flex-col gap-4">
 				<FilterSearch
 					value={filters.search}
 					onChange={(search) =>
@@ -78,7 +79,7 @@ export function WeaponFilterBar({
 				/>
 
 				<FilterField label="Weapon" active={filters.type.length > 0}>
-					<div className="flex gap-1">
+					<div className="flex flex-wrap gap-1">
 						{weaponTypeOptions.map((option) => (
 							<FilterIconButton
 								key={option.value}
@@ -97,7 +98,7 @@ export function WeaponFilterBar({
 				</FilterField>
 
 				<FilterField label="Rarity" active={filters.rarity.length > 0}>
-					<div className="flex gap-1">
+					<div className="flex flex-wrap gap-1">
 						{weaponRarityOptions.map((option) => {
 							const pressed = filters.rarity.includes(option.value);
 							return (
@@ -123,8 +124,8 @@ export function WeaponFilterBar({
 				</FilterField>
 			</div>
 
-			<div className="flex flex-wrap items-end gap-x-4 gap-y-2 border-t px-4 pt-2">
-				<div className="w-32">
+			<div className="flex min-w-0 flex-col gap-4">
+				<div className="w-full">
 					<MinLevelSlider
 						value={filters.minLevel}
 						min={MIN_WEAPON_LEVEL}
@@ -162,6 +163,6 @@ export function WeaponFilterBar({
 					}
 				/>
 			</div>
-		</div>
+		</FilterPanel>
 	);
 }

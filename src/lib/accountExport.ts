@@ -13,14 +13,17 @@ import type {
 	EchoProp,
 	EchoSource,
 	PlayerInfo,
+	ProfileIdentity,
 	StatKey,
 } from "@/lib/account";
+import type { ManualMapMarks } from "@/lib/map/collection";
+import { EMPTY_EXPLORATION, type ExplorationSnapshot } from "@/lib/map/types";
 
 /** Format version of the exported document; consumers branch on this. */
 export const EXPORT_FORMAT_VERSION = 1;
 
 /** The selectable data groups of an export, in canonical (document) order. */
-export const EXPORT_PARTS = ["resonators", "weapons", "echoes"] as const;
+export const EXPORT_PARTS = ["resonators", "weapons", "echoes", "map"] as const;
 
 export type ExportPart = (typeof EXPORT_PARTS)[number];
 
@@ -29,6 +32,7 @@ export const EXPORT_PART_LABELS: Record<ExportPart, string> = {
 	resonators: "Resonators",
 	weapons: "Weapons",
 	echoes: "Echoes",
+	map: "Map data",
 };
 
 /** What one part contributes, shown under its caption. */
@@ -36,6 +40,7 @@ export const EXPORT_PART_DESCRIPTIONS: Record<ExportPart, string> = {
 	resonators: "Level, breakthrough, chain and skill nodes",
 	weapons: "Level, breach, rank and the resonator carrying them",
 	echoes: "Equipped and unequipped echoes with their stats",
+	map: "Captured exploration plus manual and imported map marks for this player",
 };
 
 // ---------------------------------------------------------------------------
@@ -137,6 +142,12 @@ export interface AccountExport {
 	resonators?: ExportResonator[];
 	weapons?: ExportWeapon[];
 	echoes?: ExportEcho[];
+	map?: {
+		profile: ProfileIdentity | null;
+		playerId: number;
+		exploration: ExplorationSnapshot;
+		manualMarks: ManualMapMarks;
+	};
 }
 
 // ---------------------------------------------------------------------------
@@ -168,7 +179,13 @@ function exportStat(prop: EchoProp): ExportEchoStat {
 export function exportPartCount(
 	snapshot: AccountSnapshot,
 	part: ExportPart,
+	manualMarks: ManualMapMarks = {},
 ): number {
+	if (part === "map")
+		return new Set([
+			...Object.keys(snapshot.exploration?.rewards ?? {}),
+			...Object.keys(manualMarks),
+		]).size;
 	return snapshot[part].length;
 }
 
@@ -180,6 +197,7 @@ export function buildAccountExport(
 	snapshot: AccountSnapshot,
 	parts: readonly ExportPart[],
 	exportedAt: Date = new Date(),
+	manualMarks: ManualMapMarks = {},
 ): AccountExport {
 	const selected = new Set(parts);
 	const doc: AccountExport = {
@@ -226,6 +244,14 @@ export function buildAccountExport(
 			source: echo.source,
 		}));
 	}
+	if (selected.has("map")) {
+		doc.map = structuredClone({
+			profile: snapshot.profile ?? null,
+			playerId: snapshot.profile?.playerId ?? snapshot.player?.playerId ?? 0,
+			exploration: snapshot.exploration ?? EMPTY_EXPLORATION,
+			manualMarks,
+		});
+	}
 	return doc;
 }
 
@@ -234,9 +260,10 @@ export function accountExportJson(
 	snapshot: AccountSnapshot,
 	parts: readonly ExportPart[],
 	exportedAt: Date = new Date(),
+	manualMarks: ManualMapMarks = {},
 ): string {
 	return JSON.stringify(
-		buildAccountExport(snapshot, parts, exportedAt),
+		buildAccountExport(snapshot, parts, exportedAt, manualMarks),
 		null,
 		2,
 	);

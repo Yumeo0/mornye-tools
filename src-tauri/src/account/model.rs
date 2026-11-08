@@ -151,13 +151,16 @@ pub struct SkillNode {
     pub level: i32,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PlayerInfo {
     pub player_id: i64,
     pub name: String,
     pub level: i32,
     pub world_level: i32,
+    /// Selected in-game profile portrait (PlayerAttrKey.HeadPhoto).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub head_id: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub signature: Option<String>,
 }
@@ -262,6 +265,8 @@ pub struct SavedTeam {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AccountSnapshot {
+    #[serde(default)]
+    pub profile: Option<ProfileIdentity>,
     pub version: u32,
     pub updated_at: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -273,6 +278,8 @@ pub struct AccountSnapshot {
     #[serde(default)]
     pub echoes: Vec<Echo>,
     #[serde(default)]
+    pub inventory: Vec<InventoryItem>,
+    #[serde(default)]
     pub teams: Vec<SavedTeam>,
     #[serde(default)]
     pub exploration: ExplorationSnapshot,
@@ -283,17 +290,39 @@ pub struct AccountSnapshot {
 impl Default for AccountSnapshot {
     fn default() -> Self {
         Self {
+            profile: None,
             version: STORE_VERSION,
             updated_at: String::new(),
             player: None,
             resonators: Vec::new(),
             weapons: Vec::new(),
             echoes: Vec::new(),
+            inventory: Vec::new(),
             teams: Vec::new(),
             exploration: Default::default(),
             progression: Default::default(),
         }
     }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ProfileIdentity {
+    pub id: String,
+    pub player_id: i64,
+    pub server_id: String,
+    pub region: String,
+    /// A user-supplied region or a passive capture, not an official server ID.
+    /// The next active connection may adopt and refine this profile.
+    #[serde(default)]
+    pub provisional: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct InventoryItem {
+    pub id: i32,
+    pub count: i32,
 }
 
 /// A user adjustment that must always win over packet data.

@@ -237,6 +237,7 @@ export function calculateRating(
 export function maxPossibleRating(
 	character: CharacterInfo,
 	parsedSubStats: string[],
+	maxSubstats = MAX_SUBSTATS,
 ): number {
 	const wanted = wantedSubstatNames(character);
 	const presence = presenceShare(wanted.length);
@@ -252,7 +253,7 @@ export function maxPossibleRating(
 		}
 		total += statRollValue(name, matching, presence);
 	}
-	const remainingSlots = Math.max(0, MAX_SUBSTATS - entries.length);
+	const remainingSlots = Math.max(0, maxSubstats - entries.length);
 	total +=
 		Math.min(remainingSlots, missingWanted) * (presence + MAX_ROLL_POINTS);
 	return Math.round(Math.min(Math.max(total, 0), 100));

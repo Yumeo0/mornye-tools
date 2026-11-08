@@ -4,7 +4,7 @@
 Examples:
     python scripts/trim-transparent-padding.py icon.png
     python scripts/trim-transparent-padding.py first.png second.webp
-    python scripts/trim-transparent-padding.py "public/map/icons/**/*.webp"
+    python scripts/trim-transparent-padding.py "public/icons/map/**/*.webp"
 
 Install Pillow with: python -m pip install Pillow
 """

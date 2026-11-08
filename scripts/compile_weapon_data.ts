@@ -1,3 +1,4 @@
+import { prepareCatalog } from "./lib/public-assets";
 /**
  * Compile weapon display data for the Account UI.
  *
@@ -219,7 +220,7 @@ async function compileWeaponData(): Promise<void> {
 	console.log(`Writing ${weapons.length} weapons to ${OUTPUT_PATH}...`);
 	await Bun.write(
 		OUTPUT_PATH,
-		`${withPythonFloatRatios(JSON.stringify(weapons, null, "\t"))}\n`,
+		`${withPythonFloatRatios(JSON.stringify(prepareCatalog(weapons), null, "\t"))}\n`,
 	);
 	console.log(`Successfully wrote ${OUTPUT_PATH}`);
 }

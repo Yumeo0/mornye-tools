@@ -23,6 +23,7 @@ export function RangeFilter({
 				{label} {value[0]}–{value[1]}
 			</span>
 			<Slider
+				thumbLabels={[`Minimum ${label}`, `Maximum ${label}`]}
 				min={min}
 				max={max}
 				value={value}

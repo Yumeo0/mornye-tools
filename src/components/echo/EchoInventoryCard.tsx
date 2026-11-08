@@ -1,21 +1,25 @@
 import { UserRound } from "lucide-react";
 import { EchoCard, equippedCharacter } from "@/components/echo/EchoCard";
+import { EchoMarkControls } from "@/components/echo/EchoMarkControls";
 import type { EchoRoll } from "@/components/echo/echoRolls";
 import type { FilterOption } from "@/components/filters";
 import {
 	ContextMenu,
 	ContextMenuContent,
+	ContextMenuGroup,
 	ContextMenuItem,
 	ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import {
 	Select,
 	SelectContent,
+	SelectGroup,
 	SelectItem,
 	SelectTrigger,
 } from "@/components/ui/select";
 import type { Echo } from "@/lib/account";
 import { charactersById } from "@/lib/catalog";
+import { ECHO_MARK_ICONS, type EchoMark } from "@/lib/echoMark";
 
 /**
  * One echo in the inventory grid: the card plus its context menu (copy info,
@@ -28,6 +32,9 @@ export function EchoInventoryCard({
 	onChangeEquipped,
 	onCopyInfo,
 	onRemove,
+	onChangeMark,
+	markDisabled = false,
+	markPending = false,
 }: {
 	echo: Echo;
 	roll?: EchoRoll;
@@ -35,6 +42,9 @@ export function EchoInventoryCard({
 	onChangeEquipped: (echo: Echo, value: string) => void;
 	onCopyInfo: (echo: Echo, roll?: EchoRoll) => void;
 	onRemove: (incrId: number) => void;
+	onChangeMark?: (echo: Echo, mark: EchoMark) => void;
+	markDisabled?: boolean;
+	markPending?: boolean;
 }) {
 	const character = equippedCharacter(echo.equippedBy);
 	return (
@@ -80,33 +90,86 @@ export function EchoInventoryCard({
 								)}
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="unequipped">Not equipped</SelectItem>
-								{characterOptions.map((option) => (
-									<SelectItem key={option.value} value={option.value}>
-										{option.icon && (
-											<img
-												src={option.icon}
-												alt=""
-												className="size-5 object-contain"
-											/>
-										)}
-										{option.label}
-									</SelectItem>
-								))}
+								<SelectGroup>
+									<SelectItem value="unequipped">Not equipped</SelectItem>
+									{characterOptions.map((option) => (
+										<SelectItem key={option.value} value={option.value}>
+											{option.icon && (
+												<img
+													src={option.icon}
+													alt=""
+													className="size-5 object-contain"
+												/>
+											)}
+											{option.label}
+										</SelectItem>
+									))}
+								</SelectGroup>
 							</SelectContent>
 						</Select>
+					}
+					markActions={
+						onChangeMark && (
+							<EchoMarkControls
+								echo={echo}
+								disabled={markDisabled}
+								pending={markPending}
+								onChange={onChangeMark}
+							/>
+						)
 					}
 				/>
 			</ContextMenuTrigger>
 			<ContextMenuContent>
-				<ContextMenuItem onClick={() => onCopyInfo(echo, roll)}>
-					Copy echo info
-				</ContextMenuItem>
-				{echo.source === "manual" && (
-					<ContextMenuItem onClick={() => onRemove(echo.incrId)}>
-						Remove manual echo
+				<ContextMenuGroup>
+					{onChangeMark && (
+						<>
+							<ContextMenuItem
+								disabled={markDisabled}
+								onClick={() =>
+									onChangeMark(echo, echo.funcValue === 1 ? "none" : "locked")
+								}
+							>
+								<img
+									src={
+										echo.funcValue === 1
+											? ECHO_MARK_ICONS.unlocked
+											: ECHO_MARK_ICONS.locked
+									}
+									alt=""
+									className="size-4 object-contain"
+								/>
+								{echo.funcValue === 1 ? "Unlock echo" : "Lock echo"}
+							</ContextMenuItem>
+							<ContextMenuItem
+								disabled={markDisabled}
+								onClick={() =>
+									onChangeMark(
+										echo,
+										echo.funcValue === 2 ? "none" : "discarded",
+									)
+								}
+							>
+								<img
+									src={ECHO_MARK_ICONS.discarded}
+									alt=""
+									className="size-4 object-contain"
+								/>
+								{echo.funcValue === 2
+									? "Remove discard mark"
+									: "Mark as discard"}
+							</ContextMenuItem>
+						</>
+					)}
+					<ContextMenuItem onClick={() => onCopyInfo(echo, roll)}>
+						Copy echo info
 					</ContextMenuItem>
-				)}
+					{echo.source === "manual" && (
+						<ContextMenuItem onClick={() => onRemove(echo.incrId)}>
+							Remove manual echo
+						</ContextMenuItem>
+					)}
+				</ContextMenuGroup>
 			</ContextMenuContent>
 		</ContextMenu>
 	);

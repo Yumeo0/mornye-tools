@@ -26,27 +26,6 @@ rmSync(target, { recursive: true, force: true });
 mkdirSync(target, { recursive: true });
 cpSync(source, target, { recursive: true });
 
-// Weapon icons (`{item_id}.webp`) power the Inventory weapons view. Missing
-// icons only degrade presentation, so this is a warning rather than an error.
-const iconsSource = join(
-	repoRoot,
-	"thewuwacalculator",
-	"public",
-	"assets",
-	"game",
-	"weapons",
-	"icons",
-);
-const iconsTarget = join(repoRoot, "public", "data", "weapon-icons");
-
-if (existsSync(iconsSource)) {
-	rmSync(iconsTarget, { recursive: true, force: true });
-	mkdirSync(iconsTarget, { recursive: true });
-	cpSync(iconsSource, iconsTarget, { recursive: true });
-} else {
-	console.warn(
-		`[sync-calc-data] missing ${iconsSource}; weapon icons skipped.`,
-	);
-}
+// Image publication is owned by copy_assets.ts; calculator sync only owns JSON data.
 
 console.log(`[sync-calc-data] copied ${source} -> ${target}`);

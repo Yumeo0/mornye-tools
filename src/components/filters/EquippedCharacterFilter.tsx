@@ -13,7 +13,7 @@ export function EquippedCharacterFilter({
 	characterOptions: FilterOption[];
 }) {
 	return (
-		<div className="w-48">
+		<div className="w-full min-w-0">
 			<MultiSelect
 				label="Equipped"
 				values={values}

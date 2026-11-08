@@ -4,8 +4,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { CharacterFilterBar } from "@/components/characters/CharacterFilterBar";
+import { FilterLayout } from "@/components/filters";
 import { Button } from "@/components/ui/button";
 import { Modal, ModalHeader } from "@/components/ui/modal";
+import { VirtualGrid } from "@/components/VirtualGrid";
 import { useCharacterList } from "@/hooks/useCharacterList";
 import {
 	CHARACTER_SORT_OPTIONS,
@@ -68,7 +70,10 @@ export function CharacterPickerDialog({
 	};
 
 	return (
-		<Modal className="max-h-full max-w-2xl" onClose={onClose}>
+		<Modal
+			className="h-[calc(100dvh-4rem)] max-h-full max-w-5xl"
+			onClose={onClose}
+		>
 			<ModalHeader
 				title={title}
 				onClose={onClose}
@@ -86,77 +91,92 @@ export function CharacterPickerDialog({
 				}
 			/>
 
-			<CharacterFilterBar
-				className="shrink-0 bg-muted/40 py-3 ring-border"
-				contentClassName="px-3"
-				filters={filters}
-				onFiltersChange={setFilters}
-				sortKey={sortKey}
-				sortDesc={sortDesc}
-				onSortChange={(key, desc) => {
-					setSortKey(key);
-					setSortDesc(desc);
-				}}
-				resultCount={sorted.length}
-				totalCount={characters.length}
-				searchInputProps={{
-					ref: searchRef,
-					onKeyDown: pickFirstMatch,
-					className:
-						"h-7 text-xs focus:border-ring focus:ring-1 focus:ring-ring/50",
-				}}
-			/>
-
-			{sorted.length === 0 ? (
-				<p className="py-6 text-center text-sm text-muted-foreground">
-					No characters match the current filters.
-				</p>
-			) : (
-				<div className="grid min-h-0 grid-cols-3 gap-2 overflow-y-auto p-1 sm:grid-cols-4 md:grid-cols-5">
-					{sorted.map((character) => {
-						const roleId = String(character.id);
-						const account = accountByCharacterId.get(character.id);
-						const inSlot = assignmentLabels[roleId];
-						const isCurrent = roleId === currentRoleId;
-						const image = character.image;
-						return (
-							<button
-								key={roleId}
-								type="button"
-								disabled={Boolean(inSlot)}
-								title={inSlot ? `Already in ${inSlot}` : character.name}
-								onClick={() => onPick(roleId)}
-								className={cn(
-									"flex flex-col items-center gap-1 bg-muted/50 p-2 ring-1 transition-colors",
-									isCurrent
-										? "ring-2 ring-primary"
-										: "ring-foreground/10 hover:bg-muted hover:ring-foreground/25",
-									inSlot && "opacity-40",
-								)}
-							>
-								{image ? (
-									<img src={image} alt="" className="size-12 object-contain" />
-								) : (
-									<span className="size-12 bg-black/30" />
-								)}
-								<span className="w-full truncate text-center text-xs">
-									{character.name}
-								</span>
-								<span className="text-[10px] leading-none text-muted-foreground">
-									{account
-										? `Lvl ${account.level} · C${account.chain}`
-										: "not owned"}
-								</span>
-								{inSlot && (
-									<span className="text-[10px] leading-none text-amber-400">
-										in {inSlot}
+			<FilterLayout
+				filters={
+					<CharacterFilterBar
+						className="bg-muted/40"
+						contentClassName="px-3"
+						filters={filters}
+						onFiltersChange={setFilters}
+						sortKey={sortKey}
+						sortDesc={sortDesc}
+						onSortChange={(key, desc) => {
+							setSortKey(key);
+							setSortDesc(desc);
+						}}
+						resultCount={sorted.length}
+						totalCount={characters.length}
+						searchInputProps={{
+							ref: searchRef,
+							onKeyDown: pickFirstMatch,
+							className:
+								"h-7 text-xs focus:border-ring focus:ring-1 focus:ring-ring/50",
+						}}
+					/>
+				}
+			>
+				{sorted.length === 0 ? (
+					<p className="py-6 text-center text-sm text-muted-foreground">
+						No characters match the current filters.
+					</p>
+				) : (
+					<VirtualGrid
+						items={sorted}
+						columns={6}
+						minItemWidth={100}
+						gap={8}
+						estimateRowHeight={132}
+						getItemKey={(character) => character.id}
+						className="min-h-0 flex-1 overflow-y-auto p-1"
+						renderItem={(character) => {
+							const roleId = String(character.id);
+							const account = accountByCharacterId.get(character.id);
+							const inSlot = assignmentLabels[roleId];
+							const isCurrent = roleId === currentRoleId;
+							const image = character.image;
+							return (
+								<button
+									key={roleId}
+									type="button"
+									disabled={Boolean(inSlot)}
+									title={inSlot ? `Already in ${inSlot}` : character.name}
+									onClick={() => onPick(roleId)}
+									className={cn(
+										"flex flex-col items-center gap-1 bg-muted/50 p-2 ring-1 transition-colors",
+										isCurrent
+											? "ring-2 ring-primary"
+											: "ring-foreground/10 hover:bg-muted hover:ring-foreground/25",
+										inSlot && "opacity-40",
+									)}
+								>
+									{image ? (
+										<img
+											src={image}
+											alt=""
+											className="size-12 object-contain"
+										/>
+									) : (
+										<span className="size-12 bg-black/30" />
+									)}
+									<span className="w-full truncate text-center text-xs">
+										{character.name}
 									</span>
-								)}
-							</button>
-						);
-					})}
-				</div>
-			)}
+									<span className="text-[10px] leading-none text-muted-foreground">
+										{account
+											? `Lvl ${account.level} · C${account.chain}`
+											: "not owned"}
+									</span>
+									{inSlot && (
+										<span className="text-[10px] leading-none text-amber-400">
+											in {inSlot}
+										</span>
+									)}
+								</button>
+							);
+						}}
+					/>
+				)}
+			</FilterLayout>
 		</Modal>
 	);
 }

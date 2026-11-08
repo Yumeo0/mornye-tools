@@ -35,11 +35,11 @@ export function OptimizerFilterRow({
 	countsHint?: string;
 }) {
 	return (
-		<div className="flex flex-col gap-3 border-t border-border/60 pt-4">
-			<FieldGroup className="grid gap-4 lg:grid-cols-[2fr_3fr]">
+		<div className="flex min-w-0 flex-col gap-4">
+			<FieldGroup className="gap-4">
 				<FieldSet className="min-w-0 gap-2">
 					<FieldLegend variant="label">Echo pool</FieldLegend>
-					<div className="grid grid-cols-2 gap-3">
+					<div className="flex flex-col gap-3">
 						<FilterSelect
 							label="Equipped echoes"
 							value={filters.equipped}
@@ -75,7 +75,7 @@ export function OptimizerFilterRow({
 				</FieldSet>
 				<FieldSet className="min-w-0 gap-2">
 					<FieldLegend variant="label">Set & stat requirements</FieldLegend>
-					<div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+					<div className="flex flex-col gap-3">
 						<MultiSelect
 							label="Echo sets"
 							values={filters.sets}
@@ -103,7 +103,7 @@ export function OptimizerFilterRow({
 					</div>
 				</FieldSet>
 			</FieldGroup>
-			<div className="flex flex-wrap items-center gap-2">
+			<div className="flex flex-col items-stretch gap-2">
 				<Button
 					variant="outline"
 					size="sm"
@@ -124,7 +124,7 @@ export function OptimizerFilterRow({
 				)}
 				{counts && (
 					<span
-						className="ml-auto self-center text-[11px] text-muted-foreground"
+						className="text-[11px] text-muted-foreground"
 						title={countsHint}
 					>
 						{counts.eligible}/{counts.total} echoes ·{" "}

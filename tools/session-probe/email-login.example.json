@@ -1,0 +1,10 @@
+{
+  "installation": {
+    "server": "Europe"
+  },
+  "email_login": {
+    "email": "<your Kuro account email>",
+    "password": "<your password>",
+    "device_num": "<your consistent device identifier>"
+  }
+}

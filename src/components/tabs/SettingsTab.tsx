@@ -1,12 +1,13 @@
 import {
+	Alert02Icon,
 	Download01Icon,
 	InstallingUpdates01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { FileJson, Monitor, Sparkles, Wrench } from "lucide-react";
 import type { ReactNode } from "react";
-import { useState } from "react";
 import { CaptureCard } from "@/components/settings/CaptureCard";
+import { DangerousFeaturesCard } from "@/components/settings/DangerousFeaturesCard";
 import { ExportCard } from "@/components/settings/ExportCard";
 import { MapImportCard } from "@/components/settings/MapImportCard";
 import { OcrDebugPanel } from "@/components/settings/OcrDebugPanel";
@@ -38,6 +39,11 @@ const SECTIONS = [
 		icon: <HugeiconsIcon icon={InstallingUpdates01Icon} />,
 	},
 	{ value: "advanced", label: "Developer", icon: <Wrench /> },
+	{
+		value: "dangerous",
+		label: "Dangerous Features",
+		icon: <HugeiconsIcon icon={Alert02Icon} />,
+	},
 ] as const;
 
 /**
@@ -67,13 +73,19 @@ function SectionTab({
 	);
 }
 
-export function SettingsTab({ onImport }: { onImport: () => void }) {
-	const [section, setSection] = useState("overlay");
-
+export function SettingsTab({
+	onImport,
+	section,
+	onSectionChange,
+}: {
+	onImport: () => void;
+	section: string;
+	onSectionChange: (section: string) => void;
+}) {
 	return (
 		<Tabs
 			value={section}
-			onValueChange={setSection}
+			onValueChange={onSectionChange}
 			className="flex min-h-0 min-w-0 flex-1 flex-col gap-4"
 		>
 			<TabsList className="h-auto max-w-full shrink-0 justify-start gap-0 overflow-x-auto overflow-y-clip bg-transparent p-0">
@@ -137,6 +149,12 @@ export function SettingsTab({ onImport }: { onImport: () => void }) {
 				<UpdatesCard />
 			</TabsContent>
 
+			<TabsContent
+				value="dangerous"
+				className="min-h-0 flex-1 overflow-y-auto pb-4"
+			>
+				<DangerousFeaturesCard />
+			</TabsContent>
 			<TabsContent
 				value="advanced"
 				className="min-h-0 flex-1 space-y-6 overflow-y-auto pb-4"

@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 function Slider({
 	className,
 	thumbClassName,
+	thumbLabels,
 	min = 0,
 	max = 100,
 	step = 1,
@@ -14,6 +15,7 @@ function Slider({
 }: {
 	className?: string;
 	thumbClassName?: string;
+	thumbLabels?: string[];
 	min?: number;
 	max?: number;
 	step?: number;
@@ -39,6 +41,8 @@ function Slider({
 					<SliderPrimitive.Indicator className="bg-primary absolute h-full" />
 					{value.map((_thumbValue, index) => (
 						<SliderPrimitive.Thumb
+							index={index}
+							aria-label={thumbLabels?.[index]}
 							// biome-ignore lint/suspicious/noArrayIndexKey: thumbs map 1:1 to positional values
 							key={index}
 							className={cn(

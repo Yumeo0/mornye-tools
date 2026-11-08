@@ -1,7 +1,12 @@
 import { type ReactNode, useMemo, useState } from "react";
+import {
+	FilterField,
+	FilterLayout,
+	FilterPanel,
+	FilterSearch,
+} from "@/components/filters";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
 	Select,
 	SelectContent,
@@ -268,121 +273,135 @@ export function AchievementsTab({ active }: { active: boolean }) {
 		setGroupId("all");
 	};
 	return (
-		<div className="flex min-h-0 flex-1 gap-4 pb-4">
-			<nav
-				aria-label="Achievement categories"
-				className="flex w-74 shrink-0 flex-col gap-1 overflow-y-auto border-r pr-2"
-			>
-				<NavButton
-					active={category === "all"}
-					complete={isComplete(total)}
-					onClick={() => selectCategory("all")}
-					count={countText(total, snapshot != null)}
-				>
-					<span className="min-w-0 flex-1 truncate font-medium">
-						All achievements
-					</span>
-				</NavButton>
-				{catalog.categories.map((entry) => {
-					const groups = catalog.groups.filter(
-						(group) => group.categoryId === entry.id,
-					);
-					const counts = totals.get(entry.id);
-					return (
-						<div key={entry.id} className="flex flex-col gap-0.5">
-							<NavButton
-								active={category === String(entry.id)}
-								complete={isComplete(counts)}
-								onClick={() => selectCategory(String(entry.id))}
-								count={countText(counts, snapshot != null)}
+		<FilterLayout
+			filters={
+				<FilterPanel label="Achievement filters">
+					<div className="flex flex-col gap-4">
+						<FilterSearch
+							value={search}
+							onChange={setSearch}
+							placeholder="Search achievements…"
+							inputProps={{
+								"aria-label": "Search achievements",
+								title: "Search achievements, descriptions or ID",
+							}}
+						/>
+						<FilterField label="Status">
+							<Select
+								items={STATUSES}
+								value={status}
+								onValueChange={(value) => setStatus(value ?? "all")}
 							>
-								<img
-									src={entry.icon}
-									alt=""
-									className="size-6 shrink-0 object-contain"
-								/>
-								<span className="min-w-0 flex-1 truncate font-medium">
-									{entry.name}
-								</span>
-							</NavButton>
-							<ul
-								aria-label={`${entry.name} sub-categories`}
-								className="ml-3 flex flex-col gap-0.5 border-l pl-1"
-							>
-								{groups.map((group) => {
-									const groupCounts = totals.get(group.id);
-									return (
-										<li key={group.id}>
-											<NavButton
-												active={groupId === String(group.id)}
-												complete={isComplete(groupCounts)}
-												onClick={() => {
-													setCategory(String(entry.id));
-													setGroupId(String(group.id));
-												}}
-												count={countText(groupCounts, snapshot != null)}
-											>
-												<span className="min-w-0 flex-1 truncate">
-													{subCategoryName(group, entry.name)}
-												</span>
-											</NavButton>
-										</li>
-									);
-								})}
-							</ul>
-						</div>
-					);
-				})}
-			</nav>
+								<SelectTrigger
+									aria-label="Achievement status"
+									className="w-full"
+								>
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent alignItemWithTrigger={false}>
+									<SelectGroup>
+										{STATUSES.map((item) => (
+											<SelectItem key={item.value} value={item.value}>
+												{item.label}
+											</SelectItem>
+										))}
+									</SelectGroup>
+								</SelectContent>
+							</Select>
+						</FilterField>
+					</div>
+					<div className="flex flex-col items-start gap-3 text-xs text-muted-foreground">
+						<label
+							htmlFor="show-hidden-achievements"
+							className="flex items-center gap-2"
+						>
+							<Switch
+								id="show-hidden-achievements"
+								checked={showHidden}
+								onCheckedChange={setShowHidden}
+							/>
+							Reveal hidden achievements
+						</label>
+						<span>{achievements.length.toLocaleString()} shown</span>
+					</div>
+
+					<nav
+						aria-label="Achievement categories"
+						className="flex min-w-0 flex-col gap-1"
+					>
+						<NavButton
+							active={category === "all"}
+							complete={isComplete(total)}
+							onClick={() => selectCategory("all")}
+							count={countText(total, snapshot != null)}
+						>
+							<span className="min-w-0 flex-1 truncate font-medium">
+								All achievements
+							</span>
+						</NavButton>
+						{catalog.categories.map((entry) => {
+							const groups = catalog.groups.filter(
+								(group) => group.categoryId === entry.id,
+							);
+							const counts = totals.get(entry.id);
+							return (
+								<div key={entry.id} className="flex flex-col gap-0.5">
+									<NavButton
+										active={category === String(entry.id)}
+										complete={isComplete(counts)}
+										onClick={() => selectCategory(String(entry.id))}
+										count={countText(counts, snapshot != null)}
+									>
+										<img
+											src={entry.icon}
+											alt=""
+											className="size-6 shrink-0 object-contain"
+										/>
+										<span className="min-w-0 flex-1 truncate font-medium">
+											{entry.name}
+										</span>
+									</NavButton>
+									<ul
+										aria-label={`${entry.name} sub-categories`}
+										className="ml-3 flex flex-col gap-0.5 border-l pl-1"
+									>
+										{groups.map((group) => {
+											const groupCounts = totals.get(group.id);
+											return (
+												<li key={group.id}>
+													<NavButton
+														active={groupId === String(group.id)}
+														complete={isComplete(groupCounts)}
+														onClick={() => {
+															setCategory(String(entry.id));
+															setGroupId(String(group.id));
+														}}
+														count={countText(groupCounts, snapshot != null)}
+													>
+														<span className="min-w-0 flex-1 truncate">
+															{subCategoryName(group, entry.name)}
+														</span>
+													</NavButton>
+												</li>
+											);
+										})}
+									</ul>
+								</div>
+							);
+						})}
+					</nav>
+				</FilterPanel>
+			}
+		>
 			<section
 				aria-label="Achievements"
-				className="flex min-h-0 flex-1 flex-col gap-4"
+				className="flex min-h-0 min-w-0 flex-1 flex-col gap-4"
 			>
-				<div className="flex flex-wrap items-center gap-3">
-					<Input
-						aria-label="Search achievements"
-						placeholder="Search achievements, descriptions or ID…"
-						value={search}
-						onChange={(event) => setSearch(event.target.value)}
-						className="min-w-48 flex-1"
-					/>
-					<Select
-						items={STATUSES}
-						value={status}
-						onValueChange={(value) => setStatus(value ?? "all")}
-					>
-						<SelectTrigger aria-label="Achievement status" className="w-44">
-							<SelectValue />
-						</SelectTrigger>
-						<SelectContent alignItemWithTrigger={false}>
-							<SelectGroup>
-								{STATUSES.map((item) => (
-									<SelectItem key={item.value} value={item.value}>
-										{item.label}
-									</SelectItem>
-								))}
-							</SelectGroup>
-						</SelectContent>
-					</Select>
-				</div>
-				<div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
-					<label
-						htmlFor="show-hidden-achievements"
-						className="flex items-center gap-2"
-					>
-						<Switch
-							id="show-hidden-achievements"
-							checked={showHidden}
-							onCheckedChange={setShowHidden}
-						/>
-						Reveal hidden achievements
-					</label>
-					<span>{achievements.length.toLocaleString()} shown</span>
-				</div>
 				{achievements.length ? (
 					<VirtualGrid
 						items={achievements}
 						columns={columns}
+						minItemWidth={420}
 						gap={10}
 						estimateRowHeight={160}
 						getItemKey={achievementKey}
@@ -402,6 +421,6 @@ export function AchievementsTab({ active }: { active: boolean }) {
 					</p>
 				)}
 			</section>
-		</div>
+		</FilterLayout>
 	);
 }

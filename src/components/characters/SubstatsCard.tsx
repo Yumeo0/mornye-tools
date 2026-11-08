@@ -44,7 +44,7 @@ export function SubstatsCard({
 		<Card>
 			<CardContent className="p-4 space-y-3">
 				<Label className="text-base font-medium flex items-center gap-2">
-					<img src="/echo-sets.webp" alt="" className="size-5" /> Substats
+					<img src="/icons/inventory/echo-sets.webp" alt="" className="size-5" /> Substats
 					Priority
 				</Label>
 

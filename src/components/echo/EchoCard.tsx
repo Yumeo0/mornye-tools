@@ -17,6 +17,7 @@ import {
 	groupEchoSpecies,
 	sonataIcon128,
 } from "@/lib/catalog";
+import { ECHO_MARK_ICONS } from "@/lib/echoMark";
 import {
 	ratingColor,
 	statIconAsset,
@@ -136,6 +137,7 @@ export function EchoCard({
 	rollCharacter,
 	actions,
 	footer,
+	markActions,
 }: {
 	echo: Echo;
 	/** Best rating among relevant characters (0-100); hidden when null. */
@@ -144,6 +146,7 @@ export function EchoCard({
 	rollCharacter?: { name: string; icon: string } | null;
 	actions?: ReactNode;
 	footer?: ReactNode;
+	markActions?: ReactNode;
 }) {
 	const image = echoImage(echo);
 	const set = echoSet(echo);
@@ -206,6 +209,19 @@ export function EchoCard({
 								Manual
 							</span>
 						)}
+						{markActions ??
+							((echo.funcValue === 1 || echo.funcValue === 2) && (
+								<img
+									src={
+										echo.funcValue === 1
+											? ECHO_MARK_ICONS.locked
+											: ECHO_MARK_ICONS.discarded
+									}
+									alt={echo.funcValue === 1 ? "Locked" : "Discarded"}
+									title={echo.funcValue === 1 ? "Locked" : "Discarded"}
+									className="size-5 shrink-0 object-contain"
+								/>
+							))}
 					</div>
 				</div>
 				{actions && (

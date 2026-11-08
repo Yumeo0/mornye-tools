@@ -1,8 +1,10 @@
 import { useMemo, useState } from "react";
 import {
 	characterFilterOptions,
+	FilterLayout,
 	type FilterOption,
 } from "@/components/filters";
+import { useResponsiveColumns, VirtualGrid } from "@/components/VirtualGrid";
 import { WeaponCard } from "@/components/weapon/WeaponCard";
 import { WeaponFilterBar } from "@/components/weapon/WeaponFilterBar";
 import {
@@ -13,10 +15,21 @@ import {
 	type WeaponFilters,
 	type WeaponSortKey,
 } from "@/components/weapon/weaponFilters";
-import { useAccount } from "@/lib/account";
+import { useAccount, type Weapon } from "@/lib/account";
+
+const COLUMNS = [
+	{ minWidth: 1536, columns: 7 },
+	{ minWidth: 1280, columns: 6 },
+	{ minWidth: 1024, columns: 5 },
+	{ minWidth: 768, columns: 4 },
+	{ minWidth: 640, columns: 3 },
+];
+const weaponKey = (weapon: Weapon, index: number) =>
+	`incr:${weapon.incrId}-${index}`;
 
 export function WeaponsTab() {
 	const { snapshot, error } = useAccount();
+	const columns = useResponsiveColumns(COLUMNS, 2);
 	const weapons = snapshot.weapons;
 	const [filters, setFilters] = useState<WeaponFilters>(EMPTY_WEAPON_FILTERS);
 	const [sortBy, setSortBy] = useState<WeaponSortKey>(WEAPON_DEFAULT_SORT);
@@ -45,40 +58,41 @@ export function WeaponsTab() {
 	}
 
 	return (
-		<div className="flex min-h-0 flex-1 flex-col gap-4">
-			<WeaponFilterBar
-				filters={filters}
-				onFiltersChange={setFilters}
-				sortBy={sortBy}
-				sortAsc={sortAsc}
-				onSortChange={(key, asc) => {
-					setSortBy(key);
-					setSortAsc(asc);
-				}}
-				resultCount={filteredWeapons.length}
-				totalCount={weapons.length}
-				characterOptions={characterOptions}
-			/>
-
+		<FilterLayout
+			filters={
+				<WeaponFilterBar
+					filters={filters}
+					onFiltersChange={setFilters}
+					sortBy={sortBy}
+					sortAsc={sortAsc}
+					onSortChange={(key, asc) => {
+						setSortBy(key);
+						setSortAsc(asc);
+					}}
+					resultCount={filteredWeapons.length}
+					totalCount={weapons.length}
+					characterOptions={characterOptions}
+				/>
+			}
+		>
 			{filteredWeapons.length === 0 ? (
 				<p className="py-8 text-center text-sm text-muted-foreground">
 					No weapons match the current filters.
 				</p>
 			) : (
-				<div className="min-h-0 flex-1 overflow-y-auto pr-1">
-					<div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
-						{sortedWeapons.map((weapon, index) => (
-							<WeaponCard
-								// biome-ignore lint/suspicious/noArrayIndexKey: the list can contain duplicate weapons with the same incr id
-								key={`incr:${weapon.incrId}-${index}`}
-								weapon={weapon}
-							/>
-						))}
-					</div>
-				</div>
+				<VirtualGrid
+					items={sortedWeapons}
+					columns={columns}
+					minItemWidth={150}
+					gap={12}
+					estimateRowHeight={280}
+					getItemKey={weaponKey}
+					renderItem={(weapon) => <WeaponCard weapon={weapon} />}
+					className="min-h-0 flex-1 overflow-y-auto pr-1"
+				/>
 			)}
 
 			{error && <p className="text-sm text-destructive">{error}</p>}
-		</div>
+		</FilterLayout>
 	);
 }

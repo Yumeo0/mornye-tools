@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { CharacterCard } from "@/components/characters/CharacterCard";
 import { CharacterDetail } from "@/components/characters/CharacterDetail";
 import { CharacterFilterBar } from "@/components/characters/CharacterFilterBar";
-import { Card, CardContent } from "@/components/ui/card";
+import { FilterLayout } from "@/components/filters";
 import {
 	type GridBreakpoint,
 	useResponsiveColumns,
@@ -95,39 +95,22 @@ export function CharactersTab() {
 	}
 
 	return (
-		<div className="flex min-h-0 flex-1 flex-col gap-3">
-			{snapshot.player && (
-				<Card className="shrink-0">
-					<CardContent className="flex items-center gap-4">
-						<div className="grid size-12 shrink-0 place-items-center rounded-full bg-muted text-base font-semibold">
-							{snapshot.player.level}
-						</div>
-						<div className="min-w-0">
-							<p className="truncate font-medium">
-								{snapshot.player.name || "Player"}
-							</p>
-							<p className="text-xs text-muted-foreground">
-								UID {snapshot.player.playerId} · World level{" "}
-								{snapshot.player.worldLevel}
-							</p>
-						</div>
-					</CardContent>
-				</Card>
-			)}
-
-			<CharacterFilterBar
-				filters={filters}
-				onFiltersChange={setFilters}
-				sortKey={sortKey}
-				sortDesc={sortDesc}
-				onSortChange={(key, desc) => {
-					setSortKey(key);
-					setSortDesc(desc);
-				}}
-				resultCount={filteredCharacters.length}
-				totalCount={characters.length}
-			/>
-
+		<FilterLayout
+			filters={
+				<CharacterFilterBar
+					filters={filters}
+					onFiltersChange={setFilters}
+					sortKey={sortKey}
+					sortDesc={sortDesc}
+					onSortChange={(key, desc) => {
+						setSortKey(key);
+						setSortDesc(desc);
+					}}
+					resultCount={filteredCharacters.length}
+					totalCount={characters.length}
+				/>
+			}
+		>
 			{error && <p className="text-sm text-destructive">{error}</p>}
 
 			{filteredCharacters.length === 0 ? (
@@ -140,6 +123,7 @@ export function CharactersTab() {
 				<VirtualGrid
 					items={filteredCharacters}
 					columns={gridColumns}
+					minItemWidth={150}
 					gap={CHARACTER_GRID_GAP}
 					estimateRowHeight={CHARACTER_ROW_ESTIMATE_PX}
 					getItemKey={getCharacterKey}
@@ -147,6 +131,6 @@ export function CharactersTab() {
 					className="min-h-0 flex-1 overflow-y-auto pr-1"
 				/>
 			)}
-		</div>
+		</FilterLayout>
 	);
 }

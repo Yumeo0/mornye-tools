@@ -164,10 +164,13 @@ pub fn handle(app: &AppHandle, gp: &GamePacket) {
     }
     let account = app.state::<AccountState>();
     let mut capture = state.teams.lock();
-    let Ok(mut store) = account.store.lock() else {
+    let Ok(mut profiles) = account.store.lock() else {
         return;
     };
-    match capture.apply(gp, &mut store) {
+    let Some(store) = profiles.passive_mut() else {
+        return;
+    };
+    match capture.apply(gp, store) {
         Ok(true) => state.mark_pending(&["teams"]),
         Ok(false) => {}
         Err(error) => state.record_decode_failure(gp.msg_id, gp.get_msg_name(), &error.to_string()),

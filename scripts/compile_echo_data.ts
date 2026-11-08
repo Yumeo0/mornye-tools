@@ -1,3 +1,4 @@
+import { prepareCatalog } from "./lib/public-assets";
 /**
  * Compile echo (phantom) data for the Account UI.
  *
@@ -301,7 +302,10 @@ async function compileEchoData(): Promise<void> {
 	}
 
 	console.log(`\nWriting ${processed} echoes to ${OUTPUT_PATH}...`);
-	await Bun.write(OUTPUT_PATH, `${JSON.stringify(echoList, null, "\t")}\n`);
+	await Bun.write(
+		OUTPUT_PATH,
+		`${JSON.stringify(prepareCatalog(echoList), null, "\t")}\n`,
+	);
 
 	console.log(`✓ Successfully compiled echo data to ${OUTPUT_PATH}`);
 	console.log(`  Total echoes: ${processed}`);

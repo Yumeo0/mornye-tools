@@ -6,6 +6,7 @@ use tauri::{AppHandle, State};
 pub mod account;
 pub mod capture;
 pub mod config;
+pub mod dangerous;
 pub mod echo_panel;
 pub mod input;
 pub mod ocr;
@@ -174,6 +175,7 @@ pub fn run() {
             std::fs::create_dir_all(&data_dir).ok();
 
             app.manage(account::AccountState::new(data_dir.clone()));
+            app.manage(dangerous::DangerousState::new(data_dir.clone()));
             let sniffer_state = sniffer::SnifferState::new(app.handle(), data_dir);
             app.manage(sniffer_state);
             app.manage(overlay::OverlayState::default());
@@ -182,6 +184,11 @@ pub fn run() {
             Ok(())
         })
         .manage(AppState::default())
+        .on_window_event(|window, event| {
+            if window.label() == "settings" && matches!(event, tauri::WindowEvent::Destroyed) {
+                window.state::<dangerous::DangerousState>().shutdown();
+            }
+        })
         .invoke_handler(tauri::generate_handler![
             set_scan_region,
             get_scan_region,
@@ -195,12 +202,32 @@ pub fn run() {
             scan_region_for_text,
             get_capture_origin,
             account::account_get_snapshot,
+            account::account_get_view,
+            account::account_list_profiles,
+            account::account_select_profile,
+            account::account_identify_profile,
             account::account_add_manual_echo,
             account::account_remove_manual_echo,
             account::account_set_equipped_override,
             sniffer::sniffer_get_status,
             sniffer::position::sniffer_get_player_position,
             sniffer::sniffer_import_pcap,
+            dangerous::dangerous_status,
+            dangerous::dangerous_set_enabled,
+            dangerous::dangerous_servers,
+            dangerous::dangerous_select_server,
+            dangerous::dangerous_select_account,
+            dangerous::dangerous_link_profile,
+            dangerous::profiles::dangerous_discover_profiles,
+            dangerous::profiles::dangerous_add_profile,
+            dangerous::profiles::dangerous_remove_profile,
+            dangerous::dangerous_login,
+            dangerous::dangerous_connect,
+            dangerous::dangerous_echo_upgrade,
+            dangerous::dangerous_echo_discard,
+            dangerous::dangerous_echo_mark,
+            dangerous::dangerous_disconnect,
+            dangerous::dangerous_sign_out,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

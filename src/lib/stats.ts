@@ -138,32 +138,32 @@ export function subStatTierColor(tier: number, tierCount: number): string {
 
 // Local game asset icons (IconAttribute folder) keyed by full stat name
 const STAT_ASSETS: Record<string, string> = {
-	HP: "greenlife",
-	"HP%": "greenlife",
-	ATK: "redattack",
-	"ATK%": "redattack",
-	DEF: "greendefense",
-	"DEF%": "greendefense",
-	"Crit. Rate": "redbaoji",
-	"Crit. DMG": "redcrit",
-	"Energy Regen": "greenenergy",
-	"Healing Bonus": "greencure",
-	"Basic Attack DMG Bonus": "redphysics",
-	"Heavy Attack DMG Bonus": "redfoco",
-	"Resonance Skill DMG Bonus": "redspeed",
-	"Resonance Liberation DMG Bonus": "redskill",
-	"Glacio DMG Bonus": "redice",
-	"Fusion DMG Bonus": "redhot",
-	"Electro DMG Bonus": "redmine",
-	"Aero DMG Bonus": "redwind",
-	"Havoc DMG Bonus": "reddark",
-	"Spectro DMG Bonus": "redlight",
+	HP: "hp",
+	"HP%": "hp",
+	ATK: "atk",
+	"ATK%": "atk",
+	DEF: "def",
+	"DEF%": "def",
+	"Crit. Rate": "crit-rate",
+	"Crit. DMG": "crit-dmg",
+	"Energy Regen": "energy-regen",
+	"Healing Bonus": "healing-bonus",
+	"Basic Attack DMG Bonus": "basic-attack",
+	"Heavy Attack DMG Bonus": "heavy-attack",
+	"Resonance Skill DMG Bonus": "resonance-skill",
+	"Resonance Liberation DMG Bonus": "resonance-liberation",
+	"Glacio DMG Bonus": "glacio",
+	"Fusion DMG Bonus": "fusion",
+	"Electro DMG Bonus": "electro",
+	"Aero DMG Bonus": "aero",
+	"Havoc DMG Bonus": "havoc",
+	"Spectro DMG Bonus": "spectro",
 };
 
 export function statIconAsset(name: string): string | undefined {
 	const file = STAT_ASSETS[name];
 	if (!file) return undefined;
-	return `/wuwa-assets/UI/UIResources/Common/Image/IconAttribute/T_Iconproperty${file}_UI.webp`;
+	return `/icons/stats/${file}.webp`;
 }
 
 export interface ParsedStatLine {

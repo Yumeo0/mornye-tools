@@ -60,6 +60,58 @@ const snapshot: AccountSnapshot = {
 };
 
 describe("buildAccountExport", () => {
+	test("map export preserves captured rewards, imported marks, explicit uncollected overrides and profile identity", () => {
+		const exploration = {
+			playerId: 12345,
+			scene: { mapId: 8, x: 1, y: 2, z: 3 },
+			rewards: {
+				"8:1": {
+					mapId: 8,
+					entityId: 1,
+					source: "reward-response" as const,
+					observedAt: 10,
+				},
+			},
+		};
+		const marks = {
+			"8:1": { collected: false, updatedAt: 20 },
+			"8:2": { collected: true, updatedAt: 30 },
+		};
+		const profile = {
+			id: "eu-12345",
+			playerId: 12345,
+			serverId: "eu",
+			region: "Europe",
+		};
+		const doc = buildAccountExport(
+			{ ...snapshot, profile, exploration },
+			["map"],
+			EXPORTED_AT,
+			marks,
+		);
+		expect(doc.map).toEqual({
+			profile,
+			playerId: 12345,
+			exploration,
+			manualMarks: marks,
+		});
+		expect(exportPartCount({ ...snapshot, exploration }, "map", marks)).toBe(2);
+		expect(doc.echoes).toBeUndefined();
+		marks["8:2"].collected = false;
+		expect(doc.map?.manualMarks["8:2"].collected).toBe(true);
+	});
+	test("manual-only map progress exports even before any passive exploration sync", () => {
+		const marks = { "8:2": { collected: true, updatedAt: 30 } };
+		const doc = JSON.parse(
+			accountExportJson(snapshot, ["map"], EXPORTED_AT, marks),
+		);
+		expect(doc.map.playerId).toBe(12345);
+		expect(doc.map.exploration.rewards).toEqual({});
+		expect(doc.map.manualMarks).toEqual(marks);
+		expect(
+			buildAccountExport(snapshot, [], EXPORTED_AT, marks).map,
+		).toBeUndefined();
+	});
 	test("keeps only the selected parts, in canonical order", () => {
 		const doc = buildAccountExport(
 			snapshot,

@@ -105,6 +105,10 @@ describe("calculateRating", () => {
 });
 
 describe("maxPossibleRating", () => {
+	test("honors the smaller number of substat slots on lower-rarity echoes", () => {
+		expect(maxPossibleRating(fiveWant, [], 3)).toBe(60);
+		expect(maxPossibleRating(fiveWant, [], 4)).toBe(80);
+	});
 	test("unrevealed slots count as maxed wanted stats", () => {
 		// Nothing revealed: five slots can host the five wanted stats.
 		expect(maxPossibleRating(fiveWant, [])).toBe(100);

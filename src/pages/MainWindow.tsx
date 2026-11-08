@@ -1,3 +1,5 @@
+import { DashboardSquare01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { isTauri } from "@tauri-apps/api/core";
 import { getAllWindows, getCurrentWindow } from "@tauri-apps/api/window";
 import { exit } from "@tauri-apps/plugin-process";
@@ -11,21 +13,31 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { AccountProfileSelector } from "@/components/AccountProfileSelector";
 import { MapImportController } from "@/components/map/MapImportController";
+import {
+	DangerousConnectButton,
+	DangerousFeaturesPrompt,
+} from "@/components/settings/DangerousFeaturesCard";
 import { AchievementsTab } from "@/components/tabs/AchievementsTab";
 import { CharactersTab } from "@/components/tabs/CharactersTab";
 import { EchoesTab } from "@/components/tabs/EchoesTab";
+import { EchoUpgraderTab } from "@/components/tabs/EchoUpgraderTab";
 import { MapTab } from "@/components/tabs/MapTab";
 import { OptimizerTab } from "@/components/tabs/OptimizerTab";
+import { OverviewTab } from "@/components/tabs/OverviewTab";
 import { QuestsTab } from "@/components/tabs/QuestsTab";
 import { SettingsTab } from "@/components/tabs/SettingsTab";
 import { WeaponsTab } from "@/components/tabs/WeaponsTab";
 import { UpdateBanner } from "@/components/UpdateBanner";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Toaster } from "@/components/ui/sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { applyResolutionRegions } from "@/lib/scanRegions";
 import { readSetting } from "@/lib/settings";
-import { blockingErrors, getStatus, type SnifferStatus } from "@/lib/sniffer";
+import { blockingErrors, getStatus } from "@/lib/sniffer";
 import { checkForUpdateOnStartup, useUpdateState } from "@/lib/updater";
 import { cn } from "@/lib/utils";
 
@@ -49,22 +61,37 @@ function WindowButton({
 	);
 }
 
-/** Primary sidebar tabs, in display order. */
-const NAV_TABS = [
-	{ value: "characters", title: "Characters", icon: "/characters.webp" },
-	{ value: "echoes", title: "Echoes", icon: "/characters/echo.png" },
-	{ value: "weapons", title: "Weapons", icon: "/weapons.webp" },
-	{ value: "optimizer", title: "Optimizer", icon: "/optimizer.webp" },
-	{ value: "map", title: "Map", icon: "/map.webp" },
+/** Inventory and tools stay separate in both expanded and collapsed navigation. */
+const NAV_GROUPS = [
 	{
-		value: "achievements",
-		title: "Achievements",
-		icon: "/wuwa-assets/UI/UIResources/Common/Atlas/TabIcon/SP_FuncIconAchievement.webp",
+		title: "Inventory",
+		tabs: [
+			{ value: "characters", title: "Characters", icon: "/icons/navigation/characters.webp" },
+			{ value: "echoes", title: "Echoes", icon: "/icons/navigation/echoes.webp" },
+			{ value: "weapons", title: "Weapons", icon: "/icons/navigation/weapons.webp" },
+			{
+				value: "achievements",
+				title: "Achievements",
+				icon: "/icons/navigation/achievements.webp",
+			},
+			{
+				value: "quests",
+				title: "Quests",
+				icon: "/icons/navigation/quests.webp",
+			},
+		],
 	},
 	{
-		value: "quests",
-		title: "Quests",
-		icon: "/wuwa-assets/UI/UIResources/Common/Atlas/TabIcon/SP_IconQuest.webp",
+		title: "Tools",
+		tabs: [
+			{ value: "optimizer", title: "Optimizer", icon: "/icons/navigation/optimizer.webp" },
+			{ value: "map", title: "Map", icon: "/icons/navigation/map.webp" },
+			{
+				value: "echo-upgrader",
+				title: "Echo Upgrader",
+				icon: "/icons/navigation/echoes.webp",
+			},
+		],
 	},
 ] as const;
 
@@ -84,10 +111,10 @@ function NavTab({
 		<TabsTrigger
 			value={value}
 			title={title}
-			className={`h-auto flex-none gap-3 py-2.5 text-base ${sidebarOpen ? "px-3 justify-start" : "px-0 group-data-[orientation=vertical]/tabs:justify-center"}`}
+			className={`h-auto min-w-0 flex-none gap-2.5 overflow-hidden py-2.5 text-sm ${sidebarOpen ? "px-3 justify-start" : "px-0 group-data-[orientation=vertical]/tabs:justify-center"}`}
 		>
 			{icon}
-			{sidebarOpen && title}
+			{sidebarOpen && <span className="min-w-0 truncate">{title}</span>}
 		</TabsTrigger>
 	);
 }
@@ -106,7 +133,7 @@ function TitleBar() {
 			>
 				<span className="size-6 shrink-0 overflow-hidden rounded-md ring-1 ring-border">
 					<img
-						src="/mornye-chibi.webp"
+						src="/icons/app/mornye.webp"
 						alt=""
 						className="size-full scale-[1.3] object-cover"
 					/>
@@ -130,21 +157,25 @@ function TitleBar() {
 	);
 }
 
-/**
- * Compact account-sync indicator for the sidebar footer: a state dot and the
- * current state. Details live in Settings -> Developer.
- */
-function SnifferIndicator({ compact }: { compact: boolean }) {
-	const [status, setStatus] = useState<SnifferStatus | null>(null);
-
+/** Surface sync failures once; routine capture status lives in Settings. */
+function SnifferErrorToasts() {
 	useEffect(() => {
 		let cancelled = false;
+		let previousError: string | null = null;
 		const poll = async () => {
 			try {
 				const next = await getStatus();
-				if (!cancelled) setStatus(next);
+				if (cancelled) return;
+				const problem = blockingErrors(next)[0] ?? next.last_error;
+				if (problem && problem !== previousError) {
+					toast.error("Account sync", {
+						id: "account-sync-error",
+						description: problem,
+					});
+				}
+				previousError = problem;
 			} catch {
-				// Sniffer status is best-effort in the sidebar.
+				// Status polling remains best-effort; diagnostics are in Settings.
 			}
 		};
 		poll();
@@ -155,47 +186,14 @@ function SnifferIndicator({ compact }: { compact: boolean }) {
 		};
 	}, []);
 
-	const problem = status
-		? (blockingErrors(status)[0] ?? status.last_error)
-		: null;
-	const [label, dotClass] = !status
-		? ["starting…", "bg-muted-foreground/50"]
-		: problem
-			? ["sync error", "bg-destructive"]
-			: status.capturing
-				? ["capturing", "bg-emerald-400"]
-				: status.game_process_found
-					? ["game found", "bg-sky-400"]
-					: ["armed", "bg-muted-foreground/50"];
-
-	const title = [
-		!status ? "Account sync: starting…" : `Account sync: ${label}`,
-		problem,
-	]
-		.filter(Boolean)
-		.join(" · ");
-
-	return (
-		<div
-			title={title}
-			className={`flex h-9 shrink-0 items-center text-muted-foreground ${
-				compact ? "w-9 justify-center" : "w-full gap-2 px-2"
-			}`}
-		>
-			<span className={`size-2 shrink-0 rounded-full ${dotClass}`} />
-			{!compact && (
-				<span className="min-w-0 flex-1 truncate text-left text-[11px]">
-					{label}
-				</span>
-			)}
-		</div>
-	);
+	return null;
 }
 
 export default function MainWindow() {
-	const [tab, setTab] = useState("characters");
+	const [tab, setTab] = useState("overview");
 	const [sidebarOpen, setSidebarOpen] = useState(true);
 	const [importOpen, setImportOpen] = useState(false);
+	const [settingsSection, setSettingsSection] = useState("overlay");
 	const { update } = useUpdateState();
 
 	// Silent update check on start (release builds only): a newer release lights
@@ -259,8 +257,13 @@ export default function MainWindow() {
 	// Content panes for the primary tabs; all stay mounted so each tab keeps
 	// its state (filters, scroll position) across switches.
 	const tabContents: Array<{ value: string; content: ReactNode }> = [
+		{
+			value: "overview",
+			content: <OverviewTab active={tab === "overview"} onNavigate={setTab} />,
+		},
 		{ value: "characters", content: <CharactersTab /> },
 		{ value: "echoes", content: <EchoesTab /> },
+		{ value: "echo-upgrader", content: <EchoUpgraderTab /> },
 		{ value: "weapons", content: <WeaponsTab /> },
 		{
 			value: "optimizer",
@@ -268,7 +271,13 @@ export default function MainWindow() {
 		},
 		{
 			value: "settings",
-			content: <SettingsTab onImport={() => setImportOpen(true)} />,
+			content: (
+				<SettingsTab
+					onImport={() => setImportOpen(true)}
+					section={settingsSection}
+					onSectionChange={setSettingsSection}
+				/>
+			),
 		},
 		{ value: "map", content: <MapTab active={tab === "map"} /> },
 		{
@@ -288,8 +297,8 @@ export default function MainWindow() {
 				className={cn("flex min-h-0 flex-1 flex-row", tab === "map" && "gap-0")}
 			>
 				<TabsList
-					className={`group-data-[orientation=vertical]/tabs:h-full shrink-0 flex-col gap-1 rounded-none border-r bg-muted/30 p-2 transition-[width] ${
-						sidebarOpen ? "w-52" : "w-12"
+					className={`group-data-[orientation=vertical]/tabs:h-full min-w-0 shrink-0 flex-col gap-1 overflow-x-hidden rounded-none border-r bg-muted/30 py-2 transition-[width] ${
+						sidebarOpen ? "w-52 px-2" : "w-12 px-1"
 					}`}
 				>
 					<div className="mb-1 flex h-9 shrink-0 items-center justify-center">
@@ -297,7 +306,7 @@ export default function MainWindow() {
 							variant="ghost"
 							size="sm"
 							title={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
-							className="size-9 shrink-0 p-0 text-muted-foreground"
+							className="size-7 shrink-0 p-0 text-muted-foreground"
 							onClick={() => setSidebarOpen((open) => !open)}
 						>
 							{sidebarOpen ? (
@@ -308,26 +317,59 @@ export default function MainWindow() {
 						</Button>
 					</div>
 
-					<div className="flex min-h-0 flex-1 flex-col justify-center gap-1 self-stretch">
-						{NAV_TABS.map((tab) => (
-							<NavTab
-								key={tab.value}
-								value={tab.value}
-								title={tab.title}
-								sidebarOpen={sidebarOpen}
-								icon={
-									<img
-										src={tab.icon}
-										alt=""
-										className="size-7 shrink-0 object-contain"
+					<AccountProfileSelector compact={!sidebarOpen} />
+					<div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3 self-stretch overflow-x-hidden overflow-y-auto py-2">
+						<NavTab
+							value="overview"
+							title="Overview"
+							sidebarOpen={sidebarOpen}
+							icon={
+								<HugeiconsIcon
+									icon={DashboardSquare01Icon}
+									className="size-6 shrink-0"
+								/>
+							}
+						/>
+						{NAV_GROUPS.map((group) => (
+							<div
+								key={group.title}
+								className="flex min-w-0 shrink-0 flex-col gap-1"
+							>
+								{sidebarOpen ? (
+									<p className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+										{group.title}
+									</p>
+								) : (
+									<Separator aria-label={group.title} className="my-1" />
+								)}
+								{group.tabs.map((item) => (
+									<NavTab
+										key={item.value}
+										value={item.value}
+										title={item.title}
+										sidebarOpen={sidebarOpen}
+										icon={
+											<img
+												src={item.icon}
+												alt=""
+												className={cn(
+													"shrink-0 object-contain",
+													sidebarOpen ? "size-7" : "size-6",
+												)}
+											/>
+										}
 									/>
-								}
-							/>
+								))}
+							</div>
 						))}
 					</div>
-					<div className="flex shrink-0 justify-center">
-						<SnifferIndicator compact={!sidebarOpen} />
-					</div>
+					<DangerousConnectButton
+						compact={!sidebarOpen}
+						onConfigure={() => {
+							setSettingsSection("dangerous");
+							setTab("settings");
+						}}
+					/>
 					<NavTab
 						value="settings"
 						title={update ? "Settings — update available" : "Settings"}
@@ -344,10 +386,7 @@ export default function MainWindow() {
 				</TabsList>
 
 				<div
-					className={cn(
-						"flex min-h-0 min-w-0 flex-1 flex-col",
-						tab !== "map" && "px-4 pt-4",
-					)}
+					className={"flex min-h-0 min-w-0 flex-1 flex-col"}
 				>
 					{tabContents.map(({ value, content }) => (
 						<TabsContent
@@ -367,6 +406,9 @@ export default function MainWindow() {
 				onOpenChange={setImportOpen}
 			/>
 			<UpdateBanner />
+			<DangerousFeaturesPrompt />
+			<SnifferErrorToasts />
+			<Toaster />
 		</div>
 	);
 }

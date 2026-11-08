@@ -41,16 +41,16 @@ export function weaponRarityClass(
 
 // Weapon type id -> in-game glyph (Common/Image/Com/Icon)
 export const WEAPON_TYPE_ICONS: Record<number, string> = {
-	1: "/wuwa-assets/UI/UIResources/Common/Image/Com/Icon/T_ComIconBroadblade.webp",
-	2: "/wuwa-assets/UI/UIResources/Common/Image/Com/Icon/T_ComIconSword.webp",
-	3: "/wuwa-assets/UI/UIResources/Common/Image/Com/Icon/T_ComIconPistols.webp",
-	4: "/wuwa-assets/UI/UIResources/Common/Image/Com/Icon/T_ComIconGauntlets.webp",
-	5: "/wuwa-assets/UI/UIResources/Common/Image/Com/Icon/T_ComIconRectifier.webp",
+	1: "/icons/weapon-types/broadblade.webp",
+	2: "/icons/weapon-types/sword.webp",
+	3: "/icons/weapon-types/pistols.webp",
+	4: "/icons/weapon-types/gauntlets.webp",
+	5: "/icons/weapon-types/rectifier.webp",
 };
 
-/** Icons are synced by `scripts/sync-calc-data.ts` into `public/data`. */
+/** Weapon images share the native game catalogue and the asset publisher. */
 export function weaponIconUrl(itemId: number): string {
-	return `/data/weapon-icons/${itemId}.webp`;
+	return weaponsById.get(itemId)?.icon ?? `/images/weapons/${itemId}.webp`;
 }
 
 export function WeaponCard({ weapon }: { weapon: Weapon }) {

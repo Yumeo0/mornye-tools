@@ -1,8 +1,13 @@
+import {
+	characterFiltersSchema,
+	characterSortSchema,
+} from "@/lib/filterSchemas";
+import { useFilterState } from "@/lib/persistentState";
 // Character picker for the optimizer slots: the Characters tab's filtering
 // (search, element, weapon, rarity, ownership, level/chain ranges, sort) in a
 // modal. Picking a character assigns it to the slot that opened the dialog.
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { CharacterFilterBar } from "@/components/characters/CharacterFilterBar";
 import { FilterLayout } from "@/components/filters";
 import { Button } from "@/components/ui/button";
@@ -11,7 +16,6 @@ import { VirtualGrid } from "@/components/VirtualGrid";
 import { useCharacterList } from "@/hooks/useCharacterList";
 import {
 	CHARACTER_SORT_OPTIONS,
-	type CharacterFilters,
 	type CharacterSortKey,
 	DEFAULT_FILTERS,
 	filterAndSortCharacters,
@@ -36,9 +40,18 @@ export function CharacterPickerDialog({
 	onClose: () => void;
 }) {
 	const { characters, accountByCharacterId } = useCharacterList();
-	const [filters, setFilters] = useState<CharacterFilters>(DEFAULT_FILTERS);
-	const [sortKey, setSortKey] = useState<CharacterSortKey>("name");
-	const [sortDesc, setSortDesc] = useState(
+	const [filters, setFilters] = useFilterState(
+		"character-picker.filters",
+		DEFAULT_FILTERS,
+		characterFiltersSchema,
+	);
+	const [sortKey, setSortKey] = useFilterState<CharacterSortKey>(
+		"character-picker.sort",
+		"name",
+		characterSortSchema,
+	);
+	const [sortDesc, setSortDesc] = useFilterState(
+		"character-picker.sortDesc",
 		CHARACTER_SORT_OPTIONS[0].desc ?? false,
 	);
 

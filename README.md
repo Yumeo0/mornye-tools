@@ -61,39 +61,31 @@ while you upgrade them.
 
 ## Features
 
-- **Overview** - your selected profile's portrait, levels, signature and collection
-  totals, with a click-to-reveal UID.
-- **Live account sync** - separate profiles per account and server keep your
-  resonators, weapons, echoes and inventory current as you play.
-- **Characters, Echoes, Weapons** - browse your inventory, with substat ratings,
-  lock/discard marks and stack counts (×N) on each echo card. Filter echoes by
-  minimum and maximum level, including an exact level such as +0.
-- **Build calculator** - evaluates a build's damage.
-- **Optimizer** - finds the best loadout for a target from your echo inventory.
-- **Overlay echo scan** - shows substat value while upgrading the echo in-game.
-- **Echo Upgrade Assistant** - re-rates an echo after each upgrade or tuning and
-  marks it for discard once it can no longer reach your threshold.
-- **Automatic echo upgrades** - select echoes in **Tools → Echo Upgrader**, then level and tune them through
-  the active connection until their rating threshold becomes unreachable. Uses
-  your choice of discard-marked echoes and EXP tube rarities, with optional
-  discard marking when an echo can no longer reach the threshold.
-- **Exploration map** - chests, Tidal Heritage, collectible, quest and
-  gathering placements across all maps, with your live progress and a GHZS
-  import (WIP) for marks you already have.
-- **Achievements** - the client's achievement snapshot and live updates, with
-  search, group filters and a hidden-achievement toggle.
-- **Dangerous Features (optional)** - sign in to a global Kuro account, select
-  a server and explicitly connect to the game world; the session fills that
-  account/server profile with the same data the passive scan captures.
+- Live account sync with separate profiles for each account and server.
+- Character, echo and weapon inventory with ratings, filters and build evaluation.
+- Loadout optimizer and captured team presets.
+- In-game echo overlay and optional automatic leveling/tuning.
+- Exploration map with progress tracking and GHZS imports.
+- Quest and achievement tracking.
+
+## Getting started
+
+Run Mornye Tools **as Administrator on Windows**, then log into the game.
+Open the Character, Echo and Weapon menus to sync inventory.
+Start capture before login to receive quests, achievements and saved teams.
+
+Select the player profile in the sidebar. On the map, press **C** to toggle a
+selected item's collected state. Use **Settings → Import → Start import** to
+bring in GHZS marks, or **Settings → Export** to back up the selected profile.
+
+Optional **Dangerous Features** connects directly to your account for syncing,
+echo marks and bulk upgrades. See the [connection guide](docs/DANGEROUS_FEATURES.md)
+before connecting; it can disconnect your running game.
 
 ## Documentation
 
-- [Development, releases and architecture](docs/DEVELOPMENT.md) - build and test
-  commands, how releases are cut and self-updated, the packet-capture internals,
-  the exploration-map data pipeline, the overlay protocol and the source layout.
-- [Dangerous Features](docs/DANGEROUS_FEATURES.md) - activation, account login,
-  server selection, account profiles, connection controls and credential
-  handling.
+- [Development](docs/DEVELOPMENT.md): setup, checks, releases and architecture.
+- [Active connections](docs/DANGEROUS_FEATURES.md): login, profiles and echo upgrades.
 
 ## Support
 

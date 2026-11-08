@@ -17,6 +17,11 @@ import {
 	filterAndSortCharacters,
 } from "@/lib/characterFilters";
 import type { CharacterEntry } from "@/lib/characters";
+import {
+	characterFiltersSchema,
+	characterSortSchema,
+} from "@/lib/filterSchemas";
+import { useFilterState } from "@/lib/persistentState";
 
 // Mirrors the previous grid classes (grid-cols-2 sm:grid-cols-3 md:grid-cols-4
 // lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7); the virtualized grid needs
@@ -36,11 +41,18 @@ const CHARACTER_ROW_ESTIMATE_PX = 280;
 export function CharactersTab() {
 	const { snapshot, error, characters, accountByCharacterId } =
 		useCharacterList();
-	// Session-only UI state: kept while the app runs (the tab panels stay
-	// mounted when switching), reset on restart.
-	const [filters, setFilters] = useState(DEFAULT_FILTERS);
-	const [sortKey, setSortKey] = useState<CharacterSortKey>("name");
-	const [sortDesc, setSortDesc] = useState(
+	const [filters, setFilters] = useFilterState(
+		"characters.filters",
+		DEFAULT_FILTERS,
+		characterFiltersSchema,
+	);
+	const [sortKey, setSortKey] = useFilterState<CharacterSortKey>(
+		"characters.sort",
+		"name",
+		characterSortSchema,
+	);
+	const [sortDesc, setSortDesc] = useFilterState(
+		"characters.sortDesc",
 		CHARACTER_SORT_OPTIONS[0].desc ?? false,
 	);
 	const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(

@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo, useState } from "react";
+import { type ReactNode, useMemo } from "react";
 import {
 	FilterField,
 	FilterLayout,
@@ -18,6 +18,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { useResponsiveColumns, VirtualGrid } from "@/components/VirtualGrid";
 import { useAccount } from "@/lib/account";
+import { useFilterState } from "@/lib/persistentState";
 import { useProgressionCatalog } from "@/lib/progression/catalog";
 import {
 	type AchievementStatus,
@@ -178,11 +179,17 @@ export function AchievementsTab({ active }: { active: boolean }) {
 	const account = useAccount();
 	const { catalog, error, retry } = useProgressionCatalog(active);
 	const snapshot = progressionFor(account.snapshot)?.achievements;
-	const [category, setCategory] = useState("all");
-	const [groupId, setGroupId] = useState("all");
-	const [search, setSearch] = useState("");
-	const [status, setStatus] = useState("all");
-	const [showHidden, setShowHidden] = useState(false);
+	const [category, setCategory] = useFilterState(
+		"achievements.category",
+		"all",
+	);
+	const [groupId, setGroupId] = useFilterState("achievements.groupId", "all");
+	const [search, setSearch] = useFilterState("achievements.search", "");
+	const [status, setStatus] = useFilterState("achievements.status", "all");
+	const [showHidden, setShowHidden] = useFilterState(
+		"achievements.showHidden",
+		false,
+	);
 	const columns = useResponsiveColumns(COLUMNS, 1);
 	const groupById = useMemo(
 		() => new Map(catalog?.groups.map((group) => [group.id, group]) ?? []),

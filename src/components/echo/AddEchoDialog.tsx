@@ -1,3 +1,4 @@
+import { useFilterState } from "@/lib/persistentState";
 // "Add echo" dialog: enter an echo by hand (species, set, level, main stat and
 // substats). The backend assigns a synthetic instance id and marks the echo
 // with `source: "manual"` so it is distinguishable from captured echoes.
@@ -85,7 +86,7 @@ export function AddEchoDialog({
 	/** Called with the prepared echo; the caller persists it. */
 	onAdded: (echo: Echo) => void;
 }) {
-	const [search, setSearch] = useState("");
+	const [search, setSearch] = useFilterState("add-echo.search", "");
 	const [species, setSpecies] = useState<EchoSpecies | null>(null);
 	const [setId, setSetId] = useState<number | null>(null);
 	const [level, setLevel] = useState(25);

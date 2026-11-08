@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
 	characterFilterOptions,
 	FilterLayout,
@@ -16,6 +16,8 @@ import {
 	type WeaponSortKey,
 } from "@/components/weapon/weaponFilters";
 import { useAccount, type Weapon } from "@/lib/account";
+import { weaponFiltersSchema, weaponSortSchema } from "@/lib/filterSchemas";
+import { useFilterState } from "@/lib/persistentState";
 
 const COLUMNS = [
 	{ minWidth: 1536, columns: 7 },
@@ -31,9 +33,17 @@ export function WeaponsTab() {
 	const { snapshot, error } = useAccount();
 	const columns = useResponsiveColumns(COLUMNS, 2);
 	const weapons = snapshot.weapons;
-	const [filters, setFilters] = useState<WeaponFilters>(EMPTY_WEAPON_FILTERS);
-	const [sortBy, setSortBy] = useState<WeaponSortKey>(WEAPON_DEFAULT_SORT);
-	const [sortAsc, setSortAsc] = useState(false);
+	const [filters, setFilters] = useFilterState<WeaponFilters>(
+		"weapons.filters",
+		EMPTY_WEAPON_FILTERS,
+		weaponFiltersSchema,
+	);
+	const [sortBy, setSortBy] = useFilterState<WeaponSortKey>(
+		"weapons.sort",
+		WEAPON_DEFAULT_SORT,
+		weaponSortSchema,
+	);
+	const [sortAsc, setSortAsc] = useFilterState("weapons.sortAsc", false);
 
 	const characterOptions: FilterOption[] = useMemo(
 		() => characterFilterOptions(snapshot.resonators),

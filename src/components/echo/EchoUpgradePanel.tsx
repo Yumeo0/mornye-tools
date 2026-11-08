@@ -1,3 +1,5 @@
+import { CheckmarkCircle02Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -22,8 +24,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { type Echo, useAccount } from "@/lib/account";
 import { useDangerousFeatures } from "@/lib/dangerous";
+import { ECHO_MARK_ICONS } from "@/lib/echoMark";
 import {
 	canUpgradeEcho,
 	DEFAULT_UPGRADE_OPTIONS,
@@ -39,12 +43,14 @@ import {
 	loadEchoUpgradeRules,
 	saveEchoUpgradeRules,
 } from "@/lib/echoUpgradeRules";
+import { rarityTextClass } from "@/lib/rarity";
+import { cn } from "@/lib/utils";
 
 const TUBES = [
-	{ id: 36000001, rarity: "2★", exp: 500 },
-	{ id: 36000002, rarity: "3★", exp: 1000 },
-	{ id: 36000003, rarity: "4★", exp: 2000 },
-	{ id: 36000004, rarity: "5★", exp: 5000 },
+	{ id: 36000001, rarity: 2, exp: 500, icon: "/images/items/a/a-10.webp" },
+	{ id: 36000002, rarity: 3, exp: 1000, icon: "/images/items/a/a-11.webp" },
+	{ id: 36000003, rarity: 4, exp: 2000, icon: "/images/items/a/a-12.webp" },
+	{ id: 36000004, rarity: 5, exp: 5000, icon: "/images/items/a/a-13.webp" },
 ];
 export function EchoUpgradePanel({
 	echoes,
@@ -112,25 +118,24 @@ export function EchoUpgradePanel({
 	const below = batch.rows.filter(
 		(row) => row.outcome === "below_threshold",
 	).length;
+	const consumed = batch.rows.filter(
+		(row) => row.outcome === "consumed",
+	).length;
 	const count = (id: number) =>
 		snapshot.inventory?.find((item) => item.id === id)?.count ?? 0;
 	return (
 		<Card className="w-full shrink-0 self-stretch xl:w-80 xl:overflow-y-auto">
-			<CardHeader>
-				<div className="flex items-center justify-between gap-2">
-					<CardTitle>{results ? "Batch progress" : "Batch rules"}</CardTitle>
-					<Badge variant="outline">
-						{results
-							? `${batch.threshold}% target`
-							: `${echoes.length} selected`}
-					</Badge>
-				</div>
-				<CardDescription>
-					{results
-						? "Each echo is checked after every new substat."
-						: "Upgrade in five-level stages. Stop when the best possible rating falls below your target."}
-				</CardDescription>
-			</CardHeader>
+			{results && (
+				<CardHeader>
+					<div className="flex items-center justify-between gap-2">
+						<CardTitle>Batch progress</CardTitle>
+						<Badge variant="outline">{batch.threshold}% target</Badge>
+					</div>
+					<CardDescription>
+						Each echo is checked after every new substat.
+					</CardDescription>
+				</CardHeader>
+			)}
 			<CardContent>
 				{results ? (
 					<div className="flex flex-col gap-3">
@@ -161,6 +166,9 @@ export function EchoUpgradePanel({
 							<Badge variant="secondary">{complete} complete</Badge>
 							<Badge variant="outline">{discarded} marked discard</Badge>
 							<Badge variant="outline">{below} below target</Badge>
+							{consumed > 0 && (
+								<Badge variant="outline">{consumed} used as fodder</Badge>
+							)}
 						</div>
 						<p className="text-[11px] text-muted-foreground">
 							{batch.options.materials.discard_echoes
@@ -207,72 +215,86 @@ export function EchoUpgradePanel({
 						<Separator />
 						<FieldSet>
 							<FieldLegend>Allowed fodder</FieldLegend>
-							<FieldGroup>
-								<Field orientation="horizontal">
-									<FieldContent>
-										<FieldLabel htmlFor="echo-fodder">
-											Discard-marked echoes
-										</FieldLabel>
-										<FieldDescription>
-											Use their invested EXP first.
-										</FieldDescription>
-									</FieldContent>
-									<Switch
-										disabled={!rulesLoaded}
-										id="echo-fodder"
-										nativeButton
-										render={<button type="button" />}
-										checked={options.materials.discard_echoes}
-										onCheckedChange={(checked) =>
-											setOptions((previous) => ({
-												...previous,
-												materials: {
-													...previous.materials,
-													discard_echoes: checked,
-												},
-											}))
-										}
+							<ToggleGroup
+								multiple
+								orientation="vertical"
+								variant="outline"
+								disabled={!rulesLoaded}
+								className="w-full items-stretch"
+								spacing={1}
+								aria-label="Allowed upgrade fodder"
+								value={[
+									...(options.materials.discard_echoes ? ["discard"] : []),
+									...options.materials.exp_material_ids.map(String),
+								]}
+								onValueChange={(values) =>
+									setOptions((previous) => ({
+										...previous,
+										materials: {
+											discard_echoes: values.includes("discard"),
+											exp_material_ids: TUBES.filter((tube) =>
+												values.includes(String(tube.id)),
+											).map((tube) => tube.id),
+										},
+									}))
+								}
+							>
+								<ToggleGroupItem
+									value="discard"
+									className="relative h-12 w-full justify-start gap-3 px-3 pr-9"
+									aria-label="Discarded echoes, used before tubes"
+									title="Discarded echoes · Used before tubes, even when their EXP passes a level checkpoint. Selected and equipped echoes are protected."
+								>
+									<span
+										className="invisible absolute right-3 top-1/2 -translate-y-1/2 group-aria-pressed/toggle:visible"
+										aria-hidden="true"
+									>
+										<HugeiconsIcon icon={CheckmarkCircle02Icon} />
+									</span>
+									<img
+										src={ECHO_MARK_ICONS.discarded}
+										alt=""
+										className="size-8 object-contain"
 									/>
-								</Field>
+									<span className="text-[10px]">discarded</span>
+								</ToggleGroupItem>
 								{TUBES.map((tube) => (
-									<Field key={tube.id} orientation="horizontal">
-										<FieldContent>
-											<FieldLabel htmlFor={`tube-${tube.id}`}>
-												{EXP_MATERIAL_NAMES[tube.id]}
-											</FieldLabel>
-											<FieldDescription>
-												{tube.rarity} · {tube.exp.toLocaleString()} EXP ·{" "}
-												{count(tube.id).toLocaleString()} owned
-											</FieldDescription>
-										</FieldContent>
-										<Switch
-											disabled={!rulesLoaded}
-											id={`tube-${tube.id}`}
-											nativeButton
-											render={<button type="button" />}
-											checked={options.materials.exp_material_ids.includes(
-												tube.id,
+									<ToggleGroupItem
+										key={tube.id}
+										value={String(tube.id)}
+										className="relative h-12 w-full justify-start gap-3 px-3 pr-9"
+										aria-label={`${EXP_MATERIAL_NAMES[tube.id]}, ${count(tube.id).toLocaleString()} owned`}
+										title={`${EXP_MATERIAL_NAMES[tube.id]} · ${tube.exp.toLocaleString()} EXP · ${count(tube.id).toLocaleString()} owned`}
+									>
+										<span
+											className="invisible absolute right-3 top-1/2 -translate-y-1/2 group-aria-pressed/toggle:visible"
+											aria-hidden="true"
+										>
+											<HugeiconsIcon icon={CheckmarkCircle02Icon} />
+										</span>
+										<span
+											className={cn(
+												"flex items-center gap-3",
+												rarityTextClass(tube.rarity),
 											)}
-											onCheckedChange={(checked) =>
-												setOptions((previous) => ({
-													...previous,
-													materials: {
-														...previous.materials,
-														exp_material_ids: checked
-															? [
-																	...previous.materials.exp_material_ids,
-																	tube.id,
-																]
-															: previous.materials.exp_material_ids.filter(
-																	(id) => id !== tube.id,
-																),
-													},
-												}))
-											}
-										/>
-									</Field>
+											aria-hidden="true"
+										>
+											<img
+												src={tube.icon}
+												alt=""
+												className="size-8 object-contain"
+											/>
+											<span className="text-[10px]">{tube.rarity}★</span>
+										</span>
+										<span className="ml-auto tabular-nums" aria-hidden="true">
+											{new Intl.NumberFormat(undefined, {
+												notation: "compact",
+												maximumFractionDigits: 1,
+											}).format(count(tube.id))}
+										</span>
+									</ToggleGroupItem>
 								))}
-							</FieldGroup>
+							</ToggleGroup>
 							{!options.materials.discard_echoes &&
 								options.materials.exp_material_ids.length === 0 && (
 									<FieldDescription>
@@ -289,7 +311,7 @@ export function EchoUpgradePanel({
 								</FieldLabel>
 								<FieldDescription>
 									Mark an echo when its best possible rating falls below the
-									threshold, then move to the next.
+									threshold, including locked echoes, then move to the next.
 								</FieldDescription>
 							</FieldContent>
 							<Switch
@@ -303,11 +325,6 @@ export function EchoUpgradePanel({
 								}
 							/>
 						</Field>
-						<p className="text-[11px] text-muted-foreground">
-							Selected targets never become fodder during this batch. Locked,
-							equipped, and unsplit stacked echoes keep their marks. Tuners and
-							Shell Credits are also required.
-						</p>
 					</FieldGroup>
 				)}
 			</CardContent>

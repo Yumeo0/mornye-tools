@@ -1,0 +1,38 @@
+[
+	{
+		"name": "Supplies",
+		"icon": "/images/items/atlas/inventory-icon-pag02.webp"
+	},
+	{
+		"name": "Weapons",
+		"icon": "/images/items/atlas/inventory-icon-pag01.webp"
+	},
+	{
+		"name": "Echoes",
+		"icon": "/images/items/atlas/inventory-icon-pag06.webp"
+	},
+	{
+		"name": "Development Materials",
+		"icon": "/images/items/atlas/inventory-icon-pag04.webp"
+	},
+	{
+		"name": "Valuables",
+		"icon": "/images/items/atlas/inventory-icon-pag07.webp"
+	},
+	{
+		"name": "Resources",
+		"icon": "/images/items/atlas/inventory-icon-pag08.webp"
+	},
+	{
+		"name": "Quest Items",
+		"icon": "/images/items/atlas/inventory-icon-pag03.webp"
+	},
+	{
+		"name": "Currencies",
+		"icon": "/images/items/a/a-hsb.webp"
+	},
+	{
+		"name": "Other",
+		"icon": "/icons/navigation/inventory.webp"
+	}
+]

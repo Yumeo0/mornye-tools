@@ -36,6 +36,8 @@ const catalogs = [
 	"weapon_data",
 	"profile_portraits",
 	"progression",
+	"inventory_data",
+	"inventory_categories",
 	"map_icons",
 ];
 async function normalizeCatalogs() {
@@ -46,7 +48,7 @@ async function normalizeCatalogs() {
 			JSON.stringify(
 				prepareCatalog(await Bun.file(path).json()),
 				null,
-				name === "progression" ? undefined : "\t",
+				["progression", "inventory_data"].includes(name) ? undefined : "\t",
 			) + "\n",
 		);
 	}
@@ -229,7 +231,7 @@ export async function copyAssets(): Promise<void> {
 			JSON.stringify(
 				rewrite(await Bun.file(path).json()),
 				null,
-				name === "progression" ? undefined : "\t",
+				["progression", "inventory_data"].includes(name) ? undefined : "\t",
 			) + "\n",
 		);
 	}

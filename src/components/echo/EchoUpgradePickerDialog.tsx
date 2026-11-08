@@ -31,6 +31,8 @@ import { Input } from "@/components/ui/input";
 import { useResponsiveColumns, VirtualGrid } from "@/components/VirtualGrid";
 import { type Echo, useAccount } from "@/lib/account";
 import { isUpgradeableEcho } from "@/lib/echoUpgrade";
+import { echoFiltersSchema, echoSortSchema } from "@/lib/filterSchemas";
+import { useFilterState } from "@/lib/persistentState";
 import { cn } from "@/lib/utils";
 
 const COLUMNS = [
@@ -74,9 +76,20 @@ export function EchoUpgradePickerDialog({
 			);
 			return next;
 		});
-	const [filters, setFilters] = useState<EchoFilters>(EMPTY_ECHO_FILTERS);
-	const [sortBy, setSortBy] = useState<EchoSortKey>("level");
-	const [sortAsc, setSortAsc] = useState(false);
+	const [filters, setFilters] = useFilterState<EchoFilters>(
+		"echo-upgrade-picker.filters",
+		EMPTY_ECHO_FILTERS,
+		echoFiltersSchema,
+	);
+	const [sortBy, setSortBy] = useFilterState<EchoSortKey>(
+		"echo-upgrade-picker.sort",
+		"level",
+		echoSortSchema,
+	);
+	const [sortAsc, setSortAsc] = useFilterState(
+		"echo-upgrade-picker.sortAsc",
+		false,
+	);
 	const columns = useResponsiveColumns(COLUMNS, 1);
 	const echoes = useMemo(
 		() => snapshot.echoes.filter(isUpgradeableEcho),

@@ -24,6 +24,7 @@ import { AchievementsTab } from "@/components/tabs/AchievementsTab";
 import { CharactersTab } from "@/components/tabs/CharactersTab";
 import { EchoesTab } from "@/components/tabs/EchoesTab";
 import { EchoUpgraderTab } from "@/components/tabs/EchoUpgraderTab";
+import { InventoryTab } from "@/components/tabs/InventoryTab";
 import { MapTab } from "@/components/tabs/MapTab";
 import { OptimizerTab } from "@/components/tabs/OptimizerTab";
 import { OverviewTab } from "@/components/tabs/OverviewTab";
@@ -66,6 +67,7 @@ const NAV_GROUPS = [
 	{
 		title: "Inventory",
 		tabs: [
+			{ value: "inventory", title: "Inventory", icon: "/icons/navigation/inventory.webp" },
 			{ value: "characters", title: "Characters", icon: "/icons/navigation/characters.webp" },
 			{ value: "echoes", title: "Echoes", icon: "/icons/navigation/echoes.webp" },
 			{ value: "weapons", title: "Weapons", icon: "/icons/navigation/weapons.webp" },
@@ -265,6 +267,7 @@ export default function MainWindow() {
 		{ value: "echoes", content: <EchoesTab /> },
 		{ value: "echo-upgrader", content: <EchoUpgraderTab /> },
 		{ value: "weapons", content: <WeaponsTab /> },
+		{ value: "inventory", content: <InventoryTab /> },
 		{
 			value: "optimizer",
 			content: <OptimizerTab active={tab === "optimizer"} />,
@@ -294,7 +297,7 @@ export default function MainWindow() {
 				orientation="vertical"
 				value={tab}
 				onValueChange={setTab}
-				className={cn("flex min-h-0 flex-1 flex-row", tab === "map" && "gap-0")}
+				className="flex min-h-0 flex-1 flex-row gap-0"
 			>
 				<TabsList
 					className={`group-data-[orientation=vertical]/tabs:h-full min-w-0 shrink-0 flex-col gap-1 overflow-x-hidden rounded-none border-r bg-muted/30 py-2 transition-[width] ${

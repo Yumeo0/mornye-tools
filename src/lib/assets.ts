@@ -134,6 +134,7 @@ export function assetUrl(path: string, resolveAlias = true): string {
 			);
 		else if (name === "SP_FuncIconAchievement")
 			url = icon("navigation", "achievements");
+		else if (name === "SP_FuncIconBag") url = icon("navigation", "inventory");
 		else if (name === "SP_IconQuest") url = icon("navigation", "quests");
 		else if (/^SP_IconAchievement[1-4]$/.test(name))
 			url = icon(

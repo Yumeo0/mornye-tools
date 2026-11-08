@@ -61,9 +61,10 @@ function fixture(echoes: Echo[]) {
 				from_exp: 0,
 				from_sub_props: current.subProps.map((p) => [p.propId, p.raw]),
 				target_level: target,
+				result_level: target,
 				materials: target > current.level ? [{ id: 36000001, count: 9 }] : [],
 				echo_materials: [],
-				exp: 4500,
+				exp: target > current.level ? 4500 : 0,
 				max_credits: 3800,
 				identify_count: Number(
 					echoTuningSlots(current.itemId, target) > current.subProps.length,
@@ -81,7 +82,7 @@ function fixture(echoes: Echo[]) {
 				(item) => item.incrId === plan.incr_id,
 			);
 			if (!current) throw new Error("Missing fixture echo");
-			current.level = plan.target_level;
+			current.level = plan.result_level;
 			if (plan.identify_count)
 				current.subProps = [...current.subProps, { ...prop }];
 			return plan;
@@ -116,6 +117,59 @@ function fixture(echoes: Echo[]) {
 }
 
 describe("automatic echo batches", () => {
+	test("evaluates extra unlocked substats individually after oversized discarded EXP", async () => {
+		for (const failAfterTwoRolls of [false, true]) {
+			const f = fixture([echo(20)]);
+			const preview = f.deps.preview;
+			f.deps.preview = async (id, target, protectedIds, policy) => {
+				const plan = await preview(id, target, protectedIds, policy);
+				return plan.from_level === 0
+					? {
+							...plan,
+							result_level: 17,
+							exp: 59325,
+							materials: [],
+							echo_materials: [
+								{ incr_id: 40, item_id: 60000015, count: 1, exp: 59325 },
+							],
+						}
+					: plan;
+			};
+			f.deps.rating = (echo) =>
+				failAfterTwoRolls && echo.subProps.length >= 2 ? 60 : 100;
+			await runEchoUpgradeBatch("eu-123", f.snapshot.echoes, 75, f.deps);
+			expect(f.stages).toEqual(
+				failAfterTwoRolls
+					? [
+							[20, 5],
+							[20, 17],
+						]
+					: [
+							[20, 5],
+							[20, 17],
+							[20, 17],
+							[20, 20],
+							[20, 25],
+						],
+			);
+			expect(f.rows.get(20)?.outcome).toBe(
+				failAfterTwoRolls ? "below_threshold" : "complete",
+			);
+		}
+	});
+	test("stops without retrying if the resulting level differs from the preview", async () => {
+		const f = fixture([echo(20)]);
+		const execute = f.deps.execute;
+		f.deps.execute = async (plan) => {
+			const result = await execute(plan);
+			f.snapshot.echoes[0].level++;
+			return result;
+		};
+		await expect(
+			runEchoUpgradeBatch("eu-123", f.snapshot.echoes, 75, f.deps),
+		).rejects.toThrow("could not be verified");
+		expect(f.stages).toEqual([[20, 5]]);
+	});
 	test("caps selected copies to live stack counts and gives every copy a unique queue key", () => {
 		const stack = { ...echo(20), stackCount: 3 };
 		const single = echo(30);
@@ -132,14 +186,31 @@ describe("automatic echo batches", () => {
 		]);
 	});
 
-	test("upgrades selected stack copies independently and protects every split remainder", async () => {
+	test("reuses failed locked stack copies while protecting every split remainder", async () => {
 		for (const retainOperatedId of [false, true]) {
-			const stack = { ...echo(20), stackCount: 3 };
+			const stack = { ...echo(20), stackCount: 3, funcValue: 1 };
 			const f = fixture([structuredClone(stack)]);
 			const results = new Map<string, UpgradeRow>();
 			const protectedSets: number[][] = [];
 			f.deps.report = (row) => {
 				results.set(upgradeRowKey(row), row);
+			};
+			const preview = f.deps.preview;
+			f.deps.preview = async (id, target, protectedIds, policy) => {
+				const plan = await preview(id, target, protectedIds, policy);
+				const failed = [...results.values()].find(
+					(row) => row.outcome === "discarded",
+				);
+				if (failed)
+					plan.echo_materials = [
+						{
+							incr_id: failed.echo.incrId,
+							item_id: failed.echo.itemId,
+							count: 1,
+							exp: 3600,
+						},
+					];
+				return plan;
 			};
 			const execute = f.deps.execute;
 			f.deps.execute = async (plan, protectedIds = []) => {
@@ -150,6 +221,12 @@ describe("automatic echo batches", () => {
 				if (!current) throw new Error("Missing source fixture echo");
 				const source = structuredClone(current);
 				const result = await execute(plan, protectedIds);
+				f.snapshot.echoes = f.snapshot.echoes.filter(
+					(item) =>
+						!plan.echo_materials.some(
+							(material) => material.incr_id === item.incrId,
+						),
+				);
 				if (source.stackCount <= 1) return result;
 				const operated = f.snapshot.echoes.find(
 					(item) => item.incrId === plan.incr_id,
@@ -178,7 +255,7 @@ describe("automatic echo batches", () => {
 			]);
 			expect(results.size).toBe(2);
 			expect([...results.values()].map((row) => row.outcome)).toEqual([
-				"discarded",
+				"consumed",
 				"discarded",
 			]);
 			expect(
@@ -187,9 +264,9 @@ describe("automatic echo batches", () => {
 			const remaining = f.snapshot.echoes.find((item) => item.level === 0);
 			if (!remaining) throw new Error("Missing remainder fixture echo");
 			expect(remaining.stackCount).toBe(1);
-			expect(remaining.funcValue).toBe(0);
+			expect(remaining.funcValue).toBe(1);
 			expect(protectedSets[1]).toContain(retainOperatedId ? 101 : 20);
-			expect(protectedSets[1]).toContain(retainOperatedId ? 20 : 101);
+			expect(protectedSets[1]).not.toContain(retainOperatedId ? 20 : 101);
 		}
 	});
 	test("uses the chosen material policy for previews and mutations", async () => {
@@ -250,7 +327,7 @@ describe("automatic echo batches", () => {
 			f.snapshot.echoes.find((item) => item.incrId === 20)?.funcValue,
 		).toBe(0);
 	});
-	test("auto-discard preserves locks, equipment, unsplit stacks and unknown guides", async () => {
+	test("auto-discard replaces locks but preserves equipment, unsplit stacks and unknown guides", async () => {
 		const f = fixture([
 			{ ...echo(20), funcValue: 1 },
 			{ ...echo(30), equippedBy: 1 },
@@ -262,8 +339,108 @@ describe("automatic echo batches", () => {
 			...DEFAULT_UPGRADE_OPTIONS,
 			autoDiscard: true,
 		});
-		expect(f.discarded).toEqual([]);
+		expect(f.discarded).toEqual([20]);
+		expect(f.rows.get(20)?.echo.funcValue).toBe(2);
 		expect(f.rows.get(50)?.outcome).toBe("skipped");
+	});
+	test("a locked failed echo feeds a later target and stays visible as consumed, even when stopping", async () => {
+		for (const stopAfterConsumption of [false, true]) {
+			const f = fixture([{ ...echo(20), funcValue: 1 }, echo(30), echo(40)]);
+			const preview = f.deps.preview;
+			const execute = f.deps.execute;
+			const protectedSets: number[][] = [];
+			f.deps.rating = (item) =>
+				item.incrId === 40
+					? null
+					: item.incrId === 20 && item.level > 0
+						? 50
+						: 100;
+			f.deps.preview = async (id, target, protectedIds = [], policy) => {
+				protectedSets.push([...protectedIds]);
+				const plan = await preview(id, target, protectedIds, policy);
+				if (id === 30 && target === 5) {
+					expect(f.rows.get(20)?.outcome).toBe("discarded");
+					expect(
+						f.snapshot.echoes.find((echo) => echo.incrId === 20)?.funcValue,
+					).toBe(2);
+					expect(protectedIds).not.toContain(20);
+					expect(protectedIds).toEqual([30, 40]);
+					plan.echo_materials = [
+						{ incr_id: 20, item_id: 60000015, count: 1, exp: 3600 },
+					];
+				}
+				return plan;
+			};
+			f.deps.execute = async (plan, protectedIds, policy) => {
+				const result = await execute(plan, protectedIds, policy);
+				if (plan.echo_materials.length) {
+					f.snapshot.echoes = f.snapshot.echoes.filter(
+						(echo) => echo.incrId !== 20,
+					);
+					if (stopAfterConsumption) f.stop();
+				}
+				return result;
+			};
+			await runEchoUpgradeBatch("eu-123", [...f.snapshot.echoes], 75, f.deps, {
+				...DEFAULT_UPGRADE_OPTIONS,
+				autoDiscard: true,
+			});
+			expect(f.discarded).toEqual([20]);
+			expect(protectedSets[0]).toEqual([20, 30, 40]);
+			expect(f.rows.get(20)).toMatchObject({
+				originalId: 20,
+				outcome: "consumed",
+				echo: { incrId: 20 },
+				message: "Used as upgrade material.",
+			});
+			expect(f.snapshot.echoes.some((echo) => echo.incrId === 20)).toBe(false);
+			if (stopAfterConsumption)
+				expect(f.stages).toEqual([
+					[20, 5],
+					[30, 5],
+				]);
+			else expect(f.rows.get(30)?.outcome).toBe("complete");
+		}
+	});
+	test("unmarked failures stay protected when automatic discard is off or declined", async () => {
+		for (const autoDiscard of [false, true]) {
+			const f = fixture([echo(20, 5, 1), echo(30)]);
+			const preview = f.deps.preview;
+			f.deps.rating = (item) => (item.incrId === 20 ? 50 : 100);
+			f.deps.discard = async () => ({
+				marked: false,
+				reason: "Echo kept its mark.",
+			});
+			f.deps.preview = async (id, target, protectedIds = [], policy) => {
+				if (id === 30) expect(protectedIds).toContain(20);
+				return preview(id, target, protectedIds, policy);
+			};
+			await runEchoUpgradeBatch("eu-123", [...f.snapshot.echoes], 75, f.deps, {
+				...DEFAULT_UPGRADE_OPTIONS,
+				autoDiscard,
+			});
+			expect(f.rows.get(20)?.outcome).toBe("below_threshold");
+		}
+	});
+	test("previewing discard fodder does not mark it consumed when execution fails", async () => {
+		const f = fixture([echo(20, 5, 1), echo(30)]);
+		const preview = f.deps.preview;
+		f.deps.rating = (item) => (item.incrId === 20 ? 50 : 100);
+		f.deps.preview = async (id, target, protectedIds, policy) => ({
+			...(await preview(id, target, protectedIds, policy)),
+			echo_materials: [{ incr_id: 20, item_id: 60000015, count: 1, exp: 3600 }],
+		});
+		f.deps.execute = async () => {
+			throw new Error("lost response");
+		};
+		await expect(
+			runEchoUpgradeBatch("eu-123", [...f.snapshot.echoes], 75, f.deps, {
+				...DEFAULT_UPGRADE_OPTIONS,
+				autoDiscard: true,
+			}),
+		).rejects.toThrow("lost response");
+		expect(f.rows.get(20)?.outcome).toBe("discarded");
+		expect(f.snapshot.echoes.some((echo) => echo.incrId === 20)).toBe(true);
 	});
 	test("auto-discard never runs after an uncertain upgrade result", async () => {
 		const f = fixture([echo(20), echo(30)]);

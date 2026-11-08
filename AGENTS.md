@@ -49,4 +49,10 @@ drives the in-game overlay window.
 - `bun run dev` also serves the UI in a plain browser with Tauri APIs
   degraded — handy for UI work without Rust.
 
-`docs/DEVELOPMENT.md` documents the sniffer/overlay protocol in depth.
+Rust backend crates live under `src-tauri/crates/`: `account`, `game-client`,
+`sync`, `connection`, and `overlay`. The desktop entry point only wires them up.
+Run Cargo from `src-tauri/`; use `cargo test -p mornye-<crate>` for focused checks.
+Format a changed package with `cargo fmt -p <package>`, not `--all` (which can
+traverse vendored Spectrum).
+
+`docs/DEVELOPMENT.md` covers setup, releases and architecture.

@@ -1,0 +1,26 @@
+[package]
+name = "mornye-connection"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+mornye-game-client = { path = "../game-client" }
+mornye-sync = { path = "../sync" }
+spectrum = { workspace = true }
+keyring = { version = "3.6.3", default-features = false }
+parking_lot = "0.13"
+rsa = { version = "0.9.10", features = ["pem"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tauri = { version = "2", features = [] }
+zeroize = "1"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+keyring = { version = "3.6.3", features = ["async-secret-service", "async-io", "crypto-rust"] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+keyring = { version = "3.6.3", features = ["apple-native"] }
+
+[target.'cfg(windows)'.dependencies]
+keyring = { version = "3.6.3", features = ["windows-native"] }

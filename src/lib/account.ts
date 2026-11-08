@@ -6,9 +6,9 @@
 // `useAccount` (React) or
 // `readAccount` (plain code); every write goes through the mutation functions
 // at the bottom - no other module should invoke account commands. The Rust
-// store (`src-tauri/src/account`) stays authoritative; this only mirrors it.
+// store (`src-tauri/crates/account/src`) stays authoritative; this only mirrors it.
 //
-// TypeScript mirrors of the Rust account model (`src-tauri/src/account/model.rs`).
+// TypeScript mirrors of the Rust account model (`src-tauri/crates/account/src/model.rs`).
 
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";

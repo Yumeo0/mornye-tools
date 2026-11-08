@@ -93,17 +93,16 @@ function EchoUpgraderContent({
 
 	return (
 		<div className="flex min-h-0 flex-1 flex-col gap-4">
-			<header className="flex shrink-0 flex-col gap-1">
-				<h1 className="text-xl font-semibold tracking-tight">Echo Upgrader</h1>
-				<p className="text-xs text-muted-foreground">
-					Build your queue and upgrade each echo while its rolls can still reach
-					your target.
-				</p>
-			</header>
 			<div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto xl:flex-row xl:overflow-hidden">
+				<EchoUpgradePanel
+					echoes={selectedEchoes}
+					profileId={profileId}
+					showResults={showResults}
+					onShowResultsChange={changeResults}
+				/>
 				<section
 					aria-label="Echo upgrade queue"
-					className="flex min-h-80 min-w-0 flex-1 flex-col gap-3 xl:min-h-0"
+					className="flex min-h-80 min-w-0 flex-1 flex-col gap-3 xl:min-h-0 pt-4 pr-4"
 				>
 					<div className="flex shrink-0 flex-wrap items-center gap-3">
 						<h2 className="text-sm font-medium">
@@ -201,12 +200,6 @@ function EchoUpgraderContent({
 						</p>
 					)}
 				</section>
-				<EchoUpgradePanel
-					echoes={selectedEchoes}
-					profileId={profileId}
-					showResults={showResults}
-					onShowResultsChange={changeResults}
-				/>
 			</div>
 			{pickerOpen && !running && (
 				<EchoUpgradePickerDialog

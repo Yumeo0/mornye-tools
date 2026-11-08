@@ -1,5 +1,5 @@
 // Overlay scan protocol: the event payloads, constants and assistant commands
-// mirroring the Rust scan supervisor (`src-tauri/src/overlay.rs`).
+// mirroring the Rust scan supervisor (`src-tauri/crates/overlay/src/overlay.rs`).
 //
 // The supervisor owns the whole input/scan round trip: it watches the "Echo
 // Upgrade" panel through the backend scan, presses the game's lock key to

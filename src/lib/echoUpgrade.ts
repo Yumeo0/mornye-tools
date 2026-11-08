@@ -10,6 +10,8 @@ export interface EchoUpgradePlan {
 	from_exp: number;
 	from_sub_props: [number, number][];
 	target_level: number;
+	/** Expected level after feeding EXP; discarded fodder may pass the checkpoint. */
+	result_level: number;
 	materials: { id: number; count: number }[];
 	exp: number;
 	max_credits: number;

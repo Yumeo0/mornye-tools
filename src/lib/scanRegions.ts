@@ -1,5 +1,5 @@
 // Shared scan-region geometry: the types mirroring the backend's
-// `ScanRegions` (src-tauri/src/scan_region.rs) and the one place that maps an
+// `ScanRegions` (src-tauri/crates/overlay/src/scan_region.rs) and the one place that maps an
 // OCR resolution config entry onto them.
 
 import { invoke } from "@tauri-apps/api/core";

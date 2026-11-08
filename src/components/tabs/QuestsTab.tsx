@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { FilterLayout, FilterPanel } from "@/components/filters";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { useResponsiveColumns, VirtualGrid } from "@/components/VirtualGrid";
 import { useAccount } from "@/lib/account";
+import { useFilterState } from "@/lib/persistentState";
 import { useProgressionCatalog } from "@/lib/progression/catalog";
 import { progressionFor, questStatus } from "@/lib/progression/state";
 import {
@@ -115,9 +116,9 @@ export function QuestsTab({ active }: { active: boolean }) {
 	const account = useAccount();
 	const { catalog, error, retry } = useProgressionCatalog(active);
 	const snapshot = progressionFor(account.snapshot)?.quests;
-	const [search, setSearch] = useState("");
-	const [type, setType] = useState("all");
-	const [status, setStatus] = useState("all");
+	const [search, setSearch] = useFilterState("quests.search", "");
+	const [type, setType] = useFilterState("quests.type", "all");
+	const [status, setStatus] = useFilterState("quests.status", "all");
 	const columns = useResponsiveColumns(COLUMNS, 1);
 	const entries = useMemo(
 		() =>

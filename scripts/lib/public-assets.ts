@@ -78,7 +78,8 @@ export function assetSources(): Map<string, string[]> {
 		if (
 			!/^(?:UI\/UIResources\/Common\/(?:Image|Atlas\/(?:TabIcon|WorldMapIcon))\/|UI\/UIResources\/Ui(?:WorldMap\/Image|Inventory\/Atlas)\/)/.test(
 				source,
-			)
+			) &&
+			source !== "UI/UIResources/UiFunc/Atlas/SP_FuncIconBag.png"
 		)
 			continue;
 		if (source.includes("/IconElementAttri/")) continue; // Publish the 128px set glyph once.
@@ -185,6 +186,8 @@ export async function collectAssetRefs(): Promise<Set<string>> {
 	for (const profile of await config("profile_portraits"))
 		walk(profile.icon_head_256);
 	walk(await config("progression"));
+	walk(await config("inventory_data"));
+	walk(await config("inventory_categories"));
 	const catalog: MapCatalog = await Bun.file(
 		join(publicRoot, "map/catalog.json"),
 	).json();

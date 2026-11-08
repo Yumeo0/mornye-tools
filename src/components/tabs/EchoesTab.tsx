@@ -33,6 +33,8 @@ import {
 import { useDangerousFeatures } from "@/lib/dangerous";
 import { canMarkEcho, type EchoMark, requestEchoMark } from "@/lib/echoMark";
 import { useEchoUpgradeBatch } from "@/lib/echoUpgradeBatch";
+import { echoFiltersSchema, echoSortSchema } from "@/lib/filterSchemas";
+import { useFilterState } from "@/lib/persistentState";
 
 // Mirrors the previous `sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4` classes
 // (the virtualized grid needs the column count in JS).
@@ -117,9 +119,17 @@ export function EchoesTab() {
 		[showToast],
 	);
 
-	const [filters, setFilters] = useState<EchoFilters>(EMPTY_ECHO_FILTERS);
-	const [sortBy, setSortBy] = useState<EchoSortKey>("level");
-	const [sortAsc, setSortAsc] = useState(false);
+	const [filters, setFilters] = useFilterState<EchoFilters>(
+		"echoes.filters",
+		EMPTY_ECHO_FILTERS,
+		echoFiltersSchema,
+	);
+	const [sortBy, setSortBy] = useFilterState<EchoSortKey>(
+		"echoes.sort",
+		"level",
+		echoSortSchema,
+	);
+	const [sortAsc, setSortAsc] = useFilterState("echoes.sortAsc", false);
 
 	const characterOptions: FilterOption[] = useMemo(
 		() => characterFilterOptions(snapshot.resonators),

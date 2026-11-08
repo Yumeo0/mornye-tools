@@ -28,6 +28,7 @@ export type UpgradeOutcome =
 	| "complete"
 	| "below_threshold"
 	| "discarded"
+	| "consumed"
 	| "skipped"
 	| "stopped"
 	| "error";
@@ -149,6 +150,24 @@ export async function runEchoUpgradeBatch(
 		!deps.stopped() && deps.current().profile?.id === profileId;
 	const protectedIds = new Set(echoes.map((echo) => echo.incrId));
 	const stackSources = new Map<number, number>();
+	const discardedRows = new Map<number, UpgradeRow>();
+	const reportConsumption = (result: EchoUpgradePlan) => {
+		for (const material of result.echo_materials) {
+			const row = discardedRows.get(material.incr_id);
+			if (
+				!row ||
+				material.count <= 0 ||
+				deps.current().echoes.some((echo) => echo.incrId === material.incr_id)
+			)
+				continue;
+			deps.report({
+				...row,
+				outcome: "consumed",
+				message: "Used as upgrade material.",
+			});
+			discardedRows.delete(material.incr_id);
+		}
+	};
 	const reject = async (row: UpgradeRow) => {
 		let rejected: UpgradeRow = {
 			...row,
@@ -158,13 +177,11 @@ export async function runEchoUpgradeBatch(
 		if (options.autoDiscard && active()) {
 			const echo = row.echo;
 			const protectedReason =
-				echo.funcValue === 1
-					? "Locked echo kept its mark."
-					: echo.equippedBy != null
-						? "Equipped echo kept its mark."
-						: echo.stackCount > 1
-							? "Unsplit stack kept its mark."
-							: null;
+				echo.equippedBy != null
+					? "Equipped echo kept its mark."
+					: echo.stackCount > 1
+						? "Unsplit stack kept its mark."
+						: null;
 			if (protectedReason) rejected.message += ` ${protectedReason}`;
 			else {
 				deps.report({
@@ -188,6 +205,10 @@ export async function runEchoUpgradeBatch(
 						outcome: "discarded",
 						message: `Marked as discard · Best possible rating ${row.possible}%`,
 					};
+					// Only the confirmed failed copy becomes fodder. Pending copies
+					// and the unchanged remainder of a split stack stay protected.
+					protectedIds.delete(updated.incrId);
+					discardedRows.set(updated.incrId, rejected);
 				} else rejected.message += ` ${result.reason ?? "Echo kept its mark."}`;
 			}
 		}
@@ -254,6 +275,13 @@ export async function runEchoUpgradeBatch(
 					[...protectedIds],
 					options.materials,
 				);
+				if (plan.result_level > target) {
+					row = {
+						...row,
+						message: `Reusing discarded EXP to +${plan.result_level} and tuning…`,
+					};
+					deps.report(row);
+				}
 				await deps.refresh();
 				if (!active()) return;
 				const fresh = deps.current().echoes.find((item) => item.incrId === id);
@@ -287,13 +315,15 @@ export async function runEchoUpgradeBatch(
 				id = result.incr_id;
 				protectedIds.add(id);
 				await deps.refresh();
+				if (deps.current().profile?.id !== profileId) return;
+				reportConsumption(result);
 				if (!active()) return;
 				const updated = deps
 					.current()
 					.echoes.find((item) => item.incrId === id);
 				if (
 					!updated ||
-					updated.level !== result.target_level ||
+					updated.level !== result.result_level ||
 					updated.subProps.length !==
 						plan.from_sub_props.length + plan.identify_count
 				) {

@@ -1,4 +1,4 @@
-// Frontend bridge for the always-on sniffer (`src-tauri/src/sniffer`).
+// Frontend bridge for the always-on sniffer (`src-tauri/crates/sync/src/sniffer`).
 
 import { invoke } from "@tauri-apps/api/core";
 

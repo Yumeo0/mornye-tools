@@ -1,4 +1,6 @@
 import type { OptResultStats } from "@wuwacalc/core/engine/search/score/core";
+import { optimizerFiltersSchema } from "@/lib/filterSchemas";
+import { useFilterState } from "@/lib/persistentState";
 // Search execution state for the optimizer: filters, the pruned candidate
 // inventory, the request plan, the worker run and its results.
 //
@@ -18,7 +20,6 @@ import { countOptCombos } from "@wuwacalc/core/engine/optimizer/search/counting"
 import type {
 	OptPrgr,
 	OptResultEntry,
-
 } from "@wuwacalc/core/engine/optimizer/types";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -114,8 +115,10 @@ export function useOptimizerRun({
 		measuredBuild,
 	} = team;
 
-	const [filters, setFilters] = useState<OptimizerFilters>(
+	const [filters, setFilters] = useFilterState<OptimizerFilters>(
+		"optimizer.filters",
 		EMPTY_OPTIMIZER_FILTERS,
+		optimizerFiltersSchema,
 	);
 
 	const targetResonatorId = targetBuild?.resonator.id ?? null;
@@ -310,7 +313,7 @@ export function useOptimizerRun({
 			mainStats: recommended,
 			minLevel: MAX_ECHO_LEVEL,
 		}));
-	}, [companionRuntimes, mode, targetBuild]);
+	}, [companionRuntimes, mode, targetBuild, setFilters]);
 
 	const canRun =
 		coreReady &&

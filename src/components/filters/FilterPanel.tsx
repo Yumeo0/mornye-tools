@@ -40,12 +40,12 @@ export function FilterLayout({
 	return (
 		<div
 			data-slot="filter-layout"
-			className="flex min-h-0 min-w-0 flex-1 gap-4 overflow-hidden pb-4"
+			className="flex min-h-0 min-w-0 flex-1 gap-4 overflow-hidden"
 		>
 			{filters}
 			<div
 				data-slot="filter-results"
-				className="flex min-h-0 min-w-0 flex-1 flex-col gap-3"
+				className="flex min-h-0 min-w-0 flex-1 flex-col"
 			>
 				{children}
 			</div>

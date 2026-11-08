@@ -1,5 +1,5 @@
 // The overlay's echo tracking: a pure event consumer of the Rust scan
-// supervisor (`src-tauri/src/overlay.rs`).
+// supervisor (`src-tauri/crates/overlay/src/overlay.rs`).
 //
 // The supervisor watches the Echo Upgrade panel (capture + OCR in the
 // backend), presses the game's lock key to identify the echo on screen, and

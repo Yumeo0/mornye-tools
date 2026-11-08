@@ -14,6 +14,10 @@ import { RewardDetails } from "@/components/map/RewardDetails";
 import { Button } from "@/components/ui/button";
 import { useAccount } from "@/lib/account";
 import {
+	mapVisibilitySchema,
+	visibilityOverridesSchema,
+} from "@/lib/filterSchemas";
+import {
 	formatHotkey,
 	hotkeyTargetBlocked,
 	matchesHotkey,
@@ -42,6 +46,7 @@ import {
 	type MapReward,
 	type RewardState,
 } from "@/lib/map/types";
+import { useFilterState } from "@/lib/persistentState";
 import { useProgressionCatalog } from "@/lib/progression/catalog";
 import {
 	isQuestStatusVisible,
@@ -56,9 +61,9 @@ export function MapTab({ active }: { active: boolean }) {
 	const progressionCatalog = useProgressionCatalog(active);
 	const progression = progressionFor(account.snapshot);
 	// Quest statuses are keyed in `questOverrides`; absent entries follow the default.
-	const [questOverrides, setQuestOverrides] = useState<Record<string, boolean>>(
-		{},
-	);
+	const [questOverrides, setQuestOverrides] = useFilterState<
+		Record<string, boolean>
+	>("map.questStatuses", {}, visibilityOverridesSchema);
 	const [selectedQuestId, setSelectedQuestId] = useState<number | null>(null);
 	const [selectedQuestPoint, setSelectedQuestPoint] = useState<{
 		x: number;
@@ -102,7 +107,7 @@ export function MapTab({ active }: { active: boolean }) {
 		[regions],
 	);
 	const [layer, setLayer] = useState(0);
-	const [search, setSearch] = useState("");
+	const [search, setSearch] = useFilterState("map.search", "");
 	const mapQuests = useMemo(
 		() => allQuests.filter((marker) => marker.point.mapId === mapId),
 		[allQuests, mapId],
@@ -143,8 +148,16 @@ export function MapTab({ active }: { active: boolean }) {
 			]
 		: [];
 	// Item types are keyed in `overrides`; absent entries follow the kind default.
-	const [overrides, setOverrides] = useState<Record<string, boolean>>({});
-	const [visibility, setVisibility] = useState<MapVisibility>("all");
+	const [overrides, setOverrides] = useFilterState<Record<string, boolean>>(
+		"map.itemTypes",
+		{},
+		visibilityOverridesSchema,
+	);
+	const [visibility, setVisibility] = useFilterState<MapVisibility>(
+		"map.visibility",
+		"all",
+		mapVisibilitySchema,
+	);
 	const [selected, setSelected] = useState<MapReward | null>(null);
 	const challengeIndex = useMemo(
 		() => chestChallengeIndex(catalog?.rewards ?? []),
@@ -337,13 +350,16 @@ export function MapTab({ active }: { active: boolean }) {
 		setSearch("");
 		setQuestOverrides({});
 	};
-	const setTypesVisible = useCallback((types: string[], next: boolean) => {
-		setOverrides((values) => {
-			const updated = { ...values };
-			for (const type of types) updated[type] = next;
-			return updated;
-		});
-	}, []);
+	const setTypesVisible = useCallback(
+		(types: string[], next: boolean) => {
+			setOverrides((values) => {
+				const updated = { ...values };
+				for (const type of types) updated[type] = next;
+				return updated;
+			});
+		},
+		[setOverrides],
+	);
 	const setQuestStatusesVisible = useCallback(
 		(statuses: QuestStatus[], next: boolean) => {
 			setQuestOverrides((values) => {
@@ -352,7 +368,7 @@ export function MapTab({ active }: { active: boolean }) {
 				return updated;
 			});
 		},
-		[],
+		[setQuestOverrides],
 	);
 	if (error)
 		return (

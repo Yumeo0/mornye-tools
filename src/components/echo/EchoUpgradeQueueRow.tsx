@@ -14,6 +14,7 @@ const OUTCOMES: Record<UpgradeRow["outcome"], string> = {
 	complete: "Complete",
 	below_threshold: "Below target",
 	discarded: "Marked discard",
+	consumed: "Used as fodder",
 	skipped: "Skipped",
 	stopped: "Stopped",
 	error: "Error",
@@ -38,10 +39,12 @@ export function EchoUpgradeQueueRow({
 		<div
 			aria-current={active ? "step" : undefined}
 			data-echo-id={echo.incrId}
+			data-outcome={row.outcome}
 			className={cn(
 				"h-full min-w-0 border border-transparent",
 				active && "border-primary ring-1 ring-primary",
 				row.outcome === "error" && "border-destructive/50",
+				row.outcome === "consumed" && "grayscale opacity-50",
 			)}
 		>
 			<EchoCard

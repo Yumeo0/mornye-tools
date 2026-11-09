@@ -81,7 +81,9 @@ if (!bump) {
 	console.log("Usage: bun release <patch|minor|major> [--no-push]");
 	process.exit(1);
 }
-if (git("status", "--porcelain")) {
+// Releases build the committed submodule revisions on GitHub. Local changes
+// inside a submodule are not part of this release; a changed gitlink still is.
+if (git("status", "--porcelain", "--ignore-submodules=dirty")) {
 	fail("Working tree is not clean — commit or stash your changes first.");
 }
 

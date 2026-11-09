@@ -104,3 +104,80 @@ test("--no-push creates the version commit and tag without remotes", () => {
 	expect(git(repo, "rev-parse", "v0.2.0")).toBe(git(repo, "rev-parse", "HEAD"));
 	expect(git(repo, "status", "--porcelain")).toBe("");
 }, 30_000);
+
+function addSubmodule(root: string, repo: string) {
+	const source = join(root, "data-source");
+	mkdirSync(source);
+	git(source, "init", "-b", "main");
+	git(source, "config", "user.name", "Release Test");
+	git(source, "config", "user.email", "release@example.invalid");
+	git(source, "config", "commit.gpgsign", "false");
+	writeFileSync(join(source, "data.json"), "{}\n");
+	git(source, "add", ".");
+	git(source, "commit", "-m", "Initial data");
+	git(
+		repo,
+		"-c",
+		"protocol.file.allow=always",
+		"submodule",
+		"add",
+		source,
+		"data/game",
+	);
+	git(repo, "commit", "-am", "Pin game data");
+	return join(repo, "data", "game");
+}
+
+function releaseLocally(repo: string) {
+	return spawnSync(
+		process.execPath,
+		["scripts/release.ts", "minor", "--no-push"],
+		{
+			cwd: repo,
+			encoding: "utf8",
+			timeout: 20_000,
+		},
+	);
+}
+
+test("local submodule deletions do not block release or change its pinned revision", () => {
+	const { root, repo } = createFixture();
+	const submodule = addSubmodule(root, repo);
+	const pinned = git(submodule, "rev-parse", "HEAD");
+	rmSync(join(submodule, "data.json"));
+	const result = releaseLocally(repo);
+	expect(result.status, `${result.stdout}\n${result.stderr}`).toBe(0);
+	expect(git(repo, "rev-parse", "HEAD:data/game")).toBe(pinned);
+	expect(git(submodule, "status", "--porcelain")).toContain("D data.json");
+}, 30_000);
+
+test("uncommitted app changes still block release before versions change", () => {
+	const { repo } = createFixture();
+	writeFileSync(
+		join(repo, "package.json"),
+		'{"version":"0.1.4","private":true}\n',
+	);
+	const before = git(repo, "rev-parse", "HEAD");
+	const result = releaseLocally(repo);
+	expect(result.status).toBe(1);
+	expect(result.stderr).toContain("Working tree is not clean");
+	expect(git(repo, "rev-parse", "HEAD")).toBe(before);
+	expect(git(repo, "tag", "-l")).toBe("");
+});
+
+test("an uncommitted submodule revision still blocks release", () => {
+	const { root, repo } = createFixture();
+	const submodule = addSubmodule(root, repo);
+	git(submodule, "config", "user.name", "Release Test");
+	git(submodule, "config", "user.email", "release@example.invalid");
+	git(submodule, "config", "commit.gpgsign", "false");
+	writeFileSync(join(submodule, "data.json"), '{"changed":true}\n');
+	git(submodule, "commit", "-am", "Update data");
+	const result = releaseLocally(repo);
+	expect(result.status).toBe(1);
+	expect(result.stderr).toContain("Working tree is not clean");
+	expect(
+		JSON.parse(readFileSync(join(repo, "package.json"), "utf8")).version,
+	).toBe("0.1.4");
+	expect(git(repo, "tag", "-l")).toBe("");
+}, 30_000);

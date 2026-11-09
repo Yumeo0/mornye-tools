@@ -63,7 +63,6 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ inputs.tag || github.ref }}
-          lfs: true
 
       - name: Checkout calculator submodule
         shell: bash

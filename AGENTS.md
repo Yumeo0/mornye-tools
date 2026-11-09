@@ -6,8 +6,7 @@ drives the in-game overlay window.
 
 ## Setup gotchas
 
-- Public assets use Git LFS. Run `git lfs install` and `git lfs pull` after
-  cloning so builds receive real files rather than LFS pointers.
+- Public assets are stored directly in Git; Git LFS is not required.
 - Use `bun run dev` / `bun run build`, never raw `vite`: the `postinstall`
   hook builds the `thewuwacalculator` submodule's `@wuwacalc/core` and syncs
   live game data into the gitignored `public/data`. Both are hard

@@ -2,13 +2,11 @@
 
 ## Setup
 
-Requires Bun, Node/npm, Rust stable, Git LFS, `protoc`, and the
+Requires Bun, Node/npm, Rust stable, `protoc`, and the
 [Tauri system prerequisites](https://v2.tauri.app/start/prerequisites/).
 
 ```sh
-git lfs install
 git submodule update --init
-git lfs pull
 bun install
 bun run dev          # browser UI
 bun run tauri dev    # desktop app
@@ -154,7 +152,8 @@ Do not edit vendored/generated code or submodule contents:
 `data/VERSION.json` records input versions. Refresh pinned `data/wuwa-protos/`
 artifacts from a protocol extraction when the game protocol changes.
 
-Tracked `public/**` files use Git LFS. Icons live in `public/icons/`, artwork in
+Tracked `public/**` files are stored directly in Git; Git LFS is not required.
+Icons live in `public/icons/`, artwork in
 `public/images/`, overlay templates in `public/templates/`, and compiled map
 metadata in `public/map/`. The asset publisher deduplicates images and prunes
 unused files; regenerate rather than hand-renaming outputs.

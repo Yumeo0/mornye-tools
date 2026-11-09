@@ -17,6 +17,7 @@ import {
 	prepareCatalog,
 	prepareMapCatalog,
 	publicRoot,
+	publishedAssetFile,
 	root,
 	sourceFile,
 } from "./lib/public-assets";
@@ -197,7 +198,11 @@ export async function copyAssets(): Promise<void> {
 	const byHash = new Map<string, string[]>();
 	for (const url of manifest.urls) {
 		const file = Bun.file(
-			publicPath(sourceAliases.get(url) ?? reusedAliases.get(url) ?? url),
+			publishedAssetFile(
+				sourceAliases.get(url) ?? reusedAliases.get(url) ?? url,
+				publicRoot,
+				previousAliases,
+			),
 		);
 		if (!(await file.exists()))
 			throw new Error(`Missing published asset: ${url}`);

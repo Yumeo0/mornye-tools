@@ -3701,6 +3701,7 @@ dependencies = [
  "sha2 0.11.1",
  "spectrum",
  "tauri",
+ "tauri-plugin-store",
  "windows-sys 0.61.2",
 ]
 

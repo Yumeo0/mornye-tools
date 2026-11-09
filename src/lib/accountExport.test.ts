@@ -14,6 +14,7 @@ import {
 	exportFileName,
 	exportPartCount,
 } from "@/lib/accountExport";
+import importFixture from "@/lib/fixtures/account-export.json";
 
 const EXPORTED_AT = new Date("2026-10-17T12:34:56.789Z");
 
@@ -60,6 +61,37 @@ const snapshot: AccountSnapshot = {
 };
 
 describe("buildAccountExport", () => {
+	test("matches the shared Rust importer fixture", () => {
+		const doc = buildAccountExport(
+			{
+				...snapshot,
+				profile: importFixture.map.profile,
+				exploration: importFixture.map.exploration as NonNullable<
+					AccountSnapshot["exploration"]
+				>,
+				echoes: [
+					...snapshot.echoes,
+					{
+						...snapshot.echoes[0],
+						incrId: -1,
+						source: "manual",
+						funcValue: 2,
+						stackCount: 1,
+						slot: 1,
+						mainProps: snapshot.echoes[0].mainProps.map((prop) => ({
+							...prop,
+							propId: 0,
+						})),
+						subProps: [{ propId: 0, key: "atkFlat", raw: 61, value: 60.5 }],
+					},
+				],
+			},
+			["resonators", "weapons", "echoes", "map"],
+			EXPORTED_AT,
+			importFixture.map.manualMarks,
+		);
+		expect<unknown>(doc).toEqual(importFixture);
+	});
 	test("map export preserves captured rewards, imported marks, explicit uncollected overrides and profile identity", () => {
 		const exploration = {
 			playerId: 12345,

@@ -61,6 +61,8 @@ export const weaponSortSchema = z.enum([
 ]);
 
 export const optimizerFiltersSchema = z.object({
+	useRecommended: z.boolean().default(false),
+	minEnergyRegen: z.number().min(0).max(1000).default(0),
 	equipped: z.enum(["include", "exclude-others", "exclude-all"]),
 	minLevel: z.number().min(0).max(25),
 	sets: strings,

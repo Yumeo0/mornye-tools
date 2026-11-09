@@ -209,6 +209,9 @@ export function EchoUpgradePickerDialog({
 									<EchoCard
 										echo={echo}
 										rollValue={rolls.get(echoKey(echo))?.rating}
+										rollSubstatTiers={
+											rolls.get(echoKey(echo))?.character.stats.subs
+										}
 										actions={
 											<Checkbox
 												aria-label={`Select ${echoName(echo)} +${echo.level} for automatic upgrades`}

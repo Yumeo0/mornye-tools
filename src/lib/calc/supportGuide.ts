@@ -38,6 +38,18 @@ export function supportRoleFor(characterId: number): {
 	return { role: picked, roleBuild };
 }
 
+/** Minimum total ER from the character guide; ranges use their lower bound. */
+export function guideEnergyRegenRequirement(characterId: number): number {
+	const picked = supportRoleFor(characterId);
+	const requirement = parseSubstatTiers(picked?.roleBuild.substats_priority)
+		.flat()
+		.find((stat) => stat.name === "Energy Regen")?.breakpoint;
+	const minimum = Number(requirement?.match(/\d+(?:\.\d+)?/)?.[0]);
+	return Number.isFinite(minimum) && minimum > 0 && minimum <= 1000
+		? minimum
+		: 0;
+}
+
 /** Read one character's guide as a support priority; `null` without a guide. */
 export function supportGuideFor(characterId: number): SupportGuide | null {
 	const picked = supportRoleFor(characterId);

@@ -3,6 +3,7 @@
 pub mod auth;
 pub mod config;
 pub mod discovery;
+pub mod echo_equip;
 pub mod echo_mark;
 pub mod echo_upgrade;
 mod live_inventory;

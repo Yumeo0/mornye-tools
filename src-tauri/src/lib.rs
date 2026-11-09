@@ -49,6 +49,8 @@ pub fn run() {
             mornye_overlay::commands::get_capture_origin,
             account::account_get_snapshot,
             account::account_get_view,
+            account::backup::account_preview_import,
+            account::backup::account_import_backup,
             account::account_list_profiles,
             account::account_select_profile,
             account::account_identify_profile,
@@ -72,6 +74,7 @@ pub fn run() {
             dangerous::dangerous_echo_upgrade,
             dangerous::dangerous_echo_discard,
             dangerous::dangerous_echo_mark,
+            dangerous::dangerous_echo_equip,
             dangerous::dangerous_disconnect,
             dangerous::dangerous_sign_out,
         ])

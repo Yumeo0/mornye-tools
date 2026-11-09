@@ -2,9 +2,8 @@
 //!
 //! Only [`AccountStore`] mutates the account snapshot. Passive extraction
 //! (`sniffer::extract`) and the active session (`account::ingest`) are the two
-//! production writers of captured data; the UI may only write `overrides.json`
-//! (equipped-by / slot adjustments) and manual echoes (`source: Manual`,
-//! synthetic negative instance ids).
+//! production writers of captured data. Explicit UI backup imports can restore
+//! that data; other UI writes are local overrides and manual echoes.
 
 use std::collections::HashMap;
 use std::fs;
@@ -53,6 +52,31 @@ impl AccountStore {
 
     pub fn snapshot(&self) -> &AccountSnapshot {
         &self.snapshot
+    }
+
+    /// Apply an explicitly reviewed backup without letting old manual overrides
+    /// mask its equipment. Keep the in-memory snapshot on persistence failure.
+    pub fn restore_backup(
+        &mut self,
+        next: AccountSnapshot,
+        echo_ids: &[i64],
+    ) -> Result<(), String> {
+        let previous = std::mem::replace(&mut self.snapshot, next);
+        let overrides = self.overrides.clone();
+        self.overrides
+            .echoes
+            .retain(|id, _| !id.parse::<i64>().is_ok_and(|id| echo_ids.contains(&id)));
+        if let Err(error) = self.save() {
+            self.snapshot = previous;
+            self.overrides = overrides;
+            return match self.save() {
+                Ok(()) => Err(error),
+                Err(rollback) => Err(format!(
+                    "{error}. Could not restore the previous backup state: {rollback}"
+                )),
+            };
+        }
+        Ok(())
     }
 
     pub fn set_profile(&mut self, profile: super::model::ProfileIdentity) {
@@ -500,6 +524,9 @@ impl AccountStore {
             let Some(echo) = snapshot.echoes.iter_mut().find(|e| e.incr_id == incr_id) else {
                 continue;
             };
+            if echo.source != EchoSource::Manual {
+                continue;
+            }
             if over.equipped_by.is_some() {
                 echo.equipped_by = over.equipped_by;
             }
@@ -786,10 +813,11 @@ mod tests {
     }
 
     #[test]
-    fn overrides_win_over_packet_equipment() {
+    fn manual_overrides_win_over_packet_equipment() {
         let dir = temp_dir("overrides");
         let mut store = AccountStore::load(dir.clone());
         let mut equipped = echo(7, 60000325);
+        equipped.source = EchoSource::Manual;
         equipped.equipped_by = Some(1503);
         equipped.slot = Some(0);
         store.upsert_echoes(vec![equipped.clone()]);
@@ -799,6 +827,24 @@ mod tests {
         let stored = &store.snapshot().echoes[0];
         assert_eq!(stored.equipped_by, Some(1504));
         assert_eq!(stored.slot, Some(2));
+        let _ = fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn captured_equipment_ignores_legacy_overrides_after_reload() {
+        let dir = temp_dir("captured-overrides");
+        let mut store = AccountStore::load(dir.clone());
+        let mut captured = echo(7, 60000325);
+        captured.equipped_by = Some(1503);
+        captured.slot = Some(0);
+        store.upsert_echoes(vec![captured]);
+        store.set_echo_override(7, Some(1504), Some(2));
+        store.apply_equip_info(1503, &[]);
+        store.apply_equip_info(1505, &[7]);
+        store.save().unwrap();
+        let reloaded = AccountStore::load(dir.clone());
+        assert_eq!(reloaded.snapshot().echoes[0].equipped_by, Some(1505));
+        assert_eq!(reloaded.snapshot().echoes[0].slot, Some(0));
         let _ = fs::remove_dir_all(&dir);
     }
 
@@ -1007,7 +1053,9 @@ mod tests {
             rank: 1,
             equipped_by: Some(1503),
         }]);
-        store.upsert_echoes(vec![echo(7, 60000325)]);
+        let mut manual = echo(7, 60000325);
+        manual.source = EchoSource::Manual;
+        store.upsert_echoes(vec![manual]);
         store.set_echo_override(7, Some(1503), Some(0));
         store.save().unwrap();
 

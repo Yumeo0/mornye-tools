@@ -24,8 +24,8 @@ import type {
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
 	EMPTY_OPTIMIZER_FILTERS,
-	MAX_ECHO_LEVEL,
 	type OptimizerFilters,
+	optimizerPoolFilters,
 } from "@/components/optimizer/optimizerOptions";
 import type { useOptimizerTeam } from "@/hooks/useOptimizerTeam";
 import type { AccountSnapshot, Echo } from "@/lib/account";
@@ -41,6 +41,7 @@ import {
 	selectOptimizerCandidates,
 } from "@/lib/calc/optimizer";
 import {
+	guideEnergyRegenRequirement,
 	guideMainStatKeys,
 	supportEchoScore,
 	supportGuideFor,
@@ -121,7 +122,27 @@ export function useOptimizerRun({
 		optimizerFiltersSchema,
 	);
 
+	const targetRoleId = team.targetRoleId;
+	useEffect(() => {
+		if (!coreReady) return;
+		setFilters((previous) => ({
+			...previous,
+			minEnergyRegen: guideEnergyRegenRequirement(Number(targetRoleId)),
+		}));
+	}, [coreReady, targetRoleId, setFilters]);
+
 	const targetResonatorId = targetBuild?.resonator.id ?? null;
+	const poolFilters = useMemo(() => {
+		if (!filters.useRecommended || !targetBuild?.runtime)
+			return optimizerPoolFilters(filters, []);
+		const guideKeys =
+			mode === "team" ? guideMainStatKeys(Number(targetBuild.roleId)) : [];
+		const mainStats =
+			guideKeys.length > 0
+				? guideKeys
+				: deriveRecommendedMainStats(targetBuild.runtime, companionRuntimes);
+		return optimizerPoolFilters(filters, mainStats);
+	}, [companionRuntimes, filters, mode, targetBuild]);
 
 	// Candidate inventory and translation errors in one pass: every echo is
 	// translated once, errors are collected for the whole account, and only
@@ -180,6 +201,10 @@ export function useOptimizerRun({
 	>(null);
 	const [progress, setProgress] = useState<OptPrgr | null>(null);
 	const [results, setResults] = useState<OptResultEntry[]>([]);
+	const [resultContext, setResultContext] = useState<{
+		profileId: string | null;
+		roleId: number;
+	} | null>(null);
 	// The equipped build's evaluated damage, snapshotted at run time so the
 	// results row always matches the run it belongs to.
 	const [baseline, setBaseline] = useState<OptimizerBaseline | null>(null);
@@ -205,8 +230,9 @@ export function useOptimizerRun({
 			targetSkillId,
 			resultsLimit,
 			enableGpu: engine === "gpu",
-			mainStatKeys: filters.mainStats,
-			allowedSetIds: filters.sets
+			minEnergyRegen: filters.minEnergyRegen,
+			mainStatKeys: poolFilters.mainStats,
+			allowedSetIds: poolFilters.sets
 				.map((value) => Number.parseInt(value, 10))
 				.filter(Number.isFinite),
 		});
@@ -217,8 +243,8 @@ export function useOptimizerRun({
 			settings,
 			targetRuntime: targetBuild.runtime,
 			companionRuntimes,
-			mainStatKeys: filters.mainStats,
-			substatKeys: filters.substats,
+			mainStatKeys: poolFilters.mainStats,
+			substatKeys: poolFilters.substats,
 		});
 		// Clamped by `runOptimizerBaseline`; -1 (no main echo) is fine here.
 		const mainIndex = equipped.findIndex((echo) => echo.mainEcho);
@@ -228,6 +254,7 @@ export function useOptimizerRun({
 		coreReady,
 		engine,
 		filters,
+		poolFilters,
 		inventory,
 		mode,
 		resultsLimit,
@@ -248,15 +275,15 @@ export function useOptimizerRun({
 			inventory,
 			// The equipped build stays searchable unless the user excludes it.
 			alwaysKeep: filters.equipped === "exclude-all" ? [] : equipped,
-			allowedSetIds: filters.sets
+			allowedSetIds: poolFilters.sets
 				.map((value) => Number.parseInt(value, 10))
 				.filter(Number.isFinite),
-			mainStatKeys: filters.mainStats,
-			substatKeys: filters.substats,
+			mainStatKeys: poolFilters.mainStats,
+			substatKeys: poolFilters.substats,
 			rank,
 		});
 		return { equipped, guide, rank, pool };
-	}, [coreReady, filters, inventory, mode, targetBuild]);
+	}, [coreReady, filters, poolFilters, inventory, mode, targetBuild]);
 
 	// Counts for the filter row: packed selection in damage mode, the guide
 	// ranked team pool in team mode.
@@ -289,31 +316,6 @@ export function useOptimizerRun({
 			? (teamPlan?.pool.echoes.length ?? 0) >= 5
 			: (plan?.selection.echoes.length ?? 0) >= 5;
 	const measuredReady = mode !== "team" || Boolean(measuredBuild?.runtime);
-
-	// "Recommended": preselect the main stats this character's kit cares about
-	// and restrict candidates to max-level echoes. In team mode the shipped
-	// role guide leads (its mains are what the buffs scale with); the packed
-	// stat-weight derivation leads otherwise. Only ever applied on this click.
-	const applyRecommended = useCallback(() => {
-		if (!targetBuild?.runtime) return;
-		const recommended =
-			mode === "team"
-				? (() => {
-						const guideKeys = guideMainStatKeys(Number(targetBuild.roleId));
-						return guideKeys.length > 0
-							? guideKeys
-							: deriveRecommendedMainStats(
-									targetBuild.runtime,
-									companionRuntimes,
-								);
-					})()
-				: deriveRecommendedMainStats(targetBuild.runtime, companionRuntimes);
-		setFilters((prev) => ({
-			...prev,
-			mainStats: recommended,
-			minLevel: MAX_ECHO_LEVEL,
-		}));
-	}, [companionRuntimes, mode, targetBuild, setFilters]);
 
 	const canRun =
 		coreReady &&
@@ -361,6 +363,10 @@ export function useOptimizerRun({
 			});
 
 			cancelRef.current = false;
+			setResultContext({
+				profileId: snapshot.profile?.id ?? null,
+				roleId: Number(targetBuild.roleId),
+			});
 			setRunning(true);
 			setRunError(null);
 			setResults([]);
@@ -383,6 +389,15 @@ export function useOptimizerRun({
 				setPhase("team");
 				const outcome = await runTeamSearch({
 					score: (combo) => metric.score(combo),
+					constraintViolation:
+						filters.minEnergyRegen > 0
+							? (combo) => {
+									const er = metric.stats(combo)?.er;
+									return er == null || !Number.isFinite(er)
+										? Number.POSITIVE_INFINITY
+										: Math.max(0, filters.minEnergyRegen - er);
+								}
+							: undefined,
 					pool: teamPlan.pool.echoes,
 					seeds: buildTeamSeeds({
 						pool: teamPlan.pool.echoes,
@@ -396,7 +411,7 @@ export function useOptimizerRun({
 				});
 				if (cancelRef.current) return;
 
-				// Stat lines are display-only: only the visible rows pay for them.
+				// Only the visible rows retain full stat lines for display.
 				setPhase("stats");
 				const rows: OptResultEntry[] = [];
 				for (const [index, entry] of outcome.ranked.entries()) {
@@ -409,6 +424,10 @@ export function useOptimizerRun({
 					if (index % 16 === 15) await waitForLoop();
 				}
 				setResults(rows);
+				if (rows.length === 0 && filters.minEnergyRegen > 0)
+					setRunError(
+						`No builds meeting ${filters.minEnergyRegen}% Energy Regen were found. Lower the requirement or widen the echo pool.`,
+					);
 			} catch (error) {
 				if (!isOptimizerAbort(error)) {
 					setRunError(error instanceof Error ? error.message : String(error));
@@ -437,6 +456,10 @@ export function useOptimizerRun({
 			enemyProfile: DEF_ENEMY_PROF,
 		});
 
+		setResultContext({
+			profileId: snapshot.profile?.id ?? null,
+			roleId: Number(targetBuild.roleId),
+		});
 		setRunning(true);
 		setRunError(null);
 		setResults([]);
@@ -458,7 +481,12 @@ export function useOptimizerRun({
 					? {
 							damage: baselineResult.damage,
 							stats: baselineResult.stats,
-							uids: plan.equipped.map((echo) => echo.uid),
+							uids: [
+								plan.equipped[Math.max(0, plan.mainIndex)]?.uid ?? "",
+								...plan.equipped
+									.filter((_, index) => index !== Math.max(0, plan.mainIndex))
+									.map((echo) => echo.uid),
+							],
 						}
 					: null,
 			);
@@ -468,6 +496,10 @@ export function useOptimizerRun({
 				onProgress: (next) => setProgress(next),
 			});
 			setResults(found);
+			if (found.length === 0 && filters.minEnergyRegen > 0)
+				setRunError(
+					`No builds meeting ${filters.minEnergyRegen}% Energy Regen were found. Lower the requirement or widen the echo pool.`,
+				);
 		} catch (error) {
 			if (!isOptimizerAbort(error)) {
 				setRunError(error instanceof Error ? error.message : String(error));
@@ -479,6 +511,7 @@ export function useOptimizerRun({
 		}
 	}, [
 		companionRuntimes,
+		filters.minEnergyRegen,
 		mateBuilds,
 		mateOne,
 		mateTwo,
@@ -489,7 +522,17 @@ export function useOptimizerRun({
 		rotation,
 		targetBuild,
 		teamPlan,
+		snapshot.profile?.id,
 	]);
+
+	const markEquipped = useCallback((result: OptResultEntry, ids: number[]) => {
+		const uids = ids.map((id) => `incr:${id}`);
+		setBaseline({ damage: result.damage, stats: result.stats, uids });
+		setResults((previous) =>
+			previous.map((entry) => (entry === result ? { ...entry, uids } : entry)),
+		);
+		setExpandedIndex("baseline");
+	}, []);
 
 	const handleCancel = useCallback(() => {
 		cancelRef.current = true;
@@ -516,6 +559,8 @@ export function useOptimizerRun({
 		phase,
 		progress,
 		results,
+		resultContext,
+		markEquipped,
 		baseline,
 		runError,
 		expandedIndex,
@@ -526,7 +571,6 @@ export function useOptimizerRun({
 		hasCandidates,
 		measuredReady,
 		canRun,
-		applyRecommended,
 		handleRun,
 		handleCancel,
 		progressPercent,

@@ -1,4 +1,5 @@
 import { isTauri } from "@tauri-apps/api/core";
+import { listen } from "@tauri-apps/api/event";
 import { Store } from "@tauri-apps/plugin-store";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -50,6 +51,18 @@ export function useManualMapMarks(playerId: number) {
 	}, [key, playerId]);
 	useEffect(() => {
 		void load();
+	}, [load]);
+	useEffect(() => {
+		if (!isTauri()) return;
+		const unlisten = listen<{ sections: string[] }>(
+			"account-updated",
+			(event) => {
+				if (event.payload.sections.includes("map")) void load();
+			},
+		);
+		return () => {
+			void unlisten.then((stop) => stop());
+		};
 	}, [load]);
 	useEffect(() => {
 		const refresh = (changedPlayerId: number) => {

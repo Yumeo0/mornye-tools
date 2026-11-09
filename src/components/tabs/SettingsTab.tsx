@@ -9,6 +9,7 @@ import type { ReactNode } from "react";
 import { CaptureCard } from "@/components/settings/CaptureCard";
 import { DangerousFeaturesCard } from "@/components/settings/DangerousFeaturesCard";
 import { ExportCard } from "@/components/settings/ExportCard";
+import { ImportCard } from "@/components/settings/ImportCard";
 import { MapImportCard } from "@/components/settings/MapImportCard";
 import { OcrDebugPanel } from "@/components/settings/OcrDebugPanel";
 import { OcrResolutionCard } from "@/components/settings/OcrResolutionCard";
@@ -139,7 +140,10 @@ export function SettingsTab({
 				value="import"
 				className="min-h-0 flex-1 overflow-y-auto pb-4"
 			>
-				<MapImportCard onImport={onImport} />
+				<div className="flex flex-col gap-6">
+					<ImportCard />
+					<MapImportCard onImport={onImport} />
+				</div>
 			</TabsContent>
 
 			<TabsContent

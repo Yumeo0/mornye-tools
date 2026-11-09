@@ -19,14 +19,17 @@ describe("captured inventory", () => {
 		expect(currencies.find((item) => item.id === 50001)?.count).toBe(0);
 		expect(currencies.filter((item) => !item.icon)).toEqual([]);
 	});
-	test("every quest item and category has published artwork", () => {
-		const quests = [...inventoryDefinitions.values()].filter(
-			(item) => item.category === "Quest Items",
-		);
-		expect(quests.length).toBeGreaterThan(0);
-		expect(quests.filter((item) => !item.icon).map((item) => item.id)).toEqual(
-			[],
-		);
+	test("every quest item, valuable, and category has published artwork", () => {
+		for (const category of ["Quest Items", "Valuables"]) {
+			const items = [...inventoryDefinitions.values()].filter(
+				(item) => item.category === category,
+			);
+			expect(items.length).toBeGreaterThan(0);
+			expect(
+				items.filter((item) => !item.icon).map((item) => item.id),
+				category,
+			).toEqual([]);
+		}
 		expect([...inventoryCategoryIcons].filter(([, icon]) => !icon)).toEqual([]);
 	});
 	test("resolves upgrade resources without changing exact server counts", () => {

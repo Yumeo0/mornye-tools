@@ -1,11 +1,10 @@
 /** Build the exact publication list from rendered catalogue fields and UI code. */
-import { join } from "node:path";
 import {
 	type AssetManifest,
 	assetSources,
 	collectAssetRefs,
 	manifestPath,
-	publicRoot,
+	publishedAssetFile,
 	sourceFile,
 } from "./lib/public-assets";
 
@@ -16,7 +15,7 @@ export async function buildAssetManifest(): Promise<AssetManifest> {
 	for (const url of urls) {
 		const candidates = sources.get(url);
 		if (!candidates?.length) {
-			if (await Bun.file(join(publicRoot, url.slice(1))).exists()) continue;
+			if (await Bun.file(publishedAssetFile(url)).exists()) continue;
 			throw new Error(`No source or authored asset for ${url}`);
 		}
 		const source = candidates.sort()[0];

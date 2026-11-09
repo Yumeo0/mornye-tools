@@ -180,6 +180,10 @@ struct EchoCommand {
     reply: std::sync::mpsc::Sender<Result<EchoResult, String>>,
 }
 enum EchoOperation {
+    Equip {
+        role_id: i32,
+        echoes: Vec<mornye_game_client::echo_equip::EquipEcho>,
+    },
     Upgrade {
         incr_id: i32,
         target_level: i32,
@@ -202,10 +206,12 @@ impl EchoOperation {
                 ..
             } | Self::Discard(_)
                 | Self::Mark { .. }
+                | Self::Equip { .. }
         )
     }
 }
 enum EchoResult {
+    Equip(Vec<i32>),
     Upgrade(mornye_game_client::echo_upgrade::UpgradePlan),
     Discard(mornye_game_client::echo_upgrade::DiscardResult),
     Mark(i32),
@@ -1027,6 +1033,21 @@ pub fn dangerous_connect(
                                 }
                             }
                             match &command.operation {
+                                EchoOperation::Equip { role_id, echoes } => {
+                                    {
+                                        let account = app.state::<AccountState>();
+                                        let profiles = account.store.lock().map_err(|_| "Account store is unavailable.")?;
+                                        let snapshot = profiles.snapshot();
+                                        if !snapshot.resonators.iter().any(|role| role.id == i64::from(*role_id))
+                                            || echoes.iter().any(|expected| !snapshot.echoes.iter().any(|echo|
+                                                echo.incr_id == i64::from(expected.incr_id)
+                                                && echo.item_id == i64::from(expected.item_id)
+                                                && echo.source == crate::account::model::EchoSource::Sniffer)) {
+                                            return Err("Choose an owned resonator and captured echoes from the connected profile.".into());
+                                        }
+                                    }
+                                    session.equip_echoes(*role_id, echoes).map(EchoResult::Equip).map_err(|e| format!("{e:#}"))
+                                }
                                 EchoOperation::Upgrade { incr_id, target_level, protected_ids, approved, material_policy } => {
                                     if let Some(approved) = approved {
                                         if approved.incr_id != *incr_id || approved.target_level != *target_level {
@@ -1155,6 +1176,29 @@ pub async fn dangerous_echo_mark(
     .await?
     {
         EchoResult::Mark(value) => Ok(value),
+        _ => Err("Unexpected echo operation result.".into()),
+    }
+}
+
+#[tauri::command]
+pub async fn dangerous_echo_equip(
+    window: WebviewWindow,
+    state: State<'_, DangerousState>,
+    profile_id: String,
+    role_id: i32,
+    echoes: Vec<mornye_game_client::echo_equip::EquipEcho>,
+) -> Result<Vec<i32>, String> {
+    main_window(&window)?;
+    mornye_game_client::echo_equip::validate(role_id, &echoes)
+        .map_err(|error| error.to_string())?;
+    match queue_echo_operation(
+        state.inner(),
+        profile_id,
+        EchoOperation::Equip { role_id, echoes },
+    )
+    .await?
+    {
+        EchoResult::Equip(ids) => Ok(ids),
         _ => Err("Unexpected echo operation result.".into()),
     }
 }

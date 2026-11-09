@@ -11,14 +11,21 @@ import {
 	substatOptions,
 } from "@/components/optimizer/optimizerOptions";
 import { Button } from "@/components/ui/button";
-import { FieldGroup, FieldLegend, FieldSet } from "@/components/ui/field";
+import {
+	Field,
+	FieldGroup,
+	FieldLabel,
+	FieldLegend,
+	FieldSet,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 
 /** Candidate-pool filters for the optimizer search. */
 export function OptimizerFilterRow({
 	filters,
 	onFiltersChange,
 	recommendedEnabled,
-	onRecommended,
 	counts,
 	countsHint = "Echoes eligible after the filters; when pruning applies, echoes beyond the search cap are ranked by stat weight",
 }: {
@@ -29,17 +36,40 @@ export function OptimizerFilterRow({
 			| ((previous: OptimizerFilters) => OptimizerFilters),
 	) => void;
 	recommendedEnabled: boolean;
-	onRecommended: () => void;
 	counts: { eligible: number; total: number; combos: number } | null;
 	/** Tooltip over the counts; team mode ranks by the role guide instead. */
 	countsHint?: string;
 }) {
 	return (
-		<div className="flex min-w-0 flex-col gap-4">
-			<FieldGroup className="gap-4">
-				<FieldSet className="min-w-0 gap-2">
-					<FieldLegend variant="label">Echo pool</FieldLegend>
-					<div className="flex flex-col gap-3">
+		<div className="flex min-w-0 flex-col gap-5 [&_[data-slot=filter-label]]:text-[11px] [&_[data-slot=filter-label]]:leading-4 [&_[data-slot=filter-label]]:font-medium">
+			<FieldGroup className="gap-6">
+				<FieldSet className="min-w-0 gap-3">
+					<FieldLegend className="mb-1 font-semibold leading-5">
+						Echo pool
+					</FieldLegend>
+					<div className="flex flex-col gap-4">
+						<Field orientation="horizontal">
+							<FieldLabel
+								htmlFor="optimizer-recommended"
+								className="font-medium"
+							>
+								Use recommended
+							</FieldLabel>
+							<Switch
+								id="optimizer-recommended"
+								checked={filters.useRecommended}
+								disabled={!recommendedEnabled && !filters.useRecommended}
+								onCheckedChange={(useRecommended) =>
+									onFiltersChange((previous) => ({
+										...previous,
+										useRecommended,
+										minLevel: useRecommended
+											? MAX_ECHO_LEVEL
+											: previous.minLevel,
+									}))
+								}
+							/>
+						</Field>
 						<FilterSelect
 							label="Equipped echoes"
 							value={filters.equipped}
@@ -73,63 +103,106 @@ export function OptimizerFilterRow({
 						/>
 					</div>
 				</FieldSet>
+				{!filters.useRecommended && (
+					<FieldSet className="min-w-0 gap-2">
+						<FieldLegend
+							variant="label"
+							className="mb-1 font-semibold leading-5"
+						>
+							Set & stat requirements
+						</FieldLegend>
+						<div className="flex flex-col gap-4">
+							<MultiSelect
+								label="Echo sets"
+								values={filters.sets}
+								options={optimizerSetOptions}
+								onChange={(sets) =>
+									onFiltersChange((prev) => ({ ...prev, sets }))
+								}
+							/>
+							<MultiSelect
+								label="Main stats"
+								values={filters.mainStats}
+								options={mainStatOptions}
+								onChange={(mainStats) =>
+									onFiltersChange((prev) => ({ ...prev, mainStats }))
+								}
+							/>
+							<MultiSelect
+								label="Substats (any match)"
+								values={filters.substats}
+								options={substatOptions}
+								onChange={(substats) =>
+									onFiltersChange((prev) => ({ ...prev, substats }))
+								}
+							/>
+						</div>
+					</FieldSet>
+				)}
 				<FieldSet className="min-w-0 gap-2">
-					<FieldLegend variant="label">Set & stat requirements</FieldLegend>
-					<div className="flex flex-col gap-3">
-						<MultiSelect
-							label="Echo sets"
-							values={filters.sets}
-							options={optimizerSetOptions}
-							onChange={(sets) =>
-								onFiltersChange((prev) => ({ ...prev, sets }))
-							}
+					<FieldLegend variant="label" className="mb-1 font-semibold leading-5">
+						Build requirements
+					</FieldLegend>
+					<Field>
+						<FieldLabel
+							htmlFor="optimizer-min-er"
+							className="text-[11px] font-medium leading-4 text-muted-foreground"
+						>
+							Minimum Energy Regen (%)
+						</FieldLabel>
+						<Input
+							id="optimizer-min-er"
+							type="number"
+							min={0}
+							max={1000}
+							step={0.1}
+							placeholder="No requirement"
+							value={filters.minEnergyRegen || ""}
+							onChange={(event) => {
+								const minEnergyRegen = Number(event.target.value);
+								if (
+									Number.isFinite(minEnergyRegen) &&
+									minEnergyRegen >= 0 &&
+									minEnergyRegen <= 1000
+								)
+									onFiltersChange((previous) => ({
+										...previous,
+										minEnergyRegen,
+									}));
+							}}
 						/>
-						<MultiSelect
-							label="Main stats"
-							values={filters.mainStats}
-							options={mainStatOptions}
-							onChange={(mainStats) =>
-								onFiltersChange((prev) => ({ ...prev, mainStats }))
-							}
-						/>
-						<MultiSelect
-							label="Substats (any match)"
-							values={filters.substats}
-							options={substatOptions}
-							onChange={(substats) =>
-								onFiltersChange((prev) => ({ ...prev, substats }))
-							}
-						/>
-					</div>
+					</Field>
 				</FieldSet>
 			</FieldGroup>
-			<div className="flex flex-col items-stretch gap-2">
-				<Button
-					variant="outline"
-					size="sm"
-					title="Recommended echo filters: the main stats this resonator's kit cares about, max-level echoes only"
-					disabled={!recommendedEnabled}
-					onClick={onRecommended}
-				>
-					Use recommended filters
-				</Button>
+			<div className="flex flex-col items-start gap-2">
+				{counts && (
+					<div
+						className="text-[11px] leading-5 text-muted-foreground tabular-nums"
+						title={countsHint}
+					>
+						<p>
+							<span className="font-medium text-foreground">
+								{counts.eligible.toLocaleString()}
+							</span>{" "}
+							/ {counts.total.toLocaleString()} echoes
+						</p>
+						<p>
+							<span className="font-medium text-foreground">
+								{formatDamage(counts.combos)}
+							</span>{" "}
+							candidate builds
+						</p>
+					</div>
+				)}
 				{hasOptimizerFilters(filters) && (
 					<Button
-						variant="ghost"
+						variant="link"
 						size="sm"
+						className="h-auto px-0"
 						onClick={() => onFiltersChange(EMPTY_OPTIMIZER_FILTERS)}
 					>
 						Reset filters
 					</Button>
-				)}
-				{counts && (
-					<span
-						className="text-[11px] text-muted-foreground"
-						title={countsHint}
-					>
-						{counts.eligible}/{counts.total} echoes ·{" "}
-						{formatDamage(counts.combos)} builds
-					</span>
 				)}
 			</div>
 		</div>

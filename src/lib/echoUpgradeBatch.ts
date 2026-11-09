@@ -20,7 +20,11 @@ import {
 	requestEchoUpgrade,
 } from "@/lib/echoUpgrade";
 import { viewFromEcho } from "@/lib/overlayEcho";
-import { getRelevantCharacters, maxPossibleRating } from "@/lib/rating";
+import {
+	getRelevantCharacters,
+	mainStatForEcho,
+	maxPossibleRating,
+} from "@/lib/rating";
 
 export type UpgradeOutcome =
 	| "queued"
@@ -99,6 +103,7 @@ export function bestPossibleEchoRating(echo: Echo): number | null {
 					maxPossibleRating(
 						character,
 						view.subStats,
+						mainStatForEcho(echo),
 						echoTuningSlots(echo.itemId),
 					),
 				),

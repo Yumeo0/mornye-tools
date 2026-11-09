@@ -33,7 +33,11 @@ import {
 	splitFollowTarget,
 	viewFromEcho,
 } from "@/lib/overlayEcho";
-import { getRelevantCharacters, maxPossibleRating } from "@/lib/rating";
+import {
+	getRelevantCharacters,
+	mainStatForEcho,
+	maxPossibleRating,
+} from "@/lib/rating";
 import { readSetting } from "@/lib/settings";
 
 /** Last presses seen by the menu debug panel, keyed by the press kind. */
@@ -119,7 +123,11 @@ export function useEchoTracking(): {
 				relevant.length > 0
 					? Math.max(
 							...relevant.map((character) =>
-								maxPossibleRating(character, echoView.subStats),
+								maxPossibleRating(
+									character,
+									echoView.subStats,
+									mainStatForEcho(echo),
+								),
 							),
 						)
 					: Number.POSITIVE_INFINITY;

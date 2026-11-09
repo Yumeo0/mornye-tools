@@ -3,55 +3,59 @@ import { useMemo } from "react";
 import { ResultRow } from "@/components/optimizer/ResultRow";
 import type { OptimizerBaseline } from "@/hooks/useOptimizerRun";
 import type { Echo } from "@/lib/account";
-
-// Result rows with the equipped build merged in at its ranked position.
-type ResultRowModel =
-	| { kind: "baseline" }
-	| { kind: "result"; result: OptResultEntry; index: number };
+import { optimizerResultRows } from "@/lib/calc/optimizerResults";
+import { supportRoleFor } from "@/lib/calc/supportGuide";
+import { charactersById } from "@/lib/catalog";
+import { type CharacterInfo, statsForRole } from "@/lib/rating";
 
 /** Search results list; the equipped build is highlighted at its rank. */
 export function OptimizerResultsPanel({
 	results,
+	characterId,
 	baseline,
 	running,
 	expandedIndex,
 	onExpandedChange,
 	echoByUid,
+	equipAction,
 	title = "Results",
 	runningText = "Searching the captured inventory…",
 	idleText = "Pick a target, team and rotation, then run the optimizer.",
 }: {
 	results: OptResultEntry[];
+	/** Character searched by these results, retained when the selection changes. */
+	characterId: number | null;
 	baseline: OptimizerBaseline | null;
 	running: boolean;
 	expandedIndex: number | "baseline" | null;
 	onExpandedChange: (index: number | "baseline" | null) => void;
 	echoByUid: Map<string, Echo>;
+	equipAction?: (result: OptResultEntry) => {
+		label: string;
+		disabled: boolean;
+		reason?: string;
+		onEquip: () => void;
+	};
 	/** Panel heading; team mode names the measured rotation. */
 	title?: string;
 	runningText?: string;
 	idleText?: string;
 }) {
-	const rows = useMemo<ResultRowModel[]>(() => {
-		if (!baseline) {
-			return results.map((result, index) => ({
-				kind: "result",
-				result,
-				index,
-			}));
-		}
-		const insertAt = results.findIndex(
-			(entry) => entry.damage < baseline.damage,
-		);
-		const position = insertAt === -1 ? results.length : insertAt;
-		const models: ResultRowModel[] = [];
-		for (let index = 0; index < results.length; index += 1) {
-			if (index === position) models.push({ kind: "baseline" });
-			models.push({ kind: "result", result: results[index], index });
-		}
-		if (position === results.length) models.push({ kind: "baseline" });
-		return models;
-	}, [results, baseline]);
+	const rows = useMemo(
+		() => optimizerResultRows(results, baseline),
+		[results, baseline],
+	);
+	const ratingCharacter = useMemo<CharacterInfo | null>(() => {
+		const character = charactersById.get(characterId ?? 0);
+		const guide = supportRoleFor(characterId ?? 0);
+		if (!character || !guide) return null;
+		return {
+			character_id: character.character_id,
+			character_name: character.character_name,
+			icon_pile: character.icon_head_256,
+			stats: statsForRole(guide.roleBuild),
+		};
+	}, [characterId]);
 
 	return (
 		<section className="bg-card text-card-foreground ring-foreground/10 flex min-h-40 flex-1 flex-col ring-1">
@@ -68,7 +72,7 @@ export function OptimizerResultsPanel({
 						row.kind === "baseline" && baseline ? (
 							<ResultRow
 								key="baseline"
-								index={0}
+								index={row.rank}
 								current
 								result={{
 									uids: baseline.uids,
@@ -83,12 +87,14 @@ export function OptimizerResultsPanel({
 									)
 								}
 								echoByUid={echoByUid}
+								ratingCharacter={ratingCharacter}
 							/>
 						) : row.kind === "result" ? (
 							<ResultRow
 								key={row.index}
-								index={row.index}
+								index={row.rank}
 								result={row.result}
+								equipAction={equipAction?.(row.result)}
 								baseline={baseline?.damage ?? null}
 								expanded={expandedIndex === row.index}
 								onToggle={() =>
@@ -97,6 +103,7 @@ export function OptimizerResultsPanel({
 									)
 								}
 								echoByUid={echoByUid}
+								ratingCharacter={ratingCharacter}
 							/>
 						) : null,
 					)}

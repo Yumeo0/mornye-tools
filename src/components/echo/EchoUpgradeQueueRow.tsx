@@ -50,6 +50,7 @@ export function EchoUpgradeQueueRow({
 			<EchoCard
 				echo={{ ...echo, stackCount: 1 }}
 				rollValue={roll?.rating}
+				rollSubstatTiers={roll?.character.stats.subs}
 				rollCharacter={
 					roll
 						? {

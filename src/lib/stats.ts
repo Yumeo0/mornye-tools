@@ -204,6 +204,47 @@ export interface StatTier {
 	breakpoint?: string;
 }
 
+/** Descending weights in 0.5 steps, starting at ×1 for the lowest tier. */
+export function substatPriorityWeights(tiers: string[][]): Map<string, number> {
+	const groups = tiers.filter((tier) => tier.length > 0);
+	const weights = new Map<string, number>();
+	groups.forEach((tier, index) => {
+		for (const name of tier) {
+			const normalized = normalizeStatName(name);
+			if (!weights.has(normalized))
+				weights.set(normalized, 1 + (groups.length - index - 1) * 0.5);
+		}
+	});
+	return weights;
+}
+
+/**
+ * Echo-value priorities: uncapped stats retain their guide order; Energy Regen
+ * and explicit breakpoint stats share the lowest (×1) utility tier.
+ */
+export function rollValueSubstatTiers(
+	raw: string | null | undefined,
+): StatTier[][] {
+	const tiers = parseSubstatTiers(raw);
+	const utility: StatTier[] = [];
+	const priorities = tiers
+		.map((tier) =>
+			tier.filter((stat) => {
+				if (
+					stat.breakpoint ||
+					normalizeStatName(stat.name) === "energy regen"
+				) {
+					utility.push(stat);
+					return false;
+				}
+				return true;
+			}),
+		)
+		.filter((tier) => tier.length > 0);
+	if (utility.length > 0) priorities.push(utility);
+	return priorities;
+}
+
 // "ER:120%>CR=CD>ATK%>Lib%>ATK" -> tiers of equal-priority stats;
 // ">" separates tiers, "=" marks stats of equal priority within a tier,
 // ":" marks a breakpoint the stat should reach ("~", ranges and "+" suffixes

@@ -1,17 +1,24 @@
 // Echo-to-character relevance rating, shared by the overlay and the
 // inventory sorting
+
+import { type Echo, statLabel } from "@/lib/account";
 import {
 	type CatalogEcho,
 	charactersById,
 	echoesByMonsterId,
 } from "@/lib/catalog";
-import { type BuildEntry, buildEntries } from "@/lib/characters";
+import {
+	type BuildEntry,
+	buildEntries,
+	type RoleBuild,
+} from "@/lib/characters";
 import {
 	normalizeStatName,
-	parseSubstatTiers,
+	rollValueSubstatTiers,
 	sonataNames,
 	splitStatCodes,
 	subStatRoll,
+	substatPriorityWeights,
 } from "@/lib/stats";
 
 export interface CharacterInfo {
@@ -54,13 +61,6 @@ export function parseStatValue(
 	return null;
 }
 
-// "ER:120%>CR=CD>ATK%>Lib%>ATK" -> ["Energy Regen", "Crit. Rate", ...]
-function parseSubstatPriority(raw: string | null | undefined): string[] {
-	return parseSubstatTiers(raw)
-		.flat()
-		.map((stat) => stat.name);
-}
-
 /** Per-cost main-stat tiers from a role guide (empty tiers dropped). */
 function mainStatsFromRole(
 	mainStats: string[] | undefined,
@@ -81,7 +81,46 @@ function mainStatsFromRole(
 function subsFromPriority(
 	priority: string | null | undefined,
 ): CharacterInfo["stats"]["subs"] {
-	return [parseSubstatPriority(priority)].filter((group) => group.length > 0);
+	return rollValueSubstatTiers(priority).map((tier) =>
+		tier.map((stat) => stat.name),
+	);
+}
+
+/** The selected role's main stats and priority tiers, with the shared fallback. */
+export function statsForRole(
+	guide: RoleBuild,
+	fallbackPriority?: string | null,
+): CharacterInfo["stats"] {
+	return {
+		...mainStatsFromRole(guide.echo_sets.main_stats),
+		subs: subsFromPriority(guide.substats_priority ?? fallbackPriority),
+	};
+}
+
+export interface EchoMainStat {
+	name: string | undefined;
+	cost: number | undefined;
+}
+
+/** Only the primary main stat determines suitability; the secondary flat stat cannot rescue it. */
+export function mainStatForEcho(echo: Echo): EchoMainStat {
+	return {
+		name: echo.mainProps[0] ? statLabel(echo.mainProps[0].key) : undefined,
+		cost: findEchoById(echo.monsterId)?.echo_cost,
+	};
+}
+
+export function hasWantedMainStat(
+	character: CharacterInfo,
+	main: EchoMainStat,
+): boolean {
+	if (!main.name || (main.cost !== 1 && main.cost !== 3 && main.cost !== 4))
+		return false;
+	return character.stats[`${main.cost}cost`]
+		.flat()
+		.some(
+			(name) => normalizeStatName(name) === normalizeStatName(main.name ?? ""),
+		);
 }
 
 // Preferred stats of the build role that matches the most of the echo's
@@ -104,14 +143,10 @@ function preferredStatsForBuild(
 		if (matches === 0 || matches <= bestMatches) continue;
 
 		bestMatches = matches;
-		bestStats = {
-			...mainStatsFromRole(guide.echo_sets.main_stats),
-			subs: subsFromPriority(
-				guide.substats_priority ??
-					Object.values(build.roles)[0]?.substats_priority ??
-					null,
-			),
-		};
+		bestStats = statsForRole(
+			guide,
+			Object.values(build.roles)[0]?.substats_priority,
+		);
 	}
 
 	return bestStats;
@@ -149,11 +184,6 @@ const MAX_ROLL_POINTS = 8;
 
 /** Substats an echo can have (revealed at +5/+10/+15/+20/+25). */
 export const MAX_SUBSTATS = 5;
-
-// Deduplicated, normalized substats a character wants.
-function wantedSubstatNames(character: CharacterInfo): string[] {
-	return [...new Set(character.stats.subs.flat().map(normalizeStatName))];
-}
 
 // Split the echo's substat lines into normalized name + value pairs.
 function echoSubstatEntries(
@@ -197,36 +227,49 @@ function statRollValue(
 }
 
 /**
- * Roll value of an echo for an explicit list of wanted substats (0-100).
- * `calculateRating` is the per-character wrapper; the character detail uses
- * this directly so each role's own priority applies.
+ * Roll value of an echo for priority tiers of wanted substats (0-100).
+ * The existing presence + roll-tier value is multiplied by priority weight,
+ * normalized against the best five wanted stats that can fit on an echo.
+ * `calculateRating` applies the character's main-stat requirement as well.
  */
 export function rollValueForWantedSubstats(
-	wantedSubstats: string[],
+	wantedSubstats: string[][],
 	parsedSubStats: string[],
 ): number {
-	const wanted = [...new Set(wantedSubstats.map(normalizeStatName))];
-	const presence = presenceShare(wanted.length);
+	const { weights, presence, scale } = weightedRollScoring(wantedSubstats);
 	const entries = echoSubstatEntries(parsedSubStats);
 
 	let total = 0;
-	for (const name of wanted) {
+	for (const [name, weight] of weights) {
 		const matching = entries.filter((entry) => entry.name === name);
 		if (matching.length === 0) continue;
-		total += statRollValue(name, matching, presence);
+		total += statRollValue(name, matching, presence) * weight * scale;
 	}
 	return Math.round(Math.min(Math.max(total, 0), 100));
+}
+
+function weightedRollScoring(tiers: string[][]) {
+	const weights = substatPriorityWeights(tiers);
+	const count = Math.min(weights.size, MAX_SUBSTATS);
+	const maxWeight = [...weights.values()]
+		.sort((a, b) => b - a)
+		.slice(0, count)
+		.reduce((sum, weight) => sum + weight, 0);
+	return {
+		weights,
+		presence: presenceShare(count),
+		scale: maxWeight > 0 ? count / maxWeight : 0,
+	};
 }
 
 // Calculate the roll value of an echo for a character (0-100).
 export function calculateRating(
 	character: CharacterInfo,
 	parsedSubStats: string[],
+	main: EchoMainStat,
 ): number {
-	return rollValueForWantedSubstats(
-		character.stats.subs.flat().map(normalizeStatName),
-		parsedSubStats,
-	);
+	if (!hasWantedMainStat(character, main)) return 0;
+	return rollValueForWantedSubstats(character.stats.subs, parsedSubStats);
 }
 
 /**
@@ -237,24 +280,32 @@ export function calculateRating(
 export function maxPossibleRating(
 	character: CharacterInfo,
 	parsedSubStats: string[],
+	main: EchoMainStat,
 	maxSubstats = MAX_SUBSTATS,
 ): number {
-	const wanted = wantedSubstatNames(character);
-	const presence = presenceShare(wanted.length);
+	if (!hasWantedMainStat(character, main)) return 0;
+	const { weights, presence, scale } = weightedRollScoring(
+		character.stats.subs,
+	);
 	const entries = echoSubstatEntries(parsedSubStats);
 
 	let total = 0;
-	let missingWanted = 0;
-	for (const name of wanted) {
+	const missingWeights: number[] = [];
+	for (const [name, weight] of weights) {
 		const matching = entries.filter((entry) => entry.name === name);
 		if (matching.length === 0) {
-			missingWanted += 1;
+			missingWeights.push(weight);
 			continue;
 		}
-		total += statRollValue(name, matching, presence);
+		total += statRollValue(name, matching, presence) * weight * scale;
 	}
 	const remainingSlots = Math.max(0, maxSubstats - entries.length);
-	total +=
-		Math.min(remainingSlots, missingWanted) * (presence + MAX_ROLL_POINTS);
+	total += missingWeights
+		.sort((a, b) => b - a)
+		.slice(0, remainingSlots)
+		.reduce(
+			(sum, weight) => sum + (presence + MAX_ROLL_POINTS) * weight * scale,
+			0,
+		);
 	return Math.round(Math.min(Math.max(total, 0), 100));
 }

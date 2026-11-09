@@ -1,18 +1,16 @@
+import type { OptResultEntry } from "@wuwacalc/core/engine/optimizer/types";
 import type { OptResultStats } from "@wuwacalc/core/engine/search/score/core";
-import type {
-	OptResultEntry,
-
-} from "@wuwacalc/core/engine/optimizer/types";
 import { ChevronDown } from "lucide-react";
-import {
-	EchoCard,
-	echoCost,
-	echoImage,
-	echoName,
-} from "@/components/echo/EchoCard";
+import { EchoCard, echoImage, echoName } from "@/components/echo/EchoCard";
 import { formatDamage, statPercent } from "@/components/optimizer/display";
 import { CardBadge } from "@/components/ui/badge";
-import type { Echo } from "@/lib/account";
+import { Button } from "@/components/ui/button";
+import { type Echo, statPropLines } from "@/lib/account";
+import {
+	type CharacterInfo,
+	calculateRating,
+	mainStatForEcho,
+} from "@/lib/rating";
 
 function StatChips({ stats }: { stats: OptResultStats }) {
 	const entries: Array<[string, string]> = [
@@ -82,6 +80,8 @@ export function ResultRow({
 	current,
 	onToggle,
 	echoByUid,
+	ratingCharacter,
+	equipAction,
 }: {
 	index: number;
 	result: OptResultEntry;
@@ -91,14 +91,17 @@ export function ResultRow({
 	current?: boolean;
 	onToggle: () => void;
 	echoByUid: Map<string, Echo>;
+	ratingCharacter: CharacterInfo | null;
+	equipAction?: {
+		label: string;
+		disabled: boolean;
+		reason?: string;
+		onEquip: () => void;
+	};
 }) {
 	const echoes = result.uids.map((uid) => echoByUid.get(uid));
 	const delta =
 		baseline != null && baseline > 0 ? result.damage / baseline - 1 : null;
-	const cost = echoes.reduce(
-		(sum, echo) => sum + (echo ? (echoCost(echo) ?? 0) : 0),
-		0,
-	);
 
 	return (
 		<div
@@ -115,23 +118,23 @@ export function ResultRow({
 			>
 				<div className="flex items-center gap-3">
 					<span className="flex w-14 shrink-0 justify-start">
-						{current ? (
+						<span className="text-[11px] text-muted-foreground">
+							#{index + 1}
+						</span>
+					</span>
+					<span className="w-20 shrink-0 text-sm font-semibold tabular-nums">
+						{formatDamage(result.damage)}
+					</span>
+					{current ? (
+						<span className="flex w-16 shrink-0 justify-start">
 							<CardBadge
 								title="Currently equipped build"
 								className="bg-amber-500/80"
 							>
 								Current
 							</CardBadge>
-						) : (
-							<span className="text-[11px] text-muted-foreground">
-								#{index + 1}
-							</span>
-						)}
-					</span>
-					<span className="w-20 shrink-0 text-sm font-semibold tabular-nums">
-						{formatDamage(result.damage)}
-					</span>
-					{delta != null && (
+						</span>
+					) : delta != null ? (
 						<span
 							className={`w-16 shrink-0 text-[11px] font-semibold ${
 								delta >= 0 ? "text-emerald-400" : "text-red-400"
@@ -140,7 +143,7 @@ export function ResultRow({
 							{delta >= 0 ? "+" : ""}
 							{(delta * 100).toFixed(1)}%
 						</span>
-					)}
+					) : null}
 					{result.stats && (
 						<span className="hidden min-w-0 flex-1 md:block">
 							<StatChips stats={result.stats} />
@@ -172,7 +175,25 @@ export function ResultRow({
 								>
 									<EchoCard
 										echo={echo}
-										footer={
+										rollValue={
+											ratingCharacter
+												? calculateRating(
+														ratingCharacter,
+														statPropLines(echo.subProps),
+														mainStatForEcho(echo),
+													)
+												: null
+										}
+										rollSubstatTiers={ratingCharacter?.stats.subs}
+										rollCharacter={
+											ratingCharacter
+												? {
+														name: ratingCharacter.character_name,
+														icon: ratingCharacter.icon_pile,
+													}
+												: null
+										}
+										rollBadge={
 											slot === 0 ? (
 												<CardBadge title="Main echo">Main</CardBadge>
 											) : undefined
@@ -182,9 +203,24 @@ export function ResultRow({
 							) : null,
 						)}
 					</div>
-					<p className="text-[11px] text-muted-foreground">
-						Total cost {cost} / 12
-					</p>
+					<div className="flex items-center justify-between gap-3">
+						{equipAction && (
+							<div className="flex flex-col items-end gap-1">
+								<Button
+									size="sm"
+									disabled={equipAction.disabled}
+									onClick={equipAction.onEquip}
+								>
+									{equipAction.label}
+								</Button>
+								{equipAction.reason && (
+									<p className="text-xs text-muted-foreground">
+										{equipAction.reason}
+									</p>
+								)}
+							</div>
+						)}
+					</div>
 				</div>
 			)}
 		</div>

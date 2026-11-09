@@ -158,6 +158,13 @@ Icons live in `public/icons/`, artwork in
 metadata in `public/map/`. The asset publisher deduplicates images and prunes
 unused files; regenerate rather than hand-renaming outputs.
 
+To publish missing inventory artwork from a local extractor output without
+changing the asset checkout, run
+`bun scripts/publish_inventory_icons.ts .cache/inventory-game-assets 7`, then
+`bun scripts/compile_inventory_data.ts` and `bun scripts/copy_assets.ts`.
+The trailing game `MainTypeId` restricts publication (`7` is Valuables); omit it
+to process all inventory items. Missing artwork is reported by item ID.
+
 To extract fresh map artwork from an installed game (requires .NET):
 
 ```powershell

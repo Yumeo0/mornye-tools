@@ -24,7 +24,11 @@ export function FilterSelect({
 	const selected = options.find((option) => option.value === value);
 	return (
 		<div className="flex min-w-0 flex-col gap-0.5">
-			<span id={labelId} className="text-[10px] text-muted-foreground">
+			<span
+				id={labelId}
+				data-slot="filter-label"
+				className="text-[10px] text-muted-foreground"
+			>
 				{label}
 			</span>
 			<Select value={value} onValueChange={(v) => onChange(v ?? "any")}>

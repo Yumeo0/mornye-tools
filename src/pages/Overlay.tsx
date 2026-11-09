@@ -11,15 +11,17 @@ import {
 	type CharacterInfo,
 	calculateRating,
 	getRelevantCharacters,
+	hasWantedMainStat,
+	mainStatForEcho,
 } from "@/lib/rating";
-import { normalizeStatName } from "@/lib/stats";
+import { normalizeStatName, substatPriorityWeights } from "@/lib/stats";
 
 /** Normalized wanted main/sub stat names for the augmentation highlight. */
 function preferredStats(character: CharacterInfo | null): {
 	main: Set<string>;
-	sub: Set<string>;
+	sub: Map<string, number>;
 } {
-	if (!character) return { main: new Set(), sub: new Set() };
+	if (!character) return { main: new Set(), sub: new Map() };
 	return {
 		main: new Set(
 			[
@@ -30,7 +32,7 @@ function preferredStats(character: CharacterInfo | null): {
 				.flat()
 				.map(normalizeStatName),
 		),
-		sub: new Set(character.stats.subs.flat().map(normalizeStatName)),
+		sub: substatPriorityWeights(character.stats.subs),
 	};
 }
 
@@ -69,17 +71,18 @@ function Overlay() {
 
 	// Rank the relevant characters by how well the echo fits them.
 	const rankedCharacters = useMemo(() => {
+		if (!view || !exactEcho) return [];
+		const main = mainStatForEcho(exactEcho);
 		const relevant =
-			view && view.setNames.length > 0
-				? getRelevantCharacters(view.setNames)
-				: [];
+			view.setNames.length > 0 ? getRelevantCharacters(view.setNames) : [];
 		return relevant
+			.filter((character) => hasWantedMainStat(character, main))
 			.map((character) => ({
 				character,
-				rating: calculateRating(character, view?.subStats ?? []),
+				rating: calculateRating(character, view.subStats, main),
 			}))
 			.sort((a, b) => b.rating - a.rating);
-	}, [view]);
+	}, [view, exactEcho]);
 
 	const activeCharacter =
 		rankedCharacters.find(

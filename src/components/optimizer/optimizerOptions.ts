@@ -1,8 +1,8 @@
 // Shared option lists and the filter shape for the optimizer views.
 //
 // The optimizer never assumes which echoes are interesting: the user picks the
-// candidate pool explicitly (the "Recommended" button applies the derived main
-// stats on request). Empty selections mean "no restriction"; echoes beyond the
+// candidate pool explicitly, or enables character-specific recommendations.
+// Empty selections mean "no restriction"; echoes beyond the
 // search-space cap are still ranked by stat weight (a technical necessity, see
 // `selectOptimizerCandidates`).
 
@@ -26,6 +26,9 @@ export const EQUIPPED_OPTIONS: FilterOption[] = [
 ];
 
 export interface OptimizerFilters {
+	useRecommended: boolean;
+	/** Minimum total Energy Regen in displayed percent; 0 = unrestricted. */
+	minEnergyRegen: number;
 	equipped: EquippedMode;
 	/** Minimum echo level (+0 … +25); 0 = no restriction. */
 	minLevel: number;
@@ -38,6 +41,8 @@ export interface OptimizerFilters {
 }
 
 export const EMPTY_OPTIMIZER_FILTERS: OptimizerFilters = {
+	useRecommended: false,
+	minEnergyRegen: 0,
 	equipped: "include",
 	minLevel: 0,
 	sets: [],
@@ -47,12 +52,34 @@ export const EMPTY_OPTIMIZER_FILTERS: OptimizerFilters = {
 
 export function hasOptimizerFilters(filters: OptimizerFilters): boolean {
 	return (
+		filters.useRecommended ||
+		filters.minEnergyRegen > 0 ||
 		filters.equipped !== "include" ||
 		filters.minLevel > 0 ||
 		filters.sets.length > 0 ||
 		filters.mainStats.length > 0 ||
 		filters.substats.length > 0
 	);
+}
+
+/** Recommendations never overwrite the saved manual set and stat selections. */
+export function optimizerPoolFilters(
+	filters: OptimizerFilters,
+	recommendedMainStats: string[],
+): Pick<OptimizerFilters, "sets" | "mainStats" | "substats"> {
+	if (!filters.useRecommended) return filters;
+	return {
+		sets: [],
+		mainStats: [
+			...new Set([
+				...recommendedMainStats,
+				...(recommendedMainStats.length > 0 && filters.minEnergyRegen > 0
+					? ["energyRegen"]
+					: []),
+			]),
+		],
+		substats: [],
+	};
 }
 
 /** Main-stat keys an echo can actually roll as its main stat. */

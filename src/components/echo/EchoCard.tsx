@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { SubStatRollBar } from "@/components/echo/SubStatRollBar";
+import { Badge } from "@/components/ui/badge";
 import {
 	type Echo,
 	formatStatValue,
@@ -19,10 +20,12 @@ import {
 } from "@/lib/catalog";
 import { ECHO_MARK_ICONS } from "@/lib/echoMark";
 import {
+	normalizeStatName,
 	ratingColor,
 	statIconAsset,
 	subStatRoll,
 	subStatTierColor,
+	substatPriorityWeights,
 } from "@/lib/stats";
 
 /** Every character, deduplicated and sorted by name. */
@@ -92,10 +95,12 @@ function StatRow({
 	label,
 	value,
 	muted,
+	weight,
 }: {
 	label: string;
 	value: string;
 	muted?: boolean;
+	weight?: number;
 }) {
 	const icon = statIconAsset(label);
 	const numeric = muted && value ? Number.parseFloat(value) : null;
@@ -118,6 +123,9 @@ function StatRow({
 						{value}
 					</span>
 				)}
+				{weight !== undefined && (
+					<Badge title="Roll value priority weight">×{weight}</Badge>
+				)}
 			</div>
 			{numeric !== null && (
 				<SubStatRollBar
@@ -135,15 +143,21 @@ export function EchoCard({
 	echo,
 	rollValue,
 	rollCharacter,
+	rollSubstatTiers,
+	rollBadge,
 	actions,
 	footer,
 	markActions,
 }: {
 	echo: Echo;
-	/** Best rating among relevant characters (0-100); hidden when null. */
+	/** Character-specific roll rating (0-100); hidden when null. */
 	rollValue?: number | null;
 	/** Character the roll value is for; shown as a small portrait. */
 	rollCharacter?: { name: string; icon: string } | null;
+	/** Priority tiers of the character whose roll value is displayed. */
+	rollSubstatTiers?: string[][];
+	/** Optional badge at the left of the roll-value row. */
+	rollBadge?: ReactNode;
 	actions?: ReactNode;
 	footer?: ReactNode;
 	markActions?: ReactNode;
@@ -151,6 +165,9 @@ export function EchoCard({
 	const image = echoImage(echo);
 	const set = echoSet(echo);
 	const name = echoName(echo);
+	const weights = rollSubstatTiers
+		? substatPriorityWeights(rollSubstatTiers)
+		: null;
 	return (
 		<div className="group/card flex h-full flex-col bg-muted/50 p-2.5 text-sm">
 			<div className="flex gap-2.5">
@@ -246,33 +263,43 @@ export function EchoCard({
 							label={statLabel(prop.key)}
 							value={formatStatValue(prop.key, prop.value)}
 							muted
+							weight={
+								weights
+									? (weights.get(normalizeStatName(statLabel(prop.key))) ?? 0)
+									: undefined
+							}
 						/>
 					))}
 				</div>
 			)}
-			{rollValue != null && (
+			{(rollValue != null || rollBadge) && (
 				<div
 					className="mt-2 flex items-center justify-end gap-1.5 border-t pt-1.5"
 					title={
 						rollCharacter
-							? `Roll value — best on ${rollCharacter.name}`
+							? `Roll value for ${rollCharacter.name}`
 							: "Roll value"
 					}
 				>
-					{rollCharacter && (
-						<img
-							src={rollCharacter.icon}
-							alt={rollCharacter.name}
-							title={rollCharacter.name}
-							className="size-5 shrink-0 object-contain"
-						/>
+					{rollBadge && <span className="mr-auto">{rollBadge}</span>}
+					{rollValue != null && (
+						<>
+							{rollCharacter && (
+								<img
+									src={rollCharacter.icon}
+									alt={rollCharacter.name}
+									title={rollCharacter.name}
+									className="size-5 shrink-0 object-contain"
+								/>
+							)}
+							<span
+								className="text-xs font-bold leading-none"
+								style={{ color: ratingColor(rollValue) }}
+							>
+								RV {rollValue}%
+							</span>
+						</>
 					)}
-					<span
-						className="text-xs font-bold leading-none"
-						style={{ color: ratingColor(rollValue) }}
-					>
-						RV {rollValue}%
-					</span>
 				</div>
 			)}
 			{footer && (

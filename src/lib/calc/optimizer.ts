@@ -8,9 +8,9 @@
 
 import { getResSeedBy } from "@wuwacalc/core/data/catalog/resonatorSeedService";
 import { createCoreWorker } from "@wuwacalc/core/data/coreEnvironment";
+import { getEchoCatBy } from "@wuwacalc/core/data/gameData/catalog/echoes";
 import { getEchoSetDe } from "@wuwacalc/core/data/gameData/echoSets/effects";
 import { getGameDataMode } from "@wuwacalc/core/data/gameData/index";
-import type { OptResultStats } from "@wuwacalc/core/engine/search/score/core";
 import type { EnemyProfile } from "@wuwacalc/core/domain/entities/appState";
 import {
 	combatScenarioId,
@@ -35,10 +35,6 @@ import type {
 import { optSetIdSet } from "@wuwacalc/core/engine/optimizer/config/allowedSets";
 import { deriveOptSets } from "@wuwacalc/core/engine/optimizer/config/defaultSettings";
 import { countOptCombos } from "@wuwacalc/core/engine/optimizer/search/counting";
-import {
-	makeStatWeights,
-	scrEchoByWgh,
-} from "@wuwacalc/core/engine/search/score/statWeights";
 import { listOptTrgt } from "@wuwacalc/core/engine/optimizer/target/skills";
 import type {
 	OptPrgr,
@@ -48,7 +44,6 @@ import type {
 	OptStoredResult,
 	PrepOptPay,
 } from "@wuwacalc/core/engine/optimizer/types";
-import { payloadTransfers } from "@wuwacalc/core/engine/search/layout/buffers";
 import {
 	cnclActOptWr,
 	rstOptWrkrPo,
@@ -60,6 +55,12 @@ import {
 } from "@wuwacalc/core/engine/pipeline/prepareRuntimeSkill";
 import { cloneOptSets } from "@wuwacalc/core/engine/runtime/defaults";
 import { makeRuntimeMap } from "@wuwacalc/core/engine/runtime/runtimeAdapters";
+import { payloadTransfers } from "@wuwacalc/core/engine/search/layout/buffers";
+import type { OptResultStats } from "@wuwacalc/core/engine/search/score/core";
+import {
+	makeStatWeights,
+	scrEchoByWgh,
+} from "@wuwacalc/core/engine/search/score/statWeights";
 
 const ABORT_MESSAGE = "Optimizer run cancelled";
 
@@ -424,6 +425,8 @@ function bucketAllowedSets(setIds: readonly number[]): OptSetChoice {
 }
 
 export interface OptimizerSettingsOptions {
+	/** Total ER in displayed percent (140 = 140%); 0 = unrestricted. */
+	minEnergyRegen?: number;
 	/** Whether a rotation target is available (else a direct skill is used). */
 	rotationAvailable: boolean;
 	/** Target skill id for the direct-skill fallback. */
@@ -466,13 +469,17 @@ export function makeOptimizerSettings(
 		mainStatFilter,
 		selectedBonus,
 		allowedSets: bucketAllowedSets(options.allowedSetIds ?? []),
+		statConstraints:
+			options.minEnergyRegen && options.minEnergyRegen > 0
+				? { er: { minTotal: String(options.minEnergyRegen) } }
+				: {},
 	});
 }
 
 /**
  * Recommended main-stat keys for one resonator, derived from the stat weights
  * of its first optimization target (the core's `deriveOptSets` heuristic).
- * Used by the optimizer tab's "Recommended" button; never applied on its own.
+ * Used while the optimizer tab's "Use Recommended" toggle is enabled.
  */
 export function deriveRecommendedMainStats(
 	runtime: ResRuntime,
@@ -504,8 +511,9 @@ function makeCandidateWeights(
 	enemy: EnemyProfile,
 ) {
 	const seed = getResSeedBy(runtime.id);
+	if (!seed) return null;
 	const target = listOptTrgt(runtime)[0] ?? null;
-	if (!seed || !target) return null;
+	if (!target) return null;
 	try {
 		const { context } = makeSkillCtx({
 			runtime,
@@ -597,6 +605,34 @@ export function selectOptimizerCandidates(params: {
 	const byUid = new Map<string, EchoInstance>();
 	const required = params.alwaysKeep ?? [];
 	for (const echo of required) byUid.set(echo.uid, echo);
+	// Damage weights often give ER no value. Reserve some ER-bearing pieces
+	// at each cost so pruning does not discard the way to meet the requirement.
+	if (
+		eligible.length > MAX_CANDIDATE_ECHOES &&
+		Number(params.settings.statConstraints.er?.minTotal) > 0
+	) {
+		const er = (echo: EchoInstance) =>
+			(echo.substats.energyRegen ?? 0) +
+			(echo.mainStats.primary.key === "energyRegen"
+				? echo.mainStats.primary.value
+				: 0) +
+			(echo.mainStats.secondary.key === "energyRegen"
+				? echo.mainStats.secondary.value
+				: 0);
+		for (const cost of [1, 3, 4]) {
+			const candidates = ranked
+				.filter(
+					(echo) =>
+						(getEchoCatBy()[echo.id]?.cost ?? 1) === cost && er(echo) > 0,
+				)
+				.sort((left, right) => er(right) - er(left))
+				.slice(0, 8);
+			for (const echo of candidates) {
+				if (byUid.size >= MAX_CANDIDATE_ECHOES) break;
+				byUid.set(echo.uid, echo);
+			}
+		}
+	}
 	for (const echo of ranked) {
 		if (byUid.size >= MAX_CANDIDATE_ECHOES) break;
 		byUid.set(echo.uid, echo);

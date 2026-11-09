@@ -31,7 +31,7 @@ export function StatAugmentation({
 	origin: CaptureOrigin | null;
 	displayScale: number;
 	preferredMainStats: ReadonlySet<string>;
-	preferredSubStats: ReadonlySet<string>;
+	preferredSubStats: ReadonlyMap<string, number>;
 }) {
 	const mainRegion = regions?.main_stats ?? null;
 	const subRegion = regions?.sub_stats ?? null;
@@ -103,9 +103,23 @@ export function StatAugmentation({
 				if (!parsed) return null;
 				const statName = normalizeStatName(parsed.name);
 				const wanted = preferredSubStats.has(statName);
+				const weight = preferredSubStats.get(statName) ?? 0;
 				const rowTop = subRegion.y + index * subRowHeight;
 				return (
 					<div key={`sub-${stat}`}>
+						<span
+							style={{
+								position: "absolute",
+								left:
+									(originX + subRegion.x + subRegion.width + 8) * displayScale,
+								top: (originY + rowTop + subRowHeight / 2) * displayScale,
+								transform: "translateY(-50%)",
+								fontSize: 12 * displayScale,
+								color: wanted ? WANTED_STAR_COLOR : "rgba(255, 255, 255, 0.5)",
+							}}
+						>
+							×{weight}
+						</span>
 						{wanted && subStarsRegion && (
 							<div
 								style={starStyle(

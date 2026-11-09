@@ -10,8 +10,10 @@
 // packed search (`@wuwacalc/core`) and the exact team metric
 // (`src/lib/calc/teamOptimizer.ts`) stay out of the components.
 
+import type { OptResultEntry } from "@wuwacalc/core/engine/optimizer/types";
 import { ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { FilterLayout, FilterPanel } from "@/components/filters";
 import {
 	SLOT_LABELS,
@@ -27,11 +29,23 @@ import { TeamSection } from "@/components/optimizer/TeamSection";
 import { CharacterPickerDialog } from "@/components/tabs/CharacterPickerDialog";
 import { type OptimizerMode, useOptimizerRun } from "@/hooks/useOptimizerRun";
 import { type MeasuredSlot, useOptimizerTeam } from "@/hooks/useOptimizerTeam";
-import { useAccount } from "@/lib/account";
+import { readAccount, refreshAccount, useAccount } from "@/lib/account";
 import { ensureCoreReady, isCoreReady } from "@/lib/calc/core";
+import { charactersById } from "@/lib/catalog";
+import { useDangerousFeatures } from "@/lib/dangerous";
+import {
+	isOptimizerBuildEquipped,
+	optimizerEquipError,
+	requestOptimizerEquip,
+} from "@/lib/echoEquip";
+import { useEchoUpgradeBatch } from "@/lib/echoUpgradeBatch";
 
 export function OptimizerTab({ active }: { active: boolean }) {
 	const { snapshot } = useAccount();
+	const { status: connection } = useDangerousFeatures();
+	const batch = useEchoUpgradeBatch();
+	const equipLock = useRef(false);
+	const [equipping, setEquipping] = useState(false);
 	const [coreReady, setCoreReady] = useState(() => isCoreReady());
 	const [coreError, setCoreError] = useState<string | null>(null);
 	const [mode, setMode] = useState<OptimizerMode>("damage");
@@ -54,6 +68,51 @@ export function OptimizerTab({ active }: { active: boolean }) {
 
 	const team = useOptimizerTeam({ coreReady, snapshot, mode, measuredSlot });
 	const run = useOptimizerRun({ coreReady, snapshot, team, mode });
+	const equipResult = async (result: OptResultEntry) => {
+		const context = run.resultContext;
+		if (
+			equipLock.current ||
+			run.running ||
+			batch.phase === "running" ||
+			batch.phase === "stopping" ||
+			!context?.profileId ||
+			context.profileId !== snapshot.profile?.id
+		)
+			return;
+		const reason = optimizerEquipError(
+			snapshot,
+			connection,
+			context.roleId,
+			result.uids,
+		);
+		if (reason) {
+			toast.error(reason);
+			return;
+		}
+		equipLock.current = true;
+		setEquipping(true);
+		try {
+			const echoes = result.uids.map((uid) => run.echoByUid.get(uid));
+			if (echoes.some((echo) => !echo))
+				throw new Error("An echo is unavailable. Run the optimizer again.");
+			const ids = await requestOptimizerEquip(
+				context.profileId,
+				context.roleId,
+				echoes.filter((echo) => echo !== undefined),
+			);
+			await refreshAccount();
+			if (readAccount().snapshot.profile?.id === context.profileId) {
+				run.markEquipped(result, ids);
+				toast.success("Optimizer echoes equipped.");
+			}
+		} catch (error) {
+			await refreshAccount().catch(() => {});
+			toast.error(String(error));
+		} finally {
+			equipLock.current = false;
+			setEquipping(false);
+		}
+	};
 
 	const {
 		slotRoleIds,
@@ -93,7 +152,6 @@ export function OptimizerTab({ active }: { active: boolean }) {
 						filters={run.filters}
 						onFiltersChange={run.setFilters}
 						recommendedEnabled={coreReady && hasTarget}
-						onRecommended={run.applyRecommended}
 						countsHint={
 							teamMode
 								? "Echoes eligible after the filters; beyond the search cap they are ranked by the role guide's main stats and substat priorities"
@@ -146,7 +204,7 @@ export function OptimizerTab({ active }: { active: boolean }) {
 						phase={run.phase}
 						progress={run.progress}
 						progressPercent={run.progressPercent}
-						canRun={run.canRun}
+						canRun={run.canRun && !equipping}
 						onRun={() => void run.handleRun()}
 						onCancel={run.handleCancel}
 					/>
@@ -217,11 +275,50 @@ export function OptimizerTab({ active }: { active: boolean }) {
 
 				<OptimizerResultsPanel
 					results={run.results}
+					characterId={run.resultContext?.roleId ?? null}
 					baseline={run.baseline}
 					running={run.running}
 					expandedIndex={run.expandedIndex}
 					onExpandedChange={run.setExpandedIndex}
 					echoByUid={run.echoByUid}
+					equipAction={(result) => {
+						const context = run.resultContext;
+						const equipped =
+							context?.profileId === snapshot.profile?.id && context
+								? isOptimizerBuildEquipped(
+										snapshot,
+										context.roleId,
+										result.uids,
+									)
+								: false;
+						const busy =
+							equipping ||
+							run.running ||
+							batch.phase === "running" ||
+							batch.phase === "stopping";
+						const reason =
+							context?.profileId !== snapshot.profile?.id
+								? "Run the optimizer for the selected profile before equipping."
+								: optimizerEquipError(
+										snapshot,
+										connection,
+										context?.roleId ?? 0,
+										result.uids,
+									);
+						const name =
+							charactersById.get(context?.roleId ?? 0)?.character_name ??
+							"resonator";
+						return {
+							label: equipping
+								? "Equipping…"
+								: equipped
+									? "Equipped"
+									: `Equip on ${name}`,
+							disabled: busy || equipped || Boolean(reason),
+							reason: equipped ? undefined : (reason ?? undefined),
+							onEquip: () => void equipResult(result),
+						};
+					}}
 					title={
 						teamMode
 							? measuredName

@@ -1,4 +1,6 @@
 import { expect, test } from "bun:test";
+import { mkdtempSync, rmdirSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { assetUrl } from "../src/lib/assets";
 import { itemType } from "../src/lib/map/collection";
@@ -11,8 +13,37 @@ import {
 	prepareCatalog,
 	prepareMapCatalog,
 	publicRoot,
+	publishedAssetFile,
 	sourceFile,
 } from "./lib/public-assets";
+
+test("authored aliases reuse canonical files after deduplication and prefer newly published artwork", async () => {
+	const directory = mkdtempSync(join(tmpdir(), "mornye-authored-assets-"));
+	try {
+		const aliases = { "/duplicate.webp": "/canonical.webp" };
+		await Bun.write(join(directory, "canonical.webp"), "original artwork");
+		expect(
+			await Bun.file(
+				publishedAssetFile("/duplicate.webp", directory, aliases),
+			).text(),
+		).toBe("original artwork");
+		await Bun.write(join(directory, "duplicate.webp"), "updated artwork");
+		expect(
+			await Bun.file(
+				publishedAssetFile("/duplicate.webp", directory, aliases),
+			).text(),
+		).toBe("updated artwork");
+		expect(
+			await Bun.file(
+				publishedAssetFile("/missing.webp", directory, aliases),
+			).exists(),
+		).toBe(false);
+	} finally {
+		for (const filename of ["canonical.webp", "duplicate.webp"])
+			rmSync(join(directory, filename), { force: true });
+		rmdirSync(directory);
+	}
+});
 
 test("asset paths separate UI icons from game artwork and retain signed tile coordinates", () => {
 	const old = "/wuwa-assets/UI/UIResources/Common";

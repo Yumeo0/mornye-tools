@@ -22,11 +22,11 @@ import type {
 	TeamSlots,
 } from "@wuwacalc/core/domain/entities/runtime";
 import type { RotationNode } from "@wuwacalc/core/domain/gameData/contracts";
-import { sumOptRotDmg } from "@wuwacalc/core/engine/search/score/eligibility";
-import type { OptResultStats } from "@wuwacalc/core/engine/search/score/core";
 import { materializeResRotation } from "@wuwacalc/core/engine/pipeline/index";
 import { makeSkillCtx } from "@wuwacalc/core/engine/pipeline/prepareRuntimeSkill";
 import { makeRuntimeMap } from "@wuwacalc/core/engine/runtime/runtimeAdapters";
+import type { OptResultStats } from "@wuwacalc/core/engine/search/score/core";
+import { sumOptRotDmg } from "@wuwacalc/core/engine/search/score/eligibility";
 
 /** Cost ceiling for one legal five-echo build (4+3+3+1+1). */
 export const TEAM_ECHO_COST_LIMIT = 12;
@@ -352,6 +352,8 @@ export interface TeamSearchProgress {
 
 export interface TeamSearchOptions {
 	score: (combo: readonly EchoInstance[]) => number;
+	/** Zero for valid builds; positive deficit guides swaps toward feasibility. */
+	constraintViolation?: (combo: readonly EchoInstance[]) => number;
 	pool: readonly EchoInstance[];
 	seeds: readonly EchoInstance[][];
 	maxEvaluations?: number;
@@ -388,6 +390,7 @@ export async function runTeamSearch(
 ): Promise<TeamSearchOutcome> {
 	const {
 		score,
+		constraintViolation,
 		pool,
 		seeds,
 		maxEvaluations = TEAM_MAX_EVALUATIONS,
@@ -407,9 +410,12 @@ export async function runTeamSearch(
 		const cached = cache.get(key);
 		if (cached !== undefined) return cached;
 		evaluations += 1;
-		const value = score(combo);
+		const violation = constraintViolation?.(combo) ?? 0;
+		// Damage is nonnegative. Invalid builds can guide the walk toward the
+		// threshold, but never take up a result slot or call the damage simulation.
+		const value = violation > 0 ? -violation : score(combo);
 		cache.set(key, value);
-		evaluated.push({ combo: [...combo], score: value });
+		if (violation === 0) evaluated.push({ combo: [...combo], score: value });
 		return value;
 	};
 

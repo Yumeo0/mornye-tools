@@ -1,14 +1,18 @@
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import type { RoleBuild } from "@/lib/characters";
 import {
+	normalizeStatName,
 	parseSubstatTiers,
+	rollValueSubstatTiers,
 	type StatTier,
 	statIconAsset,
 	statIconUrl,
+	substatPriorityWeights,
 } from "@/lib/stats";
 
-function SubstatChip({ stat }: { stat: StatTier }) {
+function SubstatChip({ stat, weight }: { stat: StatTier; weight: number }) {
 	return (
 		<div className="flex items-center justify-center gap-2 bg-primary text-primary-foreground px-3 py-2 flex-1 min-w-0">
 			<img
@@ -22,6 +26,7 @@ function SubstatChip({ stat }: { stat: StatTier }) {
 					<span className="font-normal opacity-80"> [{stat.breakpoint}]</span>
 				)}
 			</span>
+			<Badge title="Roll value priority weight">×{weight}</Badge>
 		</div>
 	);
 }
@@ -35,25 +40,41 @@ export function SubstatsCard({
 	fallbackPriority?: string | null;
 }) {
 	// Roles without their own substat priority fall back to the first role's
-	const tiers = parseSubstatTiers(
-		guide.substats_priority ?? fallbackPriority ?? null,
-	);
+	const priority = guide.substats_priority ?? fallbackPriority ?? null;
+	const tiers = parseSubstatTiers(priority);
 	if (tiers.length === 0) return null;
+	const weights = substatPriorityWeights(
+		rollValueSubstatTiers(priority).map((tier) =>
+			tier.map((stat) => stat.name),
+		),
+	);
 
 	return (
 		<Card>
-			<CardContent className="p-4 space-y-3">
+			<CardContent className="p-4 flex flex-col gap-3">
 				<Label className="text-base font-medium flex items-center gap-2">
-					<img src="/icons/inventory/echo-sets.webp" alt="" className="size-5" /> Substats
-					Priority
+					<img
+						src="/icons/inventory/echo-sets.webp"
+						alt=""
+						className="size-5"
+					/>{" "}
+					Substats Priority
 				</Label>
+				<p className="text-xs text-muted-foreground">
+					Guide priority order. Scoring weights use 0.5 steps; Energy Regen and
+					breakpoint stats use a ×1 utility weight.
+				</p>
 
-				<div className="space-y-1">
+				<div className="flex flex-col gap-1">
 					{tiers.map((tier, tierIndex) => (
 						<div key={tier.map((stat) => stat.code).join("=")}>
 							<div className="flex gap-2">
 								{tier.map((stat) => (
-									<SubstatChip key={stat.code} stat={stat} />
+									<SubstatChip
+										key={stat.code}
+										stat={stat}
+										weight={weights.get(normalizeStatName(stat.name)) ?? 0}
+									/>
 								))}
 							</div>
 							{tierIndex < tiers.length - 1 && (

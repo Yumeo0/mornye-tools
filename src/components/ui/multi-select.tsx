@@ -49,7 +49,11 @@ export function MultiSelect({
 	return (
 		<div className={cn("flex min-w-0 flex-col gap-0.5", className)}>
 			{label !== undefined && (
-				<span id={labelId} className="text-[10px] text-muted-foreground">
+				<span
+					id={labelId}
+					data-slot="filter-label"
+					className="text-[10px] text-muted-foreground"
+				>
 					{label}
 				</span>
 			)}

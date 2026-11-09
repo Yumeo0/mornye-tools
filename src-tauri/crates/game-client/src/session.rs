@@ -390,6 +390,43 @@ impl Session {
         Ok(result)
     }
 
+    /// Equip the ordered result in one server operation. No local overrides and
+    /// no retries: split/merge notifications flow through the shared converters.
+    pub fn equip_echoes(
+        &mut self,
+        role_id: i32,
+        echoes: &[crate::echo_equip::EquipEcho],
+    ) -> Result<Vec<i32>> {
+        crate::echo_equip::validate(role_id, echoes)?;
+        self.synchronize_echo_inventory()?;
+        for expected in echoes {
+            let current = self.cached_echo(expected.incr_id)?;
+            ensure!(
+                current.item_id == expected.item_id && current.stack_count > 0,
+                "An echo changed or is unavailable; run the optimizer again"
+            );
+        }
+        let ids: Vec<_> = echoes.iter().map(|echo| echo.incr_id).collect();
+        let response = self.request(
+            "PhantomAutoPutRequest",
+            "PhantomAutoPutResponse",
+            &self.schema.message(
+                "PhantomAutoPutRequest",
+                &json!({
+                    "RoleId": role_id, "PhantomItemIncrId": ids
+                }),
+            )?,
+        )?;
+        let confirmed = crate::echo_equip::confirmed_ids(&response, role_id)?;
+        for (id, expected) in confirmed.iter().zip(echoes) {
+            ensure!(
+                self.cached_echo(*id)?.item_id == expected.item_id,
+                "The server equipped a different build; check the refreshed inventory"
+            );
+        }
+        Ok(confirmed)
+    }
+
     /// Mark a failed target only after checking its current state and equipment.
     pub fn discard_echo(
         &mut self,
@@ -772,6 +809,11 @@ mod tests {
         StackedDiscard,
         StaleDiscard,
         AlreadyDiscard,
+        Equip {
+            error: bool,
+            respond: bool,
+            split: bool,
+        },
         ManualMark {
             from: i32,
             to: i32,
@@ -805,6 +847,7 @@ mod tests {
                     | Self::StackedDiscard
                     | Self::StaleDiscard
                     | Self::AlreadyDiscard
+                    | Self::Equip { .. }
                     | Self::ManualMark { .. }
             )
         }
@@ -1008,6 +1051,21 @@ mod tests {
                 ));
             }
         }
+        if let Scenario::Equip { error, split, .. } = scenario {
+            steps.truncate(3);
+            steps.push(("PhantomItemRequest", "PhantomItemResponse", json!({
+                "PhantomItemList": (1..=5).map(|id| json!({"Id":60000015,"IncrId":id,"StackCount":if id == 1 {3} else {1}})).collect::<Vec<_>>()
+            })));
+            steps.push(("NormalItemRequest", "NormalItemResponse", json!({})));
+            steps.push(("PhantomAutoPutRequest", "PhantomAutoPutResponse", json!({
+                "ErrorCode": if error {200099} else {0},
+                "EquipInfoList": [{"RoleId":1503,"PhantomItemIncrId":if split {vec![51,2,3,4,5]} else {vec![1,2,3,4,5]}}],
+                "StackSplitInfos": if split {vec![json!({
+                    "OperateItem":{"Id":60000015,"IncrId":51,"StackCount":1},
+                    "RemainderItem":{"Id":60000015,"IncrId":1,"StackCount":2}
+                })]} else {vec![]}
+            })));
+        }
         let mut index = 0;
         let mut heartbeat_count = 0;
         let mut inventory_requests = HashSet::new();
@@ -1189,6 +1247,21 @@ mod tests {
                 connection.send(4, 0, schema.id(name)?, &notify.encode_to_vec())?;
                 if matches!(scenario, Scenario::WrongPlayer | Scenario::WrongBasicInfo) {
                     return Ok(heartbeat_count);
+                }
+            } else if *name == "PhantomAutoPutRequest" {
+                let fields = serde_json::to_value(&request)?;
+                ensure!(
+                    fields["RoleId"] == 1503
+                        && fields["PhantomItemIncrId"] == json!([1, 2, 3, 4, 5]),
+                    "equip must preserve all five slots and the main echo"
+                );
+                if matches!(scenario, Scenario::Equip { respond: true, .. }) {
+                    connection.send(
+                        2,
+                        rpc,
+                        schema.id(response)?,
+                        &schema.message(response, json)?.encode_to_vec(),
+                    )?;
                 }
             } else if *name == "PhantomIdentifyRequest" {
                 ensure!(
@@ -1462,6 +1535,67 @@ mod tests {
             } else {
                 assert_eq!(result.unwrap(), to);
                 assert_eq!(session.cached_echo(21).unwrap().func_value, to);
+            }
+            drop(session);
+            server.join().unwrap().unwrap();
+        }
+    }
+
+    #[test]
+    fn equip_confirms_order_and_split_ids_and_does_not_retry_failed_requests() {
+        for (error, respond, split) in [
+            (false, true, false),
+            (false, true, true),
+            (true, true, false),
+            (false, false, false),
+        ] {
+            let socket = UdpSocket::bind("127.0.0.1:0").unwrap();
+            let config = fixture(socket.local_addr().unwrap().to_string());
+            let server = thread::spawn(move || {
+                serve(
+                    socket,
+                    Scenario::Equip {
+                        error,
+                        respond,
+                        split,
+                    },
+                )
+            });
+            let mut session = connect(
+                &config,
+                &Schema::load().unwrap(),
+                Arc::new(AtomicBool::new(false)),
+            )
+            .unwrap();
+            let echoes: Vec<_> = (1..=5)
+                .map(|incr_id| crate::echo_equip::EquipEcho {
+                    incr_id,
+                    item_id: 60000015,
+                })
+                .collect();
+            let result = session.equip_echoes(1503, &echoes);
+            if error {
+                assert!(result.unwrap_err().to_string().contains("code 200099"));
+            } else if !respond {
+                assert!(result.unwrap_err().to_string().contains("timed out"));
+            } else {
+                assert_eq!(
+                    result.unwrap(),
+                    if split {
+                        vec![51, 2, 3, 4, 5]
+                    } else {
+                        vec![1, 2, 3, 4, 5]
+                    }
+                );
+                assert!(
+                    session
+                        .cached_echo(if split { 51 } else { 1 })
+                        .unwrap()
+                        .equipped
+                );
+                if split {
+                    assert_eq!(session.cached_echo(1).unwrap().stack_count, 2);
+                }
             }
             drop(session);
             server.join().unwrap().unwrap();

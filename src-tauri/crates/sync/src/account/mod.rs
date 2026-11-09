@@ -6,6 +6,7 @@
 //! (`src/lib/account.ts`) and re-fetches `account_get_view` whenever
 //! `account-updated` fires.
 
+pub mod backup;
 pub mod ingest;
 pub use mornye_account::{model, profiles, store};
 
@@ -184,6 +185,14 @@ pub fn account_set_equipped_override(
 ) -> Result<(), String> {
     let mut store = state.store.lock().map_err(|e| e.to_string())?;
     selected_profile(&store, &profile_id)?;
+    if !store
+        .snapshot()
+        .echoes
+        .iter()
+        .any(|echo| echo.incr_id == incr_id && echo.source == model::EchoSource::Manual)
+    {
+        return Err("Only manually added echoes can have local equipment edited.".into());
+    }
     store.set_echo_override(incr_id, equipped_by, slot);
     store.save()?;
     drop(store);

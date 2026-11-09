@@ -10,6 +10,8 @@ import {
 	calculateRating,
 	findEchoById,
 	getRelevantCharacters,
+	hasWantedMainStat,
+	mainStatForEcho,
 } from "@/lib/rating";
 
 export interface EchoRoll {
@@ -35,9 +37,11 @@ export function computeEchoRolls(echoes: Echo[]): Map<string, EchoRoll> {
 		}
 		if (characters.length === 0) continue;
 		const subs = statPropLines(echo.subProps);
+		const main = mainStatForEcho(echo);
 		let best: EchoRoll | null = null;
 		for (const character of characters) {
-			const rating = calculateRating(character, subs);
+			if (!hasWantedMainStat(character, main)) continue;
+			const rating = calculateRating(character, subs, main);
 			if (best === null || rating > best.rating) {
 				best = { rating, character };
 			}

@@ -103,6 +103,49 @@ describe("combo helpers", () => {
 });
 
 describe("seeded local search", () => {
+	test("walks from low ER seeds toward the requirement and ranks only eligible builds", async () => {
+		const pool = Array.from({ length: 10 }, (_, index) =>
+			makeEcho(`er${index}`, {
+				energyRegen: index < 5 ? 0 : 10,
+				atkPercent: index < 5 ? 100 : 1,
+			}),
+		);
+		const er = (combo: readonly EchoInstance[]) =>
+			100 +
+			combo.reduce(
+				(total, echo) => total + (echo.substats.energyRegen ?? 0),
+				0,
+			);
+		const scored: number[] = [];
+		const outcome = await runTeamSearch({
+			pool,
+			seeds: [pool.slice(0, 5)],
+			maxEvaluations: 400,
+			resultsLimit: 2,
+			constraintViolation: (combo) => Math.max(0, 140 - er(combo)),
+			score: (combo) => {
+				scored.push(er(combo));
+				return combo.reduce(
+					(total, echo) => total + (echo.substats.atkPercent ?? 0),
+					0,
+				);
+			},
+		});
+		expect(outcome.ranked.length).toBeGreaterThan(0);
+		expect(outcome.ranked.every((entry) => er(entry.combo) >= 140)).toBe(true);
+		expect(scored.every((value) => value >= 140)).toBe(true);
+		expect(outcome.ranked[0].score).toBe(104);
+		const impossible = await runTeamSearch({
+			pool,
+			seeds: [pool.slice(0, 5)],
+			maxEvaluations: 400,
+			constraintViolation: (combo) => Math.max(0, 200 - er(combo)),
+			score: () => {
+				throw new Error("Ineligible builds must not run the damage simulation");
+			},
+		});
+		expect(impossible.ranked).toEqual([]);
+	});
 	test("improves a weak seed toward the best legal combo", async () => {
 		// Seven echoes scored by their substat value: the best build is the five
 		// highest values, which single swaps must reach from the worst seed.
@@ -361,12 +404,19 @@ describe("team metric", () => {
 
 		const outcomes = await runTeamSearch({
 			score: (combo) => metric.score(combo),
+			constraintViolation: (combo) =>
+				Math.max(0, 180 - (metric.stats(combo)?.er ?? 0)),
 			pool: pool.echoes,
 			seeds,
 			maxEvaluations: 300,
 			resultsLimit: 8,
 		});
 		expect(outcomes.evaluations).toBeLessThanOrEqual(300);
+		expect(
+			outcomes.ranked.every(
+				(entry) => (metric.stats(entry.combo)?.er ?? 0) >= 180,
+			),
+		).toBe(true);
 		expect(outcomes.ranked.length).toBeGreaterThan(1);
 		expect(outcomes.ranked[0].score).toBeGreaterThanOrEqual(outcomes.seedBest);
 		// Every returned build is a legal five-echo build.

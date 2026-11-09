@@ -153,6 +153,7 @@ export function EchoesTab() {
 	);
 
 	const changeEquippedBy = useCallback(async (echo: Echo, value: string) => {
+		if (echo.source !== "manual") return;
 		try {
 			if (value === "unequipped") {
 				await setEquippedOverride(echo.incrId, null, null);

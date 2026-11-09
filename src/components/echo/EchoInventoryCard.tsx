@@ -53,6 +53,7 @@ export function EchoInventoryCard({
 				<EchoCard
 					echo={echo}
 					rollValue={roll?.rating}
+					rollSubstatTiers={roll?.character.stats.subs}
 					rollCharacter={
 						roll
 							? {
@@ -65,10 +66,12 @@ export function EchoInventoryCard({
 					}
 					actions={
 						<Select
+							disabled={echo.source !== "manual"}
 							value={
 								echo.equippedBy != null ? String(echo.equippedBy) : "unequipped"
 							}
 							onValueChange={(value) =>
+								echo.source === "manual" &&
 								onChangeEquipped(echo, value ?? "unequipped")
 							}
 						>

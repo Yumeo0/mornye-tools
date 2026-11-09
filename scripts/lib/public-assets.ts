@@ -9,6 +9,18 @@ export const publicRoot = join(root, "public");
 export const gameRoot = join(root, "data/wuwa-assets");
 export const manifestPath = join(root, "data/asset_manifest.json");
 
+/** Authored duplicates have no source to rebuild; reuse their published canonical file. */
+export function publishedAssetFile(
+	url: string,
+	directory = publicRoot,
+	aliases: Record<string, string> = assetAliases,
+): string {
+	const path = join(directory, url.slice(1));
+	return existsSync(path)
+		? path
+		: join(directory, (aliases[url] ?? url).slice(1));
+}
+
 export function filesIn(directory: string): string[] {
 	if (!existsSync(directory)) return [];
 	return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {

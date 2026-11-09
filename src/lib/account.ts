@@ -13,6 +13,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { useSyncExternalStore } from "react";
+import type { ExportPart } from "@/lib/accountExport";
 import type { ExplorationSnapshot } from "@/lib/map/types";
 import type { ProgressionSnapshot } from "@/lib/progression/types";
 
@@ -324,6 +325,30 @@ export function useAccount(): AccountState {
 // ---------------------------------------------------------------------------
 // Writes (the only path to the backend's account commands)
 // ---------------------------------------------------------------------------
+
+export interface AccountImportPreview {
+	profile: ProfileIdentity;
+	name: string;
+	newProfile: boolean;
+	parts: { part: ExportPart; count: number }[];
+}
+
+export function previewAccountImport(json: string, profileId: string) {
+	return invoke<AccountImportPreview>("account_preview_import", {
+		json,
+		profileId,
+	});
+}
+
+export async function importAccountBackup(input: {
+	json: string;
+	profileId: string;
+	targetId: string;
+	parts: ExportPart[];
+}): Promise<void> {
+	await invoke("account_import_backup", input);
+	await refreshAccount();
+}
 
 /** Add an echo entered by hand; the backend assigns the synthetic instance id. */
 export async function addManualEcho(echo: Echo): Promise<Echo> {

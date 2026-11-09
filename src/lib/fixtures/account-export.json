@@ -1,0 +1,99 @@
+{
+	"version": 1,
+	"updatedAt": "2026-10-17T10:00:00Z",
+	"exportedAt": "2026-10-17T12:34:56.789Z",
+	"player": {
+		"playerId": 12345,
+		"name": "Yumeo",
+		"level": 80,
+		"worldLevel": 9
+	},
+	"resonators": [
+		{
+			"resonatorId": 1604,
+			"level": 90,
+			"breakthrough": 6,
+			"chain": 2,
+			"skills": [{ "nodeId": 3, "level": 10 }]
+		}
+	],
+	"weapons": [
+		{
+			"instanceId": 1,
+			"itemId": 21010015,
+			"level": 90,
+			"breach": 6,
+			"rank": 1,
+			"equippedByResonatorId": 1604
+		}
+	],
+	"echoes": [
+		{
+			"instanceId": 10,
+			"itemId": 60001195,
+			"monsterId": 6000119,
+			"echoSetId": 19,
+			"level": 25,
+			"markState": "locked",
+			"stackCount": 2,
+			"mainStats": [
+				{ "statId": 5002, "statKey": "critDmg", "value": 44, "rawValue": 4400 }
+			],
+			"subStats": [
+				{ "statId": 11, "statKey": "critRate", "value": 8.7, "rawValue": 870 }
+			],
+			"equippedByResonatorId": 1604,
+			"slotIndex": 0,
+			"source": "sniffer"
+		},
+		{
+			"instanceId": -1,
+			"itemId": 60001195,
+			"monsterId": 6000119,
+			"echoSetId": 19,
+			"level": 25,
+			"markState": "markedForDiscard",
+			"stackCount": 1,
+			"mainStats": [
+				{ "statId": 0, "statKey": "critDmg", "value": 44, "rawValue": 4400 }
+			],
+			"subStats": [
+				{ "statId": 0, "statKey": "atkFlat", "value": 60.5, "rawValue": 61 }
+			],
+			"equippedByResonatorId": 1604,
+			"slotIndex": 1,
+			"source": "manual"
+		}
+	],
+	"map": {
+		"profile": {
+			"id": "eu-12345",
+			"playerId": 12345,
+			"serverId": "eu",
+			"region": "Europe"
+		},
+		"playerId": 12345,
+		"exploration": {
+			"playerId": 12345,
+			"scene": { "mapId": 8, "x": 1, "y": 2, "z": 3 },
+			"rewards": {
+				"8:1": {
+					"mapId": 8,
+					"entityId": 1,
+					"source": "reward-response",
+					"observedAt": 10
+				},
+				"8:3": {
+					"mapId": 8,
+					"entityId": 3,
+					"source": "tree-snapshot",
+					"observedAt": 40
+				}
+			}
+		},
+		"manualMarks": {
+			"8:1": { "collected": false, "updatedAt": 20 },
+			"8:2": { "collected": true, "updatedAt": 30 }
+		}
+	}
+}

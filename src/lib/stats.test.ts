@@ -4,11 +4,52 @@
 import { describe, expect, test } from "bun:test";
 
 import {
+	rollValueSubstatTiers,
 	subStatRoll,
 	subStatRolls,
 	subStatSegmentColor,
 	subStatTierColor,
+	substatPriorityWeights,
 } from "@/lib/stats";
+
+describe("roll value substat priorities", () => {
+	test("breakpoint stats move below uncapped stats and use a shared utility weight", () => {
+		const tiers = rollValueSubstatTiers("ER:~110-130%+>CR:70%=CD>ATK%>HA%=ATK");
+		expect(tiers.map((tier) => tier.map((stat) => stat.code))).toEqual([
+			["CD"],
+			["ATK%"],
+			["HA%", "ATK"],
+			["ER", "CR"],
+		]);
+		expect(tiers.at(-1)?.map((stat) => stat.breakpoint)).toEqual([
+			"~110-130%+",
+			"70%",
+		]);
+		const weights = substatPriorityWeights(
+			tiers.map((tier) => tier.map((stat) => stat.name)),
+		);
+		expect([...weights.values()]).toEqual([2.5, 2, 1.5, 1.5, 1, 1]);
+	});
+
+	test("Energy Regen is utility even without an explicit breakpoint", () => {
+		const tiers = rollValueSubstatTiers("ER=CR>CD");
+		expect(tiers.map((tier) => tier.map((stat) => stat.code))).toEqual([
+			["CR"],
+			["CD"],
+			["ER"],
+		]);
+	});
+
+	test("all-utility and missing guides retain sensible tiers", () => {
+		expect(rollValueSubstatTiers(null)).toEqual([]);
+		const tiers = rollValueSubstatTiers("ER:120%>CR:70%");
+		expect([
+			...substatPriorityWeights(
+				tiers.map((tier) => tier.map((stat) => stat.name)),
+			).values(),
+		]).toEqual([1, 1]);
+	});
+});
 
 describe("subStatRoll", () => {
 	test("maps values to their roll tier", () => {

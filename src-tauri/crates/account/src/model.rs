@@ -1,7 +1,7 @@
 //! Unified, game-ID-based account model.
 //!
-//! This is the single structured store fed exclusively by the packet sniffer
-//! (`sniffer::extract`). Names are presentation only; identity is always a game
+//! This structured store is fed by capture, active sync and explicit backup
+//! imports. Names are presentation only; identity is always a game
 //! id (role id, incr id, item id, monster id, set id).
 
 use std::collections::{BTreeMap, BTreeSet};

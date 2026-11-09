@@ -8,6 +8,7 @@ import {
 	echoTuningSlots,
 } from "./echoUpgrade";
 import {
+	bestPossibleEchoRating,
 	echoUpgradeRows,
 	nextEchoStage,
 	runEchoUpgradeBatch,
@@ -117,6 +118,29 @@ function fixture(echoes: Echo[]) {
 }
 
 describe("automatic echo batches", () => {
+	test("a Havoc Song of Feathered Trace piece cannot pass the threshold using Suisui's substats", async () => {
+		const f = fixture([
+			{
+				...echo(20, 20),
+				itemId: 60002155,
+				monsterId: 6000215,
+				setId: 33,
+				mainProps: [{ propId: 1, key: "havoc", raw: 3000, value: 30 }],
+				subProps: [
+					{ propId: 2, key: "hpPercent", raw: 1160, value: 11.6 },
+					{ propId: 3, key: "critDmg", raw: 2100, value: 21 },
+					{ propId: 4, key: "energyRegen", raw: 1240, value: 12.4 },
+					{ propId: 5, key: "basicAtk", raw: 1160, value: 11.6 },
+				],
+			},
+		]);
+		f.deps.rating = bestPossibleEchoRating;
+		await runEchoUpgradeBatch("eu-123", f.snapshot.echoes, 75, f.deps);
+		expect(f.stages).toEqual([]);
+		expect(f.rows.get(20)?.outcome).toBe("below_threshold");
+		expect(f.rows.get(20)?.possible).toBe(58);
+	});
+
 	test("evaluates extra unlocked substats individually after oversized discarded EXP", async () => {
 		for (const failAfterTwoRolls of [false, true]) {
 			const f = fixture([echo(20)]);

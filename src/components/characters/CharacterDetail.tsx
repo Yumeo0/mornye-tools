@@ -19,8 +19,12 @@ import {
 	type CharacterEntry,
 } from "@/lib/characters";
 import { rarityTextClass } from "@/lib/rarity";
-import { rollValueForWantedSubstats } from "@/lib/rating";
-import { parseSubstatTiers } from "@/lib/stats";
+import {
+	calculateRating,
+	hasWantedMainStat,
+	mainStatForEcho,
+	statsForRole,
+} from "@/lib/rating";
 
 /** Character build view: owned state, equipped echoes and the role's guide. */
 export function CharacterDetail({
@@ -49,23 +53,32 @@ export function CharacterDetail({
 
 	// Wanted substats of the selected role: each equipped echo shows this
 	// character's own roll value, not the best across relevant characters.
-	const wantedSubstats = useMemo(() => {
-		const priority = guide?.substats_priority ?? firstRolePriority ?? null;
-		return parseSubstatTiers(priority)
-			.flat()
-			.map((stat) => stat.name);
-	}, [guide, firstRolePriority]);
+	const ratingCharacter = useMemo(
+		() =>
+			guide
+				? {
+						character_id: character.id,
+						character_name: character.name,
+						icon_pile: character.image,
+						stats: statsForRole(guide, firstRolePriority),
+					}
+				: null,
+		[guide, firstRolePriority, character],
+	);
 
 	const echoRollValue = (echo: Echo): number | null =>
-		wantedSubstats.length === 0
+		!ratingCharacter ||
+		ratingCharacter.stats.subs.length === 0 ||
+		!hasWantedMainStat(ratingCharacter, mainStatForEcho(echo))
 			? null
-			: rollValueForWantedSubstats(
-					wantedSubstats,
+			: calculateRating(
+					ratingCharacter,
 					statPropLines(echo.subProps),
+					mainStatForEcho(echo),
 				);
 
 	return (
-		<div className="space-y-6">
+		<div className="space-y-6 p-4">
 			<div className="flex items-center gap-4">
 				<Button
 					variant="ghost"
@@ -153,8 +166,12 @@ export function CharacterDetail({
 				<Card>
 					<CardContent className="p-4 space-y-3">
 						<Label className="text-base font-medium flex items-center gap-2">
-							<img src="/icons/inventory/echoes.webp" alt="" className="size-5" /> Equipped
-							Echoes
+							<img
+								src="/icons/inventory/echoes.webp"
+								alt=""
+								className="size-5"
+							/>{" "}
+							Equipped Echoes
 						</Label>
 						<div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
 							{echoes.map((echo) => (
@@ -162,6 +179,7 @@ export function CharacterDetail({
 									key={echo.incrId}
 									echo={echo}
 									rollValue={echoRollValue(echo)}
+									rollSubstatTiers={ratingCharacter?.stats.subs}
 								/>
 							))}
 						</div>

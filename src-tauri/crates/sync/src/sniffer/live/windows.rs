@@ -378,7 +378,7 @@ pub fn run(
     session_key: Option<[u8; 32]>,
     sock: CaptureSocket,
 ) -> io::Result<()> {
-    let mut sniffer = spectrum::Sniffer::with_session_key(pem, session_key);
+    let mut sniffer = crate::sniffer::transport::Sniffer::with_session_key(pem, session_key);
     let mut buf = vec![0u8; 65_536];
     let mut last_refresh = Instant::now();
     let mut last_seen = Instant::now();
@@ -389,7 +389,10 @@ pub fn run(
 
     loop {
         if last_refresh.elapsed() > Duration::from_secs(2) {
-            *ports.lock() = udp_ports(pid).into_iter().collect();
+            let current_ports = udp_ports(pid);
+            app.state::<SnifferState>()
+                .update_ports(current_ports.clone());
+            *ports.lock() = current_ports.into_iter().collect();
             if process_alive(pid) {
                 last_seen = Instant::now();
             }

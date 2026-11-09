@@ -682,9 +682,9 @@ fn main_window(window: &WebviewWindow) -> Result<(), String> {
 fn validate_connected_profile(
     profile: Option<&crate::account::model::ProfileIdentity>,
     player_id: i32,
-    server_id: &str,
+    _server_id: &str,
 ) -> Result<(), String> {
-    if profile.is_some_and(|p| p.player_id != i64::from(player_id) || p.server_id != server_id) {
+    if profile.is_some_and(|p| p.player_id != i64::from(player_id)) {
         Err("This game account does not match the selected player profile. Update its linked account in Settings.".into())
     } else {
         Ok(())
@@ -1709,7 +1709,7 @@ mod tests {
         assert!(inner.login.is_some());
         assert!(validate_connected_profile(Some(&selected), 123, "eu").is_ok());
         assert!(validate_connected_profile(Some(&selected), 456, "eu").is_err());
-        assert!(validate_connected_profile(Some(&selected), 123, "asia").is_err());
+        assert!(validate_connected_profile(Some(&selected), 123, "asia").is_ok());
         assert!(!restored
             .prepare_profile(&mut inner, Some(&profile(456, "eu")))
             .unwrap());

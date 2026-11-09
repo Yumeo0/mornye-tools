@@ -8,3 +8,8 @@
 # `<repo>/data/wuwa-protos`.
 [env]
 SPECTRUM_PROTO_DIR = { value = "../data/wuwa-protos", relative = true }
+
+# Grant capture capability after linking, before launching the Linux desktop
+# app. The runner passes unit tests and game-client commands through unchanged.
+[target.'cfg(target_os = "linux")']
+runner = ["../scripts/linux-dev-runner.sh"]

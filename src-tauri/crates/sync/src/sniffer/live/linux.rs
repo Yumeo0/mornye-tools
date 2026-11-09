@@ -160,8 +160,9 @@ pub fn open_error(e: io::Error) -> String {
     format!(
         "cannot open raw socket ({e}).\n\n\
          Grant the capability to this binary (run once after building):\n\
-         sudo setcap cap_net_raw,cap_net_admin+eip {bin}\n\n\
-         or run it with sudo."
+         sudo setcap cap_net_raw=ep '{bin}'\n\n\
+         During development, `bun run tauri dev` grants this capability \
+         automatically after each Rust rebuild."
     )
 }
 
@@ -172,7 +173,7 @@ pub fn capture_available() -> bool {
 
 /// Whether the process runs as root (or has CAP_NET_RAW).
 pub fn is_elevated() -> bool {
-    unsafe { libc::geteuid() == 0 }
+    (unsafe { libc::geteuid() == 0 }) || capture_available()
 }
 
 /// Capture loop. `ports` is kept up to date with the process's live UDP sockets.
@@ -184,7 +185,7 @@ pub fn run(
     session_key: Option<[u8; 32]>,
     fd: OwnedFd,
 ) -> io::Result<()> {
-    let mut sniffer = spectrum::Sniffer::with_session_key(pem, session_key);
+    let mut sniffer = crate::sniffer::transport::Sniffer::with_session_key(pem, session_key);
     let mut buf = vec![0u8; 65_536];
     let mut last_refresh = Instant::now();
     let mut last_seen = Instant::now();
@@ -194,7 +195,10 @@ pub fn run(
 
     loop {
         if last_refresh.elapsed() > Duration::from_secs(2) {
-            *ports.lock() = udp_ports(pid).into_iter().collect();
+            let current_ports = udp_ports(pid);
+            app.state::<SnifferState>()
+                .update_ports(current_ports.clone());
+            *ports.lock() = current_ports.into_iter().collect();
             if process_alive(pid) {
                 last_seen = Instant::now();
             }
@@ -212,7 +216,17 @@ pub fn run(
                 0,
             )
         };
-        if n <= 0 {
+        if n < 0 {
+            let error = io::Error::last_os_error();
+            if matches!(
+                error.kind(),
+                io::ErrorKind::WouldBlock | io::ErrorKind::TimedOut | io::ErrorKind::Interrupted
+            ) {
+                continue;
+            }
+            return Err(error);
+        }
+        if n == 0 {
             continue;
         }
         let frame = &buf[..n as usize];

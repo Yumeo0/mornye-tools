@@ -9,3 +9,9 @@ mod live_inventory;
 pub mod schema;
 pub mod session;
 mod wire;
+
+/// Shared game-frame codec for active sessions and passive capture.
+/// These functions only transform bytes; they never open a connection.
+pub mod codec {
+    pub use crate::wire::{decode, encode, frame_size, Packet};
+}

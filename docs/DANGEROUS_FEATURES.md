@@ -66,7 +66,7 @@ Core currencies and tides stay pinned above the item grid, including zero balanc
 ## Profiles, backups and saved logins
 
 **Manage player profiles** removes profiles without deleting cached data or map
-progress; adding the same player/server again reuses it.
+progress; adding the same player UID again reuses it, regardless of server metadata.
 Export each player's data through **Settings → Export**, with the intended
 sidebar profile selected. **Map data** includes captured exploration and
 manual/imported marks.

@@ -1,114 +1,98 @@
-import { Activity } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { getStatus, type SnifferStatus } from "@/lib/sniffer";
+import { Pulse02Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import { captureHealth } from "@/lib/sniffer";
+import { useSnifferStatus } from "@/lib/snifferStatus";
 
-/** Live packet-capture status, polled from the backend every couple seconds. */
+function ago(timestamp: number | undefined) {
+	if (!timestamp) return "Not yet";
+	const seconds = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
+	return seconds < 2 ? "Just now" : `${seconds}s ago`;
+}
+
 export function CaptureCard() {
-	const [status, setStatus] = useState<SnifferStatus | null>(null);
-
-	const refresh = useCallback(
-		() =>
-			getStatus()
-				.then(setStatus)
-				.catch(() => undefined),
-		[],
-	);
-
-	useEffect(() => {
-		refresh();
-		const timer = setInterval(refresh, 2000);
-		return () => clearInterval(timer);
-	}, [refresh]);
-
-	const statusLine = !status
-		? "starting…"
-		: [
-				status.capturing ? "capturing" : "armed",
-				status.game_process_found ? "game process found" : "waiting for game",
-				status.capture_available ? "capture available" : "capture unavailable",
-				status.session_key_cached
-					? "session key cached"
-					: "waiting for session key",
-			].join(" · ");
-
+	const { status, error } = useSnifferStatus();
+	const health = captureHealth(status, error);
+	const metrics = [
+		["Game process", status?.game_pid ? `PID ${status.game_pid}` : "Waiting"],
+		["UDP ports", status?.game_ports?.join(", ") || "None detected"],
+		[
+			"Session key",
+			status?.session_key_cached ? "Available" : "Waiting for login",
+		],
+		[
+			"Capture permission",
+			status?.capture_available ? "Available" : "Unavailable",
+		],
+		["Game frames", status?.frames_fed ?? 0],
+		["Decoded packets", status?.packets_seen ?? 0],
+		["Last game frame", ago(status?.last_frame_at_ms)],
+		["Last decoded packet", ago(status?.last_packet_at_ms)],
+		["Frame errors", status?.frame_errors ?? 0],
+		["Conversation mismatches", status?.conv_mismatches ?? 0],
+		["Packet errors", status?.packet_errors ?? 0],
+		["Proto decode failures", status?.decode_failures ?? 0],
+		["RSA fingerprint", status?.rsa_key_fingerprint ?? "—"],
+		["Inventory tables", status?.tables_loaded ? "Loaded" : "Missing"],
+	] as const;
 	return (
 		<Card>
-			<CardContent className="space-y-4">
-				<div className="space-y-0.5">
-					<Label className="flex items-center gap-2 text-base font-medium">
-						<Activity className="size-4" /> Packet capture
-					</Label>
-				</div>
-
-				<p className="text-xs text-muted-foreground">{statusLine}</p>
-
-				<div className="grid grid-cols-2 gap-3 text-xs sm:grid-cols-4">
-					<div>
-						<p className="text-muted-foreground">RSA key</p>
-						<p>{status?.rsa_key_fingerprint ?? "—"}</p>
-					</div>
-					<div>
-						<p className="text-muted-foreground">Elevated</p>
-						<p>{status?.is_elevated ? "yes" : "no"}</p>
-					</div>
-					<div>
-						<p className="text-muted-foreground">Packets seen</p>
-						<p>{status?.packets_seen ?? 0}</p>
-					</div>
-					<div>
-						<p className="text-muted-foreground">Inventory tables</p>
-						<p>{status?.tables_loaded ? "loaded" : "missing"}</p>
-					</div>
-					<div>
-						<p className="text-muted-foreground">Frames fed</p>
-						<p>{status?.frames_fed ?? 0}</p>
-					</div>
-					<div>
-						<p className="text-muted-foreground">Frame errors</p>
-						<p>
-							{status?.frame_errors ?? 0}
-							{status && status.conv_mismatches > 0
-								? ` (${status.conv_mismatches} stale conv)`
-								: ""}
-						</p>
-					</div>
-					<div>
-						<p className="text-muted-foreground">Packet errors</p>
-						<p>{status?.packet_errors ?? 0}</p>
-					</div>
-					<div>
-						<p className="text-muted-foreground">Decode failures</p>
-						<p>{status?.decode_failures ?? 0}</p>
-					</div>
-				</div>
-
-				{status?.stream_stalled && (
-					<p className="rounded-md bg-destructive/10 p-2 text-[11px] text-destructive">
-						Stream stalled: game frames keep arriving but nothing has decoded
-						for a while - the passive KCP mirror most likely lost a segment.
-						Account data stays stale until the game restarts its connection
-						(relaunch the game or reconnect in-game).
+			<CardHeader>
+				<CardTitle className="flex items-center gap-2">
+					<HugeiconsIcon icon={Pulse02Icon} className="size-4" /> Passive
+					listener
+				</CardTitle>
+				<CardDescription>
+					Always-on capture follows the game process. Status refreshes every two
+					seconds.
+				</CardDescription>
+			</CardHeader>
+			<CardContent className="flex flex-col gap-4">
+				<Alert
+					role="note"
+					variant={health.tone === "error" ? "destructive" : "default"}
+				>
+					<AlertTitle>{health.label}</AlertTitle>
+					<AlertDescription>{health.detail}</AlertDescription>
+				</Alert>
+				<dl className="grid grid-cols-2 gap-3 text-xs sm:grid-cols-4">
+					{metrics.map(([label, value]) => (
+						<div key={label} className="min-w-0">
+							<dt className="text-muted-foreground">{label}</dt>
+							<dd className="break-words tabular-nums">
+								{status ? value : "—"}
+							</dd>
+						</div>
+					))}
+				</dl>
+				<div className="flex flex-col gap-2">
+					<p className="text-xs font-medium">
+						Capture log{" "}
+						<span className="font-normal text-muted-foreground">
+							· newest first · UTC
+						</span>
 					</p>
-				)}
-
-				{status?.last_error && (
-					<p className="rounded-md bg-destructive/10 p-2 text-[11px] text-destructive">
-						{status.last_error}
-					</p>
-				)}
-
-				{status && status.log.length > 0 && (
-					<details className="rounded-md bg-muted/50 p-2">
-						<summary className="cursor-pointer text-xs text-muted-foreground">
-							Capture log
-						</summary>
-						<pre className="mt-2 max-h-40 overflow-y-auto whitespace-pre-wrap font-mono text-[10px] text-muted-foreground">
-							{status.log.slice(-40).join("\n")}
+					{/* biome-ignore-start lint/a11y/noNoninteractiveTabindex: The scrollable log needs keyboard focus for scrolling and selection. */}
+					<section
+						aria-label="Capture log"
+						tabIndex={0}
+						className="max-h-60 overflow-auto whitespace-pre-wrap break-words bg-muted/50 p-3 font-mono text-[11px] text-muted-foreground"
+					>
+						<pre className="whitespace-pre-wrap break-words">
+							{status?.log.length
+								? status.log.slice(-40).reverse().join("\n")
+								: "No capture events yet. Waiting for the game…"}
 						</pre>
-					</details>
-				)}
+					</section>
+					{/* biome-ignore-end lint/a11y/noNoninteractiveTabindex: End keyboard-scrollable log region. */}
+				</div>
 			</CardContent>
 		</Card>
 	);

@@ -83,8 +83,13 @@ which can traverse vendored path dependencies.
 
 ### Profiles and connections
 
-- Stores live in `profiles/<serverId>-<playerId>/`; `profiles.json` tracks the
-  registry and UI selection. Removing a profile preserves its cached files.
+- Player UID is account identity across servers. Passive capture reuses the
+  existing profile for that UID; server/region is connection metadata.
+  Internal profile keys and folders stay stable when metadata is refined, so
+  existing sign-in links, selection and cached data stay attached.
+  `profiles.json` tracks the registry and UI selection. The sidebar's profile
+  settings button manages all local players, including passive captures, without
+  enabling Dangerous Features. Removing a profile preserves its cached files.
 - Passive capture and active sessions use shared converters and write to their
   source profile. Changing the selected profile must never reroute packets.
   Revision-ordered saves prevent older writes replacing newer data.
@@ -97,12 +102,28 @@ which can traverse vendored path dependencies.
 ### Capture and overlay
 
 Capture follows the game process automatically. On Windows, run elevated.
-On Linux, grant the binary `cap_net_raw,cap_net_admin` capabilities.
+On Linux, install `libcap` (`libcap2-bin` on Debian/Ubuntu) and `sudo`.
+`bun run tauri dev` uses a Cargo runner that grants the desktop executable
+`cap_net_raw=ep` before launch. Sudo may request your password after each Rust
+rebuild, because relinking clears file capabilities; frontend hot reloads and
+launches of an unchanged binary reuse the existing grant. Cargo tests and the
+game-client CLI pass through the runner without requesting privileges.
+For a packaged binary, grant `cap_net_raw=ep` with `sudo setcap` after installation
+or an update. No `CAP_NET_ADMIN` capability is needed by the Linux capture socket.
 Start capture before game login for quests, achievements and saved teams;
 open inventory menus to receive their snapshots.
 
-**Settings → Developer** shows capture counters. Frames arriving without decoded
-packets usually mean the passive KCP mirror lost a segment; reconnect the game.
+The sidebar's **Passive listener** indicator opens **Settings → Developer**.
+It distinguishes waiting for the game/login, receiving data, and stalled capture.
+Diagnostics show the process PID, UDP ports, counters for the current capture,
+last frame/packet times, and a timestamped capture log. A listener attached after
+login cannot reconstruct the missing KCP stream or session key: reconnect or
+relaunch the game while Mornye Tools is running. An open capture socket alone
+does not mean account sync is decoding data.
+
+Passive capture and active sessions share the bounded game-frame codec in
+`mornye-game-client` (24-bit lengths, CRC, crypto and decompression). Passive KCP
+reassembly lives in `mornye-sync`; vendored Spectrum supplies protocol messages.
 
 The overlay supervisor runs while the overlay is visible. It detects the echo
 panel through OCR, briefly toggles and restores the in-game mark to identify the

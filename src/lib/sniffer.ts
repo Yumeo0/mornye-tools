@@ -5,6 +5,12 @@ import { invoke } from "@tauri-apps/api/core";
 export interface SnifferStatus {
 	capturing: boolean;
 	game_process_found: boolean;
+	waiting_for_login: boolean;
+	game_pid: number | null;
+	game_ports: number[];
+	capture_started_at_ms: number;
+	last_frame_at_ms: number;
+	last_packet_at_ms: number;
 	capture_available: boolean;
 	is_elevated: boolean;
 	session_key_cached: boolean;
@@ -24,10 +30,85 @@ export interface SnifferStatus {
 	packet_errors: number;
 	/** Handled messages whose proto payload failed to decode. */
 	decode_failures: number;
-	/** Frames keep arriving but nothing decodes: the KCP mirror lost a segment. */
+	/** Frames arrive without decoded packets; inspect login and error state. */
 	stream_stalled: boolean;
 	last_error: string | null;
 	log: string[];
+}
+
+export interface CaptureHealth {
+	label: string;
+	detail: string;
+	tone: "muted" | "ok" | "warning" | "error";
+}
+
+/** Report progress in this capture, never a green light from old packet counts. */
+export function captureHealth(
+	status: SnifferStatus | null,
+	error: string | null = null,
+	now = Date.now(),
+): CaptureHealth {
+	if (error)
+		return { label: "Status unavailable", detail: error, tone: "error" };
+	if (!status)
+		return {
+			label: "Checking listener",
+			detail: "Reading capture status…",
+			tone: "muted",
+		};
+	const problem = blockingErrors(status)[0] ?? status.last_error;
+	if (problem)
+		return { label: "Listener error", detail: problem, tone: "error" };
+	if (!status.game_process_found)
+		return {
+			label: "Waiting for game",
+			detail: "Passive sync starts automatically when Wuthering Waves opens.",
+			tone: "muted",
+		};
+	if (!status.capturing)
+		return {
+			label: "Starting capture",
+			detail: "Game found; opening packet capture.",
+			tone: "muted",
+		};
+	if (status.waiting_for_login)
+		return {
+			label: "Reconnect game",
+			detail:
+				"The listener missed the start of this connection. Reconnect or relaunch the game with Mornye Tools running to capture login and the session key.",
+			tone: "warning",
+		};
+	if (!status.session_key_cached)
+		return {
+			label: "Waiting for login",
+			detail:
+				"Listening for the session-key exchange. If you are already in-game, reconnect or relaunch the game with Mornye Tools running.",
+			tone: "warning",
+		};
+	if (status.stream_stalled)
+		return {
+			label: "Capture stalled",
+			detail:
+				"Game frames are arriving without decoded packets. Check the errors below; reconnect the game if the passive stream lost a segment.",
+			tone: "error",
+		};
+	if (
+		status.last_packet_at_ms >= status.capture_started_at_ms &&
+		status.last_packet_at_ms > 0 &&
+		now - status.last_packet_at_ms < 15000
+	)
+		return {
+			label: "Receiving game data",
+			detail:
+				"Game packets are decoding. Login and inventory messages update your account automatically.",
+			tone: "ok",
+		};
+	return {
+		label: "Listening",
+		detail:
+			"Capture is open. Waiting for game traffic; open an inventory menu to request fresh data.",
+		tone: "muted",
+	};
 }
 
 export async function getStatus(): Promise<SnifferStatus> {
@@ -51,7 +132,7 @@ export function blockingErrors(status: SnifferStatus | null): string[] {
 	}
 	if (!status.capture_available) {
 		errors.push(
-			"Packet capture is unavailable. Raw capture needs Administrator privileges - start the app elevated (Run as administrator).",
+			"Packet capture is unavailable. On Linux, grant CAP_NET_RAW or use bun run tauri dev. On Windows, start the app as administrator.",
 		);
 	}
 	return errors;

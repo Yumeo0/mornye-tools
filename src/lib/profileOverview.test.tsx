@@ -101,7 +101,7 @@ describe("profile overview", () => {
 			"Rover · Europe",
 		);
 		expect(profileLabel({ ...profile, serverId: "unknown" }, 1)).toBe(
-			"Profile 2 · Needs identification",
+			"Profile 2 · Region unknown",
 		);
 	});
 

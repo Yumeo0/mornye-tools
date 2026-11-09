@@ -29,8 +29,14 @@ export function AccountProfileIdentifyDialog({
 	initialName: string;
 }) {
 	const lockedPlayerId = profile.playerId > 0;
-	const [playerId, setPlayerId] = useState(lockedPlayerId ? String(profile.playerId) : "");
-	const [region, setRegion] = useState(/^(local|unknown|region not identified)$/i.test(profile.region.trim()) ? "" : profile.region.trim());
+	const [playerId, setPlayerId] = useState(
+		lockedPlayerId ? String(profile.playerId) : "",
+	);
+	const [region, setRegion] = useState(
+		/^(local|unknown|region not identified)$/i.test(profile.region.trim())
+			? ""
+			: profile.region.trim(),
+	);
 	const [name, setName] = useState(initialName);
 	const [pending, setPending] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -64,7 +70,12 @@ export function AccountProfileIdentifyDialog({
 		}
 	}
 	return (
-		<Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>
+		<Dialog
+			open
+			onOpenChange={(open) => {
+				if (!open) onClose();
+			}}
+		>
 			<DialogContent className="sm:max-w-lg">
 				<form
 					onSubmit={(event) => void submit(event)}
@@ -73,8 +84,8 @@ export function AccountProfileIdentifyDialog({
 					<DialogHeader>
 						<DialogTitle>Identify account profile</DialogTitle>
 						<DialogDescription>
-							This data was migrated without a server. Enter the account and
-							server so it is stored with the right profile.
+							The player UID identifies this account. Add an optional display
+							name and its server or region for your reference.
 						</DialogDescription>
 					</DialogHeader>
 					<FieldGroup>
@@ -109,7 +120,7 @@ export function AccountProfileIdentifyDialog({
 							/>
 							<FieldDescription>
 								{lockedPlayerId
-									? "Captured with the migrated data."
+									? "Captured from the game."
 									: "The numeric ID from the game account."}
 							</FieldDescription>
 						</Field>

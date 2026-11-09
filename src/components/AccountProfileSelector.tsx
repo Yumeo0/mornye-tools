@@ -1,7 +1,8 @@
+import { Settings02Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { isTauri } from "@tauri-apps/api/core";
-import { Pencil } from "lucide-react";
 import { useState } from "react";
-import { AccountProfileIdentifyDialog } from "@/components/AccountProfileIdentifyDialog";
+import { ManagePlayerProfilesDialog } from "@/components/settings/PlayerProfilesDialog";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
 import {
@@ -13,54 +14,18 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { selectAccountProfile, useAccount } from "@/lib/account";
-import { hasAccountData, profileLabel } from "@/lib/profileOverview";
-
-const DISMISSED_KEY = "mornye-identify-dismissed-profiles";
-
-function readDismissed(): string[] {
-	try {
-		const value: unknown = JSON.parse(
-			localStorage.getItem(DISMISSED_KEY) ?? "[]",
-		);
-		return Array.isArray(value)
-			? value.filter((item): item is string => typeof item === "string")
-			: [];
-	} catch {
-		return [];
-	}
-}
+import { profileLabel } from "@/lib/profileOverview";
 
 export function AccountProfileSelector({ compact }: { compact: boolean }) {
 	const { snapshot, profiles, error: accountError } = useAccount();
 	const [pending, setPending] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const [identifyId, setIdentifyId] = useState<string | null>(null);
-	const [dismissed, setDismissed] = useState<string[]>(readDismissed);
+	const [manageOpen, setManageOpen] = useState(false);
 	const profile = snapshot.profile;
-	const unidentified = profile?.serverId === "unknown";
-	const identifyOpen =
-		unidentified &&
-		profile &&
-		(identifyId === profile.id ||
-			(isTauri() &&
-				hasAccountData(snapshot) &&
-				!dismissed.includes(profile.id)));
 	const items = profiles.map((profile, index) => ({
 		value: profile.id,
 		label: profileLabel(profile, index),
 	}));
-
-	function dismissIdentify() {
-		setIdentifyId(null);
-		if (!profile || dismissed.includes(profile.id)) return;
-		const next = [...dismissed, profile.id];
-		setDismissed(next);
-		try {
-			localStorage.setItem(DISMISSED_KEY, JSON.stringify(next));
-		} catch {
-			// Keep the dismissal for this run if storage is unavailable.
-		}
-	}
 
 	return (
 		<>
@@ -71,7 +36,13 @@ export function AccountProfileSelector({ compact }: { compact: boolean }) {
 				>
 					Account profile
 				</FieldLabel>
-				<div className="flex min-w-0 items-center gap-1">
+				<div
+					className={
+						compact
+							? "flex min-w-0 flex-col items-stretch gap-1"
+							: "flex min-w-0 items-center gap-1"
+					}
+				>
 					<Select
 						value={profile?.id ?? null}
 						items={items}
@@ -116,20 +87,18 @@ export function AccountProfileSelector({ compact }: { compact: boolean }) {
 							</SelectGroup>
 						</SelectContent>
 					</Select>
-					{!compact && unidentified && (
-						<Button
-							type="button"
-							variant="outline"
-							size="icon-sm"
-							className="shrink-0"
-							disabled={pending || !isTauri()}
-							aria-label="Identify account profile"
-							title="Identify account profile"
-							onClick={() => setIdentifyId(profile.id)}
-						>
-							<Pencil />
-						</Button>
-					)}
+					<Button
+						type="button"
+						variant="outline"
+						size="icon-sm"
+						className={compact ? "w-full" : "shrink-0"}
+						disabled={pending || !isTauri()}
+						aria-label="Manage player profiles"
+						title="Manage player profiles"
+						onClick={() => setManageOpen(true)}
+					>
+						<HugeiconsIcon icon={Settings02Icon} />
+					</Button>
 				</div>
 				{(error || accountError) && (
 					<p
@@ -140,13 +109,8 @@ export function AccountProfileSelector({ compact }: { compact: boolean }) {
 					</p>
 				)}
 			</Field>
-			{identifyOpen && (
-				<AccountProfileIdentifyDialog
-					key={profile.id}
-					profile={profile}
-					initialName={snapshot.player?.name ?? ""}
-					onClose={dismissIdentify}
-				/>
+			{manageOpen && (
+				<ManagePlayerProfilesDialog onClose={() => setManageOpen(false)} />
 			)}
 		</>
 	);

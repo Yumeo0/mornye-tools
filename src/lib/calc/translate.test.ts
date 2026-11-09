@@ -66,12 +66,11 @@ function makeEcho(overrides: Partial<Echo> = {}): Echo {
 
 describe("toEchoInstance", () => {
 	test("reports unknown catalog ids instead of repairing", () => {
-		// Without initialized game data the catalog is empty, so every id is
-		// unknown - exactly the visible-error path the plan requires.
-		const { instance, error } = toEchoInstance(makeEcho());
+		// Invalid even when another test has initialized the shared catalog.
+		const { instance, error } = toEchoInstance(makeEcho({ monsterId: -1 }));
 		expect(instance).toBeNull();
 		expect(error?.kind).toBe("echo");
-		expect(error?.id).toBe(390080007);
+		expect(error?.id).toBe(-1);
 	});
 });
 
@@ -83,7 +82,7 @@ describe("toWeaponState", () => {
 	test("reports unknown weapon ids", () => {
 		const { state, error } = toWeaponState({
 			incrId: 1,
-			itemId: 21010044,
+			itemId: -1,
 			level: 90,
 			breach: 6,
 			rank: 1,

@@ -108,6 +108,7 @@ export function DangerousFeaturesPrompt() {
 
 export function DangerousFeaturesCard() {
 	const { status, error } = useDangerousFeatures();
+	const { profiles } = useAccount();
 	const [dialog, setDialog] = useState<"add" | "manage" | null>(null);
 	const [pending, setPending] = useState(false);
 	const busy =
@@ -228,13 +229,6 @@ export function DangerousFeaturesCard() {
 									<HugeiconsIcon icon={Add01Icon} data-icon="inline-start" />
 									Add player profile
 								</Button>
-								<Button
-									variant="outline"
-									disabled={busy || !accounts.length || !isTauri()}
-									onClick={() => setDialog("manage")}
-								>
-									Manage player profiles
-								</Button>
 							</div>
 							{!isTauri() && (
 								<p className="text-xs text-muted-foreground">
@@ -243,6 +237,17 @@ export function DangerousFeaturesCard() {
 							)}
 						</>
 					)}
+					<div>
+						<Button
+							variant="outline"
+							disabled={
+								busy || !profiles.some((p) => p.playerId > 0) || !isTauri()
+							}
+							onClick={() => setDialog("manage")}
+						>
+							Manage player profiles
+						</Button>
+					</div>
 					{(error || status.error) && (
 						<Alert variant="destructive">
 							<AlertDescription>{error ?? status.error}</AlertDescription>

@@ -240,22 +240,33 @@ pub fn dangerous_remove_profile(
 ) -> Result<Status, String> {
     main_window(&window)?;
     let mut inner = state.service.inner.lock();
-    inner.enabled()?;
-    inner.idle()?;
     let mut profiles = account
         .store
         .lock()
         .map_err(|_| "Account store is unavailable.")?;
+    remove_profile(&state, &mut inner, &mut profiles, &profile_id)?;
+    crate::account::emit_updated(&app, &["profile"]);
+    Ok(inner.status())
+}
+
+// Removing a local cached profile does not use the network and is available
+// even when active connection features are disabled or no account is signed in.
+fn remove_profile(
+    state: &DangerousState,
+    inner: &mut Inner,
+    profiles: &mut Profiles,
+    profile_id: &str,
+) -> Result<(), String> {
+    inner.idle()?;
     let mut preferences = inner.preferences.clone();
-    preferences.profile_accounts.remove(&profile_id);
+    preferences.profile_accounts.remove(profile_id);
     state.save(&preferences)?;
-    if let Err(error) = profiles.forget(&profile_id) {
+    if let Err(error) = profiles.forget(profile_id) {
         let _ = state.save(&inner.preferences);
         return Err(error);
     }
     inner.preferences = preferences;
-    crate::account::emit_updated(&app, &["profile"]);
-    Ok(inner.status())
+    Ok(())
 }
 
 #[cfg(test)]
@@ -314,6 +325,30 @@ mod tests {
             }),
             error: None,
         }
+    }
+
+    #[test]
+    fn passive_profiles_can_be_removed_without_enabling_or_signing_in() {
+        let (root, state) = fixture();
+        state.decide(false).unwrap();
+        let mut profiles = Profiles::load(root.clone());
+        profiles.observe_passive(77).unwrap();
+        let id = profiles.list().selected;
+        let mut inner = state.service.inner.lock();
+        assert!(!inner.status().enabled);
+        assert!(inner.login.is_none());
+        remove_profile(&state, &mut inner, &mut profiles, &id).unwrap();
+        assert!(!profiles
+            .list()
+            .profiles
+            .iter()
+            .any(|p| p.identity.player_id == 77));
+        assert!(root
+            .join("profiles")
+            .join(id)
+            .join("account.json")
+            .is_file());
+        let _ = fs::remove_dir_all(root);
     }
 
     #[test]

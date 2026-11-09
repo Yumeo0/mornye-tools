@@ -3687,8 +3687,12 @@ dependencies = [
 name = "mornye-sync"
 version = "0.1.0"
 dependencies = [
+ "crc32fast",
+ "etherparse",
+ "kcp",
  "libc",
  "mornye-account",
+ "mornye-game-client",
  "parking_lot 0.13.0",
  "pcap-file",
  "rsa",

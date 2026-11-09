@@ -1,4 +1,4 @@
-//! Account/server isolation. Selection affects browsing, never packet routing.
+//! Account isolation by globally unique player UID. Selection affects browsing, never packet routing.
 use super::{
     model::{PlayerInfo, ProfileIdentity},
     store::{AccountStore, PreparedSave},
@@ -47,7 +47,10 @@ fn valid(identity: &ProfileIdentity) -> bool {
         && !server.is_empty()
         && server.chars().count() <= 64
         && server.chars().all(|c| c.is_alphanumeric() || c == '-')
-        && identity.id == format!("{}-{}", server, identity.player_id)
+        // Existing folder keys remain stable when official server metadata changes.
+        && identity.id.len() <= 96
+        && identity.id.chars().all(|c| c.is_alphanumeric() || c == '-')
+        && identity.id.ends_with(&format!("-{}", identity.player_id))
 }
 
 /// A stable key from a user-supplied server or region label.
@@ -283,58 +286,53 @@ impl Profiles {
         if player_id <= 0 || !valid(&identity) {
             return Err("Invalid account profile identity.".into());
         }
-        if let Some(store) = self.stores.get_mut(&identity.id) {
-            let needs_update = store
-                .snapshot()
-                .profile
-                .as_ref()
-                .is_some_and(|p| p.provisional || p.region != region);
-            if needs_update {
-                store.set_profile(identity.clone());
+        if let Some(id) = self.id_for_uid(player_id) {
+            // Passive packets know only the UID. They must not downgrade known
+            // connection metadata, or create a second account for that UID.
+            if server_id == "unknown" {
+                return Ok(id);
+            }
+            let store = self.stores.get_mut(&id).unwrap();
+            let mut identity = identity;
+            identity.id = id.clone();
+            if store.snapshot().profile.as_ref() != Some(&identity) {
+                store.set_profile(identity);
                 store.save()?;
                 self.save_index()?;
             }
-            return Ok(identity.id);
+            return Ok(id);
         }
-        let adopt = if server_id == "unknown" {
-            None
-        } else {
-            // Only provisional profiles may be adopted by an official server.
-            let candidates: Vec<_> = self
-                .stores
-                .iter()
-                .filter_map(|(id, store)| {
-                    let snapshot = store.snapshot();
-                    let profile = snapshot.profile.as_ref()?;
-                    (snapshot.player.as_ref()?.player_id == player_id
-                        && (profile.provisional || profile.server_id == "unknown"))
-                        .then_some((id, profile))
-                })
-                .collect();
-            match candidates.as_slice() {
-                [(id, _)] => Some((*id).clone()),
-                _ => candidates
-                    .iter()
-                    .find(|(_, profile)| profile.server_id == "unknown")
-                    .or_else(|| {
-                        candidates
-                            .iter()
-                            .find(|(_, profile)| profile.region.eq_ignore_ascii_case(region))
-                    })
-                    .map(|(id, _)| (*id).clone()),
-            }
-        };
-        let mut store = match &adopt {
-            Some(key) => self.stores.remove(key).unwrap(),
-            None => AccountStore::load(self.root.join("profiles").join(&identity.id)),
-        };
+        let mut store = AccountStore::load(self.root.join("profiles").join(&identity.id));
         if store.snapshot().player.is_none() {
             store.upsert_player(PlayerInfo {
                 player_id,
                 ..Default::default()
             });
         }
-        self.save_profile(adopt.as_deref(), identity, store)
+        self.save_profile(None, identity, store)
+    }
+
+    /// UID is account identity. Prefer official metadata in an old registry
+    /// that still contains duplicate server keys; browsing never changes routing.
+    fn id_for_uid(&self, player_id: i64) -> Option<String> {
+        self.stores
+            .iter()
+            .filter(|(_, store)| {
+                store
+                    .snapshot()
+                    .profile
+                    .as_ref()
+                    .is_some_and(|p| p.player_id == player_id)
+            })
+            .max_by_key(|(_, store)| {
+                let profile = store.snapshot().profile.as_ref().unwrap();
+                (
+                    !profile.provisional,
+                    profile.server_id != "unknown",
+                    &store.snapshot().updated_at,
+                )
+            })
+            .map(|(id, _)| id.clone())
     }
 
     /// User-entered regions stay provisional until an official connection.
@@ -369,7 +367,11 @@ impl Profiles {
         }
         let server_id = slug(region);
         let identity = ProfileIdentity {
-            id: format!("{server_id}-{player_id}"),
+            id: if profile.player_id == player_id {
+                id.to_owned()
+            } else {
+                format!("{server_id}-{player_id}")
+            },
             player_id,
             server_id,
             region: region.to_owned(),
@@ -378,8 +380,11 @@ impl Profiles {
         if !valid(&identity) {
             return Err("Could not derive a profile key from that server or region.".into());
         }
-        if identity.id != id && self.stores.contains_key(&identity.id) {
-            return Err("A profile for that player and server already exists.".into());
+        if self
+            .id_for_uid(player_id)
+            .is_some_and(|existing| existing != id)
+        {
+            return Err("A profile for this player UID already exists.".into());
         }
         let mut store = self.stores.remove(id).unwrap();
         let mut player = store
@@ -439,22 +444,7 @@ impl Profiles {
     }
 
     pub fn observe_passive(&mut self, player_id: i64) -> Result<(), String> {
-        let matches: Vec<_> = self
-            .stores
-            .iter()
-            .filter(|(_, s)| {
-                s.snapshot()
-                    .profile
-                    .as_ref()
-                    .is_some_and(|p| p.player_id == player_id && p.server_id != "unknown")
-            })
-            .map(|(key, _)| key.clone())
-            .collect();
-        let key = if matches.len() == 1 {
-            matches[0].clone()
-        } else {
-            self.ensure(player_id, "unknown", "Region not identified")?
-        };
+        let key = self.ensure(player_id, "unknown", "Region not identified")?;
         if self
             .passive
             .as_ref()
@@ -658,23 +648,85 @@ mod tests {
         save_inventory(passive, 7, 2);
 
         let key = profiles.ensure(77, "asia", "Asia").unwrap();
-        assert_eq!(key, "asia-77");
-        assert_eq!(profiles.selected, "asia-77");
-        assert_eq!(profiles.passive.as_deref(), Some("asia-77"));
-        assert!(!profiles.stores.contains_key("unknown-77"));
+        assert_eq!(key, "unknown-77");
+        assert_eq!(profiles.selected, "unknown-77");
+        assert_eq!(profiles.passive.as_deref(), Some("unknown-77"));
+        assert_eq!(profiles.list().profiles.len(), 1);
         assert_eq!(profiles.snapshot().inventory[0].count, 2);
         let summary = profiles
             .list()
             .profiles
             .into_iter()
-            .find(|p| p.identity.id == "asia-77")
+            .find(|p| p.identity.id == "unknown-77")
             .unwrap();
         assert_eq!(summary.identity.region, "Asia");
 
         let reloaded = Profiles::load(root.clone());
-        assert_eq!(reloaded.selected, "asia-77");
+        assert_eq!(reloaded.selected, "unknown-77");
         assert_eq!(reloaded.snapshot().player.as_ref().unwrap().player_id, 77);
         assert_eq!(reloaded.snapshot().inventory[0].count, 2);
+        let _ = fs::remove_dir_all(root);
+    }
+
+    #[test]
+    fn uid_reuses_the_profile_when_server_metadata_changes() {
+        let root = temp_dir("uid-identity");
+        let mut profiles = Profiles::load(root.clone());
+        let id = profiles.ensure(77, "old-server", "Europe").unwrap();
+        save_inventory(profiles.get_mut(&id).unwrap(), 5, 12);
+        profiles.observe_passive(77).unwrap();
+        let reused = profiles.ensure(77, "official-server", "Europe").unwrap();
+        assert_eq!(
+            reused, id,
+            "server metadata must not change the profile key"
+        );
+        assert_eq!(profiles.list().profiles.len(), 1);
+        assert_eq!(profiles.passive.as_deref(), Some(id.as_str()));
+        assert_eq!(profiles.snapshot().inventory[0].count, 12);
+        assert_eq!(
+            profiles.snapshot().profile.as_ref().unwrap().server_id,
+            "official-server"
+        );
+        drop(profiles);
+        let mut reloaded = Profiles::load(root.clone());
+        reloaded.observe_passive(77).unwrap();
+        assert_eq!(reloaded.list().profiles.len(), 1);
+        assert_eq!(reloaded.selected, id);
+        assert_eq!(reloaded.snapshot().inventory[0].count, 12);
+        assert_eq!(
+            reloaded
+                .ensure(77, "unknown", "Region not identified")
+                .unwrap(),
+            id
+        );
+        assert_eq!(
+            reloaded.snapshot().profile.as_ref().unwrap().server_id,
+            "official-server"
+        );
+        let _ = fs::remove_dir_all(root);
+    }
+
+    #[test]
+    fn uid_matching_does_not_route_packets_into_the_browsed_profile() {
+        let root = temp_dir("uid-routing");
+        let mut profiles = Profiles::load(root.clone());
+        let captured = profiles.ensure(77, "europe", "Europe").unwrap();
+        let browsed = profiles.ensure(88, "asia", "Asia").unwrap();
+        profiles.observe_passive(77).unwrap();
+        profiles.select(&browsed).unwrap();
+        profiles.observe_passive(77).unwrap();
+        assert_eq!(profiles.selected, browsed);
+        assert_eq!(profiles.passive.as_deref(), Some(captured.as_str()));
+        profiles
+            .passive_mut()
+            .unwrap()
+            .replace_inventory(vec![InventoryItem { id: 5, count: 12 }]);
+        assert!(profiles.snapshot().inventory.is_empty());
+        assert_eq!(
+            profiles.get_mut(&captured).unwrap().snapshot().inventory[0].count,
+            12
+        );
+        assert_eq!(profiles.list().profiles.len(), 2);
         let _ = fs::remove_dir_all(root);
     }
 
@@ -683,9 +735,9 @@ mod tests {
         let root = temp_dir("isolation");
         let mut profiles = Profiles::load(root.clone());
         let asia = profiles.ensure(9, "asia", "Asia").unwrap();
-        let europe = profiles.ensure(9, "europe", "Europe").unwrap();
+        let europe = profiles.ensure(10, "europe", "Europe").unwrap();
         assert_eq!(asia, "asia-9");
-        assert_eq!(europe, "europe-9");
+        assert_eq!(europe, "europe-10");
         save_inventory(profiles.get_mut(&asia).unwrap(), 11, 1);
         save_inventory(profiles.get_mut(&europe).unwrap(), 22, 2);
 
@@ -794,8 +846,8 @@ mod tests {
         assert_eq!(provisional, "asia-123");
 
         let official = profiles.ensure(123, "1001", "Asia").unwrap();
-        assert_eq!(official, "1001-123");
-        assert!(!profiles.stores.contains_key(&provisional));
+        assert_eq!(official, provisional);
+        assert_eq!(profiles.list().profiles.len(), 1);
         assert_eq!(profiles.selected, official);
         assert_eq!(profiles.snapshot().inventory[0].id, 5);
         let identity = profiles.snapshot().profile.as_ref().unwrap();
@@ -805,7 +857,7 @@ mod tests {
         let reloaded = Profiles::load(root.clone());
         assert_eq!(reloaded.selected, official);
         assert!(reloaded.stores.contains_key(&official));
-        assert!(!reloaded.stores.contains_key(&provisional));
+        assert_eq!(reloaded.list().profiles.len(), 1);
         assert_eq!(reloaded.snapshot().player.as_ref().unwrap().name, "Rover");
         let _ = fs::remove_dir_all(root);
     }

@@ -2,8 +2,8 @@
 //!
 //! The sniffer is the app's only account-data source and runs by design. On
 //! start it arms and polls for the game process; when found it opens a capture
-//! handle and feeds frames through the vendored `spectrum` crate. Pausing stops
-//! reading frames immediately while leaving the session key and store intact.
+//! handle and reconstructs passive KCP streams. The game-frame codec is shared
+//! with the active client; Spectrum supplies the generated protocol messages.
 
 pub mod extract;
 pub mod keys;
@@ -11,6 +11,7 @@ pub mod live;
 pub mod position;
 pub mod progression;
 pub mod teams;
+mod transport;
 pub mod world;
 
 use std::collections::{BTreeSet, HashMap, VecDeque};
@@ -29,10 +30,8 @@ use crate::sniffer::keys::KeyInfo;
 
 const LOG_CAPACITY: usize = 200;
 
-/// How long game frames may keep arriving without a single decoded packet
-/// before the KCP mirror is declared stalled. A passive mirror that lost one
-/// segment can never recover within the session, and the loss is otherwise
-/// completely silent.
+/// How long game frames may arrive without a decoded packet before warning.
+/// Missing login, a lost KCP segment or a protocol error can all cause this.
 const STALL_WARN: Duration = Duration::from_secs(45);
 /// Minimum spacing between two log lines of the same failure class.
 const ERROR_LOG_INTERVAL: Duration = Duration::from_secs(60);
@@ -86,6 +85,12 @@ pub struct SnifferState {
     data_dir: PathBuf,
     pub capturing: AtomicBool,
     pub game_process_found: AtomicBool,
+    pub waiting_for_login: AtomicBool,
+    pub game_pid: AtomicU64,
+    pub game_ports: Mutex<Vec<u16>>,
+    capture_started_at_ms: AtomicU64,
+    last_frame_at_ms: AtomicU64,
+    last_packet_at_ms: AtomicU64,
     pub packets_seen: AtomicU64,
     /// Frames handed to the sniffer (after the port pre-filter).
     pub frames_fed: AtomicU64,
@@ -99,7 +104,7 @@ pub struct SnifferState {
     pub packet_errors: AtomicU64,
     /// Handled messages whose proto payload failed to decode.
     pub decode_failures: AtomicU64,
-    /// Set while frames keep arriving but nothing decodes (lost KCP segment).
+    /// Set while frames arrive without progress; inspect login and error state.
     pub stream_stalled: AtomicBool,
     last_error: Mutex<Option<String>>,
     log: Mutex<VecDeque<String>>,
@@ -130,6 +135,12 @@ impl SnifferState {
             data_dir: data_dir.clone(),
             capturing: AtomicBool::new(false),
             game_process_found: AtomicBool::new(false),
+            waiting_for_login: AtomicBool::new(false),
+            game_pid: AtomicU64::new(0),
+            game_ports: Mutex::new(Vec::new()),
+            capture_started_at_ms: AtomicU64::new(0),
+            last_frame_at_ms: AtomicU64::new(0),
+            last_packet_at_ms: AtomicU64::new(0),
             packets_seen: AtomicU64::new(0),
             frames_fed: AtomicU64::new(0),
             frame_errors: AtomicU64::new(0),
@@ -161,14 +172,34 @@ impl SnifferState {
         }
     }
 
+    pub fn update_ports(&self, mut ports: Vec<u16>) {
+        ports.sort_unstable();
+        let mut previous = self.game_ports.lock();
+        if *previous != ports {
+            self.log(format!(
+                "game UDP ports: {}",
+                ports
+                    .iter()
+                    .map(u16::to_string)
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            ));
+            *previous = ports;
+        }
+    }
+
     /// Note one frame handed to the sniffer.
     pub fn note_frame(&self) {
         self.frames_fed.fetch_add(1, Ordering::Relaxed);
+        self.last_frame_at_ms.store(now_ms(), Ordering::Relaxed);
     }
 
     /// Note one successfully decoded game packet.
     pub fn note_packet(&self) {
-        self.packets_seen.fetch_add(1, Ordering::Relaxed);
+        if self.packets_seen.fetch_add(1, Ordering::Relaxed) == 0 {
+            self.log("decoding game packets; passive account sync is receiving data");
+        }
+        self.last_packet_at_ms.store(now_ms(), Ordering::Relaxed);
     }
 
     /// Record a frame rejected before decoding. Conversation mismatches are
@@ -235,9 +266,8 @@ impl SnifferState {
 
     /// Periodic progress check driven by the debouncer thread. Warns once
     /// when game frames keep arriving but nothing has decoded for
-    /// [`STALL_WARN`]: the passive KCP mirror lost a segment and cannot
-    /// recover it within the session, so account data stays stale until the
-    /// game restarts its connection.
+    /// [`STALL_WARN`]. The log and login state distinguish a missed session
+    /// start from transport and game-frame errors.
     pub fn watch_stream_progress(&self) {
         let frames = self.frames_fed.load(Ordering::Relaxed);
         let packets = self.packets_seen.load(Ordering::Relaxed);
@@ -280,9 +310,9 @@ impl SnifferState {
             watch.warned = true;
             self.stream_stalled.store(true, Ordering::SeqCst);
             self.log(format!(
-                "warning: game frames keep arriving but nothing decoded for {}s - the KCP \
-                 mirror most likely lost a segment; account data stays stale until the \
-                 game restarts its connection",
+                "warning: game frames arrived but no packet decoded for {}s; \
+                 check login/session-key state and transport errors below. \
+                 Reconnect the game with the listener running if login was missed",
                 silent_for.as_secs()
             ));
         }
@@ -328,7 +358,14 @@ impl SnifferState {
 
     pub fn log<S: Into<String>>(&self, message: S) {
         let mut log = self.log.lock();
-        log.push_back(message.into());
+        let seconds = now_ms() / 1000;
+        log.push_back(format!(
+            "{:02}:{:02}:{:02}Z {}",
+            (seconds / 3600) % 24,
+            (seconds / 60) % 60,
+            seconds % 60,
+            message.into()
+        ));
         while log.len() > LOG_CAPACITY {
             log.pop_front();
         }
@@ -371,6 +408,12 @@ impl SnifferState {
 pub struct SnifferStatus {
     pub capturing: bool,
     pub game_process_found: bool,
+    pub waiting_for_login: bool,
+    pub game_pid: Option<u64>,
+    pub game_ports: Vec<u16>,
+    pub capture_started_at_ms: u64,
+    pub last_frame_at_ms: u64,
+    pub last_packet_at_ms: u64,
     pub capture_available: bool,
     pub is_elevated: bool,
     pub session_key_cached: bool,
@@ -392,6 +435,8 @@ pub struct SnifferStatus {
 
 /// Start the always-on supervisor and the account-update debouncer.
 pub fn start(app: &AppHandle) {
+    app.state::<SnifferState>()
+        .log("listener armed; waiting for the game and login");
     spawn_supervisor(app.clone());
     spawn_debouncer(app.clone());
 }
@@ -410,7 +455,11 @@ fn spawn_supervisor(app: AppHandle) {
 
         let procs = live::game_processes();
         let Some(proc_info) = live::pick_process(&procs) else {
-            state.game_process_found.store(false, Ordering::SeqCst);
+            if state.game_process_found.swap(false, Ordering::SeqCst) {
+                state.log("game process exited; waiting for the game");
+            }
+            state.game_pid.store(0, Ordering::Relaxed);
+            state.game_ports.lock().clear();
             std::thread::sleep(Duration::from_secs(5));
             continue;
         };
@@ -421,9 +470,42 @@ fn spawn_supervisor(app: AppHandle) {
         match live::open_socket() {
             Ok(handle) => {
                 state.set_error(None);
-                state.log(format!("capturing game process pid {pid}"));
+                state.game_pid.store(pid as u64, Ordering::Relaxed);
+                state.update_ports(proc_info.ports.clone());
+                state
+                    .capture_started_at_ms
+                    .store(now_ms(), Ordering::Relaxed);
+                state.last_frame_at_ms.store(0, Ordering::Relaxed);
+                state.last_packet_at_ms.store(0, Ordering::Relaxed);
+                for counter in [
+                    &state.frames_fed,
+                    &state.packets_seen,
+                    &state.frame_errors,
+                    &state.conv_mismatches,
+                    &state.packet_errors,
+                    &state.decode_failures,
+                ] {
+                    counter.store(0, Ordering::Relaxed);
+                }
+                let now = Instant::now();
+                *state.stream_watch.lock() = StreamWatch {
+                    last_frames: 0,
+                    last_packets: 0,
+                    last_frame_progress: now,
+                    last_packet_progress: now,
+                    warned: false,
+                };
+                *state.error_log_times.lock() = ErrorLogTimes::default();
+                state.stream_stalled.store(false, Ordering::SeqCst);
+                state.waiting_for_login.store(false, Ordering::SeqCst);
+                state.log(format!(
+                    "capturing game process pid {pid}; waiting for login/key exchange"
+                ));
                 let session_key = state.current_session_key();
-                let _ = live::run(app.clone(), pid, ports, pem, session_key, handle);
+                if let Err(error) = live::run(app.clone(), pid, ports, pem, session_key, handle) {
+                    state.set_error(Some(format!("packet capture stopped: {error}")));
+                }
+                state.capturing.store(false, Ordering::SeqCst);
                 state.position.lock().clear();
                 if let Ok(mut profiles) = app.state::<AccountState>().store.lock() {
                     profiles.reset_passive();
@@ -474,10 +556,22 @@ fn spawn_debouncer(app: AppHandle) {
 /// Feed one raw frame through the sniffer and extract account deltas. Every
 /// failure class is counted and logged (deduped); none of them may panic or
 /// stall the capture loop.
-pub(crate) fn process_frame(app: &AppHandle, sniffer: &mut spectrum::Sniffer, frame: Vec<u8>) {
+pub(crate) fn process_frame(
+    app: &AppHandle,
+    sniffer: &mut crate::sniffer::transport::Sniffer,
+    frame: Vec<u8>,
+) {
     let state = app.state::<SnifferState>();
     state.note_frame();
-    let packets = match sniffer.receive_packet(frame) {
+    let result = sniffer.receive_packet(frame);
+    if !state
+        .waiting_for_login
+        .swap(sniffer.waiting_for_login, Ordering::SeqCst)
+        && sniffer.waiting_for_login
+    {
+        state.log("attached after the KCP stream began; reconnect the game with the listener running to capture login");
+    }
+    let packets = match result {
         Ok(packets) => packets,
         Err(e) => {
             state.record_frame_error(&e);
@@ -492,6 +586,12 @@ pub(crate) fn process_frame(app: &AppHandle, sniffer: &mut spectrum::Sniffer, fr
                 extract::handle_packet(app, &gp);
             }
             spectrum::Packet::GamePacket(Err(e)) => state.record_packet_error(&e),
+            spectrum::Packet::NetworkPacket(spectrum::NetworkPacket::HandshakeRequested) => {
+                state.log("connection handshake observed; resetting passive streams for login");
+            }
+            spectrum::Packet::NetworkPacket(spectrum::NetworkPacket::HandshakeEstablished(_)) => {
+                state.log("connection established; waiting for session-key exchange");
+            }
             spectrum::Packet::NetworkPacket(_) => {}
         }
     }
@@ -499,17 +599,20 @@ pub(crate) fn process_frame(app: &AppHandle, sniffer: &mut spectrum::Sniffer, fr
 
 /// Copy the sniffer's current session key into state, cache it to disk, and
 /// never log key material.
-fn cache_session_key(app: &AppHandle, sniffer: &spectrum::Sniffer) {
-    let Some(key) = sniffer.session_key() else {
-        return;
-    };
+fn cache_session_key(app: &AppHandle, sniffer: &crate::sniffer::transport::Sniffer) {
+    let key = sniffer.session_key();
     let state = app.state::<SnifferState>();
     let mut guard = state.session_key.lock();
-    if guard.as_ref() != Some(&key) {
-        *guard = Some(key);
+    if *guard != key {
+        *guard = key;
         drop(guard);
-        let _ = keys::write_session_key(&state.data_dir, &key);
-        state.log("session key captured");
+        if let Some(key) = key {
+            let _ = keys::write_session_key(&state.data_dir, &key);
+            state.log("session key captured");
+        } else {
+            keys::clear_session_key(&state.data_dir);
+            state.log("previous session key cleared for new connection");
+        }
     }
 }
 
@@ -589,6 +692,15 @@ pub fn sniffer_get_status(state: State<SnifferState>) -> SnifferStatus {
     SnifferStatus {
         capturing: state.capturing.load(Ordering::SeqCst),
         game_process_found: state.game_process_found.load(Ordering::SeqCst),
+        waiting_for_login: state.waiting_for_login.load(Ordering::SeqCst),
+        game_pid: match state.game_pid.load(Ordering::Relaxed) {
+            0 => None,
+            pid => Some(pid),
+        },
+        game_ports: state.game_ports.lock().clone(),
+        capture_started_at_ms: state.capture_started_at_ms.load(Ordering::Relaxed),
+        last_frame_at_ms: state.last_frame_at_ms.load(Ordering::Relaxed),
+        last_packet_at_ms: state.last_packet_at_ms.load(Ordering::Relaxed),
         capture_available: live::capture_available(),
         is_elevated: live::is_elevated(),
         session_key_cached: state.session_key_cached(),
@@ -620,7 +732,8 @@ pub fn sniffer_import_pcap(
     }
     let pem = keys::load_bundled_key(&app)?;
     let frames = import_frames(&path)?;
-    let mut sniffer = spectrum::Sniffer::with_session_key(pem, state.current_session_key());
+    let mut sniffer =
+        crate::sniffer::transport::Sniffer::with_session_key(pem, state.current_session_key());
     let mut decoded = 0usize;
     for frame in frames {
         let before = state.packets_seen.load(Ordering::Relaxed);

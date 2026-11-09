@@ -32,7 +32,7 @@ impl std::fmt::Display for RpcException {
 
 impl std::error::Error for RpcException {}
 
-fn frame_size(prefix: &[u8]) -> Result<usize> {
+pub fn frame_size(prefix: &[u8]) -> Result<usize> {
     ensure!(
         prefix.len() >= LENGTH_PREFIX_SIZE,
         "truncated game frame length prefix"

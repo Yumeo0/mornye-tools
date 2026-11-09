@@ -418,7 +418,7 @@ mod tests {
                 .join("../../../data/client_private_key.pem"),
         )
         .unwrap();
-        let mut transport = spectrum::Sniffer::new(key);
+        let mut transport = crate::sniffer::transport::Sniffer::with_session_key(key, None);
         let mut capture = TeamCapture::default();
         let mut store = store("replay");
         let mut reader = pcap_file::pcap::PcapReader::new(std::io::BufReader::new(

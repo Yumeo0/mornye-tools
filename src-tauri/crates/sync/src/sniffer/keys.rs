@@ -133,6 +133,11 @@ pub fn read_session_key(dir: &Path) -> Option<[u8; 32]> {
     parse_key(&text).ok()
 }
 
+/// Invalidate a cached key when a fresh connection handshake is observed.
+pub fn clear_session_key(dir: &Path) {
+    let _ = fs::remove_file(session_path(dir));
+}
+
 /// Persist the session key as 64 lowercase hex chars.
 pub fn write_session_key(dir: &Path, key: &[u8; 32]) -> Result<(), String> {
     let path = session_path(dir);

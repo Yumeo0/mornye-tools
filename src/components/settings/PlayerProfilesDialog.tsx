@@ -5,6 +5,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { type FormEvent, useRef, useState } from "react";
+import { AccountProfileIdentifyDialog } from "@/components/AccountProfileIdentifyDialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -45,7 +46,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { VirtualGrid } from "@/components/VirtualGrid";
-import { refreshAccount, useAccount } from "@/lib/account";
+import { type AccountProfile, refreshAccount, useAccount } from "@/lib/account";
 import {
 	addDangerousProfile,
 	disconnectDangerous,
@@ -58,10 +59,12 @@ import {
 	signOutDangerous,
 	useDangerousFeatures,
 } from "@/lib/dangerous";
+import { hasAccountData } from "@/lib/profileOverview";
 
 export function AddPlayerProfileDialog({ onClose }: { onClose: () => void }) {
 	const { status } = useDangerousFeatures();
 	const accounts = status?.accounts ?? [];
+	const { profiles } = useAccount();
 	const [choice, setChoice] = useState(
 		accounts.some((a) => a.id === status?.account_id)
 			? (status?.account_id ?? "new")
@@ -166,9 +169,9 @@ export function AddPlayerProfileDialog({ onClose }: { onClose: () => void }) {
 				{discovery ? (
 					<div className="flex flex-col gap-3">
 						{discovery.rows.map((row) => {
-							const profileId = row.player
-								? `${row.server.id}-${row.player.playerId}`
-								: null;
+							const profileId = profiles.find(
+								(profile) => profile.playerId === row.player?.playerId,
+							)?.id;
 							const alreadyAdded =
 								profileId &&
 								status?.profile_accounts[profileId] === discovery.accountId;
@@ -349,14 +352,18 @@ export function ManagePlayerProfilesDialog({
 	onClose: () => void;
 }) {
 	const { status } = useDangerousFeatures();
-	const { profiles } = useAccount();
+	const { profiles, snapshot } = useAccount();
 	const [pending, setPending] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const linked = profiles.filter(
+	const [identify, setIdentify] = useState<AccountProfile | null>(null);
+	const players = profiles.filter(
 		(profile) =>
-			profile.playerId > 0 &&
-			status?.profile_accounts[profile.id] === status?.account_id,
+			profile.playerId > 0 ||
+			(profile.id === snapshot.profile?.id && hasAccountData(snapshot)),
 	);
+	const busy =
+		pending || !status || !["ready", "signed_out"].includes(status.phase);
+
 	async function remove(profileId: string) {
 		setPending(true);
 		setError(null);
@@ -377,6 +384,15 @@ export function ManagePlayerProfilesDialog({
 			setPending(false);
 		}
 	}
+	if (identify)
+		return (
+			<AccountProfileIdentifyDialog
+				profile={identify}
+				initialName={identify.name}
+				onClose={() => setIdentify(null)}
+			/>
+		);
+
 	return (
 		<Dialog
 			open
@@ -388,8 +404,9 @@ export function ManagePlayerProfilesDialog({
 				<DialogHeader>
 					<DialogTitle>Manage player profiles</DialogTitle>
 					<DialogDescription>
-						{status?.email}. Removing a profile keeps its map progress and
-						cached data for when you add it again.
+						All locally stored players, including passive captures. Removing a
+						profile keeps its map progress and cached data. A future game login
+						can discover it again.
 					</DialogDescription>
 				</DialogHeader>
 				{error && (
@@ -397,9 +414,9 @@ export function ManagePlayerProfilesDialog({
 						<AlertDescription>{error}</AlertDescription>
 					</Alert>
 				)}
-				{linked.length ? (
+				{players.length ? (
 					<VirtualGrid
-						items={linked}
+						items={players}
 						columns={1}
 						gap={12}
 						estimateRowHeight={100}
@@ -417,13 +434,24 @@ export function ManagePlayerProfilesDialog({
 											{profile.playerId}
 										</p>
 									</div>
-									<Button
-										variant="outline"
-										disabled={pending}
-										onClick={() => void remove(profile.id)}
-									>
-										Remove
-									</Button>
+									<div className="flex shrink-0 gap-2">
+										{profile.serverId === "unknown" && (
+											<Button
+												variant="outline"
+												disabled={busy}
+												onClick={() => setIdentify(profile)}
+											>
+												Set region
+											</Button>
+										)}
+										<Button
+											variant="outline"
+											disabled={busy || profile.playerId <= 0}
+											onClick={() => void remove(profile.id)}
+										>
+											Remove
+										</Button>
+									</div>
 								</CardContent>
 							</Card>
 						)}
@@ -433,7 +461,8 @@ export function ManagePlayerProfilesDialog({
 						<EmptyHeader>
 							<EmptyTitle>No player profiles</EmptyTitle>
 							<EmptyDescription>
-								Add a player profile to this account to connect to it.
+								Open the game with the passive listener running, or add a player
+								through account sign-in.
 							</EmptyDescription>
 						</EmptyHeader>
 					</Empty>
@@ -445,7 +474,7 @@ export function ManagePlayerProfilesDialog({
 							disabled={pending}
 							onClick={() => void signOutDangerous()}
 						>
-							Sign out of account
+							Sign out of {status.email}
 						</Button>
 					)}
 					<Button onClick={onClose}>Done</Button>

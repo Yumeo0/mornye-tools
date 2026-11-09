@@ -46,19 +46,10 @@ pub struct LiveInfo {
     pub ports: Vec<u16>,
 }
 
-/// Userspace pre-filter: only the game's own ports or the known server ranges;
-/// everything else is dropped before the sniffer.
-pub(crate) fn keep_frame(ports: &Mutex<HashSet<u16>>, frame: &[u8]) -> bool {
-    match udp_ports_of(frame) {
-        Some((src, dst)) => {
-            let set = ports.lock();
-            set.contains(&src)
-                || set.contains(&dst)
-                || in_default_ranges(src)
-                || in_default_ranges(dst)
-        }
-        None => false,
-    }
+/// Match the decoder's transport filter. Game-owned UDP sockets also carry
+/// unrelated traffic; counting it as KCP produced misleading errors and stalls.
+pub(crate) fn keep_frame(_ports: &Mutex<HashSet<u16>>, frame: &[u8]) -> bool {
+    super::transport::udp_payload(frame).is_ok()
 }
 
 /// Port ranges the game's servers use for the KCP/UDP transport.
@@ -92,7 +83,11 @@ pub fn udp_ports_of(frame: &[u8]) -> Option<(u16, u16)> {
 }
 
 /// Feed one raw frame through the sniffer and extract account deltas.
-pub(crate) fn handle_frame(app: &AppHandle, sniffer: &mut spectrum::Sniffer, frame: &[u8]) {
+pub(crate) fn handle_frame(
+    app: &AppHandle,
+    sniffer: &mut crate::sniffer::transport::Sniffer,
+    frame: &[u8],
+) {
     crate::sniffer::process_frame(app, sniffer, frame.to_vec());
 }
 

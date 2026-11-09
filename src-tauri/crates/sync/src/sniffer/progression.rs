@@ -291,7 +291,7 @@ mod tests {
         let output = std::env::var("MORNYE_TEST_OUTPUT").expect("output path");
         let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
         let key = std::fs::read_to_string(root.join("data/client_private_key.pem")).unwrap();
-        let mut transport = spectrum::Sniffer::new(key);
+        let mut transport = crate::sniffer::transport::Sniffer::with_session_key(key, None);
         let mut capture = ProgressionCapture::default();
         let mut snapshot = ProgressionSnapshot::default();
         let mut reader = pcap_file::pcap::PcapReader::new(std::io::BufReader::new(

@@ -12,9 +12,10 @@ import {
 	X,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { AccountProfileSelector } from "@/components/AccountProfileSelector";
+import { CaptureStatus } from "@/components/CaptureStatus";
 import { MapImportController } from "@/components/map/MapImportController";
 import {
 	DangerousConnectButton,
@@ -39,7 +40,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { setOverlayVisible } from "@/lib/overlayWindow";
 import { applyResolutionRegions } from "@/lib/scanRegions";
 import { readSetting } from "@/lib/settings";
-import { blockingErrors, getStatus } from "@/lib/sniffer";
+import { blockingErrors } from "@/lib/sniffer";
+import { useSnifferStatus } from "@/lib/snifferStatus";
 import { checkForUpdateOnStartup, useUpdateState } from "@/lib/updater";
 import { cn } from "@/lib/utils";
 
@@ -68,10 +70,26 @@ const NAV_GROUPS = [
 	{
 		title: "Inventory",
 		tabs: [
-			{ value: "inventory", title: "Inventory", icon: "/icons/navigation/inventory.webp" },
-			{ value: "characters", title: "Characters", icon: "/icons/navigation/characters.webp" },
-			{ value: "echoes", title: "Echoes", icon: "/icons/navigation/echoes.webp" },
-			{ value: "weapons", title: "Weapons", icon: "/icons/navigation/weapons.webp" },
+			{
+				value: "inventory",
+				title: "Inventory",
+				icon: "/icons/navigation/inventory.webp",
+			},
+			{
+				value: "characters",
+				title: "Characters",
+				icon: "/icons/navigation/characters.webp",
+			},
+			{
+				value: "echoes",
+				title: "Echoes",
+				icon: "/icons/navigation/echoes.webp",
+			},
+			{
+				value: "weapons",
+				title: "Weapons",
+				icon: "/icons/navigation/weapons.webp",
+			},
 			{
 				value: "achievements",
 				title: "Achievements",
@@ -87,7 +105,11 @@ const NAV_GROUPS = [
 	{
 		title: "Tools",
 		tabs: [
-			{ value: "optimizer", title: "Optimizer", icon: "/icons/navigation/optimizer.webp" },
+			{
+				value: "optimizer",
+				title: "Optimizer",
+				icon: "/icons/navigation/optimizer.webp",
+			},
 			{ value: "map", title: "Map", icon: "/icons/navigation/map.webp" },
 			{
 				value: "echo-upgrader",
@@ -160,35 +182,22 @@ function TitleBar() {
 	);
 }
 
-/** Surface sync failures once; routine capture status lives in Settings. */
+/** Share the listener monitor with the sidebar and diagnostics. */
 function SnifferErrorToasts() {
+	const { status, error } = useSnifferStatus();
+	const previousError = useRef<string | null>(null);
 	useEffect(() => {
-		let cancelled = false;
-		let previousError: string | null = null;
-		const poll = async () => {
-			try {
-				const next = await getStatus();
-				if (cancelled) return;
-				const problem = blockingErrors(next)[0] ?? next.last_error;
-				if (problem && problem !== previousError) {
-					toast.error("Account sync", {
-						id: "account-sync-error",
-						description: problem,
-					});
-				}
-				previousError = problem;
-			} catch {
-				// Status polling remains best-effort; diagnostics are in Settings.
-			}
-		};
-		poll();
-		const timer = setInterval(poll, 2000);
-		return () => {
-			cancelled = true;
-			clearInterval(timer);
-		};
-	}, []);
-
+		if (!isTauri()) return;
+		const problem =
+			error ?? blockingErrors(status)[0] ?? status?.last_error ?? null;
+		if (problem && problem !== previousError.current) {
+			toast.error("Account sync", {
+				id: "account-sync-error",
+				description: problem,
+			});
+		}
+		previousError.current = problem;
+	}, [status, error]);
 	return null;
 }
 
@@ -363,6 +372,13 @@ export default function MainWindow() {
 							</div>
 						))}
 					</div>
+					<CaptureStatus
+						compact={!sidebarOpen}
+						onOpen={() => {
+							setSettingsSection("advanced");
+							setTab("settings");
+						}}
+					/>
 					<DangerousConnectButton
 						compact={!sidebarOpen}
 						onConfigure={() => {
@@ -385,9 +401,7 @@ export default function MainWindow() {
 					/>
 				</TabsList>
 
-				<div
-					className={"flex min-h-0 min-w-0 flex-1 flex-col"}
-				>
+				<div className={"flex min-h-0 min-w-0 flex-1 flex-col"}>
 					{tabContents.map(({ value, content }) => (
 						<TabsContent
 							key={value}

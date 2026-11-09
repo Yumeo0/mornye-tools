@@ -16,7 +16,7 @@ export function profilePortrait(
 export function profileLabel(profile: AccountProfile, index: number): string {
 	const name = profile.name.trim() || `Profile ${index + 1}`;
 	const region =
-		profile.serverId === "unknown" ? "Needs identification" : profile.region;
+		profile.serverId === "unknown" ? "Region unknown" : profile.region;
 	return `${name} · ${region}`;
 }
 
@@ -36,11 +36,21 @@ export function overviewCounts(snapshot: AccountSnapshot) {
 export function hasAccountData(snapshot: AccountSnapshot): boolean {
 	const { player, profile, exploration, progression } = snapshot;
 	return Boolean(
-		player || (profile?.playerId ?? 0) > 0 ||
-		[snapshot.resonators, snapshot.weapons, snapshot.echoes, snapshot.inventory, snapshot.teams].some((items) => items?.length) ||
-		(exploration && (exploration.playerId > 0 || Object.keys(exploration.rewards).length > 0)) ||
-		(progression && (progression.playerId > 0 ||
-			Object.keys(progression.quests?.states ?? {}).length > 0 ||
-			Object.keys(progression.achievements?.entries ?? {}).length > 0)),
+		player ||
+			(profile?.playerId ?? 0) > 0 ||
+			[
+				snapshot.resonators,
+				snapshot.weapons,
+				snapshot.echoes,
+				snapshot.inventory,
+				snapshot.teams,
+			].some((items) => items?.length) ||
+			(exploration &&
+				(exploration.playerId > 0 ||
+					Object.keys(exploration.rewards).length > 0)) ||
+			(progression &&
+				(progression.playerId > 0 ||
+					Object.keys(progression.quests?.states ?? {}).length > 0 ||
+					Object.keys(progression.achievements?.entries ?? {}).length > 0)),
 	);
 }

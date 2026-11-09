@@ -618,14 +618,14 @@ mod tests {
     #[test]
     #[ignore]
     fn replay_player_position() {
-        use spectrum::Sniffer;
+        use crate::sniffer::transport::Sniffer;
         let path = std::env::var("MORNYE_MAP_PCAP").unwrap();
         let pem = std::fs::read_to_string(
             std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
                 .join("../../../data/client_private_key.pem"),
         )
         .unwrap();
-        let mut sniffer = Sniffer::new(pem);
+        let mut sniffer = Sniffer::with_session_key(pem, None);
         let mut reader =
             pcap_file::pcap::PcapReader::new(std::fs::File::open(path).unwrap()).unwrap();
         let mut tracker = PositionTracker::default();

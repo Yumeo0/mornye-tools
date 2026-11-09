@@ -5,6 +5,10 @@ edition = "2021"
 publish = false
 
 [dependencies]
+crc32fast = "1"
+etherparse = "0.18"
+kcp = "0.6"
+mornye-game-client = { path = "../game-client" }
 mornye-account = { path = "../account" }
 spectrum = { workspace = true }
 parking_lot = "0.13"

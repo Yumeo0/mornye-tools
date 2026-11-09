@@ -3707,7 +3707,7 @@ dependencies = [
 
 [[package]]
 name = "mornye-tools"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
  "mornye-connection",
  "mornye-overlay",

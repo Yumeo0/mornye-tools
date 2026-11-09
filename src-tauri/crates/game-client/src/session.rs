@@ -1386,6 +1386,10 @@ mod tests {
 
     fn mock(scenario: Scenario) -> (Result<Inventory>, usize) {
         let socket = UdpSocket::bind("127.0.0.1:0").unwrap();
+        // Keep the endpoint bound until the client reads the final notification.
+        // Otherwise Linux can report ICMP connection refused after serve exits,
+        // masking the player/RPC validation this fixture is meant to exercise.
+        let _socket_guard = socket.try_clone().unwrap();
         let config = fixture(socket.local_addr().unwrap().to_string());
         let server = thread::spawn(move || serve(socket, scenario));
         let result = run(&config, &Schema::load().unwrap());

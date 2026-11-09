@@ -36,6 +36,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Toaster } from "@/components/ui/sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { setOverlayVisible } from "@/lib/overlayWindow";
 import { applyResolutionRegions } from "@/lib/scanRegions";
 import { readSetting } from "@/lib/settings";
 import { blockingErrors, getStatus } from "@/lib/sniffer";
@@ -223,11 +224,7 @@ export default function MainWindow() {
 				const overlayWindow = windows.find((w) => w.label === "overlay");
 
 				if (overlayWindow) {
-					if (shouldShowOverlay) {
-						await overlayWindow.show();
-					} else {
-						await overlayWindow.hide();
-					}
+					await setOverlayVisible(overlayWindow, shouldShowOverlay);
 				}
 			} catch (error) {
 				console.error("[MainWindow] Failed to initialize app:", error);

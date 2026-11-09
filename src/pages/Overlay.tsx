@@ -1,4 +1,3 @@
-import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { MenuDebugPanel } from "@/components/overlay/MenuDebugPanel";
 import { RelevantCharactersCard } from "@/components/overlay/RelevantCharactersCard";
@@ -14,15 +13,6 @@ import {
 	getRelevantCharacters,
 } from "@/lib/rating";
 import { normalizeStatName } from "@/lib/stats";
-
-// Start click-through. A failure must not take this module down: a rejected
-// top-level await would leave the whole overlay blank until the app restarts.
-// The cursor-over-card poll re-applies the setting anyway.
-try {
-	await getCurrentWindow().setIgnoreCursorEvents(true);
-} catch (error) {
-	console.error("Failed to set ignore cursor events:", error);
-}
 
 /** Normalized wanted main/sub stat names for the augmentation highlight. */
 function preferredStats(character: CharacterInfo | null): {

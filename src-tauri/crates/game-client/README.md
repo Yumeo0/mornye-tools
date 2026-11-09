@@ -53,6 +53,12 @@ cargo run -p mornye-game-client -- --list-servers
 
 App/resource versions and SDK settings come from the installation. If discovery
 fails after an update, run the updated game once to refresh its logs.
+On Linux, discovery checks native and Flatpak Steam libraries (including custom
+libraries from `libraryfolders.vdf`), Lutris folders under `~/Games`, default and
+custom Wine prefixes under `~/.wine` and `~/.local/share/wineprefixes`, and common
+Windows installation paths on mounted drives. Searches under `~/Games`, `/mnt`,
+`/media`, and `/run/media/$USER` are limited to two directory levels. Multiple
+distinct installations still require `--game-dir` to select one.
 Config-relative paths resolve beside the config; CLI paths resolve from the
 working directory.
 

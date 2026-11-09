@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { setOverlayVisible } from "@/lib/overlayWindow";
 import { readSetting, writeSetting } from "@/lib/settings";
 
 /** Overlay window toggle; the choice is persisted in `settings.json`. */
@@ -22,11 +23,7 @@ export function OverlayToggleCard() {
 		if (!overlayWindow) return;
 
 		const newState = !overlayEnabled;
-		if (newState) {
-			await overlayWindow.show();
-		} else {
-			await overlayWindow.hide();
-		}
+		await setOverlayVisible(overlayWindow, newState);
 		setOverlayEnabled(newState);
 
 		try {

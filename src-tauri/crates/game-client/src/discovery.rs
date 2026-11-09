@@ -17,6 +17,9 @@ use std::{
 
 use crate::{auth::Sdk, config::Config};
 
+#[cfg(target_os = "linux")]
+mod linux;
+
 const SDK_FILE: &str = "Binaries/Win64/ThirdParty/KrPcSdk_Global/KRSDKRes/KRSDK.bin";
 // Public global entry, also distributed in the game's KuroPublicConfig.ini.
 const GLOBAL_BOOTSTRAP: &str =
@@ -198,7 +201,12 @@ fn system_candidates() -> Vec<PathBuf> {
     paths
 }
 
-#[cfg(not(windows))]
+#[cfg(target_os = "linux")]
+fn system_candidates() -> Vec<PathBuf> {
+    linux::system_candidates()
+}
+
+#[cfg(not(any(windows, target_os = "linux")))]
 fn system_candidates() -> Vec<PathBuf> {
     Vec::new()
 }
@@ -209,7 +217,11 @@ fn find_game(explicit: Option<&Path>) -> Result<PathBuf> {
             "--game-dir must point to a global PC game installation (or its Client directory)",
         );
     }
-    let mut roots: Vec<_> = system_candidates()
+    resolve_candidates(system_candidates())
+}
+
+fn resolve_candidates(candidates: Vec<PathBuf>) -> Result<PathBuf> {
+    let mut roots: Vec<_> = candidates
         .iter()
         .filter_map(|p| normalize_root(p))
         .collect();

@@ -1,0 +1,127 @@
+{
+  "date": "2026-11-10T14:08:05.852Z",
+  "revision": "7bcbb24ea8c3ef873a8479fcd99d25dd305d8a1f",
+  "environment": {
+    "bun": "1.4.4",
+    "os": "win32 10.0.26300",
+    "cpu": "12th Gen Intel(R) Core(TM) i9-12900K"
+  },
+  "samples": 30,
+  "budget": 1500,
+  "coldCatalogAndEvaluationMs": 205.8224,
+  "workerStartupAndEvaluationMs": 350.4845999999998,
+  "timings": [
+    {
+      "fixture": "historical-240",
+      "cycles": 1,
+      "mode": "provisional",
+      "samples": 30,
+      "feasible": 30,
+      "medianMs": 1.7758999999999787,
+      "p95Ms": 2.9302999999999884
+    },
+    {
+      "fixture": "historical-240",
+      "cycles": 1,
+      "mode": "validated",
+      "samples": 30,
+      "feasible": 30,
+      "medianMs": 4.383799999999951,
+      "p95Ms": 6.63009999999997
+    },
+    {
+      "fixture": "historical-240",
+      "cycles": 4,
+      "mode": "provisional",
+      "samples": 30,
+      "feasible": 13,
+      "medianMs": 2.881399999999985,
+      "p95Ms": 4.6200999999999794
+    },
+    {
+      "fixture": "historical-240",
+      "cycles": 4,
+      "mode": "validated",
+      "samples": 30,
+      "feasible": 13,
+      "medianMs": 15.225300000000061,
+      "p95Ms": 25.27689999999984
+    },
+    {
+      "fixture": "current-240",
+      "cycles": 1,
+      "mode": "provisional",
+      "samples": 30,
+      "feasible": 30,
+      "medianMs": 1.0154999999999745,
+      "p95Ms": 1.2196000000001277
+    },
+    {
+      "fixture": "current-240",
+      "cycles": 1,
+      "mode": "validated",
+      "samples": 30,
+      "feasible": 30,
+      "medianMs": 3.2667999999998756,
+      "p95Ms": 5.28020000000015
+    },
+    {
+      "fixture": "current-240",
+      "cycles": 4,
+      "mode": "provisional",
+      "samples": 30,
+      "feasible": 30,
+      "medianMs": 2.582499999999982,
+      "p95Ms": 2.8526999999999134
+    },
+    {
+      "fixture": "current-240",
+      "cycles": 4,
+      "mode": "validated",
+      "samples": 30,
+      "feasible": 30,
+      "medianMs": 14.875500000000102,
+      "p95Ms": 18.88050000000021
+    }
+  ],
+  "searches": [
+    {
+      "target": "Jiyan",
+      "objective": {
+        "kind": "memberDamage",
+        "characterId": 1404
+      },
+      "best": 3277502,
+      "baseline": 3123312,
+      "feasibleResults": 10,
+      "status": "complete",
+      "processed": 1494,
+      "total": 1500,
+      "elapsedMs": 4275.1989,
+      "remainingMs": 17.169474297188756,
+      "progress": 0.996,
+      "speed": 349.4573598515176
+    },
+    {
+      "target": "Mortefi",
+      "objective": {
+        "kind": "teamDamage"
+      },
+      "best": 3709404,
+      "baseline": 3693494,
+      "feasibleResults": 10,
+      "status": "complete",
+      "processed": 1494,
+      "total": 1500,
+      "elapsedMs": 4009.1940000000004,
+      "remainingMs": 16.10118112449799,
+      "progress": 0.996,
+      "speed": 372.6434696688794
+    }
+  ],
+  "notes": [
+    "Historical inputs retain exactly the echoes used for both legacy engines; damage equality is not expected.",
+    "Current provisional scores require strict resource/buff validation before appearing in results.",
+    "CPU Bun measurements; browser/Tauri latency and large-inventory optimality are not implied."
+  ]
+}

@@ -18,7 +18,6 @@ import {
 	FieldLegend,
 	FieldSet,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 
 /** Candidate-pool filters for the optimizer search. */
@@ -139,40 +138,6 @@ export function OptimizerFilterRow({
 						</div>
 					</FieldSet>
 				)}
-				<FieldSet className="min-w-0 gap-2">
-					<FieldLegend variant="label" className="mb-1 font-semibold leading-5">
-						Build requirements
-					</FieldLegend>
-					<Field>
-						<FieldLabel
-							htmlFor="optimizer-min-er"
-							className="text-[11px] font-medium leading-4 text-muted-foreground"
-						>
-							Minimum Energy Regen (%)
-						</FieldLabel>
-						<Input
-							id="optimizer-min-er"
-							type="number"
-							min={0}
-							max={1000}
-							step={0.1}
-							placeholder="No requirement"
-							value={filters.minEnergyRegen || ""}
-							onChange={(event) => {
-								const minEnergyRegen = Number(event.target.value);
-								if (
-									Number.isFinite(minEnergyRegen) &&
-									minEnergyRegen >= 0 &&
-									minEnergyRegen <= 1000
-								)
-									onFiltersChange((previous) => ({
-										...previous,
-										minEnergyRegen,
-									}));
-							}}
-						/>
-					</Field>
-				</FieldSet>
 			</FieldGroup>
 			<div className="flex flex-col items-start gap-2">
 				{counts && (
@@ -190,7 +155,7 @@ export function OptimizerFilterRow({
 							<span className="font-medium text-foreground">
 								{formatDamage(counts.combos)}
 							</span>{" "}
-							candidate builds
+							builds before legality checks
 						</p>
 					</div>
 				)}

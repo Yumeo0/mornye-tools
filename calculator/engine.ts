@@ -1,0 +1,1016 @@
+// The sole upstream integration. Bundled by scripts/build-calculator.ts.
+
+import echoData from "../src/configs/echo_data.json";
+import type {
+	CalcEcho,
+	CalculatorCatalog,
+	MemberBuild,
+	RotationDiagnostic,
+	RotationKit,
+	Scenario,
+	SimulationResult,
+	TeamProfile,
+} from "../src/lib/calc/types";
+import {
+	customRotationProfile,
+	flattenRotation,
+} from "../src/lib/customRotations";
+import * as jinzhou from "../wuwa_calc/src/echoes/jinzhou";
+import * as lahairoi from "../wuwa_calc/src/echoes/lahairoi";
+import * as mengzhou from "../wuwa_calc/src/echoes/mengzhou";
+import * as rinascita from "../wuwa_calc/src/echoes/rinascita";
+import * as septimont from "../wuwa_calc/src/echoes/septimont";
+import {
+	addStat,
+	equip,
+	equipEnemy,
+	menuStats,
+	panelEntry,
+	panelStats,
+	setTracing,
+	withTeam,
+} from "../wuwa_calc/src/engine/context";
+import {
+	type ResolvedSnapshot,
+	run as runActions,
+	settleGauges,
+} from "../wuwa_calc/src/engine/evaluate";
+import {
+	Gear,
+	type Loadout,
+	Mainslot,
+	Sonata,
+	Sonata1pc,
+	Sonata2pc,
+	Sonata3pc,
+	Weapon,
+} from "../wuwa_calc/src/engine/gear";
+import {
+	type Action,
+	ActionGroup,
+	CancelledStep,
+	EveryOther,
+	type Rotation,
+	runRotations,
+	SWAP,
+	waitFor,
+} from "../wuwa_calc/src/engine/rotation";
+import { State } from "../wuwa_calc/src/engine/state";
+import {
+	Attribute,
+	CAST_NAME,
+	Cast,
+	Stat,
+	type Tag,
+	Type,
+} from "../wuwa_calc/src/engine/stats";
+import { ALL_TEAMS } from "../wuwa_calc/src/resonators/teams";
+import { TUNE_BREAK_ENEMY } from "../wuwa_calc/src/shared/tunebreak";
+import * as battlepass from "../wuwa_calc/src/weapons/battlepass";
+import * as broadblade from "../wuwa_calc/src/weapons/broadblade";
+import * as gauntlet from "../wuwa_calc/src/weapons/gauntlet";
+import * as pistol from "../wuwa_calc/src/weapons/pistol";
+import * as rectifier from "../wuwa_calc/src/weapons/rectifier";
+import * as standard from "../wuwa_calc/src/weapons/standard";
+import * as sword from "../wuwa_calc/src/weapons/sword";
+import { addActionEndings, groupIntroPaletteActions } from "./actionCatalog";
+import { addActionStages } from "./actionStages";
+import {
+	castConcerto,
+	conditionProblems,
+	exceptionNode,
+	RotationNodeError,
+} from "./rotationDiagnostics";
+
+const ENGINE_REVISION = "7bcbb24ea8c3ef873a8479fcd99d25dd305d8a1f";
+const normalize = (s: string) =>
+	s
+		.normalize("NFKD")
+		.replace(/[\u0300-\u036f]/g, "")
+		.toLowerCase()
+		.replace(/[^a-z0-9]/g, "");
+const species = new Map<string, { typeId: number; name: string }>();
+for (const echo of echoData) {
+	if (echo.monster_id == null) continue;
+	const key = normalize(echo.echo_name);
+	const held = species.get(key);
+	if (!held || echo.monster_id < held.typeId)
+		species.set(key, { typeId: echo.monster_id, name: echo.echo_name });
+}
+type SetGear = Sonata | Sonata2pc | Sonata3pc | Sonata1pc;
+const sets = new Map<string, SetGear>();
+const mains = new Map<number, Mainslot>();
+for (const value of [jinzhou, rinascita, septimont, lahairoi, mengzhou].flatMap(
+	Object.values,
+)) {
+	if (
+		value instanceof Sonata ||
+		value instanceof Sonata2pc ||
+		value instanceof Sonata3pc ||
+		value instanceof Sonata1pc
+	)
+		sets.set(`${value.id}:${value.size}`, value);
+	if (value instanceof Mainslot) mains.set(value.id, value);
+}
+const weapons = new Map<string, Weapon>();
+for (const value of [
+	sword,
+	broadblade,
+	pistol,
+	gauntlet,
+	rectifier,
+	standard,
+	battlepass,
+]
+	.flatMap(Object.values)
+	.flat()) {
+	if (value instanceof Weapon)
+		weapons.set(`${value.id}:${value.refinement}`, value);
+}
+const loadouts = new Map<number, Loadout>();
+for (const team of ALL_TEAMS)
+	for (const l of team.loadouts) loadouts.set(l.id, l);
+
+const STAT: Record<string, [Stat, Tag?]> = {
+	atkFlat: [Stat.FlatAtk],
+	hpFlat: [Stat.FlatHp],
+	defFlat: [Stat.FlatDef],
+	atkPercent: [Stat.BonusAtk],
+	hpPercent: [Stat.BonusHp],
+	defPercent: [Stat.BonusDef],
+	critRate: [Stat.CritRate],
+	critDmg: [Stat.CritDmg],
+	energyRegen: [Stat.ER],
+	healingBonus: [Stat.HealingBonus],
+	basicAtk: [Stat.DmgBonus, Type.Basic],
+	heavyAtk: [Stat.DmgBonus, Type.Heavy],
+	resonanceSkill: [Stat.DmgBonus, Type.Skill],
+	resonanceLiberation: [Stat.DmgBonus, Type.Liberation],
+	aero: [Stat.DmgBonus, Attribute.Aero],
+	glacio: [Stat.DmgBonus, Attribute.Glacio],
+	fusion: [Stat.DmgBonus, Attribute.Fusion],
+	electro: [Stat.DmgBonus, Attribute.Electro],
+	spectro: [Stat.DmgBonus, Attribute.Spectro],
+	havoc: [Stat.DmgBonus, Attribute.Havoc],
+};
+
+let catalog: CalculatorCatalog | undefined;
+const profiles = new Map<string, { loadouts: Loadout[]; mains: Mainslot[] }>();
+const authoredActions = new Map<string, Action>();
+function coreAction(action: Action): Action {
+	if (action instanceof CancelledStep) return coreAction(action.of);
+	if (action instanceof EveryOther) return coreAction(action.gated);
+	if (action instanceof ActionGroup) return coreAction(action.actions[0]!);
+	return action;
+}
+function actionVariant(action: Action): string {
+	if (action instanceof CancelledStep) return action.kind;
+	if (action instanceof EveryOther)
+		return `Every other${actionVariant(action.gated) ? ` · ${actionVariant(action.gated)}` : ""}`;
+	if (action instanceof ActionGroup)
+		return action.actions.map(actionVariant).filter(Boolean).at(-1) ?? "";
+	return action.tag || "";
+}
+function makeRotationKits(teams: TeamProfile[]): RotationKit[] {
+	const members = new Map(
+		teams
+			.flatMap((t) => t.members)
+			.map((m) => [`${m.loadoutId}:${m.mainEcho.engineId}`, m]),
+	);
+	return [...members.values()].map((member) => {
+		const l = loadouts.get(member.loadoutId)!;
+		const refs = new Map<Action, string>();
+		const actions: RotationKit["actions"] = [];
+		const register = (action: Action): string => {
+			const held = refs.get(action);
+			if (held) return held;
+			const id = `${ENGINE_REVISION}:${l.id}:${refs.size}`;
+			refs.set(action, id);
+			authoredActions.set(id, action);
+			const bare =
+				action instanceof CancelledStep
+					? action.of
+					: action instanceof EveryOther
+						? action.gated
+						: action;
+			const first = bare instanceof ActionGroup ? bare.actions[0]! : bare;
+			actions.push({
+				id,
+				name: action.name || first.name,
+				kind: first.mainslot
+					? "Echo"
+					: first.cast === null
+						? "Action"
+						: (CAST_NAME[first.cast] ?? "Action"),
+				seconds: Math.max(0, first.animFrames / 60),
+				variant: actionVariant(action),
+				...(first.mainslot ? { mainEchoId: first.mainslot.id } : {}),
+			});
+			if (bare instanceof ActionGroup) bare.actions.forEach(register);
+			if (bare !== action) register(bare);
+			if (bare.cancelOf) register(bare.cancelOf);
+			if (bare.formOf) register(bare.formOf);
+			return id;
+		};
+		const registerChain = (chain: Rotation["mains"][number]) => {
+			if (chain.cast) register(chain.cast);
+			chain.body.forEach(register);
+			register(chain.exit);
+		};
+		const registerRotations = (source: Loadout) => {
+			for (const rotation of source.rotations) {
+				rotation.startCombat.flatMap((v) => v ?? []).forEach(register);
+				[
+					...rotation.openers,
+					...rotation.mains,
+					...rotation.doubles,
+					...rotation.firstDoubles,
+					...rotation.firstIntros,
+					...rotation.firstOpeners,
+					...rotation.slotIntros.flat(),
+				].forEach(registerChain);
+			}
+		};
+		registerRotations(l);
+		register(SWAP);
+		const extendEndings = addActionEndings(
+			actions,
+			refs,
+			authoredActions,
+			register,
+		);
+		// Keep old authored and ending IDs stable; append stages from compatible
+		// presets only after those IDs have been assigned.
+		for (const source of loadouts.values())
+			if (
+				source !== l &&
+				source.resonator === l.resonator &&
+				source.mode === l.mode
+			)
+				registerRotations(source);
+		extendEndings();
+		addActionStages(actions, authoredActions, register, extendEndings);
+		groupIntroPaletteActions(actions, authoredActions);
+		const r = l.rotationAt(l.minSequence);
+		const fits = (id: string) => {
+			const a = actions.find((a) => a.id === id)!;
+			return !a.mainEchoId || a.mainEchoId === member.mainEcho.engineId;
+		};
+		const chainIds = (
+			chain: Rotation["mains"][number] | undefined,
+			intro: boolean,
+		) =>
+			chain
+				? [
+						...(intro && chain.cast ? [register(chain.cast)] : []),
+						...chain.body.map(register),
+						register(chain.exit),
+					].filter(fits)
+				: [];
+		return {
+			member,
+			actions,
+			start: (r.startCombat[2] ?? []).map(register).filter(fits),
+			opener: chainIds(r.openers[0] ?? r.firstOpeners[0] ?? r.mains[0], false),
+			repeat: chainIds(r.mains[0], true),
+		};
+	});
+}
+function validateMain(rotation: Rotation, main: Mainslot): void {
+	const ids = new Set<number>();
+	const visit = (a: Action): void => {
+		if (a instanceof ActionGroup) {
+			a.actions.forEach(visit);
+			return;
+		}
+		if (a instanceof CancelledStep) {
+			visit(a.of);
+			return;
+		}
+		if (a instanceof EveryOther) {
+			visit(a.gated);
+			return;
+		}
+		if (a.mainslot) ids.add(a.mainslot.id);
+	};
+	rotation.startCombat.flatMap((a) => a ?? []).forEach(visit);
+	for (const chain of [
+		...rotation.openers,
+		...rotation.mains,
+		...rotation.doubles,
+		...rotation.firstDoubles,
+		...rotation.firstIntros,
+		...rotation.firstOpeners,
+		...rotation.slotIntros.flat(),
+	]) {
+		if (chain.cast) visit(chain.cast);
+		chain.body.forEach(visit);
+	}
+	if (ids.size && !ids.has(main.id))
+		throw new Error(`The authored echo actions do not support ${main.name}.`);
+}
+export function getCatalog(): CalculatorCatalog {
+	if (catalog) return catalog;
+	const teams: TeamProfile[] = [];
+	for (const team of ALL_TEAMS) {
+		const choices = team.loadouts.map((l) => [
+			...new Set(
+				l.echoLoadouts
+					.filter((e) => e.fits(team.loadouts.map((v) => v.resonator)))
+					.map((e) => e.mainslot),
+			),
+		]);
+		const variants: Mainslot[][] = choices.reduce<Mainslot[][]>(
+			(acc, list) => acc.flatMap((a) => list.map((v) => [...a, v])),
+			[[]],
+		);
+		for (const picked of variants) {
+			const id = `riley-v1:${team.loadouts.map((l, i) => `${l.id}.${Number(team.mdps[i])}.${picked[i]!.id}`).join("/")}`;
+			if (profiles.has(id)) continue;
+			profiles.set(id, { loadouts: team.loadouts, mains: picked });
+			const errors: string[] = [];
+			const members = team.loadouts.map((l, i) => {
+				const main = picked[i]!;
+				try {
+					validateMain(l.rotationAt(l.minSequence), main);
+				} catch (error) {
+					errors.push(`${l.resonator.name}: ${String(error)}`);
+				}
+				const found = species.get(normalize(main.name));
+				if (!found)
+					errors.push(`Main echo ${main.name} has no game catalog mapping.`);
+				const available = [...weapons.values()].filter(
+					(w) => w.weaponType === l.resonator.weapon,
+				);
+				const byId = new Map<
+					number,
+					{ id: number; name: string; ranks: number[] }
+				>();
+				for (const w of available) {
+					const entry = byId.get(w.id) ?? {
+						id: w.id,
+						name: w.name.replace(/ R[1-5]$/, ""),
+						ranks: [],
+					};
+					entry.ranks.push(w.refinement);
+					byId.set(w.id, entry);
+				}
+				return {
+					characterId: l.resonator.id,
+					name: l.resonator.name,
+					loadoutId: l.id,
+					variant: `${
+						(
+							{
+								16081: "5 Forte Basics",
+								16083: "4 Forte Basics",
+								16082: "3 Forte Basics",
+							} as Record<number, string>
+						)[l.id] ??
+						`Rotation ${
+							[...loadouts.values()]
+								.filter((v) => v.resonator.id === l.resonator.id)
+								.sort((a, b) => a.id - b.id)
+								.findIndex((v) => v.id === l.id) + 1
+						}`
+					}${l.mode ? ` · ${l.mode.name}` : ""}`,
+					mainDps: team.mdps[i]!,
+					mainEcho: {
+						typeId: found?.typeId ?? -1,
+						name: main.name,
+						engineId: main.id,
+					},
+					minSequence: l.minSequence,
+					maxSequence: l.sequences.length,
+					weapons: [...byId.values()],
+					kitMinEr: l.minEr,
+					kitMinCr: l.minCritRate,
+					recommendedMains: [
+						...new Set(
+							l.mainstats.flatMap((m) =>
+								m.slots.map((s) => {
+									const keys = [
+										"critRate",
+										"critDmg",
+										"atkPercent",
+										"hpPercent",
+										"defPercent",
+										"energyRegen",
+										"atkPercent",
+										"hpPercent",
+										"defPercent",
+										"glacio",
+										"fusion",
+										"electro",
+										"aero",
+										"spectro",
+										"havoc",
+										"atkPercent",
+										"hpPercent",
+										"defPercent",
+									];
+									return keys[s]!;
+								}),
+							),
+						),
+					],
+				};
+			});
+			teams.push({
+				id,
+				label: members.map((m) => m.name).join(" → "),
+				members,
+				errors,
+			});
+		}
+	}
+	catalog = {
+		revision: ENGINE_REVISION,
+		teams,
+		sets: [...new Set([...sets.values()].map((s) => s.id))],
+		rotationKits: makeRotationKits(teams),
+	};
+	return catalog;
+}
+
+const echoPieces = new Map<string, Gear>();
+function echoGear(echo: CalcEcho, main?: Mainslot): Gear {
+	const key = JSON.stringify([echo, main?.id]);
+	const cached = echoPieces.get(key);
+	if (cached) return cached;
+	const piece = new Gear({
+		name: echo.uid,
+		constantStats: () =>
+			panelEntry(() => {
+				for (const prop of [...echo.mainStats, ...echo.substats]) {
+					const mapped = STAT[prop.key];
+					if (!mapped || !Number.isFinite(prop.value))
+						throw new Error(`Unsupported stat ${prop.key} on ${echo.uid}`);
+					addStat(mapped[0], prop.value, mapped[1]);
+				}
+				main?.echoStatsFn?.();
+			}),
+	});
+	if (echoPieces.size > 10000) echoPieces.clear();
+	echoPieces.set(key, piece);
+	return piece;
+}
+function pieces(l: Loadout, main: Mainslot, build: MemberBuild): Gear[] {
+	if (build.chain < l.minSequence || build.chain > 6 || build.chain < 0)
+		throw new Error(
+			`${l.resonator.name}: this loadout requires S${l.minSequence}–S6.`,
+		);
+	if (build.chain > l.sequences.length)
+		throw new Error(
+			`${l.resonator.name}: S${build.chain} is not modeled by this loadout; use a supported chain override.`,
+		);
+	const weapon = weapons.get(`${build.weaponId}:${build.weaponRank}`);
+	if (!weapon || weapon.weaponType !== l.resonator.weapon)
+		throw new Error(
+			`${l.resonator.name}: weapon ${build.weaponId} R${build.weaponRank} is unsupported.`,
+		);
+	if (build.echoSource === "rotation") {
+		const pick = build.rotationStats;
+		if (!pick)
+			throw new Error("Resolve teammate rotation stats before simulation.");
+		const echo = l.echoLoadouts[pick.echoIndex];
+		const mainstat = l.mainstats[pick.mainstatIndex];
+		if (
+			!echo ||
+			!mainstat ||
+			echo.mainslot.id !== main.id ||
+			!l.fits(pick.echoIndex, pick.mainstatIndex) ||
+			!l.substat.tiers.some((t) => t.rolls === pick.erRolls)
+		)
+			throw new Error(`${l.resonator.name}: invalid rotation stat template.`);
+		return l.pieces(
+			weapon,
+			echo,
+			mainstat,
+			build.chain,
+			false,
+			false,
+			pick.erRolls,
+		);
+	}
+	if (
+		build.echoes.length !== 5 ||
+		new Set(build.echoes.map((e) => e.uid)).size !== 5 ||
+		build.echoes.reduce((n, e) => n + e.cost, 0) > 12
+	)
+		throw new Error(
+			`${l.resonator.name}: equip five distinct echoes within the 12-cost limit.`,
+		);
+	if (build.echoes[0]!.typeId !== species.get(normalize(main.name))?.typeId)
+		throw new Error(`${l.resonator.name}: slot one must be ${main.name}.`);
+	const setTypes = new Map<number, Set<number>>();
+	for (const e of build.echoes) {
+		if (![...sets.values()].some((s) => s.id === e.setId))
+			throw new Error(`${e.name}: sonata set ${e.setId} is unsupported.`);
+		const distinct = setTypes.get(e.setId) ?? new Set<number>();
+		distinct.add(e.typeId);
+		setTypes.set(e.setId, distinct);
+	}
+	const bonuses = [...setTypes].flatMap(([id, types]) =>
+		[...sets.values()].filter((s) => s.id === id && types.size >= s.size),
+	);
+	return [
+		l.resonator,
+		l.resonator.talent,
+		l.resonator.inherent1,
+		l.resonator.inherent2,
+		l.mode,
+		...l.sequences.slice(0, build.chain),
+		weapon,
+		main,
+		...bonuses,
+		...build.echoes.map((e, i) => echoGear(e, i === 0 ? main : undefined)),
+	].filter((g): g is Gear => g != null);
+}
+
+const prepared = new Map<
+	string,
+	{ gear: Gear[]; stats: SimulationResult["stats"][number] }
+>();
+function runtimeProfile(scenario: Scenario) {
+	const catalog = getCatalog();
+	if (scenario.rotation) {
+		const descriptor = customRotationProfile(scenario.rotation, catalog);
+		if (descriptor.id !== scenario.profileId || descriptor.errors.length)
+			throw new RotationNodeError(
+				descriptor.errors.join(" ") || "Custom rotation ID does not match.",
+				descriptor.diagnosticDetails?.find((issue) => issue.nodeId)?.nodeId,
+			);
+		return {
+			descriptor,
+			profile: {
+				loadouts: descriptor.members.map((m) => loadouts.get(m.loadoutId)!),
+				mains: descriptor.members.map((m) => mains.get(m.mainEcho.engineId)!),
+			},
+		};
+	}
+	const descriptor = catalog.teams.find((p) => p.id === scenario.profileId);
+	const profile = profiles.get(scenario.profileId);
+	if (!descriptor || !profile || descriptor.errors.length)
+		throw new Error(
+			descriptor?.errors.join(" ") ||
+				"This team profile is unavailable. Select a team again.",
+		);
+	return { descriptor, profile };
+}
+/** Execute the authored order. Character changes make physical swaps; Intros/Outros stay explicit. */
+function runCustom(
+	state: State,
+	scenario: Scenario,
+	profile: { loadouts: Loadout[]; mains: Mainslot[] },
+	linkSources: boolean,
+) {
+	const steps = flattenRotation(scenario.rotation!.nodes);
+	const sections: ReturnType<typeof runActions>[] = [[]];
+	const sources = new Map<ActionGroup, string>();
+	let offset = 0;
+	let incomingIntro = false;
+	while (offset < steps.length) {
+		const characterId = steps[offset]!.characterId;
+		const slot = profile.loadouts.findIndex(
+			(l) => l.resonator.id === characterId,
+		);
+		if (slot < 0)
+			throw new RotationNodeError(
+				"An action belongs to a character outside the team.",
+				steps[offset]!.id,
+			);
+		let end = offset + 1;
+		while (end < steps.length && steps[end]!.characterId === characterId) end++;
+		const next =
+			end < steps.length
+				? profile.loadouts.findIndex(
+						(l) => l.resonator.id === steps[end]!.characterId,
+					)
+				: (slot + 1) % 3;
+		if (offset > 0 && state.active !== slot) {
+			sections[0]!.push(...runActions(state, [SWAP]));
+		}
+		state.active = slot;
+		state.outroDir = next === (slot + 1) % 3 ? 1 : -1;
+		const actions = steps.slice(offset, end).map((step) => {
+			if (step.kind === "wait")
+				return waitFor(Math.round(step.seconds * 60), "rotation");
+			const action = authoredActions.get(step.actionId);
+			if (
+				!action ||
+				!step.actionId.startsWith(
+					`${ENGINE_REVISION}:${profile.loadouts[slot]!.id}:`,
+				)
+			)
+				throw new RotationNodeError(
+					"This action is unavailable for the selected variant.",
+					step.id,
+				);
+			if (coreAction(action).cast === Cast.Outro && step !== steps[end - 1])
+				throw new RotationNodeError(
+					"Place an Outro at the end of a character's turn.",
+					step.id,
+				);
+			if (
+				coreAction(action).cast === Cast.Intro &&
+				(!incomingIntro || step !== steps[offset])
+			)
+				throw new RotationNodeError(
+					`${profile.loadouts[slot]!.resonator.name}: an Intro must follow another character's Outro.`,
+					step.id,
+				);
+			return action;
+		});
+		if (incomingIntro && coreAction(actions[0]!).cast !== Cast.Intro)
+			throw new RotationNodeError(
+				`${profile.loadouts[slot]!.resonator.name}: add an Intro after the previous Outro, or replace that Outro with a plain swap.`,
+				steps[offset]!.id,
+			);
+		// Groups carry source metadata without replacing the kit's Action objects.
+		// A one-press group has the same scheduling boundary as a standalone press.
+		const written = linkSources
+			? actions.map((action, index) => {
+					const group =
+						action instanceof ActionGroup
+							? new ActionGroup(action.name, action.actions, action.trailing)
+							: new ActionGroup(action.name, [action]);
+					sources.set(group, steps[offset + index]!.id);
+					return group;
+				})
+			: actions;
+		try {
+			sections[0]!.push(...runActions(state, written));
+		} catch (error) {
+			const message = error instanceof Error ? error.message : String(error);
+			throw new RotationNodeError(
+				message,
+				exceptionNode(
+					message,
+					actions.map((action, index) => ({
+						action,
+						nodeId: steps[offset + index]!.id,
+					})),
+				),
+			);
+		}
+		incomingIntro =
+			coreAction(actions[actions.length - 1]!).cast === Cast.Outro;
+		if (end < steps.length && state.active === slot) {
+			// A plain swap does not grant Concerto or an Intro.
+			if (actions[actions.length - 1] !== SWAP)
+				sections[0]!.push(...runActions(state, [SWAP]));
+			state.active = next;
+		}
+		offset = end;
+	}
+	const cutoff = Math.max(state.real, state.playsTo);
+	sections[0]!.push(...runActions(state, [], true, cutoff));
+	const nodeSources = new Map(
+		sections[0]!.flatMap((s) => {
+			const nodeId = sources.get(s.group ?? s.groupSpill!);
+			return nodeId ? [[s, nodeId] as const] : [];
+		}),
+	);
+	return { sections, end: state.gameOf(cutoff), blind: false, nodeSources };
+}
+export function evaluate(scenario: Scenario, trace = true): SimulationResult {
+	const { profile } = runtimeProfile(scenario);
+	if (
+		scenario.members.length !== 3 ||
+		!Number.isInteger(scenario.cycles) ||
+		scenario.cycles < 1 ||
+		scenario.cycles > 20
+	)
+		throw new Error("Invalid team scenario.");
+	const builds = profile.loadouts.map((l) => {
+		const build = scenario.members.find(
+			(m) => m.characterId === l.resonator.id,
+		);
+		if (!build)
+			throw new Error(`${l.resonator.name} is missing from the team.`);
+		return build;
+	});
+	const owned = builds
+		.filter((b) => b.echoSource !== "rotation")
+		.flatMap((b) => b.echoes);
+	if (new Set(owned.map((e) => e.uid)).size !== owned.length)
+		throw new Error("Each team echo must be a different owned instance.");
+	const gear: Gear[][] = [];
+	const stats: SimulationResult["stats"] = {};
+	for (const [i, build] of builds.entries()) {
+		const key = JSON.stringify([
+			scenario.profileId,
+			profile.loadouts[i]!.id,
+			profile.mains[i]!.id,
+			build,
+		]);
+		const cached = prepared.get(key);
+		if (cached) {
+			gear.push(cached.gear);
+			stats[build.characterId] = cached.stats;
+			continue;
+		}
+		const items = pieces(profile.loadouts[i]!, profile.mains[i]!, build);
+		if (
+			build.echoSource === "rotation" &&
+			!profile.loadouts[i]!.echoLoadouts[build.rotationStats!.echoIndex]!.fits(
+				profile.loadouts.map((l) => l.resonator),
+			)
+		)
+			throw new Error("The rotation stat template does not fit this team.");
+		gear.push(items);
+		const constant = menuStats(items);
+		const sum = (stat: Stat) =>
+			constant.filter((e) => e.stat === stat).reduce((n, e) => n + e.value, 0);
+		stats[builds[i]!.characterId] = {
+			...panelStats(items),
+			er: sum(Stat.ER),
+			cr: sum(Stat.CritRate),
+			cd: sum(Stat.CritDmg),
+		};
+		if (prepared.size > 2048) prepared.clear();
+		prepared.set(key, { gear: items, stats: stats[build.characterId]! });
+	}
+	const rotations = profile.loadouts.map((l, i) => {
+		const rotation = l.rotationAt(builds[i]!.chain);
+		if (!scenario.rotation) validateMain(rotation, profile.mains[i]!);
+		return rotation;
+	});
+	const run = () => {
+		const state = new State(profile.loadouts.map((l) => l.resonator.name));
+		setTracing(trace);
+		for (const [i, items] of gear.entries()) {
+			state.active = i;
+			withTeam(state, () => {
+				for (const g of items) equip(g);
+			});
+			state.slots[i]!.constEr = stats[builds[i]!.characterId]!.er;
+		}
+		state.active = 0;
+		withTeam(state, () => equipEnemy(TUNE_BREAK_ENEMY));
+		const result = scenario.rotation
+			? runCustom(state, scenario, profile, trace && !!scenario.capturePlayback)
+			: runRotations(state, rotations, scenario.cycles);
+		return { state, result };
+	};
+	let { state, result } = run();
+	if (result.blind) ({ state, result } = run());
+	const diagnostics: string[] = [];
+	const diagnosticDetails: RotationDiagnostic[] = [];
+	const report = (message: string, nodeId?: string, summary?: string) => {
+		diagnostics.push(message);
+		diagnosticDetails.push({
+			message,
+			...(nodeId ? { nodeId } : {}),
+			...(summary ? { summary } : {}),
+		});
+	};
+	if (
+		result.blind ||
+		(!scenario.rotation && result.sections.length !== scenario.cycles)
+	)
+		report("The authored rotation did not complete the requested cycles.");
+	const snaps = result.sections.flat() as ResolvedSnapshot[];
+	if (trace) settleGauges(snaps);
+	for (const s of snaps) {
+		const concertoAtCast =
+			trace &&
+			s.castUnmet?.[1] &&
+			(!s.triggered || s.action.cast === Cast.Outro)
+				? castConcerto(s)
+				: undefined;
+		const reasons = conditionProblems(s, concertoAtCast);
+		if (reasons.length) {
+			report(
+				`${s.slot}: ${s.action.name} — ${reasons.join("; ")}.`,
+				"nodeSources" in result ? result.nodeSources.get(s) : undefined,
+				reasons[0],
+			);
+		}
+	}
+	const energy = state.slots.map((slot, i) => {
+		const actual = stats[builds[i]!.characterId]!.er;
+		const required = Math.max(100, slot.erWorst);
+		const kitMinimum = profile.loadouts[i]!.minEr;
+		const feasible =
+			Number.isFinite(required) &&
+			actual + 1e-6 >= Math.max(required, kitMinimum);
+		if (!feasible)
+			report(
+				`${slot.name}: ${actual.toFixed(1)}% ER, needs ${required.toFixed(1)}% for the rotation${kitMinimum > required ? ` and ${kitMinimum}% for the kit` : ""}.`,
+			);
+		if (
+			stats[builds[i]!.characterId]!.cr + 1e-6 <
+			profile.loadouts[i]!.minCritRate
+		)
+			report(
+				`${slot.name}: kit requires ${profile.loadouts[i]!.minCritRate}% Crit. Rate.`,
+			);
+		return {
+			characterId: builds[i]!.characterId,
+			name: slot.name,
+			actual,
+			required,
+			kitMinimum,
+			feasible,
+		};
+	});
+	const damageByMember: Record<number, number> = {};
+	for (const b of builds) damageByMember[b.characterId] = 0;
+	for (const hit of state.hits) {
+		if (hit.at > result.end) continue;
+		const i = state.slots.findIndex((slot) => slot.name === hit.member);
+		if (i >= 0) damageByMember[builds[i]!.characterId]! += hit.avg;
+	}
+	const teamDamage = Object.values(damageByMember).reduce((n, v) => n + v, 0);
+	if (!Number.isFinite(teamDamage) || teamDamage <= 0)
+		report("Simulation produced no finite positive damage.");
+	return {
+		feasible: diagnostics.length === 0,
+		damageByMember,
+		teamDamage,
+		duration: result.end / 60,
+		energy,
+		diagnostics: [...new Set(diagnostics)].slice(0, 20),
+		...(scenario.capturePlayback
+			? {
+					diagnosticDetails: [
+						...new Map(
+							diagnosticDetails.map((issue) => [JSON.stringify(issue), issue]),
+						).values(),
+					],
+				}
+			: {}),
+		stats,
+		...(trace && scenario.capturePlayback
+			? {
+					playback: snaps
+						.map((s, index) => ({
+							id: `event:${index}`,
+							characterId:
+								builds[state.slots.findIndex((slot) => slot.name === s.member)]
+									?.characterId ?? 0,
+							name: s.action.name,
+							kind: s.action.mainslot
+								? "Echo"
+								: s.action.cast === null
+									? "Action"
+									: (CAST_NAME[s.action.cast] ?? "Action"),
+							time: s.starts / 60,
+							duration: Math.max(0, state.gameOf(s.ends) - s.starts) / 60,
+							damage: s.avg,
+							automatic: s.queued,
+							...(s.source ? { source: s.source.name } : {}),
+						}))
+						.sort((a, b) => a.time - b.time),
+				}
+			: {}),
+	};
+}
+
+/** Provisional scoring path. Search validates ranked candidates with evaluate(). */
+export function evaluateFast(scenario: Scenario): SimulationResult {
+	return evaluate(scenario, false);
+}
+
+/**
+ * Pick fixed, theoretical teammate builds before the inventory search. Coordinate
+ * ascent compares Riley's authored sets/mains with the normal ChemX32 spread and
+ * promotes ER only within that spread's real tiers. This is a bounded template
+ * search, not a claim of globally optimal stats.
+ *
+ * A theoretical target anchors this preparation, so teammate assumptions are
+ * independent of both the equipped baseline and each inventory candidate. Only
+ * opted-in teammates keep these builds; the real target always uses owned echoes.
+ */
+export function resolveRotationStats(
+	scenario: Scenario,
+	targetId?: number,
+): Scenario {
+	const requested = scenario.members.filter((m) => m.echoSource === "rotation");
+	if (requested.some((m) => m.characterId === targetId))
+		throw new Error("The optimization target must use owned echoes.");
+	if (!requested.length) return scenario;
+	const { profile } = runtimeProfile(scenario);
+	const resonators = profile.loadouts.map((l) => l.resonator);
+	const options = new Map<
+		number,
+		NonNullable<MemberBuild["rotationStats"]>[]
+	>();
+	for (const [i, l] of profile.loadouts.entries()) {
+		if (
+			!requested.some((m) => m.characterId === l.resonator.id) &&
+			l.resonator.id !== targetId
+		)
+			continue;
+		const choices = l.echoLoadouts.flatMap((echo, echoIndex) =>
+			echo.mainslot.id !== profile.mains[i]!.id || !echo.fits(resonators)
+				? []
+				: l.mainstats.flatMap((_, mainstatIndex) =>
+						l.fits(echoIndex, mainstatIndex)
+							? [
+									{
+										echoIndex,
+										mainstatIndex,
+										erRolls: l.substat.tiers[0]!.rolls,
+									},
+								]
+							: [],
+					),
+		);
+		if (!choices.length)
+			throw new Error(
+				`${l.resonator.name}: no compatible rotation stat template.`,
+			);
+		options.set(l.resonator.id, choices);
+	}
+	let trial: Scenario = {
+		...scenario,
+		members: scenario.members.map((m) =>
+			options.has(m.characterId)
+				? {
+						...m,
+						echoSource: "rotation",
+						echoes: [],
+						rotationStats: options.get(m.characterId)![0],
+					}
+				: m,
+		),
+	};
+	// All corrective runs start fresh. No invented ER, energy refill, or relaxed
+	// requirement is ever applied to an actual inventory build.
+	const measure = (input: Scenario) => {
+		let current = input;
+		for (;;) {
+			const result = evaluate(current, false);
+			let changed = false;
+			const members = current.members.map((m) => {
+				if (!options.has(m.characterId)) return m;
+				const need = result.energy.find(
+					(e) => e.characterId === m.characterId,
+				)!;
+				if (need.feasible) return m;
+				const l = profile.loadouts.find(
+					(l) => l.resonator.id === m.characterId,
+				)!;
+				const next = l.substat.tiers.find(
+					(t) => t.rolls > m.rotationStats!.erRolls,
+				);
+				if (!next) return m;
+				changed = true;
+				return {
+					...m,
+					rotationStats: { ...m.rotationStats!, erRolls: next.rolls },
+				};
+			});
+			if (changed) {
+				current = { ...current, members };
+				continue;
+			}
+			const deficit = [...options.keys()].reduce((n, id) => {
+				const e = result.energy.find((e) => e.characterId === id)!;
+				const l = profile.loadouts.find((l) => l.resonator.id === id)!;
+				return (
+					n +
+					(Number.isFinite(e.required)
+						? Math.max(0, Math.max(e.required, e.kitMinimum) - e.actual)
+						: 1e6) +
+					Math.max(0, l.minCritRate - result.stats[id]!.cr)
+				);
+			}, 0);
+			return { scenario: current, result, deficit };
+		}
+	};
+	let best = measure(trial);
+	for (let pass = 0; pass < 3; pass++) {
+		const before = JSON.stringify(best.scenario);
+		for (const [id, choices] of options) {
+			const base = best.scenario;
+			for (const choice of choices) {
+				trial = {
+					...base,
+					members: base.members.map((m) =>
+						m.characterId === id ? { ...m, rotationStats: choice } : m,
+					),
+				};
+				const candidate = measure(trial);
+				if (
+					candidate.deficit < best.deficit - 1e-6 ||
+					(Math.abs(candidate.deficit - best.deficit) < 1e-6 &&
+						candidate.result.teamDamage > best.result.teamDamage)
+				)
+					best = candidate;
+			}
+		}
+		if (JSON.stringify(best.scenario) === before) break;
+	}
+	return {
+		...scenario,
+		members: scenario.members.map((m) =>
+			m.echoSource === "rotation"
+				? best.scenario.members.find((b) => b.characterId === m.characterId)!
+				: m,
+		),
+	};
+}

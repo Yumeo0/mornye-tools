@@ -28,3 +28,5 @@ data/__pycache__
 # Calculator runtime data
 public/data/
 .cache/
+.playwright-cli/
+src/lib/calc/riley/engine.generated.js

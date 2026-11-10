@@ -16,8 +16,8 @@ name: Build and Release
 # TAURI_SIGNING_PRIVATE_KEY_PASSWORD secret and pass it to the build step.
 #
 # Build notes:
-#   - `bun install` runs the postinstall, which builds @wuwacalc/core from the
-#     `thewuwacalculator` submodule and syncs public/data, so the submodule has
+#   - `bun install` runs postinstall, which bundles the pinned simulation adapter
+#     from `wuwa_calc`, so the submodule has
 #     to be checked out first. Its URL is SSH for developer machines, so the
 #     runner rewrites github.com to HTTPS. The data/* checkouts only feed the
 #     data-compile scripts and are not needed here.
@@ -68,7 +68,7 @@ jobs:
         shell: bash
         run: |
           git config --global url."https://github.com/".insteadOf "git@github.com:"
-          git submodule update --init --recursive --depth 1 thewuwacalculator
+          git submodule update --init --recursive --depth 1 wuwa_calc
 
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2

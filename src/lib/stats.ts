@@ -204,8 +204,26 @@ export interface StatTier {
 	breakpoint?: string;
 }
 
-/** Descending weights in 0.5 steps, starting at ×1 for the lowest tier. */
-export function substatPriorityWeights(tiers: string[][]): Map<string, number> {
+/** Minimum ER target from the guide; ranges use their lower bound. */
+export function energyRegenBreakpoint(
+	raw: string | null | undefined,
+): number | undefined {
+	for (const tier of parseSubstatTiers(raw)) {
+		for (const stat of tier) {
+			if (normalizeStatName(stat.name) !== "energy regen") continue;
+			const match = stat.breakpoint?.match(/\d+(?:\.\d+)?/);
+			if (match) return Number(match[0]);
+		}
+	}
+	return undefined;
+}
+
+/** Descending weights in 0.5 steps. ER's utility weight grows with its target:
+ * ×1 at 100%, ×1.2 at 120%, ×2.6 at 260%. */
+export function substatPriorityWeights(
+	tiers: string[][],
+	erBreakpoint = 100,
+): Map<string, number> {
 	const groups = tiers.filter((tier) => tier.length > 0);
 	const weights = new Map<string, number>();
 	groups.forEach((tier, index) => {
@@ -215,12 +233,16 @@ export function substatPriorityWeights(tiers: string[][]): Map<string, number> {
 				weights.set(normalized, 1 + (groups.length - index - 1) * 0.5);
 		}
 	});
+	const er = weights.get("energy regen");
+	if (er !== undefined && Number.isFinite(erBreakpoint))
+		weights.set("energy regen", er * Math.max(1, erBreakpoint / 100));
 	return weights;
 }
 
 /**
  * Echo-value priorities: uncapped stats retain their guide order; Energy Regen
- * and explicit breakpoint stats share the lowest (×1) utility tier.
+ * and explicit breakpoint stats share the lowest utility tier. ER's breakpoint
+ * is applied separately by substatPriorityWeights.
  */
 export function rollValueSubstatTiers(
 	raw: string | null | undefined,

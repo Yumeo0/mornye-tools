@@ -4,6 +4,7 @@
 import { describe, expect, test } from "bun:test";
 
 import {
+	energyRegenBreakpoint,
 	rollValueSubstatTiers,
 	subStatRoll,
 	subStatRolls,
@@ -13,6 +14,35 @@ import {
 } from "@/lib/stats";
 
 describe("roll value substat priorities", () => {
+	test("ER weight grows with the guide target without changing other weights", () => {
+		const tiers = [["Crit. DMG"], ["HP%"], ["Energy Regen"]];
+		for (const [target, weight] of [
+			[100, 1],
+			[120, 1.2],
+			[200, 2],
+			[260, 2.6],
+		]) {
+			const weights = substatPriorityWeights(tiers, target);
+			expect(weights.get("energy regen")).toBe(weight);
+			expect(weights.get("crit dmg")).toBe(2);
+			expect(weights.get("hp%")).toBe(1.5);
+		}
+		expect(substatPriorityWeights(tiers, 90).get("energy regen")).toBe(1);
+		expect(substatPriorityWeights(tiers, Number.NaN).get("energy regen")).toBe(
+			1,
+		);
+	});
+
+	test("ER targets support exact, approximate and ranged guide breakpoints", () => {
+		expect(energyRegenBreakpoint("ER:260%>CD>HP%")).toBe(260);
+		expect(energyRegenBreakpoint("CR:70%>ER:~110-130%+")).toBe(110);
+		expect(energyRegenBreakpoint("ER:200-250%+>HP%")).toBe(200);
+		expect(energyRegenBreakpoint("ER:120.5%>CD")).toBe(120.5);
+		expect(energyRegenBreakpoint("ER>CD")).toBeUndefined();
+		expect(energyRegenBreakpoint("CR:70%>HP%")).toBeUndefined();
+		expect(energyRegenBreakpoint(null)).toBeUndefined();
+	});
+
 	test("breakpoint stats move below uncapped stats and use a shared utility weight", () => {
 		const tiers = rollValueSubstatTiers("ER:~110-130%+>CR:70%=CD>ATK%>HA%=ATK");
 		expect(tiers.map((tier) => tier.map((stat) => stat.code))).toEqual([

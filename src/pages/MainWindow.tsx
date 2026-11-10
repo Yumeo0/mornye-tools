@@ -1,4 +1,4 @@
-import { DashboardSquare01Icon } from "@hugeicons/core-free-icons";
+import { DashboardSquare01Icon, RepeatIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { isTauri } from "@tauri-apps/api/core";
 import { getAllWindows, getCurrentWindow } from "@tauri-apps/api/window";
@@ -30,6 +30,7 @@ import { MapTab } from "@/components/tabs/MapTab";
 import { OptimizerTab } from "@/components/tabs/OptimizerTab";
 import { OverviewTab } from "@/components/tabs/OverviewTab";
 import { QuestsTab } from "@/components/tabs/QuestsTab";
+import { RotationBuilderTab } from "@/components/tabs/RotationBuilderTab";
 import { SettingsTab } from "@/components/tabs/SettingsTab";
 import { WeaponsTab } from "@/components/tabs/WeaponsTab";
 import { UpdateBanner } from "@/components/UpdateBanner";
@@ -37,7 +38,14 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Toaster } from "@/components/ui/sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAccount } from "@/lib/account";
+import {
+	EMPTY_OPTIMIZER_SETUP,
+	optimizerSetupKey,
+	optimizerSetupSchema,
+} from "@/lib/optimizerSetup";
 import { setOverlayVisible } from "@/lib/overlayWindow";
+import { useFilterState } from "@/lib/persistentState";
 import { applyResolutionRegions } from "@/lib/scanRegions";
 import { readSetting } from "@/lib/settings";
 import { blockingErrors } from "@/lib/sniffer";
@@ -108,6 +116,11 @@ const NAV_GROUPS = [
 			{
 				value: "optimizer",
 				title: "Optimizer",
+				icon: "/icons/navigation/optimizer.webp",
+			},
+			{
+				value: "rotations",
+				title: "Rotations",
 				icon: "/icons/navigation/optimizer.webp",
 			},
 			{ value: "map", title: "Map", icon: "/icons/navigation/map.webp" },
@@ -202,6 +215,12 @@ function SnifferErrorToasts() {
 }
 
 export default function MainWindow() {
+	const { snapshot } = useAccount();
+	const [, setOptimizerSetup] = useFilterState(
+		optimizerSetupKey(snapshot.profile?.id),
+		EMPTY_OPTIMIZER_SETUP,
+		optimizerSetupSchema,
+	);
 	const [tab, setTab] = useState("overview");
 	const [sidebarOpen, setSidebarOpen] = useState(true);
 	const [importOpen, setImportOpen] = useState(false);
@@ -277,6 +296,22 @@ export default function MainWindow() {
 		{
 			value: "optimizer",
 			content: <OptimizerTab active={tab === "optimizer"} />,
+		},
+		{
+			value: "rotations",
+			content: (
+				<RotationBuilderTab
+					active={tab === "rotations"}
+					onOptimize={(rotation) => {
+						setOptimizerSetup((previous) => ({
+							...previous,
+							profileId: `custom:${rotation.id}`,
+							targetId: 0,
+						}));
+						setTab("optimizer");
+					}}
+				/>
+			),
 		},
 		{
 			value: "settings",
@@ -358,14 +393,21 @@ export default function MainWindow() {
 										title={item.title}
 										sidebarOpen={sidebarOpen}
 										icon={
-											<img
-												src={item.icon}
-												alt=""
-												className={cn(
-													"shrink-0 object-contain",
-													sidebarOpen ? "size-7" : "size-6",
-												)}
-											/>
+											item.value === "rotations" ? (
+												<HugeiconsIcon
+													icon={RepeatIcon}
+													className="size-6 shrink-0"
+												/>
+											) : (
+												<img
+													src={item.icon}
+													alt=""
+													className={cn(
+														"shrink-0 object-contain",
+														sidebarOpen ? "size-7" : "size-6",
+													)}
+												/>
+											)
 										}
 									/>
 								))}

@@ -62,12 +62,19 @@ export const weaponSortSchema = z.enum([
 
 export const optimizerFiltersSchema = z.object({
 	useRecommended: z.boolean().default(false),
-	minEnergyRegen: z.number().min(0).max(1000).default(0),
 	equipped: z.enum(["include", "exclude-others", "exclude-all"]),
 	minLevel: z.number().min(0).max(25),
 	sets: strings,
 	mainStats: strings,
 	substats: strings,
+});
+
+export const rotationFiltersSchema = z.object({
+	search: z.string(),
+	characterId: z.string(),
+	role: z.enum(["any", "dps", "support"]),
+	ownership: z.enum(["any", "owned"]),
+	compatibility: z.enum(["any", "supported"]),
 });
 
 export const visibilityOverridesSchema = z.record(z.string(), z.boolean());

@@ -10,11 +10,11 @@ git submodule update --init
 bun install
 bun run dev          # browser UI
 bun run tauri dev    # desktop app
-bun run build        # TypeScript + production frontend
+bun run build        # calculator bundle + TypeScript + production frontend
 ```
 
 Use the Bun scripts rather than raw Vite. `bun install` builds the calculator
-submodule and syncs its required JSON into gitignored `public/data/live/`.
+submodule into a generated simulation adapter. No calculator data is fetched at runtime.
 If installation fails because a submodule is missing, initialize it and rerun.
 
 ## Checks
@@ -138,7 +138,7 @@ require Tauri.
 ## Game data and assets
 
 Do not edit vendored/generated code or submodule contents:
-`src-tauri/crates/spectrum/`, `thewuwacalculator/`, and `data/` checkouts.
+`src-tauri/crates/spectrum/`, `wuwa_calc/`, and `data/` checkouts.
 
 | Task | Command |
 | --- | --- |
@@ -187,3 +187,12 @@ bun run map:compile
 
 See [remaining challenge questions](map-challenge-audit.md) and
 [challenge icon sources](map-combat-icon.md).
+
+## Calculator
+
+The pinned `wuwa_calc/` tree is read-only. App-owned integration lives in
+`calculator/engine.ts`; `bun install`, `bun run dev`, and `bun run build` regenerate
+the ignored `src/lib/calc/riley/engine.generated.js` bundle. The worker and UI
+communicate through `src/lib/calc/types.ts`. Run `bun run check:calculator` for
+the isolated upstream-compatible TypeScript check, and `bun run bench:calculators`
+for the deterministic manual benchmark. See [migration details](calculator-migration.md).

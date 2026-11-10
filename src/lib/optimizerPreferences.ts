@@ -8,15 +8,8 @@ import {
 import { readSetting, writeSetting } from "@/lib/settings";
 
 export interface OptimizerPreferences {
-	engine: "gpu" | "cpu";
+	engine: "cpu";
 	resultsLimit: number;
-}
-
-export function hasWebGpu(): boolean {
-	return (
-		typeof navigator !== "undefined" &&
-		(navigator as Navigator & { gpu?: unknown }).gpu != null
-	);
 }
 
 export function normalizeOptimizerPreferences(
@@ -24,12 +17,7 @@ export function normalizeOptimizerPreferences(
 ): OptimizerPreferences {
 	const saved = value as Partial<OptimizerPreferences> | null;
 	return {
-		engine:
-			saved?.engine === "cpu" || saved?.engine === "gpu"
-				? saved.engine
-				: hasWebGpu()
-					? "gpu"
-					: "cpu",
+		engine: "cpu",
 		resultsLimit:
 			typeof saved?.resultsLimit === "number" &&
 			Number.isFinite(saved.resultsLimit)

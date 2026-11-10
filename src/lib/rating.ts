@@ -13,6 +13,7 @@ import {
 	type RoleBuild,
 } from "@/lib/characters";
 import {
+	energyRegenBreakpoint,
 	normalizeStatName,
 	rollValueSubstatTiers,
 	sonataNames,
@@ -30,6 +31,7 @@ export interface CharacterInfo {
 		"3cost": string[][];
 		"1cost": string[][];
 		subs: string[][];
+		erBreakpoint?: number;
 	};
 }
 
@@ -94,6 +96,9 @@ export function statsForRole(
 	return {
 		...mainStatsFromRole(guide.echo_sets.main_stats),
 		subs: subsFromPriority(guide.substats_priority ?? fallbackPriority),
+		erBreakpoint: energyRegenBreakpoint(
+			guide.substats_priority ?? fallbackPriority,
+		),
 	};
 }
 
@@ -235,8 +240,12 @@ function statRollValue(
 export function rollValueForWantedSubstats(
 	wantedSubstats: string[][],
 	parsedSubStats: string[],
+	erBreakpoint?: number,
 ): number {
-	const { weights, presence, scale } = weightedRollScoring(wantedSubstats);
+	const { weights, presence, scale } = weightedRollScoring(
+		wantedSubstats,
+		erBreakpoint,
+	);
 	const entries = echoSubstatEntries(parsedSubStats);
 
 	let total = 0;
@@ -248,8 +257,8 @@ export function rollValueForWantedSubstats(
 	return Math.round(Math.min(Math.max(total, 0), 100));
 }
 
-function weightedRollScoring(tiers: string[][]) {
-	const weights = substatPriorityWeights(tiers);
+function weightedRollScoring(tiers: string[][], erBreakpoint?: number) {
+	const weights = substatPriorityWeights(tiers, erBreakpoint);
 	const count = Math.min(weights.size, MAX_SUBSTATS);
 	const maxWeight = [...weights.values()]
 		.sort((a, b) => b - a)
@@ -269,7 +278,11 @@ export function calculateRating(
 	main: EchoMainStat,
 ): number {
 	if (!hasWantedMainStat(character, main)) return 0;
-	return rollValueForWantedSubstats(character.stats.subs, parsedSubStats);
+	return rollValueForWantedSubstats(
+		character.stats.subs,
+		parsedSubStats,
+		character.stats.erBreakpoint,
+	);
 }
 
 /**
@@ -286,6 +299,7 @@ export function maxPossibleRating(
 	if (!hasWantedMainStat(character, main)) return 0;
 	const { weights, presence, scale } = weightedRollScoring(
 		character.stats.subs,
+		character.stats.erBreakpoint,
 	);
 	const entries = echoSubstatEntries(parsedSubStats);
 

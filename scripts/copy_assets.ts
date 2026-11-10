@@ -148,10 +148,6 @@ export async function copyAssets(): Promise<void> {
 			}
 		}
 		mkdirSync(dirname(output), { recursive: true });
-		if (source.startsWith("calculator/weapons/")) {
-			copyFileSync(input, output);
-			continue;
-		}
 		// One-time migration can reuse the exact encoding already shipped by the app.
 		const filename = source
 			.split("/")

@@ -1,66 +1,86 @@
-// In-app calculator core bootstrap: host seams + game-data initialization.
-//
-// The core (`@wuwacalc/core`) is framework-free; this module installs the two
-// host seams it expects (worker factory, game-data source) and loads the
-// catalogs from the locally synced `public/data` (the core's default `/data`
-// path, so calculation workers resolve the same data without extra config).
+import SimulationWorker from "./simulation.worker?worker";
+import type {
+	CalculatorCatalog,
+	RotationDiagnostic,
+	Scenario,
+	SearchRequest,
+	SearchUpdate,
+	SimulationResult,
+} from "./types";
 
-import {
-	type CoreWorkerRole,
-	configureCore,
-	createFetchGameDataSource,
-} from "@wuwacalc/core/data/coreEnvironment";
-import { initGameData } from "@wuwacalc/core/data/gameData/index";
-
-import EvaluationWorker from "@wuwacalc/core/engine/evaluation/buildEvaluation.worker?worker";
-import OptimizerCompileWorker from "@wuwacalc/core/engine/optimizer/workers/compile.worker?worker";
-import OptimizerTaskWorker from "@wuwacalc/core/engine/optimizer/workers/task.worker?worker";
-import OptimizerTheoryWorker from "@wuwacalc/core/engine/optimizer/workers/theoryProducer.worker?worker";
-import SuggestionsCandidateWorker from "@wuwacalc/core/engine/suggestions/candidate.worker?worker";
-import SuggestionsWorker from "@wuwacalc/core/engine/suggestions/worker?worker";
-
-/** Worker roles mapped exactly like the calculator's `src/app/coreWorkers.ts`. */
-const CORE_WORKERS: Record<CoreWorkerRole, () => Worker> = {
-	evaluation: () => new EvaluationWorker(),
-	suggestions: () => new SuggestionsWorker(),
-	"suggestions-candidate": () => new SuggestionsCandidateWorker(),
-	"optimizer-task": () => new OptimizerTaskWorker(),
-	"optimizer-theory": () => new OptimizerTheoryWorker(),
-	"optimizer-compile": () => new OptimizerCompileWorker(),
-};
-
-let configurePromise: Promise<void> | null = null;
-let ready = false;
-
-/**
- * Configure the core once and initialize the `live` game data. Missing data is
- * a hard error: evaluation must never silently run against an empty catalog.
- */
-export function ensureCoreReady(): Promise<void> {
-	if (configurePromise) return configurePromise;
-	configureCore({
-		createWorker: (role) => {
-			const factory = CORE_WORKERS[role];
-			if (!factory) {
-				throw new Error(`No worker mapped for core role "${role}"`);
-			}
-			return factory();
-		},
-		gameData: createFetchGameDataSource({ baseUrl: "/data" }),
-		shouldRetainGameData: () => true,
-	});
-	const promise = initGameData({ mode: "live" })
-		.then(() => {
-			ready = true;
-		})
-		.catch((error: unknown) => {
-			configurePromise = null;
-			throw error;
-		});
-	configurePromise = promise;
-	return promise;
+let catalog: CalculatorCatalog | null = null;
+let pending: Promise<CalculatorCatalog> | null = null;
+export function getCalculatorCatalog() {
+	return catalog;
 }
-
-export function isCoreReady(): boolean {
-	return ready;
+export function ensureCoreReady(): Promise<CalculatorCatalog> {
+	if (catalog) return Promise.resolve(catalog);
+	if (pending) return pending;
+	pending = new Promise<CalculatorCatalog>((resolve, reject) => {
+		const worker = new SimulationWorker();
+		worker.onmessage = (event) => {
+			worker.terminate();
+			if (event.data.kind === "catalog") {
+				catalog = event.data.value;
+				resolve(catalog!);
+			} else {
+				pending = null;
+				reject(new Error(event.data.message));
+			}
+		};
+		worker.onerror = (event) => {
+			worker.terminate();
+			pending = null;
+			reject(new Error(event.message));
+		};
+		worker.postMessage({ kind: "catalog" });
+	});
+	return pending;
+}
+export function startSearch(
+	input: SearchRequest,
+	onUpdate: (value: SearchUpdate) => void,
+	onDone: (value: SearchUpdate) => void,
+	onError: (message: string) => void,
+): () => void {
+	const worker = new SimulationWorker();
+	worker.onmessage = (event) => {
+		if (event.data.kind === "progress") onUpdate(event.data.value);
+		else {
+			worker.terminate();
+			if (event.data.kind === "done") onDone(event.data.value);
+			else onError(event.data.message);
+		}
+	};
+	worker.onerror = (event) => {
+		worker.terminate();
+		onError(event.message);
+	};
+	worker.postMessage({ kind: "search", input });
+	return () => worker.terminate();
+}
+export function evaluateScenario(
+	input: Scenario,
+	onResult: (
+		result: SimulationResult | null,
+		error: string | null,
+		diagnostic?: RotationDiagnostic,
+	) => void,
+	targetId?: number,
+): () => void {
+	const worker = new SimulationWorker();
+	worker.onmessage = (event) => {
+		worker.terminate();
+		onResult(
+			event.data.kind === "evaluation" ? event.data.value : null,
+			event.data.kind === "error" ? event.data.message : null,
+			event.data.kind === "error" ? event.data.diagnostic : undefined,
+		);
+	};
+	worker.onerror = (event) => {
+		worker.terminate();
+		onResult(null, event.message);
+	};
+	worker.postMessage({ kind: "evaluate", input, targetId });
+	return () => worker.terminate();
 }

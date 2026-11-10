@@ -8,9 +8,8 @@ drives the in-game overlay window.
 
 - Public assets are stored directly in Git; Git LFS is not required.
 - Use `bun run dev` / `bun run build`, never raw `vite`: the `postinstall`
-  hook builds the `thewuwacalculator` submodule's `@wuwacalc/core` and syncs
-  live game data into the gitignored `public/data`. Both are hard
-  requirements, so `bun install` fails outright without an initialized
+  hook bundles the pinned `wuwa_calc` simulation adapter. The generated
+  bundle is required, so `bun install` fails outright without an initialized
   submodule; on failure run `git submodule update --init` and install again.
 - Rust builds need `protoc` (the vendored `spectrum` crate compiles pinned
   protos).
@@ -36,7 +35,7 @@ drives the in-game overlay window.
   converters; the overlay scan only reads the selected profile and never writes.
   Keep profile selection separate from packet routing.
 - Never edit vendored or generated code: `src-tauri/crates/spectrum/`
-  (including generated protos), `thewuwacalculator/`, `data/` checkouts.
+  (including generated protos), `wuwa_calc/`, `data/` checkouts.
 - The main window lives in `src/pages/MainWindow.tsx` (tab shell with
   Overview / Characters / Echoes / Weapons / Optimizer / Settings tabs in
   `src/components/tabs/`); the overlay is a separate Vite entry

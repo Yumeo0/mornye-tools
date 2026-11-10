@@ -32,7 +32,10 @@ function preferredStats(character: CharacterInfo | null): {
 				.flat()
 				.map(normalizeStatName),
 		),
-		sub: substatPriorityWeights(character.stats.subs),
+		sub: substatPriorityWeights(
+			character.stats.subs,
+			character.stats.erBreakpoint,
+		),
 	};
 }
 

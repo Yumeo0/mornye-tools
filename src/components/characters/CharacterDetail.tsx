@@ -180,6 +180,7 @@ export function CharacterDetail({
 									echo={echo}
 									rollValue={echoRollValue(echo)}
 									rollSubstatTiers={ratingCharacter?.stats.subs}
+									rollErBreakpoint={ratingCharacter?.stats.erBreakpoint}
 								/>
 							))}
 						</div>

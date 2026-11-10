@@ -144,6 +144,7 @@ export function EchoCard({
 	rollValue,
 	rollCharacter,
 	rollSubstatTiers,
+	rollErBreakpoint,
 	rollBadge,
 	actions,
 	footer,
@@ -156,6 +157,7 @@ export function EchoCard({
 	rollCharacter?: { name: string; icon: string } | null;
 	/** Priority tiers of the character whose roll value is displayed. */
 	rollSubstatTiers?: string[][];
+	rollErBreakpoint?: number;
 	/** Optional badge at the left of the roll-value row. */
 	rollBadge?: ReactNode;
 	actions?: ReactNode;
@@ -166,7 +168,7 @@ export function EchoCard({
 	const set = echoSet(echo);
 	const name = echoName(echo);
 	const weights = rollSubstatTiers
-		? substatPriorityWeights(rollSubstatTiers)
+		? substatPriorityWeights(rollSubstatTiers, rollErBreakpoint)
 		: null;
 	return (
 		<div className="group/card flex h-full flex-col bg-muted/50 p-2.5 text-sm">

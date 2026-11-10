@@ -3517,10 +3517,6 @@
 			"url": "/images/items/weapon/weapon20002001.webp"
 		},
 		{
-			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020011_UI.png",
-			"url": "/images/items/weapon/weapon21020011.webp"
-		},
-		{
 			"source": "UI/UIResources/Common/Image/IconWup/T_IconWup_005_UI.png",
 			"url": "/images/items/wup/wup-005.webp"
 		},
@@ -12505,499 +12501,451 @@
 			"url": "/images/resonators/sequences/zhujue-dark-m6.webp"
 		},
 		{
-			"source": "calculator/weapons/21010011.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010011_UI.png",
 			"url": "/images/weapons/21010011.webp"
 		},
 		{
-			"source": "calculator/weapons/21010012.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010012_UI.png",
 			"url": "/images/weapons/21010012.webp"
 		},
 		{
-			"source": "calculator/weapons/21010013.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010013_UI.png",
 			"url": "/images/weapons/21010013.webp"
 		},
 		{
-			"source": "calculator/weapons/21010015.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010015_UI.png",
 			"url": "/images/weapons/21010015.webp"
 		},
 		{
-			"source": "calculator/weapons/21010016.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010016_UI.png",
 			"url": "/images/weapons/21010016.webp"
 		},
 		{
-			"source": "calculator/weapons/21010023.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010023_UI.png",
 			"url": "/images/weapons/21010023.webp"
 		},
 		{
-			"source": "calculator/weapons/21010024.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010024_UI.png",
 			"url": "/images/weapons/21010024.webp"
 		},
 		{
-			"source": "calculator/weapons/21010026.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010026_UI.png",
 			"url": "/images/weapons/21010026.webp"
 		},
 		{
-			"source": "calculator/weapons/21010034.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010034_UI.png",
 			"url": "/images/weapons/21010034.webp"
 		},
 		{
-			"source": "calculator/weapons/21010036.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010036_UI.png",
 			"url": "/images/weapons/21010036.webp"
 		},
 		{
-			"source": "calculator/weapons/21010043.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010043_UI.png",
 			"url": "/images/weapons/21010043.webp"
 		},
 		{
-			"source": "calculator/weapons/21010044.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010044_UI.png",
 			"url": "/images/weapons/21010044.webp"
 		},
 		{
-			"source": "calculator/weapons/21010045.webp",
-			"url": "/images/weapons/21010045.webp"
-		},
-		{
-			"source": "calculator/weapons/21010046.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010046_UI.png",
 			"url": "/images/weapons/21010046.webp"
 		},
 		{
-			"source": "calculator/weapons/21010053.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010053_UI.png",
 			"url": "/images/weapons/21010053.webp"
 		},
 		{
-			"source": "calculator/weapons/21010056.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010056_UI.png",
 			"url": "/images/weapons/21010056.webp"
 		},
 		{
-			"source": "calculator/weapons/21010063.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010063_UI.png",
 			"url": "/images/weapons/21010063.webp"
 		},
 		{
-			"source": "calculator/weapons/21010064.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010064_UI.png",
 			"url": "/images/weapons/21010064.webp"
 		},
 		{
-			"source": "calculator/weapons/21010066.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010066_UI.png",
 			"url": "/images/weapons/21010066.webp"
 		},
 		{
-			"source": "calculator/weapons/21010074.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010074_UI.png",
 			"url": "/images/weapons/21010074.webp"
 		},
 		{
-			"source": "calculator/weapons/21010076.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010076_UI.png",
 			"url": "/images/weapons/21010076.webp"
 		},
 		{
-			"source": "calculator/weapons/21010084.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010084_UI.png",
 			"url": "/images/weapons/21010084.webp"
 		},
 		{
-			"source": "calculator/weapons/21010094.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010094_UI.png",
 			"url": "/images/weapons/21010094.webp"
 		},
 		{
-			"source": "calculator/weapons/21010104.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21010104_UI.png",
 			"url": "/images/weapons/21010104.webp"
 		},
 		{
-			"source": "calculator/weapons/21020011.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020011_UI.png",
 			"url": "/images/weapons/21020011.webp"
 		},
 		{
-			"source": "calculator/weapons/21020012.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020012_UI.png",
 			"url": "/images/weapons/21020012.webp"
 		},
 		{
-			"source": "calculator/weapons/21020013.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020013_UI.png",
 			"url": "/images/weapons/21020013.webp"
 		},
 		{
-			"source": "calculator/weapons/21020015.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020015_UI.png",
 			"url": "/images/weapons/21020015.webp"
 		},
 		{
-			"source": "calculator/weapons/21020016.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020016_UI.png",
 			"url": "/images/weapons/21020016.webp"
 		},
 		{
-			"source": "calculator/weapons/21020017.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020017_UI.png",
 			"url": "/images/weapons/21020017.webp"
 		},
 		{
-			"source": "calculator/weapons/21020023.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020023_UI.png",
 			"url": "/images/weapons/21020023.webp"
 		},
 		{
-			"source": "calculator/weapons/21020024.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020024_UI.png",
 			"url": "/images/weapons/21020024.webp"
 		},
 		{
-			"source": "calculator/weapons/21020026.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020026_UI.png",
 			"url": "/images/weapons/21020026.webp"
 		},
 		{
-			"source": "calculator/weapons/21020034.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020034_UI.png",
 			"url": "/images/weapons/21020034.webp"
 		},
 		{
-			"source": "calculator/weapons/21020036.webp",
-			"url": "/images/weapons/21020036.webp"
-		},
-		{
-			"source": "calculator/weapons/21020043.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020043_UI.png",
 			"url": "/images/weapons/21020043.webp"
 		},
 		{
-			"source": "calculator/weapons/21020044.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020044_UI.png",
 			"url": "/images/weapons/21020044.webp"
 		},
 		{
-			"source": "calculator/weapons/21020045.webp",
-			"url": "/images/weapons/21020045.webp"
-		},
-		{
-			"source": "calculator/weapons/21020046.webp",
-			"url": "/images/weapons/21020046.webp"
-		},
-		{
-			"source": "calculator/weapons/21020053.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020053_UI.png",
 			"url": "/images/weapons/21020053.webp"
 		},
 		{
-			"source": "calculator/weapons/21020056.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020056_UI.png",
 			"url": "/images/weapons/21020056.webp"
 		},
 		{
-			"source": "calculator/weapons/21020064.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020064_UI.png",
 			"url": "/images/weapons/21020064.webp"
 		},
 		{
-			"source": "calculator/weapons/21020066.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020066_UI.png",
 			"url": "/images/weapons/21020066.webp"
 		},
 		{
-			"source": "calculator/weapons/21020074.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020074_UI.png",
 			"url": "/images/weapons/21020074.webp"
 		},
 		{
-			"source": "calculator/weapons/21020076.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020076_UI.png",
 			"url": "/images/weapons/21020076.webp"
 		},
 		{
-			"source": "calculator/weapons/21020084.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020084_UI.png",
 			"url": "/images/weapons/21020084.webp"
 		},
 		{
-			"source": "calculator/weapons/21020086.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020086_UI.png",
 			"url": "/images/weapons/21020086.webp"
 		},
 		{
-			"source": "calculator/weapons/21020094.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020094_UI.png",
 			"url": "/images/weapons/21020094.webp"
 		},
 		{
-			"source": "calculator/weapons/21020096.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020096_UI.png",
 			"url": "/images/weapons/21020096.webp"
 		},
 		{
-			"source": "calculator/weapons/21020104.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020104_UI.png",
 			"url": "/images/weapons/21020104.webp"
 		},
 		{
-			"source": "calculator/weapons/21020106.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020106_UI.png",
 			"url": "/images/weapons/21020106.webp"
 		},
 		{
-			"source": "calculator/weapons/21020107.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21020107_UI.png",
 			"url": "/images/weapons/21020107.webp"
 		},
 		{
-			"source": "calculator/weapons/21030011.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030011_UI.png",
 			"url": "/images/weapons/21030011.webp"
 		},
 		{
-			"source": "calculator/weapons/21030012.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030012_UI.png",
 			"url": "/images/weapons/21030012.webp"
 		},
 		{
-			"source": "calculator/weapons/21030013.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030013_UI.png",
 			"url": "/images/weapons/21030013.webp"
 		},
 		{
-			"source": "calculator/weapons/21030015.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030015_UI.png",
 			"url": "/images/weapons/21030015.webp"
 		},
 		{
-			"source": "calculator/weapons/21030016.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030016_UI.png",
 			"url": "/images/weapons/21030016.webp"
 		},
 		{
-			"source": "calculator/weapons/21030023.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030023_UI.png",
 			"url": "/images/weapons/21030023.webp"
 		},
 		{
-			"source": "calculator/weapons/21030024.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030024_UI.png",
 			"url": "/images/weapons/21030024.webp"
 		},
 		{
-			"source": "calculator/weapons/21030026.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030026_UI.png",
 			"url": "/images/weapons/21030026.webp"
 		},
 		{
-			"source": "calculator/weapons/21030034.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030034_UI.png",
 			"url": "/images/weapons/21030034.webp"
 		},
 		{
-			"source": "calculator/weapons/21030036.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030036_UI.png",
 			"url": "/images/weapons/21030036.webp"
 		},
 		{
-			"source": "calculator/weapons/21030043.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030043_UI.png",
 			"url": "/images/weapons/21030043.webp"
 		},
 		{
-			"source": "calculator/weapons/21030044.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030044_UI.png",
 			"url": "/images/weapons/21030044.webp"
 		},
 		{
-			"source": "calculator/weapons/21030045.webp",
-			"url": "/images/weapons/21030045.webp"
-		},
-		{
-			"source": "calculator/weapons/21030046.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030046_UI.png",
 			"url": "/images/weapons/21030046.webp"
 		},
 		{
-			"source": "calculator/weapons/21030053.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030053_UI.png",
 			"url": "/images/weapons/21030053.webp"
 		},
 		{
-			"source": "calculator/weapons/21030056.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030056_UI.png",
 			"url": "/images/weapons/21030056.webp"
 		},
 		{
-			"source": "calculator/weapons/21030064.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030064_UI.png",
 			"url": "/images/weapons/21030064.webp"
 		},
 		{
-			"source": "calculator/weapons/21030066.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030066_UI.png",
 			"url": "/images/weapons/21030066.webp"
 		},
 		{
-			"source": "calculator/weapons/21030074.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030074_UI.png",
 			"url": "/images/weapons/21030074.webp"
 		},
 		{
-			"source": "calculator/weapons/21030084.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030084_UI.png",
 			"url": "/images/weapons/21030084.webp"
 		},
 		{
-			"source": "calculator/weapons/21030094.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030094_UI.png",
 			"url": "/images/weapons/21030094.webp"
 		},
 		{
-			"source": "calculator/weapons/21030104.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030104_UI.png",
 			"url": "/images/weapons/21030104.webp"
 		},
 		{
-			"source": "calculator/weapons/21040011.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21040011_UI.png",
 			"url": "/images/weapons/21040011.webp"
 		},
 		{
-			"source": "calculator/weapons/21040012.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21040012_UI.png",
 			"url": "/images/weapons/21040012.webp"
 		},
 		{
-			"source": "calculator/weapons/21040013.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21040013_UI.png",
 			"url": "/images/weapons/21040013.webp"
 		},
 		{
-			"source": "calculator/weapons/21040015.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21040015_UI.png",
 			"url": "/images/weapons/21040015.webp"
 		},
 		{
-			"source": "calculator/weapons/21040016.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21040016_UI.png",
 			"url": "/images/weapons/21040016.webp"
 		},
 		{
-			"source": "calculator/weapons/21040023.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21040023_UI.png",
 			"url": "/images/weapons/21040023.webp"
 		},
 		{
-			"source": "calculator/weapons/21040024.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21040024_UI.png",
 			"url": "/images/weapons/21040024.webp"
 		},
 		{
-			"source": "calculator/weapons/21040026.webp",
-			"url": "/images/weapons/21040026.webp"
-		},
-		{
-			"source": "calculator/weapons/21040034.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21040034_UI.png",
 			"url": "/images/weapons/21040034.webp"
 		},
 		{
-			"source": "calculator/weapons/21040036.webp",
-			"url": "/images/weapons/21040036.webp"
-		},
-		{
-			"source": "calculator/weapons/21040043.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21040043_UI.png",
 			"url": "/images/weapons/21040043.webp"
 		},
 		{
-			"source": "calculator/weapons/21040044.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21040044_UI.png",
 			"url": "/images/weapons/21040044.webp"
 		},
 		{
-			"source": "calculator/weapons/21040045.webp",
-			"url": "/images/weapons/21040045.webp"
-		},
-		{
-			"source": "calculator/weapons/21040046.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21040046_UI.png",
 			"url": "/images/weapons/21040046.webp"
 		},
 		{
-			"source": "calculator/weapons/21040053.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21040053_UI.png",
 			"url": "/images/weapons/21040053.webp"
 		},
 		{
-			"source": "calculator/weapons/21040056.webp",
-			"url": "/images/weapons/21040056.webp"
-		},
-		{
-			"source": "calculator/weapons/21040064.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21040064_UI.png",
 			"url": "/images/weapons/21040064.webp"
 		},
 		{
-			"source": "calculator/weapons/21040066.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21040066_UI.png",
 			"url": "/images/weapons/21040066.webp"
 		},
 		{
-			"source": "calculator/weapons/21040074.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21040074_UI.png",
 			"url": "/images/weapons/21040074.webp"
 		},
 		{
-			"source": "calculator/weapons/21040084.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21040084_UI.png",
 			"url": "/images/weapons/21040084.webp"
 		},
 		{
-			"source": "calculator/weapons/21040094.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21040094_UI.png",
 			"url": "/images/weapons/21040094.webp"
 		},
 		{
-			"source": "calculator/weapons/21040104.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21040104_UI.png",
 			"url": "/images/weapons/21040104.webp"
 		},
 		{
-			"source": "calculator/weapons/21050011.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050011_UI.png",
 			"url": "/images/weapons/21050011.webp"
 		},
 		{
-			"source": "calculator/weapons/21050012.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050012_UI.png",
 			"url": "/images/weapons/21050012.webp"
 		},
 		{
-			"source": "calculator/weapons/21050013.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050013_UI.png",
 			"url": "/images/weapons/21050013.webp"
 		},
 		{
-			"source": "calculator/weapons/21050015.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050015_UI.png",
 			"url": "/images/weapons/21050015.webp"
 		},
 		{
-			"source": "calculator/weapons/21050016.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050016_UI.png",
 			"url": "/images/weapons/21050016.webp"
 		},
 		{
-			"source": "calculator/weapons/21050017.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050017_UI.png",
 			"url": "/images/weapons/21050017.webp"
 		},
 		{
-			"source": "calculator/weapons/21050023.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050023_UI.png",
 			"url": "/images/weapons/21050023.webp"
 		},
 		{
-			"source": "calculator/weapons/21050024.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050024_UI.png",
 			"url": "/images/weapons/21050024.webp"
 		},
 		{
-			"source": "calculator/weapons/21050026.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050026_UI.png",
 			"url": "/images/weapons/21050026.webp"
 		},
 		{
-			"source": "calculator/weapons/21050027.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050027_UI.png",
 			"url": "/images/weapons/21050027.webp"
 		},
 		{
-			"source": "calculator/weapons/21050034.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050034_UI.png",
 			"url": "/images/weapons/21050034.webp"
 		},
 		{
-			"source": "calculator/weapons/21050036.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050036_UI.png",
 			"url": "/images/weapons/21050036.webp"
 		},
 		{
-			"source": "calculator/weapons/21050043.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050043_UI.png",
 			"url": "/images/weapons/21050043.webp"
 		},
 		{
-			"source": "calculator/weapons/21050044.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050044_UI.png",
 			"url": "/images/weapons/21050044.webp"
 		},
 		{
-			"source": "calculator/weapons/21050045.webp",
-			"url": "/images/weapons/21050045.webp"
-		},
-		{
-			"source": "calculator/weapons/21050046.webp",
-			"url": "/images/weapons/21050046.webp"
-		},
-		{
-			"source": "calculator/weapons/21050053.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050053_UI.png",
 			"url": "/images/weapons/21050053.webp"
 		},
 		{
-			"source": "calculator/weapons/21050056.webp",
-			"url": "/images/weapons/21050056.webp"
-		},
-		{
-			"source": "calculator/weapons/21050064.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050064_UI.png",
 			"url": "/images/weapons/21050064.webp"
 		},
 		{
-			"source": "calculator/weapons/21050066.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050066_UI.png",
 			"url": "/images/weapons/21050066.webp"
 		},
 		{
-			"source": "calculator/weapons/21050074.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050074_UI.png",
 			"url": "/images/weapons/21050074.webp"
 		},
 		{
-			"source": "calculator/weapons/21050076.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050076_UI.png",
 			"url": "/images/weapons/21050076.webp"
 		},
 		{
-			"source": "calculator/weapons/21050084.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050084_UI.png",
 			"url": "/images/weapons/21050084.webp"
 		},
 		{
-			"source": "calculator/weapons/21050086.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050086_UI.png",
 			"url": "/images/weapons/21050086.webp"
 		},
 		{
-			"source": "calculator/weapons/21050094.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050094_UI.png",
 			"url": "/images/weapons/21050094.webp"
 		},
 		{
-			"source": "calculator/weapons/21050096.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050096_UI.png",
 			"url": "/images/weapons/21050096.webp"
 		},
 		{
-			"source": "calculator/weapons/21050104.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050104_UI.png",
 			"url": "/images/weapons/21050104.webp"
 		},
 		{
-			"source": "calculator/weapons/21050116.webp",
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21050116_UI.png",
 			"url": "/images/weapons/21050116.webp"
 		}
 	],
@@ -14301,7 +14249,6 @@
 		"/images/items/task/task-task-70050077.webp",
 		"/images/items/task160/task160-task-002-1.webp",
 		"/images/items/weapon/weapon20002001.webp",
-		"/images/items/weapon/weapon21020011.webp",
 		"/images/items/wup/wup-005.webp",
 		"/images/items/wup/wup-006.webp",
 		"/images/items/wup/wup-007.webp",

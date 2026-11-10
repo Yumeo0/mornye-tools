@@ -1,0 +1,54 @@
+{
+  "date": "2026-11-10T14:17:21.697Z",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+  "runs": [
+    {
+      "objective": {
+        "kind": "memberDamage",
+        "characterId": 1404
+      },
+      "target": 1404,
+      "firstProgressMs": 384.59999999962747,
+      "elapsedMs": 6564.5,
+      "processed": 1500,
+      "results": 128,
+      "best": 3462476,
+      "status": "budget"
+    },
+    {
+      "objective": {
+        "kind": "teamDamage"
+      },
+      "target": 1204,
+      "firstProgressMs": 357.80000000074506,
+      "elapsedMs": 6724.5999999996275,
+      "processed": 1500,
+      "results": 128,
+      "best": 3693494,
+      "status": "budget"
+    },
+    {
+      "objective": {
+        "kind": "teamDamage"
+      },
+      "target": 1204,
+      "firstProgressMs": 329.7999999988824,
+      "terminationMs": 0
+    },
+    {
+      "objective": {
+        "kind": "teamDamage"
+      },
+      "target": 1204,
+      "terminationMs": 0
+    }
+  ],
+  "cancelUiMs": 7.199999999254942,
+  "staleResultsVisible": false,
+  "fixture": "Synthetic Verina/Mortefi/Jiyan account, 255 echoes, 220 eligible candidates retained; budget 1500; result limit 128",
+  "notes": [
+    "Production Vite build in headless Chromium; mock account IPC; no game commands.",
+    "Own run overlapped a Bun benchmark; support run overlapped app/scripts tests. Timings are smoke measurements under background load.",
+    "First progress includes worker startup and baseline evaluation. Termination timings are limited by browser clock resolution."
+  ]
+}

@@ -24,8 +24,7 @@ export default defineConfig(async () => ({
 		},
 	},
 
-	// The calculator core's worker entries rely on dynamic imports, so worker
-	// bundles must use ES modules (matching the calculator's own vite config).
+	// Keep the isolated simulation worker as an ES module.
 	worker: {
 		format: "es" as const,
 	},

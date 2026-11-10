@@ -162,6 +162,52 @@ describe("maxPossibleRating", () => {
 });
 
 describe("priority weighting and main-stat suitability", () => {
+	test("Suisui's 260% ER breakpoint boosts ER rolls and uses the same weights for upgrade potential", () => {
+		const suisui = getRelevantCharacters(["Song of Feathered Trace"]).find(
+			(character) => character.character_name === "Suisui",
+		);
+		if (!suisui) throw new Error("Missing Suisui guide");
+		expect(suisui.stats.erBreakpoint).toBe(260);
+		expect(
+			substatPriorityWeights(suisui.stats.subs, suisui.stats.erBreakpoint).get(
+				"energy regen",
+			),
+		).toBe(2.6);
+		const erRoll = ["Energy Regen 12.4%"];
+		const withTarget = (erBreakpoint: number): CharacterInfo => ({
+			...suisui,
+			stats: { ...suisui.stats, erBreakpoint },
+		});
+		const scores = [100, 120, 200, 260].map((target) =>
+			calculateRating(withTarget(target), erRoll, critMain),
+		);
+		for (let i = 1; i < scores.length; i++)
+			expect(scores[i]).toBeGreaterThan(scores[i - 1]);
+		expect(calculateRating(suisui, erRoll, critMain)).toBe(22);
+		const full = [
+			"Energy Regen 12.4%",
+			"Crit. DMG 21%",
+			"Crit. Rate 10.5%",
+			"HP% 11.6%",
+			"Basic Attack DMG Bonus 11.6%",
+		];
+		expect(calculateRating(suisui, full, critMain)).toBe(100);
+		expect(maxPossibleRating(suisui, [], critMain)).toBe(100);
+		const revealed = [
+			"Energy Regen 10.8%",
+			"Crit. DMG 15%",
+			"HP 580",
+			"DEF 70",
+			"ATK 40",
+		];
+		expect(maxPossibleRating(suisui, revealed, critMain)).toBe(
+			calculateRating(suisui, revealed, critMain),
+		);
+		expect(maxPossibleRating(suisui, erRoll, critMain, 1)).toBe(
+			calculateRating(suisui, erRoll, critMain),
+		);
+	});
+
 	test("Song of Feathered Trace Havoc pieces never choose Suisui, including in upgrade potential", () => {
 		const characters = getRelevantCharacters(["Song of Feathered Trace"]);
 		const suisui = characters.find(
@@ -343,6 +389,7 @@ describe("priority weighting and main-stat suitability", () => {
 			["ATK%"],
 			["Energy Regen"],
 		]);
+		expect(stats.erBreakpoint).toBe(120);
 		expect(stats["4cost"]).toEqual([["Crit. Rate", "Crit. DMG"]]);
 		const relevant = getRelevantCharacters(["Rejuvenating Glow"]).find(
 			(char) => char.character_name === "Verina",

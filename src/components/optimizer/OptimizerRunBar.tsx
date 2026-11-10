@@ -1,4 +1,3 @@
-import type { OptPrgr } from "@wuwacalc/core/engine/optimizer/types";
 import { Play, Square } from "lucide-react";
 import { formatMs } from "@/components/optimizer/display";
 import { Button } from "@/components/ui/button";
@@ -9,9 +8,13 @@ import {
 	SelectItem,
 	SelectTrigger,
 } from "@/components/ui/select";
+import type { EnergyStatus, OptPrgr } from "@/lib/calc/types";
+import { EnergyReadout } from "./EnergyReadout";
+import { OptimizerInfo } from "./OptimizerInfo";
 
 /** Search objective and run/cancel button with progress. */
 export function OptimizerRunBar({
+	energy,
 	mode,
 	onModeChange,
 	running,
@@ -22,7 +25,8 @@ export function OptimizerRunBar({
 	onRun,
 	onCancel,
 }: {
-	/** Search objective: the target's own damage or a teammate's rotation. */
+	energy?: EnergyStatus[];
+	/** Search objective: the target's own damage or total team damage. */
 	mode: "damage" | "team";
 	onModeChange: (mode: "damage" | "team") => void;
 	running: boolean;
@@ -42,7 +46,7 @@ export function OptimizerRunBar({
 			: phase === "stats"
 				? "Reading the searched character's stats…"
 				: progress
-					? `${progressPercent}% · ${Math.round(progress.processed).toLocaleString()}${
+					? `${progressPercent}% of evaluation budget · ${Math.round(progress.processed).toLocaleString()}${
 							progress.total != null
 								? ` / ${progress.total.toLocaleString()}`
 								: ""
@@ -54,12 +58,14 @@ export function OptimizerRunBar({
 						: "Preparing search…";
 
 	return (
-		<>
-			<div className="flex flex-wrap items-end gap-4 border-t border-border/60 pt-4">
-				<div className="flex flex-col gap-1">
-					<span className="text-[10px] leading-none text-muted-foreground">
-						Search objective
-					</span>
+		<div className="flex flex-col gap-1">
+			<div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+				{energy && (
+					<div className="min-w-0 flex-1 basis-72">
+						<EnergyReadout energy={energy} />
+					</div>
+				)}
+				<div className="ml-auto flex flex-wrap items-center justify-end gap-2">
 					<Select
 						value={mode}
 						onValueChange={(next) =>
@@ -70,7 +76,8 @@ export function OptimizerRunBar({
 						<SelectTrigger
 							aria-label="Search objective"
 							size="sm"
-							className="w-40"
+							title="Search objective"
+							className="w-32"
 						>
 							{teamMode ? "Team damage" : "Own damage"}
 						</SelectTrigger>
@@ -81,38 +88,48 @@ export function OptimizerRunBar({
 							</SelectGroup>
 						</SelectContent>
 					</Select>
+					<Button
+						onClick={running ? onCancel : onRun}
+						disabled={!running && !canRun}
+						variant={running ? "destructive" : "default"}
+						size="sm"
+					>
+						{running ? (
+							<>
+								<Square className="size-4" /> Cancel
+							</>
+						) : (
+							<>
+								<Play className="size-4" /> Run optimizer
+							</>
+						)}
+					</Button>
 				</div>
-				<span className="flex-1" />
-				<Button
-					onClick={running ? onCancel : onRun}
-					disabled={!running && !canRun}
-					variant={running ? "destructive" : "default"}
-					size="lg"
-				>
-					{running ? (
-						<>
-							<Square className="size-4" /> Cancel
-						</>
-					) : (
-						<>
-							<Play className="size-4" />{" "}
-							{teamMode ? "Run team search" : "Run optimizer"}
-						</>
-					)}
-				</Button>
 			</div>
 
 			{running && (
-				<div className="flex flex-col gap-1.5">
-					<div className="h-1.5 w-full overflow-hidden bg-muted">
+				<div className="flex items-center gap-2">
+					<div
+						role="progressbar"
+						aria-label="Optimizer search"
+						aria-valuemin={0}
+						aria-valuemax={100}
+						aria-valuenow={progressPercent}
+						className="h-1 flex-1 overflow-hidden bg-muted"
+					>
 						<div
 							className="h-full bg-primary transition-[width] duration-200"
 							style={{ width: `${progressPercent}%` }}
 						/>
 					</div>
-					<p className="text-[11px] text-muted-foreground">{phaseLabel}</p>
+					<span className="text-[10px] tabular-nums text-muted-foreground">
+						{progressPercent}%{progress && ` · ${formatMs(progress.elapsedMs)}`}
+					</span>
+					<OptimizerInfo label="Search progress">
+						<p>{phaseLabel}</p>
+					</OptimizerInfo>
 				</div>
 			)}
-		</>
+		</div>
 	);
 }

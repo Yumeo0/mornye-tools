@@ -18,14 +18,6 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectTrigger,
-} from "@/components/ui/select";
-import {
-	hasWebGpu,
 	updateOptimizerPreferences,
 	useOptimizerPreferences,
 } from "@/lib/optimizerPreferences";
@@ -33,7 +25,6 @@ import {
 export function OptimizerSettingsCard() {
 	const { preferences, loaded, error } = useOptimizerPreferences();
 	const [resultsDraft, setResultsDraft] = useState<string | null>(null);
-	const gpuAvailable = hasWebGpu();
 	return (
 		<Card>
 			<CardHeader>
@@ -45,34 +36,10 @@ export function OptimizerSettingsCard() {
 			<CardContent>
 				<FieldGroup className="max-w-xl">
 					<Field>
-						<FieldLabel htmlFor="optimizer-engine">Search engine</FieldLabel>
-						<Select
-							value={preferences.engine}
-							disabled={!loaded}
-							onValueChange={(engine) => {
-								if (engine === "cpu" || engine === "gpu")
-									updateOptimizerPreferences({ engine });
-							}}
-						>
-							<SelectTrigger id="optimizer-engine" className="w-full">
-								{preferences.engine === "gpu"
-									? "GPU (WebGPU)"
-									: "CPU (workers)"}
-							</SelectTrigger>
-							<SelectContent>
-								<SelectGroup>
-									<SelectItem value="gpu" disabled={!gpuAvailable}>
-										GPU (WebGPU)
-									</SelectItem>
-									<SelectItem value="cpu">CPU (workers)</SelectItem>
-								</SelectGroup>
-							</SelectContent>
-						</Select>
+						<FieldLabel>Simulation engine</FieldLabel>
 						<FieldDescription>
-							Used for own-damage searches. Team damage always uses exact
-							simulation.
-							{!gpuAvailable &&
-								" WebGPU is unavailable; searches use CPU workers."}
+							Riley wuwa_calc · CPU worker. Both objectives use timed team
+							simulation and bounded inventory search.
 						</FieldDescription>
 					</Field>
 					<Field>

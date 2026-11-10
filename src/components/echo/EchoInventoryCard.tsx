@@ -54,6 +54,7 @@ export function EchoInventoryCard({
 					echo={echo}
 					rollValue={roll?.rating}
 					rollSubstatTiers={roll?.character.stats.subs}
+					rollErBreakpoint={roll?.character.stats.erBreakpoint}
 					rollCharacter={
 						roll
 							? {

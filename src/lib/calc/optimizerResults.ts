@@ -1,4 +1,31 @@
-import type { OptResultEntry } from "@wuwacalc/core/engine/optimizer/types";
+import type { OptResultEntry } from "@/lib/calc/types";
+
+export interface EquippedOptimizerEchoes {
+	uids: string[];
+	mainUid: string | null;
+}
+export type OptimizerEchoChange = "kept" | "new" | "main" | "passive";
+
+/** Compare owned instances; passive slot permutations do not change a build. */
+export function optimizerEchoDifference(
+	resultUids: string[],
+	equipped: EquippedOptimizerEchoes | null,
+) {
+	if (!equipped) return null;
+	const current = new Set(equipped.uids);
+	const next = new Set(resultUids);
+	return {
+		added: resultUids.filter((uid) => !current.has(uid)),
+		removed: equipped.uids.filter((uid) => !next.has(uid)),
+		mainChanged: !!resultUids[0] && resultUids[0] !== equipped.mainUid,
+		changes: resultUids.map((uid, slot): OptimizerEchoChange => {
+			if (!current.has(uid)) return "new";
+			if (slot === 0 && uid !== equipped.mainUid) return "main";
+			if (slot > 0 && uid === equipped.mainUid) return "passive";
+			return "kept";
+		}),
+	};
+}
 
 /** Main echo matters; the four passive slots can be permuted freely. */
 export function optimizerBuildKey(uids: string[]): string {

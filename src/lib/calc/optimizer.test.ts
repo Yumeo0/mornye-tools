@@ -1,67 +1,71 @@
 import { expect, test } from "bun:test";
-import type {
-	EchoInstance,
-	ResRuntime,
-} from "@wuwacalc/core/domain/entities/runtime";
-import {
-	encStatCstrs,
-	encTgtStatCstrs,
-	psssCstrs,
-} from "@wuwacalc/core/engine/search/score/statConstraints";
-import { makeOptimizerSettings, selectOptimizerCandidates } from "./optimizer";
+import { EMPTY_OPTIMIZER_FILTERS } from "@/components/optimizer/optimizerOptions";
+import echoData from "@/configs/echo_data.json";
+import { type Echo, EMPTY_ACCOUNT } from "@/lib/account";
+import { makeFixture } from "../../../calculator/fixture";
+import { selectCandidates, teamAvailability } from "./optimizer";
+import { getCatalog } from "./riley/engine.generated.js";
 
-test("minimum ER encodes as total display percent for rotation and skill searches", () => {
-	for (const rotationAvailable of [false, true]) {
-		const settings = makeOptimizerSettings({
-			rotationAvailable,
-			minEnergyRegen: 140,
-			resultsLimit: 8,
-			enableGpu: false,
-		});
-		for (const encode of [encStatCstrs, encTgtStatCstrs]) {
-			const constraints = encode(settings);
-			expect(psssCstrs(constraints, 0, 0, 0, 0, 0, 139.9, 0, 0)).toBe(false);
-			expect(psssCstrs(constraints, 0, 0, 0, 0, 0, 140, 0, 0)).toBe(true);
-			expect(psssCstrs(constraints, 0, 0, 0, 0, 0, 180, 0, 0)).toBe(true);
-		}
-		const disabled = makeOptimizerSettings({
-			rotationAvailable,
-			minEnergyRegen: 0,
-			resultsLimit: 8,
-			enableGpu: true,
-		});
-		expect(disabled.statConstraints.er).toBeUndefined();
-	}
+test("pool truncation retains required main copies and respects filters and teammate reservations", () => {
+	const fixture = makeFixture(getCatalog());
+	const owned = (index: number, main: boolean): Echo => {
+		const e = fixture.inventory[main ? 0 : 3];
+		return {
+			incrId: index,
+			itemId: echoData.find((d) => d.monster_id === e.typeId)!.echo_id,
+			monsterId: e.typeId,
+			setId: e.setId,
+			level: 25,
+			funcValue: 0,
+			stackCount: 1,
+			source: "manual",
+			mainProps: e.mainStats,
+			subProps: e.substats,
+		};
+	};
+	const snapshot = {
+		...EMPTY_ACCOUNT,
+		echoes: [
+			...Array.from({ length: 300 }, (_, i) => owned(i, false)),
+			owned(900, true),
+			owned(901, true),
+		],
+	};
+	fixture.scenario.members[0].echoes[0].uid = "incr:900";
+	const selected = selectCandidates(
+		snapshot,
+		fixture.profile,
+		fixture.scenario.members,
+		1404,
+		EMPTY_OPTIMIZER_FILTERS,
+	);
+	expect(selected.truncated).toBe(true);
+	expect(selected.mainCount).toBe(1);
+	expect(selected.pool.some((e) => e.uid === "incr:901")).toBe(true);
+	expect(selected.pool.some((e) => e.uid === "incr:900")).toBe(false);
+	fixture.scenario.members[0].echoSource = "rotation";
+	const theoretical = selectCandidates(
+		snapshot,
+		fixture.profile,
+		fixture.scenario.members,
+		1404,
+		EMPTY_OPTIMIZER_FILTERS,
+	);
+	expect(theoretical.mainCount).toBe(2);
+	expect(theoretical.pool.some((e) => e.uid === "incr:900")).toBe(true);
+	const filtered = selectCandidates(
+		snapshot,
+		fixture.profile,
+		fixture.scenario.members,
+		1404,
+		{ ...EMPTY_OPTIMIZER_FILTERS, mainStats: ["energyRegen"] },
+	);
+	expect(filtered.mainCount).toBe(0);
 });
 
-test("candidate pruning retains ER options even when damage ranking would omit them", () => {
-	const inventory = Array.from(
-		{ length: 180 },
-		(_, index): EchoInstance => ({
-			uid: String(index),
-			id: "unknown",
-			set: 1,
-			mainEcho: false,
-			mainStats: {
-				primary: { key: "atkPercent", value: 33 },
-				secondary: { key: "atkFlat", value: 150 },
-			},
-			substats: index >= 170 ? { energyRegen: 10 } : { critRate: 10 },
-		}),
+test("catalog keeps unowned teams visible and reports the unavailable members", () => {
+	const { profile } = makeFixture(getCatalog());
+	expect(teamAvailability(EMPTY_ACCOUNT, profile)).toEqual(
+		profile.members.map((m) => `${m.name} is not owned`),
 	);
-	const settings = makeOptimizerSettings({
-		rotationAvailable: false,
-		minEnergyRegen: 140,
-		resultsLimit: 8,
-		enableGpu: false,
-	});
-	const result = selectOptimizerCandidates({
-		inventory,
-		settings,
-		targetRuntime: { id: "unknown" } as ResRuntime,
-	});
-	expect(result.echoes.length).toBeLessThanOrEqual(160);
-	expect(
-		result.echoes.filter((echo) => echo.substats.energyRegen).length,
-	).toBeGreaterThan(0);
 });

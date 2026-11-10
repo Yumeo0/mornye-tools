@@ -51,6 +51,7 @@ export function EchoUpgradeQueueRow({
 				echo={{ ...echo, stackCount: 1 }}
 				rollValue={roll?.rating}
 				rollSubstatTiers={roll?.character.stats.subs}
+				rollErBreakpoint={roll?.character.stats.erBreakpoint}
 				rollCharacter={
 					roll
 						? {

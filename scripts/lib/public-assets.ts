@@ -39,13 +39,7 @@ export interface AssetManifest {
 }
 
 export function sourceFile(source: string): string {
-	return source.startsWith("calculator/weapons/")
-		? join(
-				root,
-				"thewuwacalculator/public/assets/game/weapons/icons",
-				source.slice("calculator/weapons/".length),
-			)
-		: join(gameRoot, source);
+	return join(gameRoot, source);
 }
 
 /** Preserve saved map filter identities independently from presentation URLs. */
@@ -102,6 +96,11 @@ export function assetSources(): Map<string, string[]> {
 			)
 		)
 			continue;
+		// Modern native textures use the item ID directly. Weapon publication
+		// no longer depends on the calculator's icon checkout.
+		const weapon = source.match(/\/IconWeapon\/T_IconWeapon(\d+)_UI\.png$/);
+		if (weapon) index.set(`/images/weapons/${weapon[1]}.webp`, [source]);
+
 		const url = assetUrl(
 			`/wuwa-assets/${source.replace(/\.png$/, ".webp")}`,
 			false,
@@ -119,15 +118,6 @@ export function assetSources(): Map<string, string[]> {
 				index.set(tileUrl, [...(index.get(tileUrl) ?? []), source]);
 			}
 		}
-	}
-	for (const absolute of filesIn(
-		join(root, "thewuwacalculator/public/assets/game/weapons/icons"),
-	)) {
-		const filename = absolute.split(/[\\/]/).at(-1)!;
-		if (filename.endsWith(".webp"))
-			index.set(`/images/weapons/${filename}`, [
-				`calculator/weapons/${filename}`,
-			]);
 	}
 	return index;
 }

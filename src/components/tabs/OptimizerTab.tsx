@@ -1,36 +1,28 @@
-// Optimizer tab: search the captured echo inventory for the best five-echo
-// build of one resonator inside a specific team and rotation.
-//
-// Two modes:
-// - Own damage: the packed optimizer maximizes the target's own damage.
-// - Team damage: the searched character is a support, and every combo is
-//   scored by the team damage a chosen teammate's rotation deals.
-//
-// Everything here is presentation and request wiring; the damage model, the
-// packed search (`@wuwacalc/core`) and the exact team metric
-// (`src/lib/calc/teamOptimizer.ts`) stay out of the components.
-
-import type { OptResultEntry } from "@wuwacalc/core/engine/optimizer/types";
-import { ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { FilterLayout, FilterPanel } from "@/components/filters";
-import {
-	SLOT_LABELS,
-	type SlotKey,
-} from "@/components/optimizer/CharacterSlotBox";
-import { roleLabel } from "@/components/optimizer/display";
-import { LoadoutDialog } from "@/components/optimizer/LoadoutDialog";
 import { OptimizerFilterRow } from "@/components/optimizer/OptimizerFilterRow";
+import { OptimizerInfo } from "@/components/optimizer/OptimizerInfo";
+import { OptimizerMemberCard } from "@/components/optimizer/OptimizerMemberCard";
 import { OptimizerResultsPanel } from "@/components/optimizer/OptimizerResultsPanel";
 import { OptimizerRunBar } from "@/components/optimizer/OptimizerRunBar";
-import { TeamPresetPicker } from "@/components/optimizer/TeamPresetPicker";
-import { TeamSection } from "@/components/optimizer/TeamSection";
-import { CharacterPickerDialog } from "@/components/tabs/CharacterPickerDialog";
-import { type OptimizerMode, useOptimizerRun } from "@/hooks/useOptimizerRun";
-import { type MeasuredSlot, useOptimizerTeam } from "@/hooks/useOptimizerTeam";
+import { SimulationInfo } from "@/components/optimizer/SimulationInfo";
+import { TeamProfilePicker } from "@/components/optimizer/TeamProfilePicker";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+	Card,
+	CardAction,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import { ToggleGroup } from "@/components/ui/toggle-group";
+import { useOptimizerRun } from "@/hooks/useOptimizerRun";
+import { useOptimizerTeam } from "@/hooks/useOptimizerTeam";
 import { readAccount, refreshAccount, useAccount } from "@/lib/account";
-import { ensureCoreReady, isCoreReady } from "@/lib/calc/core";
+import { ensureCoreReady, getCalculatorCatalog } from "@/lib/calc/core";
+import { aliasRoleId, inventoryRevision } from "@/lib/calc/translate";
+import type { CalculatorCatalog, OptResultEntry } from "@/lib/calc/types";
 import { charactersById } from "@/lib/catalog";
 import { useDangerousFeatures } from "@/lib/dangerous";
 import {
@@ -46,37 +38,44 @@ export function OptimizerTab({ active }: { active: boolean }) {
 	const batch = useEchoUpgradeBatch();
 	const equipLock = useRef(false);
 	const [equipping, setEquipping] = useState(false);
-	const [coreReady, setCoreReady] = useState(() => isCoreReady());
+	const [catalog, setCatalog] = useState<CalculatorCatalog | null>(
+		getCalculatorCatalog,
+	);
 	const [coreError, setCoreError] = useState<string | null>(null);
-	const [mode, setMode] = useState<OptimizerMode>("damage");
-	const [measuredSlot, setMeasuredSlot] = useState<MeasuredSlot>("mateOne");
-
 	useEffect(() => {
-		if (!active || coreReady) return;
-		let cancelled = false;
+		if (!active || catalog) return;
+		let live = true;
 		ensureCoreReady()
-			.then(() => {
-				if (!cancelled) setCoreReady(true);
+			.then((c) => {
+				if (live) setCatalog(c);
 			})
-			.catch((error: unknown) => {
-				if (!cancelled) setCoreError(String(error));
+			.catch((e) => {
+				if (live) setCoreError(String(e));
 			});
 		return () => {
-			cancelled = true;
+			live = false;
 		};
-	}, [active, coreReady]);
-
-	const team = useOptimizerTeam({ coreReady, snapshot, mode, measuredSlot });
-	const run = useOptimizerRun({ coreReady, snapshot, team, mode });
+	}, [active, catalog]);
+	const team = useOptimizerTeam(snapshot, catalog);
+	const { mode, setMode } = team;
+	const run = useOptimizerRun(snapshot, team, mode);
 	const equipResult = async (result: OptResultEntry) => {
 		const context = run.resultContext;
+		if (
+			context &&
+			inventoryRevision(readAccount().snapshot) !== context.revision
+		) {
+			toast.error("Inventory changed. Run the optimizer again.");
+			return;
+		}
 		if (
 			equipLock.current ||
 			run.running ||
 			batch.phase === "running" ||
 			batch.phase === "stopping" ||
 			!context?.profileId ||
-			context.profileId !== snapshot.profile?.id
+			context.profileId !== snapshot.profile?.id ||
+			context.revision !== run.revision
 		)
 			return;
 		const reason = optimizerEquipError(
@@ -102,7 +101,7 @@ export function OptimizerTab({ active }: { active: boolean }) {
 			);
 			await refreshAccount();
 			if (readAccount().snapshot.profile?.id === context.profileId) {
-				run.markEquipped(result, ids);
+				void ids;
 				toast.success("Optimizer echoes equipped.");
 			}
 		} catch (error) {
@@ -114,36 +113,16 @@ export function OptimizerTab({ active }: { active: boolean }) {
 		}
 	};
 
-	const {
-		slotRoleIds,
-		buildsByRoleId,
-		ownedRoleIds,
-		overrides,
-		slotSummary,
-		swapSlots,
-		rotations,
-		rotation,
-		setRotationId,
-		targetBuild,
-		targetSkillId,
-		measuredBuild,
-		editingSlot,
-		editingBuild,
-		editingOverride,
-		editingBaselineRuntime,
-		ownedWeaponItemIds,
-		pickingSlot,
-		setPickingSlot,
-		setEditingSlot,
-		setSlotRoleId,
-		patchRole,
-	} = team;
-
-	const teamMode = mode === "team";
-	const hasTarget = Boolean(targetBuild?.runtime);
-	const hasTargetMode = rotation != null || targetSkillId != null;
-	const measuredName = measuredBuild ? roleLabel(measuredBuild) : null;
-
+	const preview = run.update?.baselineEvaluation ?? run.evaluation;
+	const energy = run.update?.results[0]?.energy ?? preview?.energy;
+	const errors = [
+		...(coreError ? [coreError] : []),
+		...run.errors,
+		...(run.runError ? [run.runError] : []),
+	];
+	const targetName =
+		charactersById.get(team.targetId)?.character_name ?? "character";
+	const pool = run.pool;
 	return (
 		<FilterLayout
 			filters={
@@ -151,244 +130,216 @@ export function OptimizerTab({ active }: { active: boolean }) {
 					<OptimizerFilterRow
 						filters={run.filters}
 						onFiltersChange={run.setFilters}
-						recommendedEnabled={coreReady && hasTarget}
-						countsHint={
-							teamMode
-								? "Echoes eligible after the filters; beyond the search cap they are ranked by the role guide's main stats and substat priorities"
-								: undefined
+						recommendedEnabled={!!team.profile}
+						counts={
+							pool
+								? {
+										eligible: pool.eligible,
+										total: pool.total,
+										combos:
+											(pool.mainCount *
+												(pool.pool.length - 1) *
+												(pool.pool.length - 2) *
+												(pool.pool.length - 3) *
+												(pool.pool.length - 4)) /
+											24,
+									}
+								: null
 						}
-						counts={run.counts}
 					/>
 				</FilterPanel>
 			}
 		>
-			<div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4 overflow-y-auto px-px pt-px">
-				<section className="bg-card text-card-foreground ring-foreground/10 flex shrink-0 flex-col gap-4 p-4 ring-1">
-					<div className="flex flex-col gap-1">
-						<h2 className="text-sm font-medium">Team & rotation</h2>
-						<p className="text-xs text-muted-foreground">
-							Choose the character to optimize, then build their team manually
-							or use a preset.
-						</p>
-					</div>
-					<TeamSection
-						slotRoleIds={slotRoleIds}
-						buildsByRoleId={buildsByRoleId}
-						ownedRoleIds={ownedRoleIds}
-						overrides={overrides}
-						slotSummary={slotSummary}
-						swapSlots={swapSlots}
-						onOpenPicker={setPickingSlot}
-						onOpenEditor={setEditingSlot}
-						rotations={rotations}
-						rotation={rotation}
-						coreReady={coreReady}
-						onRotationChange={setRotationId}
-						mode={mode}
-						measuredSlot={measuredSlot}
-						onMeasuredSlotChange={setMeasuredSlot}
-					/>
-
-					<TeamPresetPicker
-						slotRoleIds={slotRoleIds}
-						buildsByRoleId={buildsByRoleId}
-						ownedRoleIds={ownedRoleIds}
-						teams={snapshot.teams ?? []}
-						onApply={team.applyTeamPreset}
-					/>
-
-					<OptimizerRunBar
-						mode={mode}
-						onModeChange={setMode}
-						running={run.running}
-						phase={run.phase}
-						progress={run.progress}
-						progressPercent={run.progressPercent}
-						canRun={run.canRun && !equipping}
-						onRun={() => void run.handleRun()}
-						onCancel={run.handleCancel}
-					/>
-
-					{coreReady && hasTarget && hasTargetMode && !run.hasCandidates && (
-						<p className="text-xs text-destructive">
-							Not enough captured echoes match the current filters (at least 5
-							are needed).
-						</p>
-					)}
-
-					{coreReady && teamMode && !rotation && (
-						<p className="text-xs text-destructive">
-							{measuredName
-								? `${measuredName} has no authored rotation, so there is nothing to measure. Pick another teammate or switch to own damage.`
-								: "Pick a teammate with an authored rotation to measure."}
-						</p>
-					)}
-
-					{coreError && (
-						<p className="text-xs text-destructive">
-							Calculator data failed to load: {coreError}
-						</p>
-					)}
-					{run.runError && (
-						<p className="text-xs text-destructive">{run.runError}</p>
-					)}
-					{snapshot.resonators.length === 0 && (
-						<p className="text-[11px] text-muted-foreground">
-							No account data captured yet. Unowned characters run with default
-							builds (level 90, no echoes); open the game with the sniffer
-							running to search real inventories.
-						</p>
-					)}
-					{snapshot.resonators.length > 0 && run.inventory.length === 0 && (
-						<p className="text-[11px] text-muted-foreground">
-							{snapshot.echoes.length === 0
-								? "No echoes captured yet. Open the Echo inventory once while the sniffer is running."
-								: "No echoes available: the equipped-echoes and level filters exclude everything captured so far."}
-						</p>
-					)}
-					{run.selectionErrors.length > 0 && (
-						<ul className="flex flex-col gap-0.5">
-							{run.selectionErrors.slice(0, 4).map((error) => (
-								<li
-									key={`${error.kind}:${error.id}`}
-									className="text-[11px] text-destructive"
+			<div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3 overflow-y-auto px-px pt-px">
+				<Card size="sm">
+					<CardHeader className="items-center">
+						<div className="flex items-center gap-1">
+							<CardTitle>Rotation</CardTitle>
+							<SimulationInfo custom={!!team.profile?.customRotation} />
+						</div>
+						<CardAction className="row-span-1 self-center">
+							<TeamProfilePicker
+								profiles={team.profiles}
+								snapshot={snapshot}
+								selected={team.profile}
+								onSelect={team.setProfileId}
+								loading={!catalog && !coreError}
+							/>
+						</CardAction>
+					</CardHeader>
+					<CardContent className="flex flex-col gap-2">
+						{team.profile && (
+							<div className="flex flex-col gap-2">
+								<ToggleGroup
+									aria-label="Character to optimize"
+									value={team.targetId ? [String(team.targetId)] : []}
+									onValueChange={(values) => {
+										if (values[0]) team.setTargetId(Number(values[0]));
+									}}
+									className="grid w-full grid-cols-[repeat(auto-fit,minmax(min(100%,230px),1fr))] items-stretch gap-2"
 								>
-									{error.message}
-								</li>
-							))}
-							{run.selectionErrors.length > 4 && (
-								<li className="text-[11px] text-muted-foreground">
-									…and {run.selectionErrors.length - 4} more translation errors.
-								</li>
-							)}
-						</ul>
-					)}
-					{run.inventoryErrors.length > 0 && (
-						<p className="text-[11px] text-muted-foreground">
-							{run.inventoryErrors.length} inventory{" "}
-							{run.inventoryErrors.length === 1 ? "echo is" : "echoes are"}{" "}
-							unknown to the calculator catalog and{" "}
-							{run.inventoryErrors.length === 1 ? "was" : "were"} skipped.
-						</p>
-					)}
-				</section>
-
+									{team.profile.members.map((member, index) => (
+										<OptimizerMemberCard
+											key={member.characterId}
+											member={member}
+											build={team.members[index]}
+											selected={member.characterId === team.targetId}
+											owned={snapshot.resonators.some(
+												(r) => Number(aliasRoleId(r.id)) === member.characterId,
+											)}
+											snapshot={snapshot}
+											edit={team.overrides[member.characterId]}
+											stats={preview?.stats[member.characterId]}
+											onPatch={(patch) =>
+												team.patchRole(member.characterId, patch)
+											}
+										/>
+									))}
+								</ToggleGroup>
+							</div>
+						)}
+						{!!team.targetId && (
+							<OptimizerRunBar
+								energy={energy}
+								mode={mode}
+								onModeChange={setMode}
+								running={run.running}
+								phase={run.running ? "search" : null}
+								progress={run.update?.progress ?? null}
+								progressPercent={Math.round(
+									(run.update?.progress.progress ?? 0) * 100,
+								)}
+								canRun={run.canRun && !equipping}
+								onRun={run.handleRun}
+								onCancel={run.handleCancel}
+							/>
+						)}
+						{!!team.targetId && run.evaluationError && (
+							<Alert>
+								<AlertDescription>{run.evaluationError}</AlertDescription>
+							</Alert>
+						)}
+						{run.update?.baselineError && (
+							<Alert>
+								<AlertDescription>
+									Baseline: {run.update.baselineError}
+								</AlertDescription>
+							</Alert>
+						)}
+						{!run.update && preview && !preview.feasible && (
+							<Alert>
+								<AlertDescription>
+									{preview.diagnostics.join(" ")}
+								</AlertDescription>
+							</Alert>
+						)}
+						{errors.length > 0 && (
+							<Alert variant="destructive">
+								<AlertDescription>
+									{errors.slice(0, 5).join(" ")}
+								</AlertDescription>
+							</Alert>
+						)}
+						{team.profile && pool && !pool.mainCount && (
+							<Alert>
+								<AlertDescription>
+									No eligible owned copy of{" "}
+									{
+										team.profile.members.find(
+											(m) => m.characterId === team.targetId,
+										)?.mainEcho.name
+									}{" "}
+									for slot one. Check filters.
+								</AlertDescription>
+							</Alert>
+						)}
+						{(pool?.truncated || !!pool?.errors.length) && (
+							<div className="flex items-center gap-1 text-xs text-muted-foreground">
+								<span>
+									{pool?.pool.length} / {pool?.eligible} echoes
+								</span>
+								<OptimizerInfo label="Echo pool">
+									<p>
+										The search keeps main echoes and a mix of sets and stats.
+										The evaluation budget may miss better builds.
+									</p>
+									{!!pool?.errors.length && (
+										<p>
+											{pool.errors.length} skipped: {pool.errors[0]}
+										</p>
+									)}
+								</OptimizerInfo>
+							</div>
+						)}
+					</CardContent>
+				</Card>
 				<OptimizerResultsPanel
-					results={run.results}
+					results={run.update?.results ?? []}
 					characterId={run.resultContext?.roleId ?? null}
-					baseline={run.baseline}
+					baseline={run.update?.baseline ?? null}
 					running={run.running}
 					expandedIndex={run.expandedIndex}
 					onExpandedChange={run.setExpandedIndex}
 					echoByUid={run.echoByUid}
+					title={mode === "team" ? "Total team damage" : "Own damage"}
+					idleText="Load a rotation to start."
+					summary={
+						run.update &&
+						!run.running && (
+							<div className="flex items-center gap-1 text-[11px] tabular-nums text-muted-foreground">
+								<span>
+									{run.update.results.length} results ·{" "}
+									{(run.update.progress.elapsedMs / 1000).toFixed(1)}s
+								</span>
+								<OptimizerInfo label="Search summary">
+									<p>
+										{run.update.status === "budget"
+											? "Evaluation budget reached"
+											: run.update.status === "complete"
+												? "Search complete"
+												: "Search cancelled"}{" "}
+										· {run.update.progress.processed.toLocaleString()} builds
+										evaluated.
+									</p>
+								</OptimizerInfo>
+							</div>
+						)
+					}
 					equipAction={(result) => {
 						const context = run.resultContext;
+						const stale =
+							!context ||
+							context.profileId !== snapshot.profile?.id ||
+							context.revision !== run.revision;
 						const equipped =
-							context?.profileId === snapshot.profile?.id && context
-								? isOptimizerBuildEquipped(
-										snapshot,
-										context.roleId,
-										result.uids,
-									)
-								: false;
-						const busy =
-							equipping ||
-							run.running ||
-							batch.phase === "running" ||
-							batch.phase === "stopping";
-						const reason =
-							context?.profileId !== snapshot.profile?.id
-								? "Run the optimizer for the selected profile before equipping."
-								: optimizerEquipError(
-										snapshot,
-										connection,
-										context?.roleId ?? 0,
-										result.uids,
-									);
-						const name =
-							charactersById.get(context?.roleId ?? 0)?.character_name ??
-							"resonator";
+							!!context &&
+							isOptimizerBuildEquipped(snapshot, context.roleId, result.uids);
+						const reason = stale
+							? "Run the optimizer for the current account and inventory before equipping."
+							: optimizerEquipError(
+									snapshot,
+									connection,
+									context.roleId,
+									result.uids,
+								);
 						return {
 							label: equipping
 								? "Equipping…"
 								: equipped
 									? "Equipped"
-									: `Equip on ${name}`,
-							disabled: busy || equipped || Boolean(reason),
-							reason: equipped ? undefined : (reason ?? undefined),
+									: `Equip on ${targetName}`,
+							disabled:
+								equipping ||
+								run.running ||
+								batch.phase === "running" ||
+								batch.phase === "stopping" ||
+								equipped ||
+								!!reason,
+							reason: reason ?? undefined,
 							onEquip: () => void equipResult(result),
 						};
 					}}
-					title={
-						teamMode
-							? measuredName
-								? `Team damage · ${measuredName}'s rotation`
-								: "Team damage"
-							: "Results"
-					}
-					runningText={
-						teamMode
-							? "Scoring the team rotation for every candidate combo…"
-							: "Searching the captured inventory…"
-					}
-					idleText={
-						teamMode
-							? "Give the support a team and a teammate rotation to measure, then run the team search."
-							: "Pick a target, team and rotation, then run the optimizer."
-					}
 				/>
-
-				<p className="flex shrink-0 items-center gap-1 pb-2 text-[10px] text-muted-foreground">
-					<ChevronRight className="size-3" />
-					{teamMode ? (
-						<>
-							Enemy: Lvl. 100 Calamity, Tower of Adversity rules (all RES 20%).
-							The support&apos;s five echoes change; every combo is scored by
-							the measured teammate&apos;s rotation damage in the same
-							simulation the rotation view runs.
-						</>
-					) : (
-						<>
-							Enemy: Lvl. 100 Calamity, Tower of Adversity rules (all RES 20%).
-							Only the target&apos;s five echoes change; teammates and rotation
-							stay fixed.
-						</>
-					)}
-				</p>
-
-				{editingSlot && editingBuild && (
-					<LoadoutDialog
-						build={editingBuild}
-						owned={ownedRoleIds.has(editingBuild.roleId)}
-						ownedWeaponItemIds={ownedWeaponItemIds}
-						override={editingOverride}
-						baselineRuntime={editingBaselineRuntime}
-						onPatch={(patch) => patchRole(editingBuild.roleId, patch)}
-						onClose={() => setEditingSlot(null)}
-					/>
-				)}
-
-				{pickingSlot && (
-					<CharacterPickerDialog
-						title={`Select ${
-							teamMode && pickingSlot === "target"
-								? "support"
-								: SLOT_LABELS[pickingSlot]
-						}`}
-						currentRoleId={slotRoleIds[pickingSlot]}
-						assignmentLabels={Object.fromEntries(
-							(["target", "mateOne", "mateTwo"] as SlotKey[])
-								.filter((slot) => slot !== pickingSlot && slotRoleIds[slot])
-								.map((slot) => [slotRoleIds[slot], SLOT_LABELS[slot]]),
-						)}
-						allowNone={pickingSlot !== "target"}
-						onPick={(roleId) => {
-							setSlotRoleId(pickingSlot, roleId ?? "");
-							setPickingSlot(null);
-						}}
-						onClose={() => setPickingSlot(null)}
-					/>
-				)}
 			</div>
 		</FilterLayout>
 	);

@@ -1,11 +1,8 @@
 // Guide-driven echo relevance for support searches.
 //
-// The packed optimizer prunes candidates with stat weights derived from the
-// searched character's damage kit, which is the wrong lens for a support: an
-// ER or HP main carries no damage weight but is exactly what the buff scales
-// with. These helpers read the shipped tethys.gg role guides (the same data
-// behind the overlay rating and the character tabs) and score an echo by how
-// well it matches the guide's main stats and substat priorities.
+// Guides retain relevant ER/HP/healing choices in the bounded candidate pool.
+// These weights only rank inventory; the rotation simulation scores builds and
+// derives energy requirements.
 
 import { STAT_LABELS, type StatKey } from "@/lib/account";
 import { buildByCharacterId, type RoleBuild } from "@/lib/characters";
@@ -36,18 +33,6 @@ export function supportRoleFor(characterId: number): {
 	const roleBuild = build.roles[picked];
 	if (!roleBuild) return null;
 	return { role: picked, roleBuild };
-}
-
-/** Minimum total ER from the character guide; ranges use their lower bound. */
-export function guideEnergyRegenRequirement(characterId: number): number {
-	const picked = supportRoleFor(characterId);
-	const requirement = parseSubstatTiers(picked?.roleBuild.substats_priority)
-		.flat()
-		.find((stat) => stat.name === "Energy Regen")?.breakpoint;
-	const minimum = Number(requirement?.match(/\d+(?:\.\d+)?/)?.[0]);
-	return Number.isFinite(minimum) && minimum > 0 && minimum <= 1000
-		? minimum
-		: 0;
 }
 
 /** Read one character's guide as a support priority; `null` without a guide. */
@@ -121,24 +106,4 @@ export function supportEchoScore(
 	}
 
 	return score;
-}
-
-/** Reverse of {@link STAT_LABELS}: display name -> calculator stat key. */
-const KEY_BY_LABEL = new Map<string, string>(
-	Object.entries(STAT_LABELS).map(([key, label]) => [label, key]),
-);
-
-/**
- * Guide main stats as calculator filter keys. Elements map through their
- * damage-bonus labels, so a guide's "Spectro%" becomes the `spectro` filter.
- */
-export function guideMainStatKeys(characterId: number): string[] {
-	const guide = supportGuideFor(characterId);
-	if (!guide) return [];
-	const keys: string[] = [];
-	for (const name of guide.mains) {
-		const key = KEY_BY_LABEL.get(name);
-		if (key && !keys.includes(key)) keys.push(key);
-	}
-	return keys;
 }

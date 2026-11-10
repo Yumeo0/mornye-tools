@@ -1,10 +1,11 @@
-import type { OptResultEntry } from "@wuwacalc/core/engine/optimizer/types";
-import { useMemo } from "react";
+import { type ReactNode, useMemo } from "react";
 import { ResultRow } from "@/components/optimizer/ResultRow";
+import { VirtualGrid } from "@/components/VirtualGrid";
 import type { OptimizerBaseline } from "@/hooks/useOptimizerRun";
 import type { Echo } from "@/lib/account";
 import { optimizerResultRows } from "@/lib/calc/optimizerResults";
 import { supportRoleFor } from "@/lib/calc/supportGuide";
+import type { OptResultEntry } from "@/lib/calc/types";
 import { charactersById } from "@/lib/catalog";
 import { type CharacterInfo, statsForRole } from "@/lib/rating";
 
@@ -18,6 +19,7 @@ export function OptimizerResultsPanel({
 	onExpandedChange,
 	echoByUid,
 	equipAction,
+	summary,
 	title = "Results",
 	runningText = "Searching the captured inventory…",
 	idleText = "Pick a target, team and rotation, then run the optimizer.",
@@ -30,6 +32,7 @@ export function OptimizerResultsPanel({
 	expandedIndex: number | "baseline" | null;
 	onExpandedChange: (index: number | "baseline" | null) => void;
 	echoByUid: Map<string, Echo>;
+	summary?: ReactNode;
 	equipAction?: (result: OptResultEntry) => {
 		label: string;
 		disabled: boolean;
@@ -45,6 +48,17 @@ export function OptimizerResultsPanel({
 		() => optimizerResultRows(results, baseline),
 		[results, baseline],
 	);
+	// The equipped baseline may be infeasible and absent from search results.
+	const equippedEchoes = useMemo(() => {
+		if (characterId === null) return null;
+		const equipped = [...echoByUid.entries()]
+			.filter(([, echo]) => echo.equippedBy === characterId)
+			.sort(([, a], [, b]) => (a.slot ?? 99) - (b.slot ?? 99));
+		return {
+			uids: equipped.map(([uid]) => uid),
+			mainUid: equipped.find(([, echo]) => echo.slot === 0)?.[0] ?? null,
+		};
+	}, [characterId, echoByUid]);
 	const ratingCharacter = useMemo<CharacterInfo | null>(() => {
 		const character = charactersById.get(characterId ?? 0);
 		const guide = supportRoleFor(characterId ?? 0);
@@ -58,17 +72,26 @@ export function OptimizerResultsPanel({
 	}, [characterId]);
 
 	return (
-		<section className="bg-card text-card-foreground ring-foreground/10 flex min-h-40 flex-1 flex-col ring-1">
-			<header className="flex shrink-0 items-center justify-between gap-2 border-b border-border/60 px-3 py-2">
+		<section className="@container/results bg-card text-card-foreground ring-foreground/10 flex min-h-40 flex-1 flex-col ring-1">
+			<header className="flex shrink-0 flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-border/60 px-3 py-1.5">
 				<h3 className="text-sm font-medium">{title}</h3>
+				{summary}
 			</header>
 			{rows.length === 0 ? (
 				<p className="px-3 py-6 text-center text-[11px] text-muted-foreground">
 					{running ? runningText : idleText}
 				</p>
 			) : (
-				<div className="min-h-0 flex-1 overflow-y-auto pr-1">
-					{rows.map((row) =>
+				<VirtualGrid
+					items={rows}
+					columns={1}
+					gap={0}
+					estimateRowHeight={44}
+					getItemKey={(row) =>
+						row.kind === "baseline" ? "baseline" : row.index
+					}
+					className="min-h-0 max-h-[65vh] flex-1 overflow-y-auto pr-1"
+					renderItem={(row) =>
 						row.kind === "baseline" && baseline ? (
 							<ResultRow
 								key="baseline"
@@ -78,8 +101,10 @@ export function OptimizerResultsPanel({
 									uids: baseline.uids,
 									damage: baseline.damage,
 									stats: baseline.stats,
+									energy: baseline.energy,
 								}}
 								baseline={null}
+								equippedEchoes={equippedEchoes}
 								expanded={expandedIndex === "baseline"}
 								onToggle={() =>
 									onExpandedChange(
@@ -96,6 +121,7 @@ export function OptimizerResultsPanel({
 								result={row.result}
 								equipAction={equipAction?.(row.result)}
 								baseline={baseline?.damage ?? null}
+								equippedEchoes={equippedEchoes}
 								expanded={expandedIndex === row.index}
 								onToggle={() =>
 									onExpandedChange(
@@ -105,9 +131,9 @@ export function OptimizerResultsPanel({
 								echoByUid={echoByUid}
 								ratingCharacter={ratingCharacter}
 							/>
-						) : null,
-					)}
-				</div>
+						) : null
+					}
+				/>
 			)}
 		</section>
 	);

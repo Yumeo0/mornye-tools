@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import type { RoleBuild } from "@/lib/characters";
 import {
+	energyRegenBreakpoint,
 	normalizeStatName,
 	parseSubstatTiers,
 	rollValueSubstatTiers,
@@ -47,6 +48,7 @@ export function SubstatsCard({
 		rollValueSubstatTiers(priority).map((tier) =>
 			tier.map((stat) => stat.name),
 		),
+		energyRegenBreakpoint(priority),
 	);
 
 	return (
@@ -60,10 +62,6 @@ export function SubstatsCard({
 					/>{" "}
 					Substats Priority
 				</Label>
-				<p className="text-xs text-muted-foreground">
-					Guide priority order. Scoring weights use 0.5 steps; Energy Regen and
-					breakpoint stats use a ×1 utility weight.
-				</p>
 
 				<div className="flex flex-col gap-1">
 					{tiers.map((tier, tierIndex) => (

@@ -10,7 +10,7 @@ import { type FilterOption, statFilterOptions } from "@/components/filters";
 import type { StatKey } from "@/lib/account";
 import { echoSetsById, sonataIcon128 } from "@/lib/catalog";
 
-export const DEFAULT_RESULTS_LIMIT = 128;
+export const DEFAULT_RESULTS_LIMIT = 50;
 export const MIN_RESULTS_LIMIT = 8;
 export const MAX_RESULTS_LIMIT = 65536;
 
@@ -27,8 +27,6 @@ export const EQUIPPED_OPTIONS: FilterOption[] = [
 
 export interface OptimizerFilters {
 	useRecommended: boolean;
-	/** Minimum total Energy Regen in displayed percent; 0 = unrestricted. */
-	minEnergyRegen: number;
 	equipped: EquippedMode;
 	/** Minimum echo level (+0 … +25); 0 = no restriction. */
 	minLevel: number;
@@ -42,7 +40,6 @@ export interface OptimizerFilters {
 
 export const EMPTY_OPTIMIZER_FILTERS: OptimizerFilters = {
 	useRecommended: false,
-	minEnergyRegen: 0,
 	equipped: "include",
 	minLevel: 0,
 	sets: [],
@@ -53,7 +50,6 @@ export const EMPTY_OPTIMIZER_FILTERS: OptimizerFilters = {
 export function hasOptimizerFilters(filters: OptimizerFilters): boolean {
 	return (
 		filters.useRecommended ||
-		filters.minEnergyRegen > 0 ||
 		filters.equipped !== "include" ||
 		filters.minLevel > 0 ||
 		filters.sets.length > 0 ||
@@ -73,9 +69,7 @@ export function optimizerPoolFilters(
 		mainStats: [
 			...new Set([
 				...recommendedMainStats,
-				...(recommendedMainStats.length > 0 && filters.minEnergyRegen > 0
-					? ["energyRegen"]
-					: []),
+				...(recommendedMainStats.length ? ["energyRegen"] : []),
 			]),
 		],
 		substats: [],

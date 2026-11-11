@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.3.4] - 2026-11-11
+
 Save upgrade materials, compare team rotations more easily, and browse your collection with a clearer interface.
 
 ### Added

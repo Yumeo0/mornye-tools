@@ -1,6 +1,14 @@
 import type { ReactNode } from "react";
+import type { EchoRoll } from "@/components/echo/echoRolls";
 import { SubStatRollBar } from "@/components/echo/SubStatRollBar";
 import { Badge } from "@/components/ui/badge";
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectTrigger,
+} from "@/components/ui/select";
 import {
 	type Echo,
 	formatStatValue,
@@ -112,9 +120,9 @@ function StatRow({
 	return (
 		<div
 			className="group/stat min-w-0"
-			title={`${label}${previous !== undefined ? ` · Equipped: ${previous ?? "No roll"}` : ""}${weight !== undefined ? ` · Roll value weight ×${weight}` : ""}`}
+			title={`${label}${previous !== undefined ? ` · Equipped: ${previous ?? "No roll"}` : ""}${weight !== undefined ? ` · RV weight ×${weight}` : ""}`}
 		>
-			<div className="flex items-center gap-1.5">
+			<div className="flex h-5 items-center gap-1.5">
 				{previous !== undefined && previous !== value && (
 					<span
 						role="img"
@@ -124,25 +132,25 @@ function StatRow({
 				)}
 				{icon && <img src={icon} alt="" className="size-3 shrink-0" />}
 				<span
-					className={`flex-1 truncate text-xs ${muted ? "text-muted-foreground" : ""}`}
+					className={`flex-1 truncate text-sm ${muted ? "text-muted-foreground" : ""}`}
 				>
 					{shortStatLabel(label)}
 				</span>
+				{weight !== undefined && weight > 0 && (
+					<Badge
+						className="invisible py-0 group-hover/stat:visible group-focus-within/card:visible"
+						title="RV priority weight"
+					>
+						×{weight}
+					</Badge>
+				)}
 				{value && (
 					<span
-						className="text-xs font-semibold tabular-nums"
+						className="text-sm font-semibold tabular-nums"
 						style={valueColor ? { color: valueColor } : undefined}
 					>
 						{value}
 					</span>
-				)}
-				{weight !== undefined && weight > 0 && (
-					<Badge
-						className="hidden group-hover/stat:inline-flex group-focus-within/card:inline-flex"
-						title="Roll value priority weight"
-					>
-						×{weight}
-					</Badge>
 				)}
 			</div>
 			{numeric !== null && (
@@ -163,6 +171,8 @@ export function EchoCard({
 	rollCharacter,
 	rollSubstatTiers,
 	rollErBreakpoint,
+	rollOptions,
+	onRollSelect,
 	rollBadge,
 	actions,
 	footer,
@@ -177,6 +187,9 @@ export function EchoCard({
 	/** Priority tiers of the character whose roll value is displayed. */
 	rollSubstatTiers?: string[][];
 	rollErBreakpoint?: number;
+	/** Nonzero RVs available to view instead of the default best score. */
+	rollOptions?: EchoRoll[];
+	onRollSelect?: (roll: EchoRoll) => void;
 	/** Optional badge at the left of the roll-value row. */
 	rollBadge?: ReactNode;
 	actions?: ReactNode;
@@ -191,6 +204,26 @@ export function EchoCard({
 	const weights = rollSubstatTiers
 		? substatPriorityWeights(rollSubstatTiers, rollErBreakpoint)
 		: null;
+	const rollLabel = (
+		<>
+			{rollCharacter && (
+				<img
+					src={rollCharacter.icon}
+					alt={rollCharacter.name}
+					title={rollCharacter.name}
+					className="size-5 shrink-0 object-contain"
+				/>
+			)}
+			{rollValue != null && (
+				<span
+					className="text-sm font-bold leading-none"
+					style={{ color: ratingColor(rollValue) }}
+				>
+					RV {rollValue}%
+				</span>
+			)}
+		</>
+	);
 	return (
 		<div className="group/card flex h-full flex-col bg-muted/50 p-2.5 text-sm">
 			<div className="flex gap-2.5">
@@ -221,7 +254,7 @@ export function EchoCard({
 						<span className="flex shrink-0 items-center gap-1">
 							{echo.stackCount > 1 && (
 								<span
-									className="border border-sky-400/40 bg-sky-400/10 px-1 text-[10px] font-bold text-sky-300"
+									className="border border-sky-400/40 bg-sky-400/10 px-1 text-xs font-bold text-sky-300"
 									title={`Stack of ${echo.stackCount} identical echoes`}
 								>
 									×{echo.stackCount}
@@ -235,7 +268,7 @@ export function EchoCard({
 					<div className="flex items-center gap-1.5">
 						{set && (
 							<span
-								className="min-w-0 flex-1 truncate text-[11px] text-muted-foreground"
+								className="min-w-0 flex-1 truncate text-xs text-muted-foreground"
 								title={set.name}
 							>
 								{set.name}
@@ -243,7 +276,7 @@ export function EchoCard({
 						)}
 						{echo.source === "manual" && (
 							<span
-								className="shrink-0 border border-amber-400/40 bg-amber-400/10 px-1 text-[9px] font-bold tracking-wide text-amber-300 uppercase"
+								className="shrink-0 border border-amber-400/40 bg-amber-400/10 px-1 text-xs font-bold tracking-wide text-amber-300 uppercase"
 								title="Added by hand"
 							>
 								Manual
@@ -269,7 +302,7 @@ export function EchoCard({
 				)}
 			</div>
 			<div className="mt-2 flex flex-col gap-0.5">
-				{echo.mainProps.map((prop) => (
+				{echo.mainProps.slice(0, 1).map((prop) => (
 					<StatRow
 						key={`${prop.propId}-${prop.key}`}
 						label={statLabel(prop.key)}
@@ -312,29 +345,70 @@ export function EchoCard({
 					className="mt-2 flex items-center justify-end gap-1.5 border-t pt-1.5"
 					title={
 						rollCharacter
-							? `Roll value for ${rollCharacter.name}`
-							: "Roll value"
+							? `RV (Roll Value) for ${rollCharacter.name}`
+							: "RV (Roll Value)"
 					}
 				>
 					{rollBadge && <span className="mr-auto">{rollBadge}</span>}
-					{rollValue != null && (
-						<>
-							{rollCharacter && (
-								<img
-									src={rollCharacter.icon}
-									alt={rollCharacter.name}
-									title={rollCharacter.name}
-									className="size-5 shrink-0 object-contain"
-								/>
-							)}
-							<span
-								className="text-xs font-bold leading-none"
-								style={{ color: ratingColor(rollValue) }}
+					{rollValue != null &&
+						(onRollSelect && rollOptions && rollOptions.length > 1 ? (
+							<Select
+								value={rollCharacter?.name}
+								items={rollOptions.map(({ character }) => ({
+									value: character.character_name,
+									label: character.character_name,
+								}))}
+								onValueChange={(value) => {
+									const option = rollOptions.find(
+										(roll) => roll.character.character_name === value,
+									);
+									if (option) onRollSelect(option);
+								}}
 							>
-								RV {rollValue}%
+								<SelectTrigger
+									size="sm"
+									aria-label={`View RV for another Resonator, currently ${rollCharacter?.name}, ${rollValue}%`}
+								>
+									{rollLabel}
+								</SelectTrigger>
+								<SelectContent
+									align="end"
+									alignItemWithTrigger={false}
+									width="content"
+								>
+									<SelectGroup>
+										{rollOptions.map(({ character, rating }) => (
+											<SelectItem
+												key={character.character_id}
+												value={character.character_name}
+											>
+												<img
+													src={
+														charactersById.get(character.character_id)
+															?.icon_head_256 ?? character.icon_pile
+													}
+													alt=""
+													className="size-5 shrink-0 object-contain"
+												/>
+												<span className="flex-1">
+													{character.character_name}
+												</span>
+												<span
+													className="font-semibold tabular-nums"
+													style={{ color: ratingColor(rating) }}
+												>
+													{rating}%
+												</span>
+											</SelectItem>
+										))}
+									</SelectGroup>
+								</SelectContent>
+							</Select>
+						) : (
+							<span className="inline-flex h-7 items-center gap-1.5">
+								{rollLabel}
 							</span>
-						</>
-					)}
+						))}
 				</div>
 			)}
 			{footer && (

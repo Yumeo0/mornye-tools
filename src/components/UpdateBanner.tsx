@@ -1,5 +1,6 @@
 import { Download, X } from "lucide-react";
 import { useState } from "react";
+import { ChangelogDialog } from "@/components/ChangelogDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -11,8 +12,8 @@ import {
 
 /**
  * Startup notice for a newer release: a dismissible card in the bottom-right
- * corner that downloads, installs and relaunches into the update. Details and
- * a retry live in Settings -> Updates; this is only the nudge.
+ * corner with a changelog and actions to install and relaunch into the update.
+ * The release and a retry also remain available in Settings -> Updates.
  */
 export function UpdateBanner() {
 	const { update, dismissed, installing, progress } = useUpdateState();
@@ -71,9 +72,16 @@ export function UpdateBanner() {
 							/>
 						</div>
 					) : (
-						<Button className="w-full" onClick={() => void install()}>
-							<Download /> Install and restart
-						</Button>
+						<div className="flex flex-wrap gap-2">
+							<ChangelogDialog
+								key={update.version}
+								release={update}
+								size="sm"
+							/>
+							<Button size="sm" onClick={() => void install()}>
+								<Download /> Install and restart
+							</Button>
+						</div>
 					)}
 				</CardContent>
 			</Card>

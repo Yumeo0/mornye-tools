@@ -46,7 +46,7 @@ export function OptimizerRunBar({
 				? "Scoring the equipped support build…"
 				: "Evaluating the current build…"
 			: phase === "stats"
-				? "Reading the searched character's stats…"
+				? "Reading the searched Resonator's stats…"
 				: progress
 					? `${progressPercent}% of evaluation budget · ${Math.round(progress.processed).toLocaleString()}${
 							progress.total != null

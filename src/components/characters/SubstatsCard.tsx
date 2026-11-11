@@ -45,7 +45,7 @@ function SubstatChip({
 					</span>
 				)}
 			</span>
-			<Badge title="Roll value priority weight">×{weight}</Badge>
+			<Badge title="RV priority weight">×{weight}</Badge>
 		</div>
 	);
 }
@@ -82,7 +82,7 @@ export function SubstatsCard({
 							className="relative flex items-start gap-3"
 						>
 							<span
-								className="relative mt-2 grid size-5 shrink-0 place-items-center bg-card text-[10px] tabular-nums text-muted-foreground"
+								className="relative mt-2 grid size-5 shrink-0 place-items-center bg-card text-xs tabular-nums text-muted-foreground"
 								title={`Priority ${tierIndex + 1}`}
 							>
 								{tierIndex + 1}

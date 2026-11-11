@@ -24,6 +24,7 @@ import {
 	getRelevantCharacters,
 	mainStatForEcho,
 	maxPossibleRating,
+	ratingSuccessChance,
 } from "@/lib/rating";
 
 export type UpgradeOutcome =
@@ -31,6 +32,7 @@ export type UpgradeOutcome =
 	| "upgrading"
 	| "complete"
 	| "below_threshold"
+	| "low_chance"
 	| "discarded"
 	| "consumed"
 	| "skipped"
@@ -43,6 +45,7 @@ export interface UpgradeRow {
 	echo: Echo;
 	outcome: UpgradeOutcome;
 	possible: number | null;
+	successChance: number | null;
 	message: string;
 }
 
@@ -60,6 +63,7 @@ export function echoUpgradeRows(echoes: Echo[]): UpgradeRow[] {
 			echo,
 			outcome: "queued",
 			possible: null,
+			successChance: null,
 			message: "Waiting",
 		};
 	});
@@ -111,6 +115,29 @@ export function bestPossibleEchoRating(echo: Echo): number | null {
 		: null;
 }
 
+export function echoUpgradeSuccessChance(
+	echo: Echo,
+	threshold: number,
+): number | null {
+	const view = viewFromEcho(echo);
+	const relevant = getRelevantCharacters(view.setNames);
+	return relevant.length
+		? ratingSuccessChance(
+				relevant,
+				view.subStats,
+				mainStatForEcho(echo),
+				threshold,
+				echoTuningSlots(echo.itemId),
+			)
+		: null;
+}
+
+export function formatEchoSuccessChance(chance: number): string {
+	return chance > 0 && chance < 0.01
+		? "<0.01%"
+		: `${chance.toLocaleString(undefined, { maximumFractionDigits: 2 })}%`;
+}
+
 /** Tune any already unlocked slots first; otherwise unlock just the next slot. */
 export function nextEchoStage(echo: Echo): number | null {
 	if (echo.subProps.length < echoTuningSlots(echo.itemId, echo.level))
@@ -137,6 +164,7 @@ interface BatchDependencies {
 	) => Promise<EchoUpgradePlan>;
 	discard: (echo: Echo) => Promise<{ marked: boolean; reason: string | null }>;
 	rating: (echo: Echo) => number | null;
+	successChance: (echo: Echo, threshold: number) => number | null;
 	stopped: () => boolean;
 	report: (row: UpgradeRow) => void;
 }
@@ -151,6 +179,35 @@ export async function runEchoUpgradeBatch(
 ) {
 	if (!Number.isFinite(threshold) || threshold < 0 || threshold > 100)
 		throw new Error("Choose a threshold from 0 to 100.");
+	const minimumChance = options.minSuccessChance;
+	if (
+		!Number.isFinite(minimumChance) ||
+		minimumChance < 0 ||
+		minimumChance > 100
+	)
+		throw new Error("Choose a minimum success chance from 0 to 100.");
+	// Repeated stack copies and the preview recheck share the same probabilities.
+	const chances = new Map<string, number | null>();
+	const chanceFor = (echo: Echo) => {
+		if (minimumChance === 0) return null;
+		const key = JSON.stringify([
+			echo.itemId,
+			echo.monsterId,
+			echo.setId,
+			echo.mainProps,
+			echo.subProps,
+		]);
+		if (chances.has(key)) return chances.get(key) ?? null;
+		const chance = deps.successChance(echo, threshold);
+		if (
+			chance !== null &&
+			(!Number.isFinite(chance) || chance < 0 || chance > 100)
+		)
+			throw new Error("Could not calculate a valid success chance.");
+		if (chances.size >= 256) chances.clear();
+		chances.set(key, chance);
+		return chance;
+	};
 	const active = () =>
 		!deps.stopped() && deps.current().profile?.id === profileId;
 	const protectedIds = new Set(echoes.map((echo) => echo.incrId));
@@ -173,11 +230,18 @@ export async function runEchoUpgradeBatch(
 			discardedRows.delete(material.incr_id);
 		}
 	};
-	const reject = async (row: UpgradeRow) => {
+	const reject = async (
+		row: UpgradeRow,
+		outcome: "below_threshold" | "low_chance" = "below_threshold",
+	) => {
+		const verdict =
+			outcome === "low_chance" && row.successChance !== null
+				? `Success chance ${formatEchoSuccessChance(row.successChance)}`
+				: `Best possible rating ${row.possible}%`;
 		let rejected: UpgradeRow = {
 			...row,
-			outcome: "below_threshold",
-			message: `Best possible rating ${row.possible}% is below ${threshold}%.`,
+			outcome,
+			message: `${verdict} is below ${outcome === "low_chance" ? minimumChance : threshold}%.`,
 		};
 		if (options.autoDiscard && active()) {
 			const echo = row.echo;
@@ -191,7 +255,7 @@ export async function runEchoUpgradeBatch(
 			else {
 				deps.report({
 					...row,
-					message: "Marking below-threshold echo as discard…",
+					message: `Marking ${outcome === "low_chance" ? "low-chance" : "below-threshold"} echo as discard…`,
 				});
 				const result = await deps.discard(echo);
 				await deps.refresh();
@@ -208,7 +272,7 @@ export async function runEchoUpgradeBatch(
 						...rejected,
 						echo: updated,
 						outcome: "discarded",
-						message: `Marked as discard · Best possible rating ${row.possible}%`,
+						message: `Marked as discard · ${verdict}`,
 					};
 					// Only the confirmed failed copy becomes fodder. Pending copies
 					// and the unchanged remainder of a split stack stay protected.
@@ -218,6 +282,22 @@ export async function runEchoUpgradeBatch(
 			}
 		}
 		deps.report(rejected);
+	};
+	const stopForChance = async (row: UpgradeRow): Promise<boolean> => {
+		if (minimumChance === 0) return false;
+		if (row.successChance === null) {
+			deps.report({
+				...row,
+				outcome: "skipped",
+				message:
+					"Substats could not be modeled for success chance. Echo kept its mark.",
+			});
+			return true;
+		}
+		if (row.successChance + minimumChance * 1e-12 >= minimumChance)
+			return false;
+		await reject(row, "low_chance");
+		return true;
 	};
 	for (const selected of echoUpgradeRows(echoes)) {
 		if (!active()) return;
@@ -249,14 +329,17 @@ export async function runEchoUpgradeBatch(
 					deps.report({
 						...row,
 						outcome: "skipped",
-						message: "No relevant character guide to evaluate.",
+						message: "No relevant Resonator guide to evaluate.",
 					});
 					break;
 				}
 				if (possible < threshold) {
+					row.successChance = minimumChance > 0 ? 0 : null;
 					await reject(row);
 					break;
 				}
+				row = { ...row, successChance: chanceFor(echo) };
+				if (await stopForChance(row)) break;
 				const target = nextEchoStage(echo);
 				if (target === null) {
 					deps.report({
@@ -297,17 +380,30 @@ export async function runEchoUpgradeBatch(
 				const freshRating = deps.rating(fresh);
 				if (freshRating === null || freshRating < threshold) {
 					if (freshRating !== null)
-						await reject({ ...row, echo: fresh, possible: freshRating });
+						await reject({
+							...row,
+							echo: fresh,
+							possible: freshRating,
+							successChance: minimumChance > 0 ? 0 : null,
+						});
 					else
 						deps.report({
 							...row,
 							echo: fresh,
 							possible: freshRating,
+							successChance: null,
 							outcome: "skipped",
-							message: "No relevant character guide to evaluate.",
+							message: "No relevant Resonator guide to evaluate.",
 						});
 					break;
 				}
+				row = {
+					...row,
+					echo: fresh,
+					possible: freshRating,
+					successChance: chanceFor(fresh),
+				};
+				if (await stopForChance(row)) break;
 				const source = structuredClone(fresh);
 				const previousIds = new Set(
 					deps.current().echoes.map((item) => item.incrId),
@@ -355,7 +451,12 @@ export async function runEchoUpgradeBatch(
 					stackSources.set(selected.originalId, remainder?.incrId ?? -1);
 					if (remainder) protectedIds.add(remainder.incrId);
 				}
-				row = { ...row, echo: updated, possible: deps.rating(updated) };
+				row = {
+					...row,
+					echo: updated,
+					possible: deps.rating(updated),
+					successChance: chanceFor(updated),
+				};
 				deps.report(row);
 			}
 		} catch (reason) {
@@ -413,7 +514,10 @@ export function startEchoUpgradeBatch(
 		!echoes.length ||
 		!Number.isFinite(threshold) ||
 		threshold < 0 ||
-		threshold > 100
+		threshold > 100 ||
+		!Number.isFinite(options.minSuccessChance) ||
+		options.minSuccessChance < 0 ||
+		options.minSuccessChance > 100
 	)
 		return;
 	stopRequested = false;
@@ -472,6 +576,7 @@ export function startEchoUpgradeBatch(
 				),
 			discard: (echo) => requestEchoDiscard(profileId, echo),
 			rating: bestPossibleEchoRating,
+			successChance: echoUpgradeSuccessChance,
 			stopped: () =>
 				stopRequested ||
 				!canUpgradeEcho(readAccount().snapshot, readDangerousFeatures().status),

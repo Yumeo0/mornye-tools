@@ -106,6 +106,14 @@ export interface Echo {
 /** Where an echo came from: the packet sniffer or a manual entry. */
 export type EchoSource = "sniffer" | "manual";
 
+/** Number of individual echoes, including copies represented by stacks. */
+export function echoCount(echoes: readonly Pick<Echo, "stackCount">[]): number {
+	return echoes.reduce(
+		(count, echo) => count + Math.max(1, echo.stackCount ?? 1),
+		0,
+	);
+}
+
 export interface SavedTeam {
 	id: number;
 	name: string;

@@ -1,5 +1,9 @@
 import portraits from "@/configs/profile_portraits.json";
-import type { AccountProfile, AccountSnapshot } from "@/lib/account";
+import {
+	type AccountProfile,
+	type AccountSnapshot,
+	echoCount,
+} from "@/lib/account";
 
 const portraitById = new Map(
 	portraits.map((entry) => [entry.id, entry.icon_head_256]),
@@ -24,10 +28,7 @@ export function overviewCounts(snapshot: AccountSnapshot) {
 	return {
 		characters: snapshot.resonators.length,
 		weapons: snapshot.weapons.length,
-		echoes: snapshot.echoes.reduce(
-			(count, echo) => count + Math.max(1, echo.stackCount ?? 1),
-			0,
-		),
+		echoes: echoCount(snapshot.echoes),
 		inventory: snapshot.inventory?.length ?? 0,
 		teams: snapshot.teams?.length ?? 0,
 	};

@@ -85,7 +85,7 @@ export function EchoSetsCard({ guide }: { guide: RoleBuild }) {
 									</div>
 									<div className="flex flex-wrap items-center justify-center gap-1.5">
 										{pcLabel(set.variant) && (
-											<span className="text-[10px] text-muted-foreground">
+											<span className="text-xs text-muted-foreground">
 												{pcLabel(set.variant)}
 											</span>
 										)}

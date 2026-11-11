@@ -197,7 +197,7 @@ export function AddEchoDialog({
 									{entry.echo_name}
 								</span>
 								{entry.echo_cost != null && (
-									<span className="text-muted-foreground shrink-0 text-[10px]">
+									<span className="text-muted-foreground shrink-0 text-xs">
 										{entry.echo_cost} cost
 									</span>
 								)}

@@ -33,16 +33,29 @@ Mark controls pause during upgrade batches.
 ## Bulk upgrades
 
 1. Open **Tools → Echo Upgrader → Select echoes** and choose copies to upgrade.
-2. Set the minimum rating, allowed fodder/EXP tubes, and optional
+2. Set the target RV, optional minimum success chance, allowed fodder/EXP tubes, and optional
    **Mark failed echoes as discard**.
 3. Start the batch. Rules persist across restarts and stay fixed during a batch.
 
 Echoes aim for five-level checkpoints and tune one substat at a time. Discarded
-echoes are used before tubes, even when their EXP passes a checkpoint. Newly
+echoes minimize tube EXP first; among plans with the same tube EXP, the least
+discarded EXP is used. Discard fodder can still pass a checkpoint when it saves tubes. Newly
 unlocked substats are tuned and evaluated individually before spending more EXP. After each
 roll, the batch checks the best possible final rating across relevant character
 guides. An echo stops when it can no longer reach the threshold; passing echoes
 continue to their level limit. Manual echoes and echoes without a guide are skipped.
+
+**Minimum success chance (%)** stops an echo when its chance of reaching the
+target RV for at least one relevant guide falls below the selected percentage.
+The default is **1%**; set it to **0** to disable this cutoff. Chances use
+[Kuro's published probabilities](https://wutheringwaves.kurogames.com/p/language_ko/product_info.html):
+equally likely remaining substat types without duplicates, and weighted roll
+values. Overlapping guides are counted together, not as independent chances.
+The chance is recalculated after every substat and checked again before spending.
+Auto-discard applies both when the target RV is no longer reachable and when the
+success chance falls below the cutoff. Confirmed discards can feed later targets
+when discard fodder is enabled. With auto-discard off, low-chance echoes keep
+their marks.
 
 - Uses only enabled EXP sources, plus tuners and Shell Credits. Zero-EXP echoes
   cannot supply fodder EXP.

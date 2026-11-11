@@ -13,7 +13,7 @@
 //   BUNDLE_DIR          Tauri bundle output (publish only)
 //   UPDATER_TARGET      override the updater platform key (defaults to the
 //                       build machine's platform)
-//   RELEASE_NOTES       optional override of the generated commit notes
+//   RELEASE_NOTES       optional override of the curated CHANGELOG.md entry
 //
 // The app polls `<repo>/releases/latest/download/latest.json`, so the manifest
 // is published to the tagged release itself: GitHub's `latest` alias then
@@ -25,9 +25,10 @@
 // newest build. The updater archives keep their versioned names because
 // `latest.json` points straight at them.
 
-import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { file, Glob, write } from "bun";
+import { changelogEntry } from "../src/lib/changelogFormat";
 
 interface GitHubAsset {
 	id: number;
@@ -101,37 +102,35 @@ async function findRelease(name: string): Promise<GitHubRelease | null> {
 	return (await response.json()) as GitHubRelease;
 }
 
-/** Release notes from the commits since the previous v* tag. */
-function releaseNotes(): string {
-	let previous = "";
-	try {
-		const tags = execFileSync("git", ["tag", "-l", "v*", "--sort=-v:refname"])
-			.toString()
-			.split("\n")
-			.map((line) => line.trim())
-			.filter(Boolean);
-		previous = tags.find((name) => name !== tag) ?? "";
-	} catch {
-		// Best effort: fall back to the full history.
-	}
-	const range = previous ? `${previous}..${tag}` : tag;
-	let log = "";
-	try {
-		log = execFileSync("git", ["log", range, "--pretty=format:- %s"])
-			.toString()
-			.trim();
-	} catch {
-		// ignore
-	}
-	return `Release ${tag}\n\n## Changes\n${log || "- No changes recorded."}`;
+/** The same reviewed notes are published on GitHub and in updater manifests. */
+export function releaseNotes(releaseVersion = version): string {
+	if (process.env.RELEASE_NOTES?.trim())
+		return process.env.RELEASE_NOTES.trim();
+	const markdown = readFileSync(
+		join(import.meta.dir, "..", "CHANGELOG.md"),
+		"utf8",
+	);
+	const notes = changelogEntry(markdown, releaseVersion)?.body;
+	if (!notes)
+		throw new Error(`Missing user-facing changelog for ${releaseVersion}.`);
+	return notes;
 }
 
-async function ensureRelease(
+export async function ensureRelease(
 	name: string,
 	body: string,
 ): Promise<GitHubRelease> {
 	const existing = await findRelease(name);
-	if (existing) return existing;
+	if (existing) {
+		if (existing.body !== body) {
+			await apiFetch(`/releases/${existing.id}`, {
+				method: "PATCH",
+				body: JSON.stringify({ body }),
+				headers: { "Content-Type": "application/json" },
+			});
+		}
+		return { ...existing, body };
+	}
 	const response = await apiFetch("/releases", {
 		method: "POST",
 		body: JSON.stringify({
@@ -288,10 +287,7 @@ async function signedArtifacts(
 async function publish() {
 	requireEnv();
 	const bundleDir = process.env.BUNDLE_DIR ?? "src-tauri/target/release/bundle";
-	const release = await ensureRelease(
-		tag,
-		process.env.RELEASE_NOTES ?? releaseNotes(),
-	);
+	const release = await ensureRelease(tag, releaseNotes());
 	const target = process.env.UPDATER_TARGET ?? updaterTarget();
 	const artifacts = await signedArtifacts(bundleDir, version);
 	if (artifacts.length === 0) {
@@ -317,7 +313,7 @@ async function publish() {
 	console.log(`Updater artifact for ${target}: ${basename(chosen)}`);
 	await uploadJson(release, `platform-${target}.json`, {
 		version,
-		notes: release.body ?? `Release ${tag}`,
+		notes: releaseNotes(),
 		pub_date: new Date().toISOString(),
 		platforms: {
 			[target]: {
@@ -380,7 +376,7 @@ async function latest() {
 
 	await uploadJson(release, "latest.json", {
 		version,
-		notes: release.body ?? `Release ${tag}`,
+		notes: releaseNotes(),
 		pub_date: new Date().toISOString(),
 		platforms,
 	});

@@ -45,7 +45,7 @@ export function SubStatRollBar({
 								? dimmed
 									? "bg-zinc-500/50"
 									: revealOnHover
-										? "bg-muted-foreground/40 transition-colors group-hover/card:bg-[var(--roll-color)]"
+										? "bg-muted-foreground/40 transition-colors group-hover/card:bg-[var(--roll-color)] group-focus-within/card:bg-[var(--roll-color)]"
 										: ""
 								: dimmed
 									? "bg-zinc-500/15"

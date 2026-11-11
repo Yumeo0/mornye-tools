@@ -83,7 +83,7 @@ export function CharacterFilterBar({
 
 	return (
 		<FilterPanel
-			label="Character filters"
+			label="Resonator filters"
 			activeFilters={activeFilterChips(
 				filters,
 				DEFAULT_FILTERS,
@@ -104,7 +104,7 @@ export function CharacterFilterBar({
 			<FilterSearch
 				value={filters.search}
 				onChange={(search) => onFiltersChange((prev) => ({ ...prev, search }))}
-				placeholder="Character name..."
+				placeholder="Resonator name..."
 				inputProps={searchInputProps}
 			/>
 

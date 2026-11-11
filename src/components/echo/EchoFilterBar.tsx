@@ -259,7 +259,7 @@ export function EchoFilterBar({
 				/>
 
 				<FilterSummary
-					label={`Showing ${resultCount} of ${totalCount} echoes`}
+					label={`Showing ${resultCount.toLocaleString()} of ${totalCount.toLocaleString()} echoes`}
 					onReset={
 						hasActiveFilters
 							? () => {

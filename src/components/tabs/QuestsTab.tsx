@@ -1,7 +1,14 @@
-import { useMemo } from "react";
+import { ArrowDown01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { useMemo, useState } from "react";
 import { FilterLayout, FilterPanel } from "@/components/filters";
-import { Badge } from "@/components/ui/badge";
+import { ProgressionGroupHeader } from "@/components/ProgressionGroupHeader";
 import { Button } from "@/components/ui/button";
+import {
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,19 +19,18 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { useResponsiveColumns, VirtualGrid } from "@/components/VirtualGrid";
+import { VirtualGrid } from "@/components/VirtualGrid";
 import { useAccount } from "@/lib/account";
 import { useFilterState } from "@/lib/persistentState";
 import { useProgressionCatalog } from "@/lib/progression/catalog";
+import { progressionRows } from "@/lib/progression/groups";
 import { progressionFor, questStatus } from "@/lib/progression/state";
 import {
 	QUEST_STATUS_LABELS,
 	QUEST_STATUS_ORDER,
 	type QuestDefinition,
-	type QuestStatus,
 } from "@/lib/progression/types";
 
-const COLUMNS = [{ minWidth: 1500, columns: 2 }];
 const STATUSES = [
 	{ value: "all", label: "All statuses" },
 	{ value: "incomplete", label: "Incomplete" },
@@ -72,40 +78,46 @@ function QuestFilter({
 
 function QuestRow({
 	quest,
-	status,
+	expanded,
+	onExpandedChange,
 }: {
 	quest: QuestDefinition;
-	status: QuestStatus;
+	expanded: boolean;
+	onExpandedChange: (open: boolean) => void;
 }) {
+	const hasDescription = Boolean(
+		quest.description.trim() && quest.description.trim() !== quest.name.trim(),
+	);
+	const heading = (
+		<>
+			<img src={quest.icon} alt="" className="size-8 shrink-0 object-contain" />
+			<h3 className="min-w-0 flex-1 text-sm font-medium leading-snug">
+				{quest.name}
+			</h3>
+		</>
+	);
 	return (
-		<article
-			className="flex flex-col gap-2 border bg-card p-3"
-			aria-label={quest.name}
-		>
-			<header className="flex items-start gap-3">
-				<img
-					src={quest.icon}
-					alt=""
-					className="size-10 shrink-0 object-contain"
-				/>
-				<div className="flex min-w-0 flex-1 flex-wrap items-start justify-between gap-2">
-					<div className="flex min-w-0 flex-1 flex-col gap-1">
-						<p className="text-xs text-muted-foreground">{quest.typeName}</p>
-						<h2 className="text-sm font-medium leading-snug">{quest.name}</h2>
-					</div>
-					<Badge variant={status === "completed" ? "outline" : "secondary"}>
-						{QUEST_STATUS_LABELS[status]}
-					</Badge>
-				</div>
-			</header>
-			{quest.description && quest.description.trim() !== quest.name.trim() && (
-				<p
-					title={quest.description}
-					className="line-clamp-2 whitespace-pre-line text-sm leading-relaxed text-muted-foreground"
-				>
-					{quest.description}
-				</p>
-			)}
+		<article aria-label={quest.name} className="border-b bg-card">
+			<Collapsible open={expanded} onOpenChange={onExpandedChange}>
+				{hasDescription ? (
+					<CollapsibleTrigger className="group flex w-full items-center gap-3 px-3 py-2.5 text-left outline-none hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring">
+						{heading}
+						<HugeiconsIcon
+							icon={ArrowDown01Icon}
+							className="size-4 shrink-0 text-muted-foreground transition-transform group-data-panel-open:rotate-180"
+						/>
+					</CollapsibleTrigger>
+				) : (
+					<div className="flex items-center gap-3 px-3 py-2.5">{heading}</div>
+				)}
+				{hasDescription && (
+					<CollapsibleContent>
+						<p className="whitespace-pre-line pb-3 pl-14 pr-4 text-sm leading-relaxed text-muted-foreground">
+							{quest.description}
+						</p>
+					</CollapsibleContent>
+				)}
+			</Collapsible>
 		</article>
 	);
 }
@@ -117,7 +129,7 @@ export function QuestsTab({ active }: { active: boolean }) {
 	const [search, setSearch] = useFilterState("quests.search", "");
 	const [type, setType] = useFilterState("quests.type", "all");
 	const [status, setStatus] = useFilterState("quests.status", "all");
-	const columns = useResponsiveColumns(COLUMNS, 1);
+	const [expandedQuest, setExpandedQuest] = useState<number | null>(null);
 	const entries = useMemo(
 		() =>
 			(catalog?.allQuests ?? []).map((quest) => ({
@@ -159,6 +171,17 @@ export function QuestsTab({ active }: { active: boolean }) {
 					a.quest.id - b.quest.id,
 			);
 	}, [entries, search, type, status]);
+	const rows = useMemo(
+		() =>
+			progressionRows(quests, ({ quest, status }) => ({
+				id: `${status}:${quest.typeName}`,
+				title: quest.typeName,
+				status: QUEST_STATUS_LABELS[status],
+				order: QUEST_STATUS_ORDER.indexOf(status),
+			})),
+		[quests],
+	);
+
 	const completed = entries.filter(
 		(entry) => entry.status === "completed",
 	).length;
@@ -256,20 +279,27 @@ export function QuestsTab({ active }: { active: boolean }) {
 			>
 				{quests.length ? (
 					<VirtualGrid
-						items={quests}
-						columns={columns}
-						minItemWidth={420}
-						gap={10}
-						estimateRowHeight={130}
-						getItemKey={(entry) => entry.quest.id}
+						items={rows}
+						columns={1}
+						gap={0}
+						estimateRowHeight={56}
+						getItemKey={(row) =>
+							row.kind === "header" ? row.group.id : row.entry.quest.id
+						}
 						className="min-h-0 flex-1 overflow-y-auto pr-1"
-						renderItem={(entry) => (
-							<QuestRow
-								key={entry.quest.id}
-								quest={entry.quest}
-								status={entry.status}
-							/>
-						)}
+						renderItem={(row) =>
+							row.kind === "header" ? (
+								<ProgressionGroupHeader group={row.group} count={row.count} />
+							) : (
+								<QuestRow
+									quest={row.entry.quest}
+									expanded={expandedQuest === row.entry.quest.id}
+									onExpandedChange={(open) =>
+										setExpandedQuest(open ? row.entry.quest.id : null)
+									}
+								/>
+							)
+						}
 					/>
 				) : (
 					<p className="grid flex-1 place-items-center text-sm text-muted-foreground">

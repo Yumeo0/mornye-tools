@@ -85,7 +85,7 @@ const NAV_GROUPS = [
 			},
 			{
 				value: "characters",
-				title: "Characters",
+				title: "Resonators",
 				icon: "/icons/navigation/characters.webp",
 			},
 			{

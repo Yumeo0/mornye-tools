@@ -342,9 +342,10 @@ pub fn plan_with_policy(
                 })
                 .map(|units| (sum, units))
         })
-        // With a tube top-up, spend all available discard EXP first, even
-        // when the tube count stays the same. For discard-only plans, avoid waste.
-        .min_by_key(|(sum, units)| (*units, if *units == 0 { *sum } else { bound - *sum }))
+        // Save tubes first, then use the least discard EXP that achieves that
+        // tube cost. Extra fodder otherwise spends credits and risks losing EXP
+        // on a failed checkpoint without saving any tubes.
+        .min_by_key(|(sum, units)| (*units, *sum))
         .context("Not enough discard echo EXP or allowed EXP tubes for the next checkpoint")?;
     let counts = tubes[tube_units].take().unwrap();
     let granted = feed_exp as i32 + tube_units as i32 * 500;
@@ -587,7 +588,7 @@ mod tests {
         .is_err());
     }
     #[test]
-    fn uses_discard_before_a_tube_top_up_even_when_it_passes_the_checkpoint() {
+    fn keeps_discard_when_a_tube_alone_has_the_same_tube_cost() {
         let mut feed = echo(21, 5);
         feed.func_value = 2;
         let p = plan(
@@ -598,10 +599,10 @@ mod tests {
             &HashSet::new(),
         )
         .unwrap();
-        assert_eq!(p.exp, 8300);
-        assert_eq!(p.result_level, 7);
-        assert_eq!(p.echo_materials[0].incr_id, 21);
-        assert_eq!(p.echo_materials[0].count, 1);
+        assert_eq!(p.exp, 5000);
+        assert_eq!(p.result_level, 5);
+        assert_eq!(p.max_credits, 4000);
+        assert!(p.echo_materials.is_empty());
         assert_eq!(
             p.materials,
             vec![MaterialCost {
@@ -611,43 +612,36 @@ mod tests {
         );
     }
     #[test]
-    fn uses_all_available_discard_exp_before_a_tube_top_up() {
+    fn preserves_extra_fodder_when_it_does_not_reduce_tube_exp() {
         let mut large = echo(21, 5);
         large.func_value = 2;
         let mut small = echo(22, 1);
+        small.item_id = 60000012; // Only 75 EXP; cannot save another 500-EXP tube.
         small.func_value = 2;
         let p = plan(
             &echo(12, 0),
             5,
-            &HashMap::from([(36000004, 1), (36000014, 10)]),
+            &HashMap::from([(36000001, 3), (36000014, 10)]),
             &[large, small],
             &HashSet::new(),
         )
         .unwrap();
-        assert_eq!(p.exp, 8600);
-        assert_eq!(p.result_level, 7);
+        assert_eq!(p.exp, 4800);
+        assert_eq!(p.result_level, 5);
         assert_eq!(
             p.echo_materials,
-            vec![
-                EchoMaterialCost {
-                    incr_id: 21,
-                    item_id: 60000015,
-                    count: 1,
-                    exp: 3300
-                },
-                EchoMaterialCost {
-                    incr_id: 22,
-                    item_id: 60000015,
-                    count: 1,
-                    exp: 300,
-                }
-            ]
+            vec![EchoMaterialCost {
+                incr_id: 21,
+                item_id: 60000015,
+                count: 1,
+                exp: 3300
+            }]
         );
         assert_eq!(
             p.materials,
             vec![MaterialCost {
-                id: 36000004,
-                count: 1
+                id: 36000001,
+                count: 3
             }]
         );
     }
@@ -712,6 +706,31 @@ mod tests {
         assert_eq!(p.echo_materials[0].count, 6);
     }
     #[test]
+    fn uses_the_smallest_sufficient_discard_feed_before_spending_tubes() {
+        let small = UpgradeEcho {
+            func_value: 2,
+            stack_count: 2,
+            ..echo(21, 5)
+        };
+        let large = UpgradeEcho {
+            func_value: 2,
+            ..echo(22, 20)
+        };
+        let p = plan(
+            &echo(12, 0),
+            5,
+            &inventory(),
+            &[small, large],
+            &HashSet::new(),
+        )
+        .unwrap();
+        assert!(p.materials.is_empty());
+        assert_eq!(p.exp, 6600);
+        assert_eq!(p.echo_materials.len(), 1);
+        assert_eq!(p.echo_materials[0].incr_id, 21);
+        assert_eq!(p.echo_materials[0].count, 2);
+    }
+    #[test]
     fn discard_search_matches_exhaustive_small_inventories_without_reusing_copies() {
         let tables: Tables =
             serde_json::from_str(include_str!("../../../../src/configs/echo_upgrade.json"))
@@ -743,8 +762,7 @@ mod tests {
                                         if exp + tube_exp >= 4400
                                             && (exp > 0 || exp + tube_exp <= 6099)
                                         {
-                                            let score =
-                                                (tube_exp, if tube_exp == 0 { exp } else { -exp });
+                                            let score = (tube_exp, exp);
                                             expected =
                                                 Some(expected.map_or(score, |old| {
                                                     std::cmp::min(old, score)
@@ -770,7 +788,7 @@ mod tests {
                             .map(|cost| cost.exp * cost.count)
                             .sum::<i32>();
                         let tube_exp = p.exp - exp;
-                        assert_eq!((tube_exp, if tube_exp == 0 { exp } else { -exp }), score);
+                        assert_eq!((tube_exp, exp), score);
                         for cost in p.echo_materials {
                             let stock = feeds
                                 .iter()

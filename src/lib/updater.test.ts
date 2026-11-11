@@ -1,12 +1,14 @@
 // Shared updater state: a release found by the startup check stays available
 // after the banner is dismissed, so Settings -> Updates can still install it.
 
-import { describe, expect, test } from "bun:test";
+import { describe, expect, spyOn, test } from "bun:test";
 
 import type { Update } from "@tauri-apps/plugin-updater";
+import { loadReleaseNotes } from "@/lib/releaseNotes";
 import {
 	dismissUpdateBanner,
 	downloadPercent,
+	installAvailableUpdate,
 	readUpdateState,
 	setAvailableUpdate,
 } from "@/lib/updater";
@@ -48,5 +50,36 @@ describe("available update", () => {
 	test("clears when a check finds nothing newer", () => {
 		setAvailableUpdate(null);
 		expect(readUpdateState().update).toBeNull();
+	});
+
+	test("saves changelog notes before the installer can exit the app", async () => {
+		const notes = {
+			version: "9.9.11",
+			body: "## Changes\n- A new feature",
+			date: "2026-11-11T12:00:00Z",
+		};
+		const failure = new Error("Fixture stops before installation");
+		let downloads = 0;
+		const update = {
+			...fakeUpdate(notes.version),
+			...notes,
+			downloadAndInstall: async () => {
+				downloads++;
+				// No changelog was opened first, and no network request is needed.
+				expect(await loadReleaseNotes(notes.version)).toEqual(notes);
+				throw failure;
+			},
+		} as unknown as Update;
+		const log = spyOn(console, "error").mockImplementation(() => {});
+		setAvailableUpdate(update);
+		try {
+			await expect(installAvailableUpdate()).rejects.toThrow(failure.message);
+			expect(downloads).toBe(1);
+			expect(readUpdateState().installing).toBe(false);
+			expect(readUpdateState().update).toBe(update);
+		} finally {
+			setAvailableUpdate(null);
+			log.mockRestore();
+		}
 	});
 });

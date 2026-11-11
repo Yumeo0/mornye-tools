@@ -50,8 +50,7 @@ export function CaptureCard() {
 					listener
 				</CardTitle>
 				<CardDescription>
-					Always-on capture follows the game process. Status refreshes every two
-					seconds.
+					Captures game data automatically while the game runs.
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="flex flex-col gap-4">
@@ -83,7 +82,7 @@ export function CaptureCard() {
 					<section
 						aria-label="Capture log"
 						tabIndex={0}
-						className="max-h-60 overflow-auto whitespace-pre-wrap break-words bg-muted/50 p-3 font-mono text-[11px] text-muted-foreground"
+						className="max-h-60 overflow-auto whitespace-pre-wrap break-words bg-muted/50 p-3 font-mono text-xs text-muted-foreground"
 					>
 						<pre className="whitespace-pre-wrap break-words">
 							{status?.log.length

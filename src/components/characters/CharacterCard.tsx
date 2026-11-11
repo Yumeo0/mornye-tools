@@ -19,7 +19,15 @@ export function CharacterCard({
 	return (
 		<Card
 			onClick={onOpen}
-			className="relative aspect-696/960 cursor-pointer overflow-hidden transition-colors hover:border-primary"
+			role="button"
+			tabIndex={0}
+			onKeyDown={(event) => {
+				if (event.key === "Enter" || event.key === " ") {
+					event.preventDefault();
+					onOpen();
+				}
+			}}
+			className="relative aspect-696/960 cursor-pointer overflow-hidden transition-colors hover:border-primary focus-visible:outline-2 focus-visible:outline-ring"
 		>
 			{character.image ? (
 				<img
@@ -69,7 +77,7 @@ export function CharacterCard({
 					<img
 						src={weaponIconUrl(account.weapon.itemId)}
 						alt={account.weapon.name ?? undefined}
-						title={`${account.weapon.name} · Lvl ${account.weapon.level} · Rank ${account.weapon.rank}`}
+						title={`${account.weapon.name} · Lvl ${account.weapon.level} · Refinement ${account.weapon.rank}`}
 						className="size-9 object-contain drop-shadow-md"
 					/>
 				)}
@@ -91,14 +99,6 @@ export function CharacterCard({
 						<div className="flex flex-wrap items-center justify-center gap-1">
 							<CardBadge title={`Level ${account.level}`}>
 								Lvl {account.level}
-							</CardBadge>
-							<CardBadge title="Echoes equipped">
-								<img
-									src="/icons/inventory/echoes.webp"
-									alt=""
-									className="size-3.5 object-contain"
-								/>
-								{account.echoCount}/5
 							</CardBadge>
 						</div>
 					</>

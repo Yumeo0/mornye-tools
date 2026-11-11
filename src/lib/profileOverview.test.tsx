@@ -56,7 +56,7 @@ describe("profile overview", () => {
 			"Ready to explore.",
 			"Last updated",
 			"Show UID",
-			"View characters",
+			"View resonators",
 		]) {
 			expect(markup).toContain(text);
 		}

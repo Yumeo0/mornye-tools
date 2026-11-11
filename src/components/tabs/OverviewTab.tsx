@@ -38,7 +38,7 @@ import {
 const COLLECTIONS = [
 	{
 		value: "characters",
-		title: "Characters",
+		title: "Resonators",
 		image: "/icons/navigation/characters.webp",
 	},
 	{

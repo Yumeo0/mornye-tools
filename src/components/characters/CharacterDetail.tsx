@@ -117,11 +117,11 @@ export function CharacterDetail({
 			>
 				<nav
 					className="absolute inset-x-3 top-3 z-20 flex items-center justify-between gap-3"
-					aria-label="Character navigation"
+					aria-label="Resonator navigation"
 				>
 					<Button variant="secondary" size="sm" onClick={onBack}>
 						<HugeiconsIcon icon={ArrowLeft01Icon} data-icon="inline-start" />
-						Characters
+						Resonators
 					</Button>
 					{character.preview ? (
 						<PreviewBadge />
@@ -214,9 +214,9 @@ export function CharacterDetail({
 						<div className="flex flex-wrap items-center gap-x-5 gap-y-3">
 							<div
 								className="flex items-baseline gap-1.5"
-								title="Character level"
+								title="Resonator level"
 							>
-								<span className="text-[10px] text-muted-foreground">LV</span>
+								<span className="text-xs text-muted-foreground">LV</span>
 								<span className="text-2xl leading-none font-semibold tabular-nums">
 									{account.level}
 								</span>

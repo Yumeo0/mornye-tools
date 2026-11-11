@@ -89,7 +89,7 @@ export function RotationTeamDialog({
 						{creating ? "Create rotation" : "Edit team"}
 					</DialogTitle>
 					<DialogDescription className="sr-only">
-						Choose three characters, their variants, main echoes and roles.
+						Choose three Resonators, their variants, main echoes and roles.
 					</DialogDescription>
 				</DialogHeader>
 				{creating && (
@@ -135,7 +135,7 @@ export function RotationTeamDialog({
 								<FieldGroup className="gap-2">
 									<Field>
 										<FilterSelect
-											label={`Character ${index + 1}`}
+											label={`Resonator ${index + 1}`}
 											hideLabel
 											iconSize="lg"
 											value={
@@ -143,7 +143,7 @@ export function RotationTeamDialog({
 											}
 											disabled={index > draft.members.length}
 											options={[
-												{ value: "none", label: "Select character" },
+												{ value: "none", label: "Select Resonator" },
 												...characters
 													.filter(
 														(c) =>

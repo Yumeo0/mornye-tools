@@ -477,7 +477,7 @@ test("custom programs reject free Intros, misplaced Outros and echo mismatches",
 				],
 			},
 		}),
-	).toThrow("end of a character");
+	).toThrow("end of a Resonator");
 });
 test("optimizer evaluates custom programs against the same owned echo inventory", async () => {
 	const f = fixture();

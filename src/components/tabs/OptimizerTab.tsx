@@ -222,7 +222,7 @@ export function OptimizerTab({ active }: { active: boolean }) {
 						{team.profile && (
 							<div className="flex flex-col gap-2">
 								<ToggleGroup
-									aria-label="Character to optimize"
+									aria-label="Resonator to optimize"
 									value={team.targetId ? [String(team.targetId)] : []}
 									onValueChange={(values) => {
 										if (values[0]) team.setTargetId(Number(values[0]));

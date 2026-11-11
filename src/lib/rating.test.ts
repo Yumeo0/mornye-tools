@@ -453,9 +453,66 @@ describe("priority weighting and main-stat suitability", () => {
 		const zeroRoll = rolls.get("incr:2");
 		if (!zeroRoll) throw new Error("Missing suitable zero-value piece");
 		expect(zeroRoll.rating).toBe(0);
+		expect(zeroRoll.options).toEqual([]);
 		expect(
 			hasWantedMainStat(zeroRoll.character, mainStatForEcho(noRolls)),
 		).toBe(true);
 		expect(rolls.get("incr:3")?.rating).toBeGreaterThan(0);
+	});
+
+	test("inventory offers every nonzero Resonator RV in descending order", () => {
+		const catalog = [...echoesByMonsterId.values()].find(
+			(entry) =>
+				entry.echo_cost === 1 &&
+				entry.echo_sets.some((set) => set.name === "Rejuvenating Glow"),
+		);
+		const set = catalog?.echo_sets.find(
+			(entry) => entry.name === "Rejuvenating Glow",
+		);
+		if (!catalog?.monster_id || !set)
+			throw new Error("Missing test catalog echo");
+		const echo: Echo = {
+			incrId: 1,
+			itemId: 60000015,
+			monsterId: catalog.monster_id,
+			setId: set.id,
+			level: 25,
+			funcValue: 0,
+			stackCount: 1,
+			source: "sniffer",
+			mainProps: [{ propId: 1, key: "atkPercent", raw: 3000, value: 30 }],
+			subProps: [{ propId: 2, key: "atkFlat", raw: 40, value: 40 }],
+		};
+		const roll = computeEchoRolls([echo]).get("incr:1");
+		if (!roll) throw new Error("Missing inventory RVs");
+		expect(roll.options.length).toBeGreaterThan(1);
+		expect(roll.character).toEqual(roll.options[0].character);
+		expect(roll.rating).toBe(roll.options[0].rating);
+		expect(
+			roll.options.map(({ character, rating }) => [
+				character.character_name,
+				rating,
+			]),
+		).toContainEqual(["Verina", 20]);
+		expect(
+			roll.options.some(
+				({ character }) => character.character_name === "Baizhi",
+			),
+		).toBe(false);
+		const eligible = getRelevantCharacters([set.name]).filter(
+			(character) =>
+				calculateRating(
+					character,
+					statPropLines(echo.subProps),
+					mainStatForEcho(echo),
+				) > 0,
+		);
+		expect(
+			roll.options.map(({ character }) => character.character_id).sort(),
+		).toEqual(eligible.map((character) => character.character_id).sort());
+		expect(roll.options.map(({ rating }) => rating)).toEqual(
+			roll.options.map(({ rating }) => rating).sort((a, b) => b - a),
+		);
+		expect(roll.options.every(({ rating }) => rating > 0)).toBe(true);
 	});
 });

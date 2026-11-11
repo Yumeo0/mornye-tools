@@ -37,7 +37,7 @@ export function ChainNodes({
 			className={cn(
 				layout === "arc"
 					? "relative block"
-					: "flex items-center justify-center gap-1",
+					: "grid w-full max-w-41 grid-cols-6 gap-1",
 				className,
 			)}
 			title={`Resonance Chain ${chain}/6`}
@@ -68,14 +68,15 @@ export function ChainNodes({
 					filter: active
 						? "brightness(1.7) drop-shadow(0 0 1px rgba(254, 240, 138, 0.95)) drop-shadow(0 0 4px rgba(250, 204, 21, 0.55))"
 						: undefined,
-					opacity: active ? undefined : position ? 0.45 : 0.25,
+					opacity: active ? undefined : 0.45,
 				};
 				return (
 					<span
 						key={position ? `node-${position.y}` : icon}
 						title={`Resonance Chain ${index + 1} · ${active ? "Unlocked" : "Locked"}`}
 						className={cn(
-							"inline-flex items-center justify-center",
+							"inline-flex shrink-0 items-center justify-center rounded-full bg-card ring-1 ring-border",
+							!position && "aspect-square w-full",
 							position &&
 								"absolute size-9 shrink-0 -translate-x-1/2 -translate-y-1/2 rounded-full bg-card ring-1 ring-border",
 						)}

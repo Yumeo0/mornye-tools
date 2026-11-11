@@ -67,7 +67,7 @@ export function RelevantCharactersCard({
 			className="flex flex-col gap-2 rounded-2xl border border-white/15 bg-black/35 p-2 shadow-2xl backdrop-blur-sm"
 		>
 			<h3 className="px-2 pt-0.5 text-lg font-bold text-white">
-				Relevant Characters
+				Relevant Resonators
 			</h3>
 			<div className="flex flex-col gap-1.5">
 				{rankedCharacters.map(({ character, rating }) => {

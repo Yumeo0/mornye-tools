@@ -32,6 +32,8 @@ export interface EchoMaterialPolicy {
 export interface EchoUpgradeOptions {
 	materials: EchoMaterialPolicy;
 	autoDiscard: boolean;
+	/** Percentage chance of reaching target RV; zero disables the cutoff. */
+	minSuccessChance: number;
 }
 export const DEFAULT_UPGRADE_OPTIONS: EchoUpgradeOptions = {
 	materials: {
@@ -39,6 +41,7 @@ export const DEFAULT_UPGRADE_OPTIONS: EchoUpgradeOptions = {
 		exp_material_ids: [36000001, 36000002, 36000003, 36000004],
 	},
 	autoDiscard: false,
+	minSuccessChance: 1,
 };
 
 export function requestEchoDiscard(profileId: string, echo: Echo) {

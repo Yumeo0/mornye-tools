@@ -1,5 +1,6 @@
 import { CircleCheck, Download, Loader2, RefreshCw } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { ChangelogDialog } from "@/components/ChangelogDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -63,7 +64,7 @@ export function UpdatesCard() {
 
 	// One line of state for the card: a running download wins, then a check in
 	// flight, then whatever the last check found.
-	let statusText = "Check for a newer release.";
+	let statusText = "";
 	if (installing) {
 		statusText =
 			percent === null
@@ -86,19 +87,30 @@ export function UpdatesCard() {
 					<Label className="flex items-center gap-2 text-base font-medium">
 						<RefreshCw className="size-4" /> Updates
 					</Label>
-					<p className="text-xs text-muted-foreground">
-						{updaterSupported()
-							? "Mornye Tools updates itself from its GitHub releases."
-							: "Update checks run in the installed desktop app."}
-					</p>
+					{!updaterSupported() && (
+						<p className="text-xs text-muted-foreground">
+							Update checks are available in the desktop app.
+						</p>
+					)}
 				</div>
 
-				<div className="flex items-center justify-between gap-4">
+				<div className="flex flex-wrap items-center justify-between gap-4">
 					<div className="min-w-0 space-y-0.5">
 						<p className="text-sm font-medium">
-							App version{version ? ` — v${version}` : ""}
+							Version{version ? ` ${version}` : ""}
 						</p>
-						<p className="text-xs text-muted-foreground">{statusText}</p>
+						{version && (
+							<ChangelogDialog
+								release={{ version }}
+								label="Installed version changelog"
+								size="sm"
+							/>
+						)}
+						{statusText && (
+							<p role="status" className="text-xs text-muted-foreground">
+								{statusText}
+							</p>
+						)}
 					</div>
 					<div className="flex shrink-0 items-center gap-2">
 						{update && !installing && (
@@ -118,7 +130,11 @@ export function UpdatesCard() {
 							) : (
 								<RefreshCw />
 							)}
-							{checking ? "Checking" : upToDate ? "Up to date" : "Check"}
+							{checking
+								? "Checking…"
+								: upToDate
+									? "Up to date"
+									: "Check for updates"}
 						</Button>
 					</div>
 				</div>
@@ -135,11 +151,7 @@ export function UpdatesCard() {
 								</p>
 							)}
 						</div>
-						{update.body && (
-							<pre className="max-h-40 overflow-y-auto whitespace-pre-wrap font-sans text-[11px] text-muted-foreground">
-								{update.body}
-							</pre>
-						)}
+						<ChangelogDialog key={update.version} release={update} />
 					</div>
 				)}
 

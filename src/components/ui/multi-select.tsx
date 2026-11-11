@@ -52,7 +52,7 @@ export function MultiSelect({
 				<span
 					id={labelId}
 					data-slot="filter-label"
-					className="text-[10px] text-muted-foreground"
+					className="text-xs text-muted-foreground"
 				>
 					{label}
 				</span>

@@ -142,3 +142,30 @@ test("engine exceptions select the failing press, not the expected next press or
 		exceptionNode("Basic 2: invalid cut", [{ nodeId: "combo", action: group }]),
 	).toBe("combo");
 });
+
+test("a swap-in failure links the opening block even when the action repeats later in the turn", () => {
+	const opening = action("Basic - Illumining Form: Pillars Aligned 1");
+	const entries = [
+		{ nodeId: "opening", action: opening },
+		{ nodeId: "later", action: opening },
+	];
+	expect(
+		exceptionNode(
+			"Hsin: swaps in GROUNDED on Basic - Illumining Form: Pillars Aligned 1 — a swap-in opens on Basic - Answering Form 1",
+			entries,
+		),
+	).toBe("opening");
+	// A nested press belongs to its authored combo, including when repeated.
+	expect(
+		exceptionNode(
+			"Hsin: swaps in MIDAIR on Basic - Illumining Form: Pillars Aligned 1 — a swap-in opens on Plunge",
+			[
+				{ nodeId: "combo", action: { name: "Combo", actions: [opening] } },
+				...entries,
+			],
+		),
+	).toBe("combo");
+	expect(
+		exceptionNode(`${opening.name}: invalid cut`, entries),
+	).toBeUndefined();
+});

@@ -12,6 +12,7 @@ import {
 	buildEntries,
 	type RoleBuild,
 } from "@/lib/characters";
+import { echoRollProbabilities } from "@/lib/echoRollProbabilities";
 import {
 	energyRegenBreakpoint,
 	normalizeStatName,
@@ -322,4 +323,128 @@ export function maxPossibleRating(
 			0,
 		);
 	return Math.round(Math.min(Math.max(total, 0), 100));
+}
+
+/**
+ * Chance (0-100) that at least one suitable guide reaches the rounded target RV.
+ * Enumerate equally likely sets of remaining types, then their weighted rolls.
+ * Shared outcomes are evaluated once, so overlapping guides are not independent
+ * events. Bounds skip branches whose remaining values cannot change the verdict.
+ * Null means the captured substats cannot be modeled safely.
+ */
+export function ratingSuccessChance(
+	characters: CharacterInfo[],
+	parsedSubStats: string[],
+	main: EchoMainStat,
+	target: number,
+	maxSubstats = MAX_SUBSTATS,
+): number | null {
+	if (!Number.isFinite(target) || target < 0 || target > 100)
+		throw new Error("Choose a target RV from 0 to 100.");
+	const entries = echoSubstatEntries(parsedSubStats);
+	const revealed = new Set(entries.map((entry) => entry.name));
+	if (
+		!Number.isInteger(maxSubstats) ||
+		maxSubstats < 0 ||
+		maxSubstats > MAX_SUBSTATS ||
+		entries.length > maxSubstats ||
+		entries.length !== parsedSubStats.length ||
+		revealed.size !== entries.length ||
+		entries.some(
+			(entry) =>
+				!echoRollProbabilities.some((stat) => stat.name === entry.name),
+		)
+	)
+		return null;
+	if (target === 0) return 100;
+	const pool = echoRollProbabilities.filter((stat) => !revealed.has(stat.name));
+	const slots = maxSubstats - entries.length;
+	// calculateRating rounds its final score. Keep fractions throughout the
+	// calculation, including fractional ER priority weights and target inputs.
+	const goal = Math.ceil(target) - 0.5;
+	const reaches = (score: number) => score + 1e-9 >= goal;
+	const models = characters
+		.filter((character) => hasWantedMainStat(character, main))
+		.map((character) => {
+			const { weights, presence, scale } = weightedRollScoring(
+				character.stats.subs,
+				character.stats.erBreakpoint,
+			);
+			let current = 0;
+			for (const [name, weight] of weights) {
+				const matching = entries.filter((entry) => entry.name === name);
+				if (matching.length > 0)
+					current += statRollValue(name, matching, presence) * weight * scale;
+			}
+			const rolls = pool.map((stat) => {
+				const weight = weights.get(stat.name) ?? 0;
+				return stat.probabilities.map(
+					(_, tier) =>
+						(presence +
+							((tier + 1) * MAX_ROLL_POINTS) / stat.probabilities.length) *
+						weight *
+						scale,
+				);
+			});
+			return { current, rolls };
+		});
+	if (models.some((model) => reaches(model.current))) return 100;
+	if (slots === 0 || models.length === 0) return 0;
+	// Characters with identical scoring rules describe the same success event.
+	const unique = [
+		...new Map(models.map((model) => [JSON.stringify(model), model])).values(),
+	];
+	let total = 0;
+	let combinations = 0;
+	const chosen: number[] = [];
+	const evaluate = () => {
+		const bounds = unique.map((model) => {
+			const min = new Float64Array(slots + 1);
+			const max = new Float64Array(slots + 1);
+			for (let slot = slots - 1; slot >= 0; slot--) {
+				const rolls = model.rolls[chosen[slot]];
+				min[slot] = min[slot + 1] + rolls[0];
+				max[slot] = max[slot + 1] + rolls[rolls.length - 1];
+			}
+			return { min, max };
+		});
+		const scores = unique.map((model) => model.current);
+		const visit = (slot: number): number => {
+			let possible = false;
+			for (let guide = 0; guide < unique.length; guide++) {
+				if (reaches(scores[guide] + bounds[guide].min[slot])) return 1;
+				if (reaches(scores[guide] + bounds[guide].max[slot])) possible = true;
+			}
+			if (!possible || slot === slots) return 0;
+			const stat = chosen[slot];
+			if (unique.every((model) => model.rolls[stat][0] === 0))
+				return visit(slot + 1);
+			const previous = [...scores];
+			let chance = 0;
+			for (const [tier, probability] of pool[stat].probabilities.entries()) {
+				for (let guide = 0; guide < unique.length; guide++)
+					scores[guide] = previous[guide] + unique[guide].rolls[stat][tier];
+				chance += probability * visit(slot + 1);
+			}
+			for (let guide = 0; guide < unique.length; guide++)
+				scores[guide] = previous[guide];
+			return chance;
+		};
+		total += visit(0);
+		combinations++;
+	};
+	const select = (start: number) => {
+		if (chosen.length === slots) return evaluate();
+		for (
+			let index = start;
+			index <= pool.length - (slots - chosen.length);
+			index++
+		) {
+			chosen.push(index);
+			select(index + 1);
+			chosen.pop();
+		}
+	};
+	select(0);
+	return Math.min(100, Math.max(0, (total / combinations) * 100));
 }

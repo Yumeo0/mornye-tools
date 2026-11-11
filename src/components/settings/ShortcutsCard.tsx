@@ -29,14 +29,14 @@ export function ShortcutsCard() {
 			<CardHeader>
 				<CardTitle>Map shortcuts</CardTitle>
 				<CardDescription>
-					Shortcuts work while the map is active and you are not typing.
+					Works on the selected map item while you aren’t typing.
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<FieldGroup className="max-w-xl">
 					<Field>
 						<FieldLabel htmlFor="map-collected-hotkey">
-							Toggle selected item’s Collected status
+							Mark collected / uncollected
 						</FieldLabel>
 						<div className="flex flex-wrap items-center gap-2">
 							<Button
@@ -79,8 +79,7 @@ export function ShortcutsCard() {
 							</Button>
 						</div>
 						<FieldDescription id="map-collected-hotkey-help">
-							Click the binding, then press a key or key combination. Escape
-							cancels. Select a map item before using the shortcut.
+							Click to record a shortcut. Esc cancels.
 						</FieldDescription>
 						<p role="status" className="sr-only">
 							{recording

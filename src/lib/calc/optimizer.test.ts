@@ -31,6 +31,7 @@ test("pool truncation retains required main copies and respects filters and team
 			owned(901, true),
 		],
 	};
+	snapshot.echoes[0].stackCount = 10;
 	fixture.scenario.members[0].echoes[0].uid = "incr:900";
 	const selected = selectCandidates(
 		snapshot,
@@ -40,6 +41,8 @@ test("pool truncation retains required main copies and respects filters and team
 		EMPTY_OPTIMIZER_FILTERS,
 	);
 	expect(selected.truncated).toBe(true);
+	expect(selected.total).toBe(311);
+	expect(selected.eligible).toBe(310);
 	expect(selected.mainCount).toBe(1);
 	expect(selected.pool.some((e) => e.uid === "incr:901")).toBe(true);
 	expect(selected.pool.some((e) => e.uid === "incr:900")).toBe(false);

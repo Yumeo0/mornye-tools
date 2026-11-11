@@ -12,6 +12,7 @@
 import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { prepareChangelogRelease } from "../src/lib/changelogFormat";
 
 const ROOT = join(import.meta.dir, "..");
 const BUMPS = ["patch", "minor", "major"] as const;
@@ -97,6 +98,18 @@ if (git("tag", "-l", tag)) {
 	fail(`Tag ${tag} already exists.`);
 }
 
+const changelogPath = join(ROOT, "CHANGELOG.md");
+let changelog: string;
+try {
+	changelog = prepareChangelogRelease(
+		readFileSync(changelogPath, "utf8"),
+		version,
+		new Date().toISOString().slice(0, 10),
+	);
+} catch (error) {
+	fail(error instanceof Error ? error.message : String(error));
+}
+
 updateJsonVersion(packagePath, version);
 updateJsonVersion(join(ROOT, "src-tauri", "tauri.conf.json"), version);
 
@@ -117,6 +130,7 @@ if (updatedLock === lock) {
 	fail("Could not find the app package in src-tauri/Cargo.lock.");
 }
 writeFileSync(lockPath, updatedLock);
+writeFileSync(changelogPath, changelog);
 
 gitInherit(
 	"add",
@@ -124,6 +138,7 @@ gitInherit(
 	"src-tauri/tauri.conf.json",
 	"src-tauri/Cargo.toml",
 	"src-tauri/Cargo.lock",
+	"CHANGELOG.md",
 );
 gitInherit("commit", "-m", `chore: release ${tag}`);
 gitInherit("tag", tag);

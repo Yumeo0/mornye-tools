@@ -180,9 +180,9 @@ export function customRotationProfile(
 	const issues: RotationDiagnostic[] = [];
 	const report = (message: string, nodeId?: string) =>
 		issues.push({ message, ...(nodeId ? { nodeId } : {}) });
-	if (kits.length !== 3) report("Select three supported characters.");
+	if (kits.length !== 3) report("Select three supported Resonators.");
 	if (new Set(kits.map((k) => k.member.characterId)).size !== kits.length)
-		report("Each character must be different.");
+		report("Each Resonator must be different.");
 	let steps: ReturnType<typeof flattenRotation> = [];
 	try {
 		steps = flattenRotation(rotation.nodes);
@@ -196,7 +196,7 @@ export function customRotationProfile(
 	for (const step of steps) {
 		const kit = kits.find((k) => k.member.characterId === step.characterId);
 		if (!kit) {
-			report("Remove actions for characters outside the team.", step.id);
+			report("Remove actions for Resonators outside the team.", step.id);
 			continue;
 		}
 		if (step.kind === "action") {

@@ -22,6 +22,11 @@ export function parseEchoUpgradeRules(
 				? Math.min(100, Math.max(0, saved.threshold))
 				: fallback,
 		options: {
+			minSuccessChance:
+				typeof options?.minSuccessChance === "number" &&
+				Number.isFinite(options.minSuccessChance)
+					? Math.min(100, Math.max(0, options.minSuccessChance))
+					: DEFAULT_UPGRADE_OPTIONS.minSuccessChance,
 			autoDiscard:
 				typeof options?.autoDiscard === "boolean" ? options.autoDiscard : false,
 			materials: {

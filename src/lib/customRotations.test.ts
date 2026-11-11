@@ -1,6 +1,12 @@
 import { expect, test } from "bun:test";
 import { makeFixture } from "../../calculator/fixture";
-import { getCatalog } from "./calc/riley/engine.generated.js";
+import {
+	evaluate,
+	evaluateFast,
+	getCatalog,
+	resolveRotationStats,
+} from "./calc/riley/engine.generated.js";
+import { referenceScenario } from "./calc/rotationDamage";
 import type { RotationNode } from "./calc/types";
 import {
 	baseRotationActions,
@@ -318,7 +324,7 @@ test("rotation libraries round-trip and remain selectable with the full custom p
 			{ ...rotation, members: rotation.members.slice(0, 2) },
 			catalog,
 		).errors,
-	).toContain("Select three supported characters.");
+	).toContain("Select three supported Resonators.");
 	expect(
 		customRotationSchema.safeParse({
 			...rotation,
@@ -395,4 +401,64 @@ test("validation diagnostics retain nested block sources while team checks remai
 			issue.message.includes("three supported"),
 		)?.nodeId,
 	).toBeUndefined();
+});
+
+test("repeated Hsin swap-in errors retain the opening block through the bundled simulator", () => {
+	const catalog = getCatalog();
+	const preset = catalog.teams.find((profile) =>
+		profile.members.some((member) => member.loadoutId === 13111),
+	)!;
+	const kits = preset.members.map(
+		(member) =>
+			catalog.rotationKits!.find(
+				(kit) =>
+					kit.member.loadoutId === member.loadoutId &&
+					kit.member.mainEcho.engineId === member.mainEcho.engineId,
+			)!,
+	);
+	const hsin = kits.find((kit) => kit.member.loadoutId === 13111)!;
+	const opening = hsin.actions.find(
+		(action) =>
+			action.name === "Basic - Illumining Form: Pillars Aligned 1" &&
+			!action.variant,
+	)!;
+	expect(opening).toBeDefined();
+	const rotation = seedRotation(kits);
+	rotation.nodes = [
+		...["opening", "repeated"].map((id) => ({
+			id,
+			kind: "action" as const,
+			characterId: hsin.member.characterId,
+			actionId: opening.id,
+		})),
+		...kits
+			.filter((kit) => kit !== hsin)
+			.map((kit) => ({
+				id: `wait-${kit.member.characterId}`,
+				kind: "wait" as const,
+				characterId: kit.member.characterId,
+				seconds: 1,
+			})),
+	];
+	const scenario = {
+		...resolveRotationStats(referenceScenario(preset)),
+		profileId: `custom:${rotation.id}`,
+		rotation,
+	};
+	for (const simulate of [evaluate, evaluateFast]) {
+		let caught: unknown;
+		try {
+			simulate(scenario);
+		} catch (error) {
+			caught = error;
+		}
+		expect(caught).toMatchObject({
+			rotationDiagnostic: {
+				message: expect.stringContaining(
+					"swaps in GROUNDED on Basic - Illumining Form: Pillars Aligned 1",
+				),
+				nodeId: "opening",
+			},
+		});
+	}
 });

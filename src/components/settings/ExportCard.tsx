@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { useAccount } from "@/lib/account";
+import { echoCount, useAccount } from "@/lib/account";
 import {
 	accountExportJson,
 	downloadTextFile,
@@ -33,10 +33,6 @@ const ALL_PARTS_SELECTED: ExportSelection = {
 	echoes: true,
 	map: true,
 };
-
-function entryCountLabel(count: number): string {
-	return `${count} ${count === 1 ? "entry" : "entries"}`;
-}
 
 /** Account export: type selection plus clipboard/file output. */
 export function ExportCard() {
@@ -113,9 +109,7 @@ export function ExportCard() {
 					</Label>
 					{snapshot.profile && (
 						<p className="text-xs text-muted-foreground">
-							{snapshot.player?.name || "Player"} · {snapshot.profile.playerId}{" "}
-							· {snapshot.profile.region}. Export each player profile separately
-							using the sidebar selector.
+							{snapshot.player?.name || "Player"} · {snapshot.profile.region}
 						</p>
 					)}
 				</div>
@@ -135,9 +129,10 @@ export function ExportCard() {
 								<span className="text-xs text-muted-foreground tabular-nums">
 									{part === "map" && !manual.ready
 										? "Loading…"
-										: entryCountLabel(
-												exportPartCount(snapshot, part, manual.marks),
-											)}
+										: (part === "echoes"
+												? echoCount(snapshot.echoes)
+												: exportPartCount(snapshot, part, manual.marks)
+											).toLocaleString()}
 								</span>
 								<Switch
 									id={`export-part-${part}`}

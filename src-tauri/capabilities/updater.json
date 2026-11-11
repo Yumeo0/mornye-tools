@@ -3,5 +3,13 @@
 	"identifier": "updater",
 	"description": "Self-updating: check for, download and install signed releases. Only the settings window drives it; the overlay stays untouched.",
 	"windows": ["settings"],
-	"permissions": ["updater:default"]
+	"permissions": [
+		"updater:default",
+		{
+			"identifier": "opener:allow-open-url",
+			"allow": [
+				{ "url": "https://github.com/Yumeo0/mornye-tools/releases/tag/*" }
+			]
+		}
+	]
 }

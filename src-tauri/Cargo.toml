@@ -12,7 +12,9 @@ edition = "2021"
 # to make the lib name unique and wouldn't conflict with the bin name.
 # This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
 name = "mornye_tools_lib"
-crate-type = ["staticlib", "cdylib", "rlib"]
+# The desktop executable only needs an rlib. Mobile library formats add a
+# redundant DLL link and a multi-gigabyte static archive to debug rebuilds.
+crate-type = ["rlib"]
 
 [workspace]
 members = [".", "crates/account", "crates/game-client", "crates/sync", "crates/overlay", "crates/connection"]
@@ -22,6 +24,11 @@ resolver = "2"
 
 [workspace.dependencies]
 spectrum = { path = "crates/spectrum" }
+
+# Keep source locations and backtraces without the full type/variable debug
+# data that makes Windows linking and PDB generation expensive.
+[profile.dev]
+debug = 1
 
 # The passive KCP mirror needs wrapping arithmetic for remote timestamps.
 # Application overflow checks remain enabled.

@@ -68,6 +68,9 @@ export function EchoUpgradePanel({
 	const batch = useEchoUpgradeBatch();
 	const running = batch.phase === "running" || batch.phase === "stopping";
 	const [threshold, setThreshold] = useState("75");
+	const [minSuccessChance, setMinSuccessChance] = useState(
+		String(DEFAULT_UPGRADE_OPTIONS.minSuccessChance),
+	);
 	const [options, setOptions] = useState<EchoUpgradeOptions>(() =>
 		structuredClone(DEFAULT_UPGRADE_OPTIONS),
 	);
@@ -80,6 +83,7 @@ export function EchoUpgradePanel({
 			savedRules.current = JSON.stringify(saved);
 			setThreshold(String(saved.threshold));
 			setOptions(saved.options);
+			setMinSuccessChance(String(saved.options.minSuccessChance));
 			setRulesLoaded(true);
 		});
 		return () => {
@@ -87,11 +91,18 @@ export function EchoUpgradePanel({
 		};
 	}, []);
 	const value = Number(threshold);
-	const valid =
+	const chance = Number(minSuccessChance);
+	const validThreshold =
 		threshold.trim() !== "" &&
 		Number.isFinite(value) &&
 		value >= 0 &&
 		value <= 100;
+	const validChance =
+		minSuccessChance.trim() !== "" &&
+		Number.isFinite(chance) &&
+		chance >= 0 &&
+		chance <= 100;
+	const valid = validThreshold && validChance;
 	useEffect(() => {
 		if (!rulesLoaded || !valid) return;
 		const rules = { threshold: value, options };
@@ -120,6 +131,9 @@ export function EchoUpgradePanel({
 	).length;
 	const consumed = batch.rows.filter(
 		(row) => row.outcome === "consumed",
+	).length;
+	const lowChance = batch.rows.filter(
+		(row) => row.outcome === "low_chance",
 	).length;
 	const count = (id: number) =>
 		snapshot.inventory?.find((item) => item.id === id)?.count ?? 0;
@@ -166,16 +180,21 @@ export function EchoUpgradePanel({
 							<Badge variant="secondary">{complete} complete</Badge>
 							<Badge variant="outline">{discarded} marked discard</Badge>
 							<Badge variant="outline">{below} below target</Badge>
+							{lowChance > 0 && (
+								<Badge variant="outline">{lowChance} low chance</Badge>
+							)}
 							{consumed > 0 && (
 								<Badge variant="outline">{consumed} used as fodder</Badge>
 							)}
 						</div>
-						<p className="text-[11px] text-muted-foreground">
+						<p className="text-xs text-muted-foreground">
 							{batch.options.materials.discard_echoes
 								? "Discard echo fodder on"
 								: "Discard echo fodder off"}{" "}
 							· {batch.options.materials.exp_material_ids.length} tube rarities
 							· Auto-discard {batch.options.autoDiscard ? "on" : "off"}
+							{batch.options.minSuccessChance > 0 &&
+								` · ${batch.options.minSuccessChance}% minimum success chance`}
 						</p>
 						{batch.profileId !== profileId && (
 							<p role="status" className="text-xs text-muted-foreground">
@@ -190,9 +209,9 @@ export function EchoUpgradePanel({
 					</div>
 				) : (
 					<FieldGroup>
-						<Field data-invalid={!valid}>
+						<Field data-invalid={!validThreshold}>
 							<FieldLabel htmlFor="echo-upgrade-threshold">
-								Target roll value (%)
+								Target RV (%)
 							</FieldLabel>
 							<Input
 								id="echo-upgrade-threshold"
@@ -202,13 +221,40 @@ export function EchoUpgradePanel({
 								step={1}
 								value={threshold}
 								disabled={!rulesLoaded}
-								aria-invalid={!valid}
+								aria-invalid={!validThreshold}
 								onChange={(event) => {
 									setThreshold(event.target.value);
 								}}
 							/>
 							<FieldDescription>
-								Stop when this rating is no longer reachable.
+								Stop when the target RV is no longer reachable.
+							</FieldDescription>
+						</Field>
+						<Field data-invalid={!validChance}>
+							<FieldLabel htmlFor="echo-upgrade-chance">
+								Minimum success chance (%)
+							</FieldLabel>
+							<Input
+								id="echo-upgrade-chance"
+								type="number"
+								min={0}
+								max={100}
+								step={0.1}
+								value={minSuccessChance}
+								disabled={!rulesLoaded}
+								aria-invalid={!validChance}
+								onChange={(event) => {
+									const next = event.target.value;
+									setMinSuccessChance(next);
+									setOptions((previous) => ({
+										...previous,
+										minSuccessChance: Number(next),
+									}));
+								}}
+							/>
+							<FieldDescription>
+								Stop when the chance of reaching the target RV falls below this
+								value. Set to 0 to disable.
 							</FieldDescription>
 						</Field>
 						<Separator />
@@ -241,8 +287,8 @@ export function EchoUpgradePanel({
 								<ToggleGroupItem
 									value="discard"
 									className="relative h-24 w-full min-w-0 flex-col justify-center gap-1 px-1 py-2"
-									aria-label="Discarded echoes, used before tubes"
-									title="Discarded echoes · Used before tubes, even when their EXP passes a level checkpoint. Selected and equipped echoes are protected."
+									aria-label="Discarded echoes, used to save tubes"
+									title="Discarded echoes · Minimize tube EXP, then use the least discarded EXP. Fodder may pass a checkpoint. Selected and equipped echoes are protected."
 								>
 									<span
 										className="invisible absolute right-1 top-1 [&_svg]:size-3 group-aria-pressed/toggle:visible"
@@ -255,7 +301,7 @@ export function EchoUpgradePanel({
 										alt=""
 										className="size-8 object-contain"
 									/>
-									<span className="text-[11px]">Echoes</span>
+									<span className="text-xs">Echoes</span>
 								</ToggleGroupItem>
 								{TUBES.map((tube) => (
 									<ToggleGroupItem
@@ -283,12 +329,9 @@ export function EchoUpgradePanel({
 												alt=""
 												className="size-8 object-contain"
 											/>
-											<span className="text-[10px]">{tube.rarity}★</span>
+											<span className="text-xs">{tube.rarity}★</span>
 										</span>
-										<span
-											className="text-[11px] tabular-nums"
-											aria-hidden="true"
-										>
+										<span className="text-xs tabular-nums" aria-hidden="true">
 											{new Intl.NumberFormat(undefined, {
 												notation: "compact",
 												maximumFractionDigits: 1,
@@ -309,10 +352,11 @@ export function EchoUpgradePanel({
 						<Field orientation="horizontal">
 							<FieldContent>
 								<FieldLabel htmlFor="echo-auto-discard">
-									Mark failed echoes as discard
+									Mark failed echoes for discard
 								</FieldLabel>
 								<FieldDescription>
-									Below target, including locked echoes.
+									Below target RV or minimum success chance, including locked
+									echoes.
 								</FieldDescription>
 							</FieldContent>
 							<Switch
@@ -340,7 +384,7 @@ export function EchoUpgradePanel({
 						>
 							Stop batch
 						</Button>
-						<p className="text-[11px] text-muted-foreground">
+						<p className="text-xs text-muted-foreground">
 							You can switch tabs while the batch runs.
 						</p>
 					</>
@@ -364,12 +408,15 @@ export function EchoUpgradePanel({
 								}
 							}}
 						>
-							Upgrade {echoes.length} selected{" "}
-							{echoes.length === 1 ? "echo" : "echoes"}
+							{echoes.length
+								? `Upgrade ${echoes.length} ${echoes.length === 1 ? "echo" : "echoes"}`
+								: "Select echoes to upgrade"}
 						</Button>
 						{!connected && (
-							<p role="status" className="text-[11px] text-muted-foreground">
-								Connect to this profile’s account to start.
+							<p role="status" className="text-xs text-muted-foreground">
+								{snapshot.player?.name?.trim()
+									? `Connect ${snapshot.player.name.trim()} to start`
+									: "Connect this account to start"}
 							</p>
 						)}
 						{batch.rows.length > 0 && (

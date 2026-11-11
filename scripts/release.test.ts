@@ -29,6 +29,15 @@ function createFixture() {
 	const repo = join(root, "app");
 	mkdirSync(join(repo, "scripts"), { recursive: true });
 	mkdirSync(join(repo, "src-tauri"));
+	mkdirSync(join(repo, "src", "lib"), { recursive: true });
+	copyFileSync(
+		join(import.meta.dir, "..", "src", "lib", "changelogFormat.ts"),
+		join(repo, "src", "lib", "changelogFormat.ts"),
+	);
+	writeFileSync(
+		join(repo, "CHANGELOG.md"),
+		"# Changelog\n\n## [Unreleased]\n\n### Improved\n\n- Find better Echo builds for your team.\n\n## [0.1.4] - 2026-11-01\n\n- Previous changes.\n",
+	);
 	copyFileSync(
 		join(import.meta.dir, "release.ts"),
 		join(repo, "scripts", "release.ts"),
@@ -102,6 +111,12 @@ test("--no-push creates the version commit and tag without remotes", () => {
 	).toBe("0.2.0");
 	expect(git(repo, "log", "-1", "--format=%s")).toBe("chore: release v0.2.0");
 	expect(git(repo, "rev-parse", "v0.2.0")).toBe(git(repo, "rev-parse", "HEAD"));
+	const changelog = readFileSync(join(repo, "CHANGELOG.md"), "utf8");
+	expect(changelog).toMatch(
+		/## \[Unreleased\]\n\n## \[0\.2\.0\] - \d{4}-\d{2}-\d{2}/,
+	);
+	expect(changelog).toContain("Find better Echo builds for your team.");
+	expect(git(repo, "show", "v0.2.0:CHANGELOG.md")).toContain("## [0.2.0]");
 	expect(git(repo, "status", "--porcelain")).toBe("");
 }, 30_000);
 
@@ -163,6 +178,23 @@ test("uncommitted app changes still block release before versions change", () =>
 	expect(result.stderr).toContain("Working tree is not clean");
 	expect(git(repo, "rev-parse", "HEAD")).toBe(before);
 	expect(git(repo, "tag", "-l")).toBe("");
+});
+
+test("missing release notes stop release before changing versions or creating a tag", () => {
+	const { repo } = createFixture();
+	writeFileSync(join(repo, "CHANGELOG.md"), "# Changelog\n\n## [Unreleased]\n");
+	git(repo, "add", "CHANGELOG.md");
+	git(repo, "commit", "-m", "Start a fresh changelog draft");
+	const before = git(repo, "rev-parse", "HEAD");
+	const result = releaseLocally(repo);
+	expect(result.status).toBe(1);
+	expect(result.stderr).toContain("Write user-facing release notes");
+	expect(
+		JSON.parse(readFileSync(join(repo, "package.json"), "utf8")).version,
+	).toBe("0.1.4");
+	expect(git(repo, "rev-parse", "HEAD")).toBe(before);
+	expect(git(repo, "tag", "-l")).toBe("");
+	expect(git(repo, "status", "--porcelain")).toBe("");
 });
 
 test("an uncommitted submodule revision still blocks release", () => {

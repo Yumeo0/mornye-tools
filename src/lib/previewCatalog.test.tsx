@@ -76,5 +76,5 @@ test("preview cards show the label and artwork without implying a captured weapo
 	expect(weapon.icon).toBeTruthy();
 	expect(weaponHtml).toContain(weapon.icon ?? "");
 	expect(weaponHtml).not.toContain("Weapon level");
-	expect(weaponHtml).not.toContain("Resonance rank");
+	expect(weaponHtml).not.toContain("Refinement");
 });

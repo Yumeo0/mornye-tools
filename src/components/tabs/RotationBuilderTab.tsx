@@ -108,7 +108,6 @@ export function RotationBuilderTab({
 	const [dropKey, setDropKey] = useState<string | null>(null);
 	const [testing, setTesting] = useState(false);
 	const [playbackOpen, setPlaybackOpen] = useState(false);
-	const [reportTab, setReportTab] = useState("playback");
 	const [teamEditor, setTeamEditor] = useState<{
 		initial: CustomRotation;
 		creating: boolean;
@@ -393,7 +392,6 @@ export function RotationBuilderTab({
 		setPlaybackOpen(false);
 	};
 	const showErrors = () => {
-		setReportTab("errors");
 		setPlaybackOpen(true);
 	};
 	return (
@@ -527,7 +525,7 @@ export function RotationBuilderTab({
 							<HugeiconsIcon icon={Redo02Icon} />
 						</Button>
 						<span
-							className="flex items-center gap-1 text-[10px] text-muted-foreground"
+							className="flex items-center gap-1 text-xs text-muted-foreground"
 							title="Changes save automatically"
 						>
 							<HugeiconsIcon
@@ -564,7 +562,7 @@ export function RotationBuilderTab({
 						keyboard editing.
 					</p>
 					<p>
-						Character changes swap automatically. Intros and Outros must be
+						Resonator changes swap automatically. Intros and Outros must be
 						placed explicitly.
 					</p>
 					<p>
@@ -601,7 +599,7 @@ export function RotationBuilderTab({
 					<div className="flex min-h-[480px] flex-1 flex-col gap-3 lg:min-h-0 lg:flex-row">
 						<aside className="flex h-72 shrink-0 flex-col gap-3 border bg-card p-3 lg:h-auto lg:w-72">
 							<ToggleGroup
-								aria-label="Character actions"
+								aria-label="Resonator actions"
 								value={[String(selectedMember)]}
 								onValueChange={(values) => {
 									if (values.length) {
@@ -618,7 +616,11 @@ export function RotationBuilderTab({
 										value={String(index)}
 										aria-label={`${memberKit.member.name} actions`}
 										title={memberKit.member.name}
-										className="h-12 min-w-0 flex-1 p-1"
+										className={cn(
+											"h-12 min-w-0 flex-1 p-1",
+											index === selectedMember &&
+												"bg-primary/20 ring-2 ring-inset ring-primary border-b-2 border-b-primary",
+										)}
 									>
 										<img
 											src={
@@ -669,7 +671,7 @@ export function RotationBuilderTab({
 								<Empty>
 									<EmptyHeader>
 										<EmptyDescription>
-											Select a character first.
+											Select a Resonator first.
 										</EmptyDescription>
 									</EmptyHeader>
 								</Empty>
@@ -708,7 +710,7 @@ export function RotationBuilderTab({
 												className="size-9 object-contain"
 											/>
 											<span className="flex min-w-0 flex-1 flex-col gap-1">
-												<span className="flex items-center gap-1 text-[10px] text-muted-foreground">
+												<span className="flex items-center gap-1 text-xs text-muted-foreground">
 													<span>
 														{
 															splitRotationActionName(
@@ -783,7 +785,7 @@ export function RotationBuilderTab({
 									onClick={() => setPlaybackOpen(true)}
 								>
 									Inspect{" "}
-									<span className="text-[10px] text-muted-foreground">
+									<span className="text-xs text-muted-foreground">
 										{problems.length
 											? `${problems.length} errors`
 											: `${measured?.result?.playback?.filter((e) => e.automatic).length ?? 0} Auto`}
@@ -803,7 +805,7 @@ export function RotationBuilderTab({
 										className="size-4 text-primary"
 									/>
 									<h2 className="text-xs font-semibold">Flow</h2>
-									<span className="text-[10px] tabular-nums text-muted-foreground">
+									<span className="text-xs tabular-nums text-muted-foreground">
 										{rotationSize(rotation.nodes)} actions
 									</span>
 									<span className="flex-1" />
@@ -1051,11 +1053,8 @@ export function RotationBuilderTab({
 								entries={measured?.result?.playback ?? []}
 								pending={testing}
 								hasActions={rows.length > 0}
-								hasTested={!!measured}
 								errors={problems}
 								onSelectNode={goToNode}
-								tab={reportTab}
-								onTabChange={setReportTab}
 								className={cn(
 									"min-h-[460px] lg:min-h-0",
 									!playbackOpen && "hidden xl:flex",
@@ -1072,7 +1071,7 @@ export function RotationBuilderTab({
 							</Button>
 							<span className="text-sm font-semibold tabular-nums">
 								{Math.round(measured.result.teamDamage).toLocaleString()}{" "}
-								<span className="text-[10px] font-normal text-muted-foreground">
+								<span className="text-xs font-normal text-muted-foreground">
 									DMG
 								</span>
 							</span>
@@ -1081,7 +1080,7 @@ export function RotationBuilderTab({
 									measured.result.teamDamage /
 										Math.max(0.01, measured.result.duration),
 								).toLocaleString()}{" "}
-								<span className="text-[10px] text-muted-foreground">DPS</span>
+								<span className="text-xs text-muted-foreground">DPS</span>
 							</span>
 							<span className="text-xs tabular-nums text-muted-foreground">
 								{measured.result.duration.toFixed(1)}s

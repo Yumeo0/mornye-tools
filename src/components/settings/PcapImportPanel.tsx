@@ -48,7 +48,7 @@ export function PcapImportPanel() {
 				</Button>
 			</div>
 			{pcapStatus && (
-				<p className="text-[11px] text-muted-foreground">{pcapStatus}</p>
+				<p className="text-xs text-muted-foreground">{pcapStatus}</p>
 			)}
 		</div>
 	);

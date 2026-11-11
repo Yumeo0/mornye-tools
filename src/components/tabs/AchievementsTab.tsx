@@ -7,7 +7,7 @@ import {
 	FilterPanel,
 	FilterSearch,
 } from "@/components/filters";
-import { Badge } from "@/components/ui/badge";
+import { ProgressionGroupHeader } from "@/components/ProgressionGroupHeader";
 import { Button } from "@/components/ui/button";
 import {
 	Collapsible,
@@ -23,10 +23,11 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { useResponsiveColumns, VirtualGrid } from "@/components/VirtualGrid";
+import { VirtualGrid } from "@/components/VirtualGrid";
 import { useAccount } from "@/lib/account";
 import { useFilterState } from "@/lib/persistentState";
 import { useProgressionCatalog } from "@/lib/progression/catalog";
+import { progressionRows } from "@/lib/progression/groups";
 import {
 	type AchievementStatus,
 	achievementStatus,
@@ -42,8 +43,7 @@ import { cn } from "@/lib/utils";
 
 type Group = ProgressionCatalog["groups"][number];
 
-const COLUMNS = [{ minWidth: 1500, columns: 2 }];
-const achievementKey = (entry: Achievement) => entry.id;
+const STATUS_ORDER = { unclaimed: 0, incomplete: 1, unknown: 2, claimed: 3 };
 const STATUSES = [
 	{ value: "all", label: "All achievements" },
 	{ value: "incomplete", label: "Incomplete" },
@@ -61,13 +61,10 @@ const STATUS_LABELS: Record<AchievementStatus, string> = {
 function AchievementRow({
 	achievement,
 	entry,
-	group,
 }: {
 	achievement: Achievement;
 	entry: AchievementEntry | undefined;
-	group: string;
 }) {
-	const status = achievementStatus(entry);
 	const current = entry?.current;
 	const target = entry?.target;
 	const hasProgress = current != null && target != null && target > 1;
@@ -75,26 +72,16 @@ function AchievementRow({
 		entry && entry.finishedAt > 0 ? new Date(entry.finishedAt * 1000) : null;
 	return (
 		<article
-			className="flex flex-col gap-2 border bg-card p-3"
+			className="grid gap-x-6 gap-y-1 border-b bg-card px-3 py-3 md:grid-cols-[minmax(12rem,0.65fr)_minmax(0,1fr)_auto]"
 			aria-label={achievement.name}
 			title={`#${achievement.id}${achievement.hidden ? " · Hidden achievement" : ""}`}
 		>
-			<header className="flex items-start justify-between gap-3">
-				<div className="flex min-w-0 flex-col gap-1">
-					<p className="text-xs text-muted-foreground">{group}</p>
-					<h2 className="text-sm font-semibold leading-snug">
-						{achievement.name}
-					</h2>
-				</div>
-				<Badge variant={status === "unclaimed" ? "outline" : "secondary"}>
-					{STATUS_LABELS[status]}
-				</Badge>
-			</header>
+			<h3 className="text-sm font-medium leading-snug">{achievement.name}</h3>
 			<p className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
 				{achievement.description}
 			</p>
 			{(finished || hasProgress) && (
-				<footer className="mt-auto flex items-center justify-between gap-3 text-xs text-muted-foreground">
+				<footer className="flex items-start justify-between gap-3 text-xs text-muted-foreground">
 					{finished ? (
 						<time dateTime={finished.toISOString()}>
 							{finished.toLocaleDateString()}
@@ -112,7 +99,7 @@ function AchievementRow({
 			{hasProgress && (
 				<progress
 					aria-label={`${achievement.name} progress`}
-					className="h-1 w-full appearance-none overflow-hidden [&::-webkit-progress-bar]:bg-secondary [&::-webkit-progress-value]:bg-primary [&::-moz-progress-bar]:bg-primary"
+					className="h-1 w-full md:col-start-2 appearance-none overflow-hidden [&::-webkit-progress-bar]:bg-secondary [&::-webkit-progress-value]:bg-primary [&::-moz-progress-bar]:bg-primary"
 					max={target}
 					value={Math.min(Math.max(current, 0), target)}
 				/>
@@ -143,7 +130,7 @@ function NavButton({
 			aria-pressed={active}
 			onClick={onClick}
 			className={cn(
-				"flex w-full items-center gap-2 border border-transparent px-2 py-1.5 text-left text-xs outline-none transition-colors hover:bg-accent focus-visible:ring-1 focus-visible:ring-ring",
+				"flex w-full items-center gap-2 border border-transparent px-2 py-1.5 text-left text-sm outline-none transition-colors hover:bg-accent focus-visible:ring-1 focus-visible:ring-ring",
 				active && "border-border bg-secondary",
 				complete && COMPLETE_CLASS,
 			)}
@@ -151,7 +138,7 @@ function NavButton({
 			{children}
 			<span
 				className={cn(
-					"shrink-0 text-[11px] tabular-nums",
+					"shrink-0 text-xs tabular-nums",
 					complete ? "opacity-80" : "text-muted-foreground",
 				)}
 			>
@@ -199,7 +186,6 @@ export function AchievementsTab({ active }: { active: boolean }) {
 		"achievements.showHidden",
 		false,
 	);
-	const columns = useResponsiveColumns(COLUMNS, 1);
 	const groupById = useMemo(
 		() => new Map(catalog?.groups.map((group) => [group.id, group]) ?? []),
 		[catalog],
@@ -249,10 +235,10 @@ export function AchievementsTab({ active }: { active: boolean }) {
 				);
 			})
 			.sort((a, b) => {
-				const states = { unclaimed: 0, incomplete: 1, unknown: 2, claimed: 3 };
 				return (
-					states[achievementStatus(snapshot?.entries[a.id])] -
-						states[achievementStatus(snapshot?.entries[b.id])] || a.id - b.id
+					STATUS_ORDER[achievementStatus(snapshot?.entries[a.id])] -
+						STATUS_ORDER[achievementStatus(snapshot?.entries[b.id])] ||
+					a.id - b.id
 				);
 			});
 	}, [
@@ -265,6 +251,21 @@ export function AchievementsTab({ active }: { active: boolean }) {
 		status,
 		showHidden,
 	]);
+	const rows = useMemo(
+		() =>
+			progressionRows(achievements, (achievement) => {
+				const status = achievementStatus(snapshot?.entries[achievement.id]);
+				return {
+					id: `${status}:${achievement.groupId}`,
+					title:
+						groupById.get(achievement.groupId)?.name ?? "Other achievements",
+					status: STATUS_LABELS[status],
+					order: STATUS_ORDER[status],
+				};
+			}),
+		[achievements, snapshot, groupById],
+	);
+
 	if (error)
 		return (
 			<div className="flex flex-1 flex-col items-center justify-center gap-3">
@@ -462,21 +463,24 @@ export function AchievementsTab({ active }: { active: boolean }) {
 			>
 				{achievements.length ? (
 					<VirtualGrid
-						items={achievements}
-						columns={columns}
-						minItemWidth={420}
-						gap={10}
-						estimateRowHeight={120}
-						getItemKey={achievementKey}
+						items={rows}
+						columns={1}
+						gap={0}
+						estimateRowHeight={76}
+						getItemKey={(row) =>
+							row.kind === "header" ? row.group.id : row.entry.id
+						}
 						className="min-h-0 flex-1 overflow-y-auto pr-1"
-						renderItem={(achievement) => (
-							<AchievementRow
-								key={achievement.id}
-								achievement={achievement}
-								entry={snapshot?.entries[achievement.id]}
-								group={groupById.get(achievement.groupId)?.name ?? ""}
-							/>
-						)}
+						renderItem={(row) =>
+							row.kind === "header" ? (
+								<ProgressionGroupHeader group={row.group} count={row.count} />
+							) : (
+								<AchievementRow
+									achievement={row.entry}
+									entry={snapshot?.entries[row.entry.id]}
+								/>
+							)
+						}
 					/>
 				) : (
 					<p className="grid flex-1 place-items-center text-sm text-muted-foreground">

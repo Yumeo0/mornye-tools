@@ -38,7 +38,7 @@ export const EXPORT_PART_LABELS: Record<ExportPart, string> = {
 /** What one part contributes, shown under its caption. */
 export const EXPORT_PART_DESCRIPTIONS: Record<ExportPart, string> = {
 	resonators: "Level, breakthrough, chain and skill nodes",
-	weapons: "Level, breach, rank and the resonator carrying them",
+	weapons: "Level, breach, Refinement and the resonator carrying them",
 	echoes: "Equipped and unequipped echoes with their stats",
 	map: "Captured exploration plus manual and imported map marks for this player",
 };

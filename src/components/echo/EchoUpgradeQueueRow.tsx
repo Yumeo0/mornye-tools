@@ -5,7 +5,10 @@ import type { EchoRoll } from "@/components/echo/echoRolls";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { charactersById } from "@/lib/catalog";
-import type { UpgradeRow } from "@/lib/echoUpgradeBatch";
+import {
+	formatEchoSuccessChance,
+	type UpgradeRow,
+} from "@/lib/echoUpgradeBatch";
 import { cn } from "@/lib/utils";
 
 const OUTCOMES: Record<UpgradeRow["outcome"], string> = {
@@ -13,6 +16,7 @@ const OUTCOMES: Record<UpgradeRow["outcome"], string> = {
 	upgrading: "Upgrading",
 	complete: "Complete",
 	below_threshold: "Below target",
+	low_chance: "Low chance",
 	discarded: "Marked discard",
 	consumed: "Used as fodder",
 	skipped: "Skipped",
@@ -91,11 +95,16 @@ export function EchoUpgradeQueueRow({
 								{OUTCOMES[row.outcome]}
 							</Badge>
 							{row.possible !== null && (
-								<span className="ml-auto text-[11px] tabular-nums text-muted-foreground">
+								<span className="ml-auto text-xs tabular-nums text-muted-foreground">
 									Best possible {row.possible}%
 								</span>
 							)}
 						</div>
+						{row.successChance !== null && (
+							<span className="text-xs tabular-nums text-muted-foreground">
+								Success chance {formatEchoSuccessChance(row.successChance)}
+							</span>
+						)}
 						<p
 							className={cn(
 								"text-xs text-muted-foreground",

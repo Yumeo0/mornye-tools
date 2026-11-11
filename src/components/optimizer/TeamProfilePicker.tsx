@@ -151,7 +151,7 @@ export function TeamProfilePicker({
 				<DialogHeader>
 					<DialogTitle>Load rotation</DialogTitle>
 					<DialogDescription className="sr-only">
-						Select a team rotation, then choose a character to optimize.
+						Select a team rotation, then choose a Resonator to optimize.
 					</DialogDescription>
 				</DialogHeader>
 				<Field>
@@ -167,13 +167,13 @@ export function TeamProfilePicker({
 				</Field>
 				<FieldGroup className="grid grid-cols-2 gap-3 sm:grid-cols-4">
 					<FilterSelect
-						label="Character"
+						label="Resonator"
 						value={filters.characterId}
-						options={[{ value: "any", label: "Any character" }, ...characters]}
+						options={[{ value: "any", label: "Any Resonator" }, ...characters]}
 						onChange={(characterId) => patch({ characterId, role: "any" })}
 					/>
 					<FilterSelect
-						label="Character's role"
+						label="Resonator's role"
 						value={filters.role}
 						disabled={filters.characterId === "any"}
 						options={[

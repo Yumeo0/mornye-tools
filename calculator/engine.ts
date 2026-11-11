@@ -590,7 +590,7 @@ function runCustom(
 		);
 		if (slot < 0)
 			throw new RotationNodeError(
-				"An action belongs to a character outside the team.",
+				"An action belongs to a Resonator outside the team.",
 				steps[offset]!.id,
 			);
 		let end = offset + 1;
@@ -622,7 +622,7 @@ function runCustom(
 				);
 			if (coreAction(action).cast === Cast.Outro && step !== steps[end - 1])
 				throw new RotationNodeError(
-					"Place an Outro at the end of a character's turn.",
+					"Place an Outro at the end of a Resonator's turn.",
 					step.id,
 				);
 			if (
@@ -630,7 +630,7 @@ function runCustom(
 				(!incomingIntro || step !== steps[offset])
 			)
 				throw new RotationNodeError(
-					`${profile.loadouts[slot]!.resonator.name}: an Intro must follow another character's Outro.`,
+					`${profile.loadouts[slot]!.resonator.name}: an Intro must follow another Resonator's Outro.`,
 					step.id,
 				);
 			return action;

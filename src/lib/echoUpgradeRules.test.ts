@@ -8,6 +8,7 @@ describe("saved echo batch rules", () => {
 			threshold: 82,
 			options: {
 				autoDiscard: true,
+				minSuccessChance: 12.5,
 				materials: { discard_echoes: false, exp_material_ids: [] },
 			},
 		};
@@ -37,10 +38,29 @@ describe("saved echo batch rules", () => {
 			threshold: 75,
 			options: {
 				autoDiscard: false,
+				minSuccessChance: 1,
 				materials: { discard_echoes: true, exp_material_ids: [36000004] },
 			},
 		});
 		expect(parseEchoUpgradeRules({ threshold: -10 }).threshold).toBe(0);
 		expect(parseEchoUpgradeRules({ threshold: 200 }).threshold).toBe(100);
+	});
+	test("migrates and validates the optional success chance cutoff", () => {
+		for (const minSuccessChance of [undefined, null, "10", NaN, Infinity]) {
+			expect(
+				parseEchoUpgradeRules({ options: { minSuccessChance } }).options
+					.minSuccessChance,
+			).toBe(1);
+		}
+		for (const minSuccessChance of [0, -1]) {
+			expect(
+				parseEchoUpgradeRules({ options: { minSuccessChance } }).options
+					.minSuccessChance,
+			).toBe(0);
+		}
+		expect(
+			parseEchoUpgradeRules({ options: { minSuccessChance: 101 } }).options
+				.minSuccessChance,
+		).toBe(100);
 	});
 });

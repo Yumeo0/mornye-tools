@@ -128,7 +128,7 @@ export function CharactersTab() {
 			{filteredCharacters.length === 0 ? (
 				<div className="min-h-0 flex-1 overflow-y-auto pr-1">
 					<div className="py-8 text-center text-muted-foreground">
-						No characters match the current filters.
+						No Resonators match the current filters.
 					</div>
 				</div>
 			) : (

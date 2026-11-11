@@ -39,7 +39,7 @@ export function CaptureStatus({
 			/>
 			{!compact && (
 				<span className="flex min-w-0 flex-col items-start gap-0.5">
-					<span className="text-[10px] text-muted-foreground">
+					<span className="text-xs text-muted-foreground">
 						Passive listener
 					</span>
 					<span className="max-w-full truncate text-xs">{health.label}</span>

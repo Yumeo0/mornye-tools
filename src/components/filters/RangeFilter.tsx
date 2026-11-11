@@ -18,7 +18,7 @@ export function RangeFilter({
 	return (
 		<div className="flex min-w-0 flex-col gap-1">
 			<span
-				className={`text-[10px] leading-none ${active ? "font-semibold text-foreground" : "text-muted-foreground"}`}
+				className={`text-xs leading-none ${active ? "font-semibold text-foreground" : "text-muted-foreground"}`}
 			>
 				{label} {value[0]}–{value[1]}
 			</span>

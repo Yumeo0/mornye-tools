@@ -1,6 +1,6 @@
 import type { OptimizerFilters } from "@/components/optimizer/optimizerOptions";
 import { optimizerPoolFilters } from "@/components/optimizer/optimizerOptions";
-import type { AccountSnapshot } from "@/lib/account";
+import { type AccountSnapshot, echoCount } from "@/lib/account";
 import { supportEchoScore, supportGuideFor } from "./supportGuide";
 import { aliasRoleId, toEchoInstance } from "./translate";
 import type { CalcEcho, MemberBuild, TeamProfile } from "./types";
@@ -21,6 +21,7 @@ export function selectCandidates(
 	);
 	const selections = optimizerPoolFilters(filters, descriptor.recommendedMains);
 	const all: CalcEcho[] = [];
+	let eligible = 0;
 	for (const e of snapshot.echoes) {
 		if (reserved.has(`incr:${e.incrId}`) || e.level < filters.minLevel)
 			continue;
@@ -44,8 +45,10 @@ export function selectCandidates(
 		)
 			continue;
 		const translated = toEchoInstance(e);
-		if (translated.instance) all.push(translated.instance);
-		else if (translated.error) errors.push(translated.error);
+		if (translated.instance) {
+			all.push(translated.instance);
+			eligible += echoCount([e]);
+		} else if (translated.error) errors.push(translated.error);
 	}
 	const guide = supportGuideFor(targetId);
 	const rank = (e: CalcEcho) =>
@@ -95,8 +98,8 @@ export function selectCandidates(
 	const pool = [...kept.values()];
 	return {
 		pool,
-		eligible: all.length,
-		total: snapshot.echoes.length,
+		eligible,
+		total: echoCount(snapshot.echoes),
 		errors,
 		truncated: pool.length < all.length,
 		mainCount: pool.filter((e) => e.typeId === descriptor.mainEcho.typeId)

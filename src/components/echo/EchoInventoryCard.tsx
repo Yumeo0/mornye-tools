@@ -1,7 +1,8 @@
 import { UserRound } from "lucide-react";
+import { useState } from "react";
 import { EchoCard, equippedCharacter } from "@/components/echo/EchoCard";
 import { EchoMarkControls } from "@/components/echo/EchoMarkControls";
-import type { EchoRoll } from "@/components/echo/echoRolls";
+import type { EchoRoll, EchoRollSummary } from "@/components/echo/echoRolls";
 import type { FilterOption } from "@/components/filters";
 import {
 	ContextMenu,
@@ -37,7 +38,7 @@ export function EchoInventoryCard({
 	markPending = false,
 }: {
 	echo: Echo;
-	roll?: EchoRoll;
+	roll?: EchoRollSummary;
 	characterOptions: FilterOption[];
 	onChangeEquipped: (echo: Echo, value: string) => void;
 	onCopyInfo: (echo: Echo, roll?: EchoRoll) => void;
@@ -47,21 +48,32 @@ export function EchoInventoryCard({
 	markPending?: boolean;
 }) {
 	const character = equippedCharacter(echo.equippedBy);
+	const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(
+		null,
+	);
+	const selectedRoll =
+		roll?.options.find(
+			(option) => option.character.character_id === selectedCharacterId,
+		) ?? roll;
 	return (
 		<ContextMenu>
 			<ContextMenuTrigger className="h-full">
 				<EchoCard
 					echo={echo}
-					rollValue={roll?.rating}
-					rollSubstatTiers={roll?.character.stats.subs}
-					rollErBreakpoint={roll?.character.stats.erBreakpoint}
+					rollValue={selectedRoll?.rating}
+					rollSubstatTiers={selectedRoll?.character.stats.subs}
+					rollErBreakpoint={selectedRoll?.character.stats.erBreakpoint}
+					rollOptions={roll?.options}
+					onRollSelect={(option) =>
+						setSelectedCharacterId(option.character.character_id)
+					}
 					rollCharacter={
-						roll
+						selectedRoll
 							? {
-									name: roll.character.character_name,
+									name: selectedRoll.character.character_name,
 									icon:
-										charactersById.get(roll.character.character_id)
-											?.icon_head_256 ?? roll.character.icon_pile,
+										charactersById.get(selectedRoll.character.character_id)
+											?.icon_head_256 ?? selectedRoll.character.icon_pile,
 								}
 							: null
 					}
@@ -165,7 +177,7 @@ export function EchoInventoryCard({
 							</ContextMenuItem>
 						</>
 					)}
-					<ContextMenuItem onClick={() => onCopyInfo(echo, roll)}>
+					<ContextMenuItem onClick={() => onCopyInfo(echo, selectedRoll)}>
 						Copy echo info
 					</ContextMenuItem>
 					{echo.source === "manual" && (

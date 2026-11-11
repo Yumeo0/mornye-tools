@@ -1,6 +1,6 @@
 // Per-echo best roll rating across the characters the echo's sonata set is
 // relevant for (the same percent the overlay shows). The winning character is
-// kept so the card can show whose value it is.
+// kept as the default, with nonzero alternatives available for comparison.
 
 import { echoKey } from "@/components/echo/EchoCard";
 import { type Echo, statPropLines } from "@/lib/account";
@@ -19,9 +19,14 @@ export interface EchoRoll {
 	character: CharacterInfo;
 }
 
+export interface EchoRollSummary extends EchoRoll {
+	/** Nonzero RVs, highest first; ties keep the default character order. */
+	options: EchoRoll[];
+}
+
 /** Roll rating per echo instance key (`incr:`-prefixed id). */
-export function computeEchoRolls(echoes: Echo[]): Map<string, EchoRoll> {
-	const map = new Map<string, EchoRoll>();
+export function computeEchoRolls(echoes: Echo[]): Map<string, EchoRollSummary> {
+	const map = new Map<string, EchoRollSummary>();
 	const charactersCache = new Map<string, CharacterInfo[]>();
 	for (const echo of echoes) {
 		const cacheKey = `${echo.monsterId}:${echo.setId}`;
@@ -39,14 +44,20 @@ export function computeEchoRolls(echoes: Echo[]): Map<string, EchoRoll> {
 		const subs = statPropLines(echo.subProps);
 		const main = mainStatForEcho(echo);
 		let best: EchoRoll | null = null;
+		const options: EchoRoll[] = [];
 		for (const character of characters) {
 			if (!hasWantedMainStat(character, main)) continue;
 			const rating = calculateRating(character, subs, main);
+			const roll = { rating, character };
+			if (rating > 0) options.push(roll);
 			if (best === null || rating > best.rating) {
-				best = { rating, character };
+				best = roll;
 			}
 		}
-		if (best) map.set(echoKey(echo), best);
+		if (best) {
+			options.sort((a, b) => b.rating - a.rating);
+			map.set(echoKey(echo), { ...best, options });
+		}
 	}
 	return map;
 }

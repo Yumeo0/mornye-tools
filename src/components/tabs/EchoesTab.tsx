@@ -25,6 +25,7 @@ import {
 import {
 	addManualEcho,
 	type Echo,
+	echoCount,
 	refreshAccount,
 	removeManualEcho,
 	setEquippedOverride,
@@ -271,8 +272,8 @@ export function EchoesTab() {
 							setSortBy(key);
 							setSortAsc(asc);
 						}}
-						resultCount={filteredEchoes.length}
-						totalCount={echoes.length}
+						resultCount={echoCount(filteredEchoes)}
+						totalCount={echoCount(echoes)}
 						characterOptions={characterOptions}
 						onAddEcho={() => setAddOpen(true)}
 					/>

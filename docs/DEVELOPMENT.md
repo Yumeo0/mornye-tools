@@ -40,11 +40,32 @@ cargo test -p mornye-game-client --locked
 Keep the dev-profile overflow-check override for `kcp`; its passive transport
 mirror can overflow timestamp arithmetic.
 
+Development builds use line-level debug symbols (`debug = 1`) to retain source
+locations and backtraces while reducing linker memory use and PDB generation.
+Windows x64 builds use Rust's bundled `rust-lld` linker; no separate LLVM install
+is needed. A linker or debug-profile change requires a one-time dependency rebuild.
+
+Only one Cargo build can use `src-tauri/target/` at a time. If a restart reports
+`Blocking waiting for file lock on build directory`, let the earlier build finish
+or stop its original dev/test command before starting another one.
+
 ## Releases
 
 ```sh
 bun release patch    # or minor / major; --no-push keeps it local
 ```
+
+Write and commit user-facing notes under `## [Unreleased]` in `CHANGELOG.md`
+before running the release command. Group notes under `### Added`, `### Improved`,
+`### Fixed`, or `### Good to know`, describing what users can do and what changes
+for them. Omit commit prefixes, release housekeeping, and implementation details.
+For example: “Create and save team rotations in the Rotation Builder.”
+
+The release command moves that draft into a dated version section in the same
+commit as the version bump and leaves an empty Unreleased section. Missing notes
+stop the release before any versions change. GitHub releases and updater manifests
+use the version's curated entry; a publish retry also refreshes the GitHub body.
+`RELEASE_NOTES` remains an optional workflow override.
 
 The script updates all four version files, commits, tags and pushes. Do not bump
 versions by hand.
@@ -59,6 +80,13 @@ The updater reads `releases/latest/download/latest.json` from that repository.
 Its public key is in `src-tauri/tauri.conf.json`; the private key is the GitHub
 secret `TAURI_SIGNING_PRIVATE_KEY` (local copy: `~/.tauri/mornye-tools.key`).
 Downloads in the README use stable, versionless installer aliases.
+
+The update banner and Settings → Updates offer a changelog before installing.
+Settings also keeps a changelog button for the installed version. Notes come
+from the update manifest or the matching GitHub release tag and are cached in
+`settings.json` before installation so they remain available offline afterward.
+The dialog renders Markdown headings, lists and emphasis. Bundled entries from
+`CHANGELOG.md` take precedence over older remote or cached text for that version.
 
 ## Architecture
 
@@ -76,6 +104,8 @@ Downloads in the README use stable, versionless installer aliases.
 Rust crates share `src-tauri/Cargo.lock` and `src-tauri/target/`.
 A change rebuilds its crate and dependents; the desktop app still needs relinking.
 For example, an overlay edit keeps account storage, sync and the game client cached.
+The desktop entry crate builds only an `rlib` for its executable; unused mobile
+`staticlib`/`cdylib` outputs would add large archives and extra linking to each rebuild.
 Format only the changed package with `cargo fmt -p <package>`; avoid `--all`,
 which can traverse vendored path dependencies.
 

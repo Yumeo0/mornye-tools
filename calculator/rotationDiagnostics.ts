@@ -108,8 +108,8 @@ export function conditionProblems(
 	return reasons;
 }
 
-/** Upstream exceptions have no source metadata. Link only an unambiguous named press
- * in this visit; repeated names remain unlinked rather than pointing at the wrong block. */
+/** Upstream exceptions have no source metadata. A swap-in check always belongs to
+ * the first matching press in this visit; other failures must name a unique block. */
 export function exceptionNode(
 	message: string,
 	entries: { nodeId: string; action: DiagnosticAction }[],
@@ -146,6 +146,8 @@ export function exceptionNode(
 		.sort((a, b) => a.at - b.at || b.length - a.length);
 	const first = matches[0];
 	if (!first) return;
+	if (/^.+: swaps in [A-Z]+ on .+ — a swap-in opens on /u.test(message))
+		return first.nodeId;
 	const nodes = new Set(
 		matches
 			.filter((m) => m.at === first.at && m.length === first.length)

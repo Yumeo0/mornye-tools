@@ -131,7 +131,7 @@ export function CharacterPickerDialog({
 			>
 				{sorted.length === 0 ? (
 					<p className="py-6 text-center text-sm text-muted-foreground">
-						No characters match the current filters.
+						No Resonators match the current filters.
 					</p>
 				) : (
 					<VirtualGrid
@@ -176,13 +176,13 @@ export function CharacterPickerDialog({
 										{character.name}
 									</span>
 									{character.preview && <PreviewBadge />}
-									<span className="text-[10px] leading-none text-muted-foreground">
+									<span className="text-xs leading-none text-muted-foreground">
 										{account
 											? `Lvl ${account.level} · C${account.chain}`
 											: "not owned"}
 									</span>
 									{inSlot && (
-										<span className="text-[10px] leading-none text-amber-400">
+										<span className="text-xs leading-none text-amber-400">
 											in {inSlot}
 										</span>
 									)}

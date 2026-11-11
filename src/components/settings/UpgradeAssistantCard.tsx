@@ -65,9 +65,8 @@ export function UpgradeAssistantCard() {
 						<Sparkles className="size-4" /> Echo Upgrade Assistant
 					</Label>
 					<p className="text-xs text-muted-foreground">
-						After each upgrade or tuning, checks whether the echo can still
-						reach the rating threshold on any relevant character. If not, it is
-						marked for discard automatically while the overlay is running.
+						While the overlay runs, mark echoes for discard after upgrading or
+						tuning if no relevant Resonator can still reach the target RV.
 					</p>
 				</div>
 
@@ -82,12 +81,13 @@ export function UpgradeAssistantCard() {
 
 				<div className="space-y-2">
 					<div className="flex items-center justify-between">
-						<Label htmlFor="assistant-threshold">Rating threshold</Label>
+						<Label title="RV (Roll Value)">Target RV</Label>
 						<span className="text-sm font-medium tabular-nums">
 							{threshold}%
 						</span>
 					</div>
 					<Slider
+						thumbLabels={["Target RV"]}
 						min={0}
 						max={100}
 						step={5}

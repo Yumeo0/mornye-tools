@@ -18,7 +18,7 @@ export function FilterField({
 	return (
 		<div className={cn("flex min-w-0 flex-col gap-1", className)}>
 			<span
-				className={`text-[10px] leading-none ${active ? "font-semibold text-foreground" : "text-muted-foreground"}`}
+				className={`text-xs leading-none ${active ? "font-semibold text-foreground" : "text-muted-foreground"}`}
 			>
 				{label}
 			</span>

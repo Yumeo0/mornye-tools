@@ -258,7 +258,9 @@ export function RotationFlow({
 											{turnCount} actions
 										</span>
 										{turnErrors > 0 && (
-											<Badge variant="outline">{turnErrors} errors</Badge>
+											<Badge variant="outline">
+												{turnErrors} {turnErrors === 1 ? "error" : "errors"}
+											</Badge>
 										)}
 										<HugeiconsIcon
 											icon={ArrowDown01Icon}
@@ -272,7 +274,7 @@ export function RotationFlow({
 								{folded ? null : end ? (
 									<div className="flex items-center gap-2 py-1 text-muted-foreground">
 										<HugeiconsIcon icon={RepeatIcon} className="size-3.5" />
-										<span className="text-[10px]">
+										<span className="text-xs">
 											↳ ×{node.kind === "loop" ? node.count : 1}
 										</span>
 										<Button
@@ -414,7 +416,7 @@ export function RotationFlow({
 													</div>
 												)}
 												<span
-													className="flex items-center gap-1 text-[10px] tabular-nums text-muted-foreground"
+													className="flex items-center gap-1 text-xs tabular-nums text-muted-foreground"
 													title="Base action time; simulation includes cancels and cooldown waits"
 												>
 													<HugeiconsIcon
@@ -428,7 +430,7 @@ export function RotationFlow({
 												</span>
 											</>
 										)}
-										<span className="w-5 text-right text-[10px] tabular-nums text-muted-foreground">
+										<span className="w-5 text-right text-xs tabular-nums text-muted-foreground">
 											{String(index + 1).padStart(2, "0")}
 										</span>
 									</div>

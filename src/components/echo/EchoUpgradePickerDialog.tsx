@@ -29,7 +29,7 @@ import {
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useResponsiveColumns, VirtualGrid } from "@/components/VirtualGrid";
-import { type Echo, useAccount } from "@/lib/account";
+import { type Echo, echoCount, useAccount } from "@/lib/account";
 import { isUpgradeableEcho } from "@/lib/echoUpgrade";
 import { echoFiltersSchema, echoSortSchema } from "@/lib/filterSchemas";
 import { useFilterState } from "@/lib/persistentState";
@@ -140,8 +140,8 @@ export function EchoUpgradePickerDialog({
 								setSortBy(key);
 								setSortAsc(asc);
 							}}
-							resultCount={filtered.length}
-							totalCount={echoes.length}
+							resultCount={echoCount(filtered)}
+							totalCount={echoCount(echoes)}
 							characterOptions={characterOptions}
 						>
 							<div className="flex flex-col items-start gap-3">

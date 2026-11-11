@@ -100,6 +100,7 @@ function fixture(echoes: Echo[]) {
 			return { marked: true, reason: null };
 		},
 		rating: (_echo: Echo): number | null => 100,
+		successChance: (_echo: Echo, _threshold: number): number | null => 100,
 		stopped: () => stopped,
 		report: (row: UpgradeRow) => {
 			rows.set(row.originalId, row);
@@ -118,6 +119,190 @@ function fixture(echoes: Echo[]) {
 }
 
 describe("automatic echo batches", () => {
+	test("low-chance echoes follow auto-discard without spending, then continue the queue", async () => {
+		for (const autoDiscard of [false, true]) {
+			const f = fixture([{ ...echo(20), funcValue: 1 }, echo(30, 5, 1)]);
+			f.deps.successChance = (item) => (item.incrId === 20 ? 4 : 100);
+			const preview = f.deps.preview;
+			f.deps.preview = async (id, target, protectedIds = [], policy) => {
+				expect(protectedIds.includes(20)).toBe(!autoDiscard);
+				return preview(id, target, protectedIds, policy);
+			};
+			await runEchoUpgradeBatch("eu-123", f.snapshot.echoes, 75, f.deps, {
+				...DEFAULT_UPGRADE_OPTIONS,
+				minSuccessChance: 5,
+				autoDiscard,
+			});
+			expect(f.stages.every(([id]) => id === 30)).toBe(true);
+			expect(f.rows.get(20)).toMatchObject({
+				outcome: autoDiscard ? "discarded" : "low_chance",
+				successChance: 4,
+			});
+			expect(f.rows.get(20)?.message).toContain("Success chance 4%");
+			expect(f.snapshot.echoes[0].funcValue).toBe(autoDiscard ? 2 : 1);
+			expect(f.rows.get(30)?.outcome).toBe("complete");
+			expect(f.discarded).toEqual(autoDiscard ? [20] : []);
+		}
+	});
+
+	test("confirmed low-chance discards can feed a later target and become consumed", async () => {
+		const f = fixture([{ ...echo(20, 5, 1), funcValue: 1 }, echo(30, 10, 2)]);
+		f.deps.successChance = (item) => (item.subProps.length === 1 ? 4 : 100);
+		const preview = f.deps.preview;
+		f.deps.preview = async (id, target, protectedIds = [], policy) => {
+			const plan = await preview(id, target, protectedIds, policy);
+			if (target === 15) {
+				expect(f.rows.get(20)?.outcome).toBe("discarded");
+				expect(protectedIds).not.toContain(20);
+				plan.echo_materials = [
+					{ incr_id: 20, item_id: 60000015, count: 1, exp: 3300 },
+				];
+			}
+			return plan;
+		};
+		const execute = f.deps.execute;
+		f.deps.execute = async (...args) => {
+			const result = await execute(...args);
+			if (result.echo_materials.length)
+				f.snapshot.echoes = f.snapshot.echoes.filter(
+					(item) => item.incrId !== 20,
+				);
+			return result;
+		};
+		await runEchoUpgradeBatch("eu-123", [...f.snapshot.echoes], 75, f.deps, {
+			...DEFAULT_UPGRADE_OPTIONS,
+			minSuccessChance: 5,
+			autoDiscard: true,
+		});
+		expect(f.discarded).toEqual([20]);
+		expect(f.rows.get(20)).toMatchObject({
+			outcome: "consumed",
+			successChance: 4,
+		});
+		expect(f.rows.get(30)?.outcome).toBe("complete");
+	});
+
+	test("low-chance discards preserve equipped echoes and unsplit stacks", async () => {
+		const f = fixture([
+			{ ...echo(20), funcValue: 1 },
+			{ ...echo(30), equippedBy: 1, funcValue: 1 },
+			{ ...echo(40), stackCount: 3, funcValue: 1 },
+		]);
+		f.deps.successChance = () => 4;
+		await runEchoUpgradeBatch("eu-123", [...f.snapshot.echoes], 75, f.deps, {
+			...DEFAULT_UPGRADE_OPTIONS,
+			minSuccessChance: 5,
+			autoDiscard: true,
+		});
+		expect(f.discarded).toEqual([20]);
+		expect(f.rows.get(30)?.outcome).toBe("low_chance");
+		expect(f.rows.get(40)?.outcome).toBe("low_chance");
+		expect(f.snapshot.echoes[1].funcValue).toBe(1);
+		expect(f.snapshot.echoes[2].funcValue).toBe(1);
+	});
+
+	test("failed low-chance discard stops the batch without retrying or upgrading another echo", async () => {
+		const f = fixture([echo(20), echo(30)]);
+		f.deps.successChance = () => 4;
+		let calls = 0;
+		f.deps.discard = async () => {
+			calls++;
+			throw new Error("Discard response lost");
+		};
+		await expect(
+			runEchoUpgradeBatch("eu-123", f.snapshot.echoes, 75, f.deps, {
+				...DEFAULT_UPGRADE_OPTIONS,
+				minSuccessChance: 5,
+				autoDiscard: true,
+			}),
+		).rejects.toThrow("Discard response lost");
+		expect(calls).toBe(1);
+		expect(f.stages).toEqual([]);
+		expect(f.rows.get(20)?.outcome).toBe("error");
+		expect(f.rows.has(30)).toBe(false);
+	});
+
+	test("rechecks chance after every new substat, including already unlocked slots", async () => {
+		for (const level of [0, 25]) {
+			const f = fixture([echo(20, level)]);
+			f.deps.successChance = (item) => (item.subProps.length < 2 ? 20 : 2);
+			await runEchoUpgradeBatch("eu-123", f.snapshot.echoes, 75, f.deps, {
+				...DEFAULT_UPGRADE_OPTIONS,
+				minSuccessChance: 10,
+			});
+			expect(f.stages).toEqual(
+				level === 0
+					? [
+							[20, 5],
+							[20, 10],
+						]
+					: [
+							[20, 25],
+							[20, 25],
+						],
+			);
+			expect(f.rows.get(20)).toMatchObject({
+				outcome: "low_chance",
+				successChance: 2,
+			});
+		}
+	});
+
+	test("disabling the cutoff avoids probability work and a chance equal to the cutoff continues", async () => {
+		for (const minimum of [0, 10]) {
+			const f = fixture([echo(20)]);
+			let calls = 0;
+			f.deps.successChance = () => {
+				calls++;
+				return 10 - Number.EPSILON;
+			};
+			await runEchoUpgradeBatch("eu-123", f.snapshot.echoes, 75, f.deps, {
+				...DEFAULT_UPGRADE_OPTIONS,
+				minSuccessChance: minimum,
+			});
+			expect(f.rows.get(20)?.outcome).toBe("complete");
+			expect(calls === 0).toBe(minimum === 0);
+		}
+	});
+
+	test("rechecks changed substat values after preview before executing", async () => {
+		const f = fixture([echo(20, 5, 1)]);
+		f.deps.successChance = (item) => (item.subProps[0].raw === 630 ? 20 : 1);
+		const preview = f.deps.preview;
+		f.deps.preview = async (...args) => {
+			const plan = await preview(...args);
+			f.snapshot.echoes[0].subProps[0].raw = 690;
+			return plan;
+		};
+		await runEchoUpgradeBatch("eu-123", f.snapshot.echoes, 75, f.deps, {
+			...DEFAULT_UPGRADE_OPTIONS,
+			minSuccessChance: 10,
+		});
+		expect(f.stages).toEqual([]);
+		expect(f.rows.get(20)?.outcome).toBe("low_chance");
+	});
+
+	test("unknown probability data and invalid cutoffs cannot start spending", async () => {
+		const f = fixture([echo(20)]);
+		f.deps.successChance = () => null;
+		await runEchoUpgradeBatch("eu-123", f.snapshot.echoes, 75, f.deps, {
+			...DEFAULT_UPGRADE_OPTIONS,
+			minSuccessChance: 10,
+			autoDiscard: true,
+		});
+		expect(f.stages).toEqual([]);
+		expect(f.discarded).toEqual([]);
+		expect(f.rows.get(20)?.outcome).toBe("skipped");
+		for (const minimum of [-1, 101, NaN, Infinity]) {
+			await expect(
+				runEchoUpgradeBatch("eu-123", f.snapshot.echoes, 75, f.deps, {
+					...DEFAULT_UPGRADE_OPTIONS,
+					minSuccessChance: minimum,
+				}),
+			).rejects.toThrow("minimum success chance");
+		}
+	});
+
 	test("a Havoc Song of Feathered Trace piece cannot pass the threshold using Suisui's substats", async () => {
 		const f = fixture([
 			{
@@ -272,6 +457,7 @@ describe("automatic echo batches", () => {
 			await runEchoUpgradeBatch("eu-123", [stack, stack], 75, f.deps, {
 				...DEFAULT_UPGRADE_OPTIONS,
 				autoDiscard: true,
+				minSuccessChance: 0,
 			});
 			expect(f.stages).toEqual([
 				[20, 5],
@@ -318,6 +504,7 @@ describe("automatic echo batches", () => {
 		const options = {
 			materials: { discard_echoes: false, exp_material_ids: [36000002] },
 			autoDiscard: false,
+			minSuccessChance: 0,
 		};
 		await runEchoUpgradeBatch("eu-123", f.snapshot.echoes, 75, f.deps, options);
 		expect(seen).toHaveLength(10);
@@ -343,6 +530,7 @@ describe("automatic echo batches", () => {
 		await runEchoUpgradeBatch("eu-123", [...f.snapshot.echoes], 75, f.deps, {
 			...DEFAULT_UPGRADE_OPTIONS,
 			autoDiscard: true,
+			minSuccessChance: 0,
 		});
 		expect(f.discarded).toEqual([21]);
 		expect(f.rows.get(20)?.outcome).toBe("discarded");
@@ -362,6 +550,7 @@ describe("automatic echo batches", () => {
 		await runEchoUpgradeBatch("eu-123", f.snapshot.echoes, 75, f.deps, {
 			...DEFAULT_UPGRADE_OPTIONS,
 			autoDiscard: true,
+			minSuccessChance: 0,
 		});
 		expect(f.discarded).toEqual([20]);
 		expect(f.rows.get(20)?.echo.funcValue).toBe(2);
@@ -408,6 +597,7 @@ describe("automatic echo batches", () => {
 			await runEchoUpgradeBatch("eu-123", [...f.snapshot.echoes], 75, f.deps, {
 				...DEFAULT_UPGRADE_OPTIONS,
 				autoDiscard: true,
+				minSuccessChance: 0,
 			});
 			expect(f.discarded).toEqual([20]);
 			expect(protectedSets[0]).toEqual([20, 30, 40]);
@@ -461,6 +651,7 @@ describe("automatic echo batches", () => {
 			runEchoUpgradeBatch("eu-123", [...f.snapshot.echoes], 75, f.deps, {
 				...DEFAULT_UPGRADE_OPTIONS,
 				autoDiscard: true,
+				minSuccessChance: 0,
 			}),
 		).rejects.toThrow("lost response");
 		expect(f.rows.get(20)?.outcome).toBe("discarded");
@@ -475,6 +666,7 @@ describe("automatic echo batches", () => {
 			runEchoUpgradeBatch("eu-123", f.snapshot.echoes, 75, f.deps, {
 				...DEFAULT_UPGRADE_OPTIONS,
 				autoDiscard: true,
+				minSuccessChance: 0,
 			}),
 		).rejects.toThrow("lost response");
 		expect(f.discarded).toEqual([]);
@@ -491,6 +683,7 @@ describe("automatic echo batches", () => {
 		await runEchoUpgradeBatch("eu-123", f.snapshot.echoes, 75, f.deps, {
 			...DEFAULT_UPGRADE_OPTIONS,
 			autoDiscard: true,
+			minSuccessChance: 0,
 		});
 		expect(f.discarded).toEqual([20]);
 		expect(f.rows.get(20)?.outcome).toBe("discarded");
@@ -508,6 +701,7 @@ describe("automatic echo batches", () => {
 			runEchoUpgradeBatch("eu-123", f.snapshot.echoes, 75, f.deps, {
 				...DEFAULT_UPGRADE_OPTIONS,
 				autoDiscard: true,
+				minSuccessChance: 0,
 			}),
 		).rejects.toThrow("not confirmed");
 		expect(calls).toBe(1);

@@ -99,7 +99,7 @@ export const ECHO_SORT_OPTIONS: {
 	desc: boolean;
 }[] = [
 	{ value: "none", label: "Newest", desc: true },
-	{ value: "rollValue", label: "Roll Value", desc: true },
+	{ value: "rollValue", label: "RV", desc: true },
 	{ value: "level", label: "Lvl", desc: true },
 	{ value: "cost", label: "Cost", desc: true },
 	{ value: "set", label: "Set", desc: false },

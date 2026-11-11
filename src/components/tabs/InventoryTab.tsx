@@ -204,7 +204,7 @@ export function InventoryTab() {
 									<span className="min-w-0 flex-1 truncate text-left">
 										{entry.label}
 									</span>
-									<span className="text-[10px] text-muted-foreground tabular-nums">
+									<span className="text-xs text-muted-foreground tabular-nums">
 										{entry.count.toLocaleString()}
 									</span>
 								</Button>
@@ -249,7 +249,7 @@ export function InventoryTab() {
 								<img src={item.icon} alt="" className="size-6 object-contain" />
 							)}
 							<span className="sr-only">{item.name}: </span>
-							<span className="text-xs tabular-nums">
+							<span className="text-sm tabular-nums">
 								{snapshot.inventory ? item.count.toLocaleString() : "—"}
 							</span>
 						</li>

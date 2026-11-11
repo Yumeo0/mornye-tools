@@ -44,10 +44,7 @@ export function FilterSelect({
 			<span
 				id={labelId}
 				data-slot="filter-label"
-				className={cn(
-					"text-[10px] text-muted-foreground",
-					hideLabel && "sr-only",
-				)}
+				className={cn("text-xs text-muted-foreground", hideLabel && "sr-only")}
 			>
 				{label}
 			</span>

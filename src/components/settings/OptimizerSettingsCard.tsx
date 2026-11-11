@@ -29,9 +29,7 @@ export function OptimizerSettingsCard() {
 		<Card>
 			<CardHeader>
 				<CardTitle>Optimizer</CardTitle>
-				<CardDescription>
-					Search preferences are saved and apply to your next run.
-				</CardDescription>
+				<CardDescription>Applies to your next search.</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<FieldGroup className="max-w-xl">

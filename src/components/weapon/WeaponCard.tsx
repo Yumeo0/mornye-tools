@@ -114,7 +114,7 @@ export function WeaponCard({
 						<CardBadge title={`Weapon level ${weapon.level}`}>
 							Lvl {weapon.level}
 						</CardBadge>
-						<CardBadge title="Resonance rank">Rank {weapon.rank}</CardBadge>
+						<CardBadge title="Refinement">Refinement {weapon.rank}</CardBadge>
 					</div>
 				)}
 			</div>

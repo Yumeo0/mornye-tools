@@ -9,6 +9,11 @@
 [env]
 SPECTRUM_PROTO_DIR = { value = "../data/wuwa-protos", relative = true }
 
+# Use Rust's bundled LLVM linker instead of MSVC's memory-heavy debug link.
+# rustc locates rust-lld in its own toolchain; no separate LLVM install is needed.
+[target.x86_64-pc-windows-msvc]
+linker = "rust-lld.exe"
+
 # Grant capture capability after linking, before launching the Linux desktop
 # app. The runner passes unit tests and game-client commands through unchanged.
 [target.'cfg(target_os = "linux")']

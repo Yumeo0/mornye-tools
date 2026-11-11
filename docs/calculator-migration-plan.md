@@ -1,7 +1,7 @@
 # Calculator migration plan
 
 Status: implemented, 2026-11-10. See [implementation and validation](calculator-migration.md)
-for the shipped behavior, measurements, and remaining native WebView check.
+for the shipped behavior, validation, and remaining native WebView check.
 The sections below preserve the design and its acceptance criteria.
 
 Replace `thewuwacalculator` with
@@ -53,12 +53,9 @@ simulation is useful, but upstream placeholder timings still require validation.
 Copying each character's guide rotation is a starting point: the composed team
 must also have valid energy, Concerto, swaps, and buff timing.
 
-The [manual benchmark](calculator-benchmark.md) supports bounded local search.
-On the recorded machine, Riley took about 1 ms per build for one team cycle and
-2.6 ms for four. The current compiled scorer is hundreds of times faster per
-candidate. Retaining its large search space with full simulations is therefore
-not the migration strategy. These are Bun CPU measurements, not WebView latency
-or proof of search quality or damage accuracy.
+Full team simulations require bounded local search rather than retaining the
+old compiled scorer's large candidate space. Search quality and responsiveness
+need separate validation.
 
 ## 1. Establish the compatibility contract
 
@@ -66,7 +63,6 @@ Inventory the current surfaces in `src/lib/calc/`, `useOptimizerTeam`,
 `useOptimizerRun`, and the optimizer components before changing dependencies.
 Record representative own-damage and support runs as fixtures, including input
 UIDs, filters, overrides, baseline, main echo, and result/equipment behavior.
-Keep the existing benchmark fixtures and engine revisions as historical evidence.
 
 Resolve these compatibility requirements before production cutover:
 
@@ -205,8 +201,7 @@ let TypeScript/Vite build the worker. Riley currently has no reusable package
 exports. Avoid importing its website/solver entrypoint or registering upstream
 website worker handlers. Smoke-test this packaging early in a production build.
 
-Promote the benchmark's adapter approach into production, expanding it beyond
-one fixed set and species:
+Use an app-owned adapter that supports multiple sets and species:
 
 - Map character, weapon, echo species, sonata, and stat IDs explicitly.
 - Equip actual main stats and substats, including secondary flat stats, with
@@ -371,10 +366,6 @@ Before deleting the old submodule, remove every non-simulation dependency on it:
   fetching and copying only after checking remaining consumers.
 - Update postinstall, `.gitmodules`, release checkout steps, source/formatter
   exclusions, setup docs, and `AGENTS.md`. Treat the new upstream tree as vendored.
-- Preserve historical benchmark inputs/results in a tracked fixture or report.
-  Convert the runnable benchmark to Riley regression/performance scenarios with
-  those same inputs. Keep legacy comparison available through a documented pinned
-  historical checkout, not a production dependency on the old engine.
 
 **Done when:** a fresh checkout can initialize submodules, install, regenerate
 required assets/data, and build without the old tree, old `node_modules` output,
@@ -426,10 +417,6 @@ Required checks:
   support-sensitive case, with the same slot-one constraint in the oracle.
   Require the chosen production search to find the oracle optimum on these
   curated fixtures; document that this does not guarantee a large-space optimum.
-- Rerun the shared 240-echo benchmark with one and four cycles, then broaden it
-  to support scoring, multiple sets, different rotation profiles with their own
-  fixed main-echo types, and larger inventories. Record
-  candidate counts, search quality, startup, and steady-state latency separately.
 - Measure the actual worker in browser and Tauri WebView. Confirm progress stays
   responsive and cancellation is acknowledged within 250 ms on the recorded test
   machine, using termination if necessary. Set search budgets from these runs;

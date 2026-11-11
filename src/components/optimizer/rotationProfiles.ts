@@ -1,4 +1,5 @@
 import type { AccountSnapshot } from "@/lib/account";
+import type { RotationDamage } from "@/lib/calc/rotationDamage";
 import { aliasRoleId } from "@/lib/calc/translate";
 import type { TeamProfile } from "@/lib/calc/types";
 
@@ -7,20 +8,21 @@ export interface RotationFilters {
 	characterId: string;
 	role: "any" | "dps" | "support";
 	ownership: "any" | "owned";
-	compatibility: "any" | "supported";
+	sort: "name" | "damage-desc" | "damage-asc";
 }
 export const EMPTY_ROTATION_FILTERS: RotationFilters = {
 	search: "",
 	characterId: "any",
 	role: "any",
 	ownership: "any",
-	compatibility: "any",
+	sort: "name",
 };
 
 export function filterRotationProfiles(
 	profiles: TeamProfile[],
 	snapshot: AccountSnapshot,
 	filters: RotationFilters,
+	damage: ReadonlyMap<string, RotationDamage> = new Map(),
 ) {
 	const owned = new Set(
 		snapshot.resonators.map((r) => Number(aliasRoleId(r.id))),
@@ -30,29 +32,43 @@ export function filterRotationProfiles(
 		.toLocaleLowerCase()
 		.split(/\s+/)
 		.filter(Boolean);
-	return profiles
-		.filter((p) => {
-			if (filters.compatibility === "supported" && p.errors.length)
-				return false;
-			if (
-				filters.ownership === "owned" &&
-				!p.members.every((m) => owned.has(m.characterId))
+	const matching = profiles.filter((p) => {
+		if (
+			filters.ownership === "owned" &&
+			!p.members.every((m) => owned.has(m.characterId))
+		)
+			return false;
+		if (
+			filters.characterId !== "any" &&
+			!p.members.some(
+				(m) =>
+					String(m.characterId) === filters.characterId &&
+					(filters.role === "any" || m.mainDps === (filters.role === "dps")),
 			)
-				return false;
-			if (
-				filters.characterId !== "any" &&
-				!p.members.some(
-					(m) =>
-						String(m.characterId) === filters.characterId &&
-						(filters.role === "any" || m.mainDps === (filters.role === "dps")),
-				)
-			)
-				return false;
-			const text =
-				`${p.label} ${p.members.map((m) => `${m.name} ${m.variant} ${m.mainEcho.name}`).join(" ")}`.toLocaleLowerCase();
-			return terms.every((term) => text.includes(term));
-		})
-		.toSorted(
-			(a, b) => a.label.localeCompare(b.label) || a.id.localeCompare(b.id),
-		);
+		)
+			return false;
+		const text =
+			`${p.label} ${p.members.map((m) => `${m.name} ${m.variant} ${m.mainEcho.name}`).join(" ")}`.toLocaleLowerCase();
+		return terms.every((term) => text.includes(term));
+	});
+	return sortRotationProfiles(matching, filters.sort, damage);
+}
+
+export function sortRotationProfiles(
+	profiles: TeamProfile[],
+	sort: RotationFilters["sort"],
+	damage: ReadonlyMap<string, RotationDamage>,
+) {
+	return profiles.toSorted((a, b) => {
+		if (sort !== "name") {
+			const left = damage.get(a.id)?.damage;
+			const right = damage.get(b.id)?.damage;
+			// Pending and invalid scores stay last in either direction.
+			if (left == null && right != null) return 1;
+			if (left != null && right == null) return -1;
+			if (left != null && right != null && left !== right)
+				return sort === "damage-desc" ? right - left : left - right;
+		}
+		return a.label.localeCompare(b.label) || a.id.localeCompare(b.id);
+	});
 }

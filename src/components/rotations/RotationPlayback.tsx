@@ -2,6 +2,7 @@ import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useState } from "react";
 import { OptimizerInfo } from "@/components/optimizer/OptimizerInfo";
+import { PreviewBadge } from "@/components/PreviewBadge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -133,6 +134,7 @@ export function RotationPlayback({
 									<div className="z-10 min-w-0 flex-1">
 										<div className="flex items-center gap-1.5 text-[9px] text-muted-foreground">
 											<span>{label.type}</span>
+											{character?.preview && <PreviewBadge />}
 											{entry.automatic && (
 												<Badge
 													variant="outline"

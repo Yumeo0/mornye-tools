@@ -13,7 +13,7 @@ export function useMapCatalog(active: boolean) {
 			.then((response) => {
 				if (!response.ok)
 					throw new Error(
-						"Map data could not be loaded. Run bun run map:compile after extracting the game assets.",
+						"Map data could not be loaded. Run bun scripts/compile-map-data.ts && bun scripts/copy_assets.ts after extracting the game assets.",
 					);
 				return response.json() as Promise<MapCatalog>;
 			})

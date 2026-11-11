@@ -1,3 +1,4 @@
+import type { RotationDamage } from "./rotationDamage";
 import SimulationWorker from "./simulation.worker?worker";
 import type {
 	CalculatorCatalog,
@@ -6,6 +7,7 @@ import type {
 	SearchRequest,
 	SearchUpdate,
 	SimulationResult,
+	TeamProfile,
 } from "./types";
 
 let catalog: CalculatorCatalog | null = null;
@@ -82,5 +84,28 @@ export function evaluateScenario(
 		onResult(null, event.message);
 	};
 	worker.postMessage({ kind: "evaluate", input, targetId });
+	return () => worker.terminate();
+}
+
+/** A separate, cancellable worker keeps reference scoring off the UI thread. */
+export function scoreRotationProfiles(
+	profiles: TeamProfile[],
+	onScore: (id: string, score: RotationDamage) => void,
+	onError: (message: string) => void,
+): () => void {
+	const worker = new SimulationWorker();
+	worker.onmessage = (event) => {
+		if (event.data.kind === "rotation-damage")
+			onScore(event.data.id, event.data.value);
+		else {
+			worker.terminate();
+			if (event.data.kind === "error") onError(event.data.message);
+		}
+	};
+	worker.onerror = (event) => {
+		worker.terminate();
+		onError(event.message);
+	};
+	worker.postMessage({ kind: "rotation-damage", profiles });
 	return () => worker.terminate();
 }

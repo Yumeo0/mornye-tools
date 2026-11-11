@@ -149,6 +149,13 @@ export function useOptimizerRun(
 		setEvaluation(null);
 		setEvaluationError(null);
 		if (!scenario || team.errors.length) return;
+		// There is no equipped baseline for an unowned target (or an unequipped
+		// owned target). Candidate simulations supply their stats and ER after search.
+		if (
+			!scenario.members.find((m) => m.characterId === team.targetId)?.echoes
+				.length
+		)
+			return;
 		let live = true;
 		const stop = evaluateScenario(
 			scenario,

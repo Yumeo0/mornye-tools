@@ -22,7 +22,9 @@ import { compileInventoryData } from "./compile_inventory_data.ts";
 import { compileProfileData } from "./compile_profile_data.ts";
 import { compileWeaponData } from "./compile_weapon_data.ts";
 import { compileMapData } from "./compile-map-data.ts";
+import { compilePreviewData } from "./compile-preview-data.ts";
 import { compileProgressionData } from "./compile-progression-data.ts";
+import { compileRotationDamage } from "./compile-rotation-damage.ts";
 import { copyAssets } from "./copy_assets.ts";
 import { updateVersionField } from "./version_manifest.ts";
 
@@ -116,6 +118,14 @@ async function main(): Promise<void> {
 	await compileMapData();
 	await compileProgressionData();
 	await compileProfileData();
+	await compileRotationDamage();
+	try {
+		await compilePreviewData();
+	} catch (error) {
+		console.warn(
+			`warning: preview data not updated; keeping bundled previews: ${error}`,
+		);
+	}
 
 	try {
 		console.log("Copying Assets to Public Folder...");

@@ -11,10 +11,10 @@ export function optimizerEquipError(
 	roleId: number,
 	uids: string[],
 ): string | null {
-	if (!canUpgradeEcho(snapshot, status))
-		return "Connect to this profile's game account in Settings to equip echoes.";
 	if (!snapshot.resonators.some((role) => role.id === roleId))
 		return "This resonator is not owned by the selected profile.";
+	if (!canUpgradeEcho(snapshot, status))
+		return "Connect to this profile's game account in Settings to equip echoes.";
 	if (uids.length !== 5 || new Set(uids).size !== 5)
 		return "Choose a complete five-echo result.";
 	const echoes = new Map(

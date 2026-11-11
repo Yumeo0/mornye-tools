@@ -115,7 +115,7 @@ test("rejects malformed stored builds and restores rotation filters", () => {
 		characterId: "1406",
 		role: "dps",
 		ownership: "owned",
-		compatibility: "supported",
+		sort: "damage-desc",
 	};
 	expect(
 		restoreFilterState(
@@ -124,4 +124,12 @@ test("rejects malformed stored builds and restores rotation filters", () => {
 			rotationFiltersSchema,
 		),
 	).toEqual(filters);
+	const { sort: _sort, ...legacy } = filters;
+	expect(
+		restoreFilterState(
+			{ ...legacy, compatibility: "supported" },
+			EMPTY_ROTATION_FILTERS,
+			rotationFiltersSchema,
+		),
+	).toEqual({ ...legacy, sort: "name" });
 });

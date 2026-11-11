@@ -158,6 +158,7 @@ export function RotationTeamDialog({
 														label: c.name,
 														icon: charactersById.get(c.characterId)
 															?.icon_head_256,
+														preview: charactersById.get(c.characterId)?.preview,
 													})),
 											]}
 											onChange={(id) => {

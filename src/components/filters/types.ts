@@ -3,6 +3,7 @@ export interface FilterOption {
 	value: string;
 	label: string;
 	icon?: string;
+	preview?: boolean;
 }
 
 /** Toggle `value` in an array: removed when present, appended otherwise. */

@@ -1,24 +1,29 @@
+import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { useMemo, useState } from "react";
 import { ChainNodes } from "@/components/characters/ChainNodes";
 import { EchoSetsCard } from "@/components/characters/EchoSetsCard";
 import { SubstatsCard } from "@/components/characters/SubstatsCard";
 import { EchoCard } from "@/components/echo/EchoCard";
+import { PreviewBadge } from "@/components/PreviewBadge";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
 	Select,
 	SelectContent,
+	SelectGroup,
 	SelectItem,
 	SelectTrigger,
 } from "@/components/ui/select";
+import { weaponIconUrl } from "@/components/weapon/WeaponCard";
 import { type Echo, statPropLines } from "@/lib/account";
 import {
 	buildByCharacterId,
 	type CardAccount,
 	type CharacterEntry,
 } from "@/lib/characters";
-import { rarityTextClass } from "@/lib/rarity";
+import { qualityGradient, rarityTextClass } from "@/lib/rarity";
 import {
 	calculateRating,
 	hasWantedMainStat,
@@ -78,120 +83,209 @@ export function CharacterDetail({
 				);
 
 	return (
-		<div className="space-y-6 p-4">
-			<div className="flex items-center gap-4">
-				<Button
-					variant="ghost"
-					size="sm"
-					onClick={onBack}
-					className="flex items-center gap-2"
+		<div className="@container/character-detail flex flex-col gap-5 px-4 pt-1 pb-4 sm:px-6 sm:pb-6">
+			<section
+				aria-label={character.name}
+				className="relative isolate grid min-w-0 @min-[640px]/character-detail:grid-cols-[minmax(0,.85fr)_minmax(0,1.15fr)]"
+			>
+				<nav
+					className="absolute inset-x-3 top-3 z-20 flex items-center justify-between gap-3"
+					aria-label="Character navigation"
 				>
-					← Back to Characters
-				</Button>
-			</div>
-
-			<div className="flex items-center gap-4">
-				<img
-					src={character.image}
-					alt={character.name}
-					className="w-16 h-16 object-contain"
-				/>
-				<div className="flex-1">
-					<div className="flex flex-wrap items-center gap-2">
-						{character.elementIcon && (
-							<img
-								src={character.elementIcon}
-								alt={character.element}
-								title={character.element}
-								className="size-6 object-contain"
-							/>
-						)}
-						{character.weaponTypeIcon && (
-							<img
-								src={character.weaponTypeIcon}
-								alt={character.weaponType}
-								title={character.weaponType}
-								className="size-5 object-contain opacity-70"
-							/>
-						)}
-						<h2 className="text-2xl font-bold">{character.name}</h2>
-						{character.rarity && (
-							<span
-								className={`text-sm ${rarityTextClass(character.rarity)}`}
-								title={`${character.rarity}★`}
-							>
-								{"★".repeat(character.rarity)}
-							</span>
-						)}
-					</div>
-					<div className="mt-1.5 flex items-center gap-3 text-sm">
-						{account ? (
-							<>
-								<span className="font-medium">Lvl {account.level}</span>
-								<ChainNodes
-									chain={account.chain}
-									icons={character.chainIcons ?? []}
-								/>
-								<span className="text-muted-foreground">
-									{account.echoCount}/5 echoes
-								</span>
-								{account.weapon && (
-									<span className="truncate text-muted-foreground">
-										{account.weapon.name}
-									</span>
-								)}
-							</>
-						) : (
-							<p className="text-muted-foreground">
-								Build guides from tethys.gg
-							</p>
-						)}
-					</div>
+					<Button variant="secondary" size="sm" onClick={onBack}>
+						<HugeiconsIcon icon={ArrowLeft01Icon} data-icon="inline-start" />
+						Characters
+					</Button>
+					{character.preview ? (
+						<PreviewBadge />
+					) : (
+						!account && <Badge variant="outline">Not owned</Badge>
+					)}
+				</nav>
+				{/* The frame begins below the portrait's head; the artwork breaks its top edge. */}
+				<div
+					aria-hidden
+					className="pointer-events-none absolute inset-x-0 top-4 bottom-0 overflow-hidden border bg-card"
+				>
+					<img
+						src={qualityGradient(character.rarity)}
+						alt=""
+						className="absolute inset-0 size-full object-cover opacity-15"
+					/>
+					{character.elementIcon && (
+						<img
+							src={character.elementIcon}
+							alt=""
+							className="absolute -right-8 -bottom-16 size-80 -rotate-12 object-contain opacity-[0.04]"
+						/>
+					)}
+					<div className="absolute top-0 bottom-0 left-8 w-px bg-border" />
+					<div className="absolute top-0 bottom-0 left-10 w-px bg-border/40" />
 				</div>
-				{roleNames.length > 0 && (
-					<Select value={role} onValueChange={setSelectedRole}>
-						<SelectTrigger className="w-56">{role}</SelectTrigger>
-						<SelectContent>
-							{roleNames.map((roleName) => (
-								<SelectItem key={roleName} value={roleName}>
-									{roleName}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-				)}
-			</div>
 
-			{echoes.length > 0 && (
-				<Card>
-					<CardContent className="p-4 space-y-3">
-						<Label className="text-base font-medium flex items-center gap-2">
+				<div className="relative min-h-56 self-stretch overflow-hidden @min-[640px]/character-detail:min-h-72">
+					{/* Keep the artwork and chain arch in the same portrait-sized coordinate space. */}
+					<div className="absolute inset-y-0 left-1/2 w-[305px] -translate-x-1/2 @min-[640px]/character-detail:w-[377px]">
+						{character.image && (
 							<img
-								src="/icons/inventory/echoes.webp"
-								alt=""
-								className="size-5"
-							/>{" "}
-							Equipped Echoes
-						</Label>
-						<div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
-							{echoes.map((echo) => (
-								<EchoCard
-									key={echo.incrId}
-									echo={echo}
-									rollValue={echoRollValue(echo)}
-									rollSubstatTiers={ratingCharacter?.stats.subs}
-									rollErBreakpoint={ratingCharacter?.stats.erBreakpoint}
-								/>
-							))}
-						</div>
-					</CardContent>
-				</Card>
-			)}
+								src={character.image}
+								alt={character.name}
+								className="pointer-events-none absolute -top-20 left-0 h-[420px] w-full max-w-none object-contain drop-shadow-2xl @min-[640px]/character-detail:h-[520px]"
+							/>
+						)}
+						{account && (
+							<ChainNodes
+								chain={account.chain}
+								icons={character.chainIcons ?? []}
+								layout="arc"
+								className="absolute top-[calc(50%)] left-[85%] h-44 w-20 -translate-y-1/2 @min-[640px]/character-detail:h-56"
+							/>
+						)}
+					</div>
+					<div className="pointer-events-none absolute inset-x-0 bottom-0 h-4 bg-linear-to-t from-card to-transparent" />
+				</div>
 
-			{guide && (
-				<div className="space-y-4">
-					<EchoSetsCard guide={guide} />
-					<SubstatsCard guide={guide} fallbackPriority={firstRolePriority} />
+				<div className="relative flex min-w-0 flex-col justify-center gap-4 px-6 pt-2 pb-8 @min-[640px]/character-detail:pt-12 @min-[640px]/character-detail:pr-8 @min-[640px]/character-detail:pb-6">
+					<div className="flex flex-col gap-2">
+						<div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+							{character.elementIcon && (
+								<span className="flex items-center gap-1.5">
+									<img
+										src={character.elementIcon}
+										alt=""
+										className="size-5 object-contain"
+									/>
+									{character.element}
+								</span>
+							)}
+							{character.weaponTypeIcon && (
+								<span className="flex items-center gap-1.5">
+									<img
+										src={character.weaponTypeIcon}
+										alt=""
+										className="size-4 object-contain"
+									/>
+									{character.weaponType}
+								</span>
+							)}
+							{character.rarity && (
+								<span
+									role="img"
+									className={rarityTextClass(character.rarity)}
+									aria-label={`${character.rarity} stars`}
+								>
+									{"★".repeat(character.rarity)}
+								</span>
+							)}
+						</div>
+						<h2 className="text-3xl leading-tight font-bold tracking-tight @min-[800px]/character-detail:text-5xl">
+							{character.name}
+						</h2>
+					</div>
+
+					{account && (
+						<div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+							<div
+								className="flex items-baseline gap-1.5"
+								title="Character level"
+							>
+								<span className="text-[10px] text-muted-foreground">LV</span>
+								<span className="text-2xl leading-none font-semibold tabular-nums">
+									{account.level}
+								</span>
+							</div>
+						</div>
+					)}
+
+					{account?.weapon && (
+						<div className="relative mt-2 ml-4 flex min-h-20 items-center border bg-background/80 py-3 pr-4 pl-24">
+							<img
+								src={weaponIconUrl(account.weapon.itemId)}
+								alt={account.weapon.name ?? "Equipped weapon"}
+								className="absolute -top-5 -left-6 size-28 object-contain drop-shadow-xl"
+							/>
+							<div className="flex min-w-0 flex-col gap-1.5">
+								<p className="text-xs font-medium [overflow-wrap:anywhere]">
+									{account.weapon.name ?? "Equipped weapon"}
+								</p>
+								<div className="flex gap-2">
+									<Badge variant="outline">Lv {account.weapon.level}</Badge>
+									<Badge variant="outline">R{account.weapon.rank}</Badge>
+								</div>
+							</div>
+						</div>
+					)}
+				</div>
+			</section>
+
+			{(guide || echoes.length > 0) && (
+				<div className="relative -mt-9 mx-3 flex flex-col gap-5 @min-[640px]/character-detail:mx-5">
+					{echoes.length > 0 && (
+						<Card>
+							<CardHeader>
+								<CardTitle>
+									<span className="flex items-center gap-2">
+										<img
+											src="/icons/inventory/echoes.webp"
+											alt=""
+											className="size-5 object-contain"
+										/>
+										Equipped echoes
+										<Badge variant="outline">{echoes.length}/5</Badge>
+									</span>
+								</CardTitle>
+							</CardHeader>
+							<CardContent>
+								<div className="grid gap-2 @min-[480px]/character-detail:grid-cols-2 @min-[800px]/character-detail:grid-cols-3 @min-[1200px]/character-detail:grid-cols-5">
+									{echoes.map((echo) => (
+										<EchoCard
+											key={echo.incrId}
+											echo={echo}
+											rollValue={echoRollValue(echo)}
+											rollSubstatTiers={ratingCharacter?.stats.subs}
+											rollErBreakpoint={ratingCharacter?.stats.erBreakpoint}
+										/>
+									))}
+								</div>
+							</CardContent>
+						</Card>
+					)}
+
+					{guide && (
+						<section
+							aria-label="Build recommendations"
+							className="flex flex-col gap-3"
+						>
+							<div className="flex flex-wrap items-center justify-between gap-3 border bg-background px-4 py-2.5">
+								<h3 className="text-xs font-semibold">Build</h3>
+								<Select value={role} onValueChange={setSelectedRole}>
+									<SelectTrigger
+										size="sm"
+										aria-label="Build role"
+										className="w-auto min-w-36 max-w-full"
+									>
+										{role}
+									</SelectTrigger>
+									<SelectContent>
+										<SelectGroup>
+											{roleNames.map((roleName) => (
+												<SelectItem key={roleName} value={roleName}>
+													{roleName}
+												</SelectItem>
+											))}
+										</SelectGroup>
+									</SelectContent>
+								</Select>
+							</div>
+							<div className="grid items-start gap-3 @min-[1000px]/character-detail:grid-cols-[minmax(0,1fr)_minmax(0,.65fr)]">
+								<EchoSetsCard guide={guide} />
+								<SubstatsCard
+									guide={guide}
+									fallbackPriority={firstRolePriority}
+								/>
+							</div>
+						</section>
+					)}
 				</div>
 			)}
 		</div>

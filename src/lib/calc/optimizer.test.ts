@@ -3,7 +3,7 @@ import { EMPTY_OPTIMIZER_FILTERS } from "@/components/optimizer/optimizerOptions
 import echoData from "@/configs/echo_data.json";
 import { type Echo, EMPTY_ACCOUNT } from "@/lib/account";
 import { makeFixture } from "../../../calculator/fixture";
-import { selectCandidates, teamAvailability } from "./optimizer";
+import { selectCandidates } from "./optimizer";
 import { getCatalog } from "./riley/engine.generated.js";
 
 test("pool truncation retains required main copies and respects filters and teammate reservations", () => {
@@ -61,11 +61,4 @@ test("pool truncation retains required main copies and respects filters and team
 		{ ...EMPTY_OPTIMIZER_FILTERS, mainStats: ["energyRegen"] },
 	);
 	expect(filtered.mainCount).toBe(0);
-});
-
-test("catalog keeps unowned teams visible and reports the unavailable members", () => {
-	const { profile } = makeFixture(getCatalog());
-	expect(teamAvailability(EMPTY_ACCOUNT, profile)).toEqual(
-		profile.members.map((m) => `${m.name} is not owned`),
-	);
 });

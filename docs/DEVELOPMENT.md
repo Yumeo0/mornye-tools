@@ -144,7 +144,6 @@ Do not edit vendored/generated code or submodule contents:
 | --- | --- |
 | Update game-data/assets checkouts and rebuild configs/assets | `bun run update:data` |
 | Rebuild from the currently pinned checkouts | `bun scripts/compile_all_data.ts` |
-| Rebuild map / quest and achievement data | `bun run map:compile` / `bun run progression:compile` |
 | Republish referenced images after changing asset paths | `bun scripts/copy_assets.ts` |
 | Refresh Tethys builds and team presets | `bun scripts/compile_build_guides.ts` |
 | Refresh community map icons / GHZS matching lookup | `bun run map:icons` / `bun run map:ghzs-mapping` |
@@ -170,7 +169,8 @@ To extract fresh map artwork from an installed game (requires .NET):
 ```powershell
 dotnet run --project data/wuwa-assets/tools/wuwa-extract -- --quiet
 # Custom installation: add --paks 'D:\Wuthering Waves\Client'
-bun run map:compile
+bun scripts/compile-map-data.ts
+bun scripts/copy_assets.ts
 ```
 
 ### Map correctness rules
@@ -190,9 +190,44 @@ See [remaining challenge questions](map-challenge-audit.md) and
 
 ## Calculator
 
+`update:data` also imports calculator-supported characters and weapons missing
+from the released catalogs from [Nanoka](https://ww.nanoka.cc/). Their metadata
+is tracked in `src/configs/preview_data.json`; portraits, sequence icons and
+weapon artwork are bundled in `public/` with the other managed assets. These
+entries carry a `Preview` badge and never create owned inventory. Released
+records take precedence automatically after a game-data update. Use
+`bun scripts/build-calculator.ts && bun scripts/compile-preview-data.ts && bun scripts/copy_assets.ts`
+to refresh only previews and their assets. A Nanoka
+outage during `update:data` retains the last bundled preview catalog.
+
 The pinned `wuwa_calc/` tree is read-only. App-owned integration lives in
 `calculator/engine.ts`; `bun install`, `bun run dev`, and `bun run build` regenerate
 the ignored `src/lib/calc/riley/engine.generated.js` bundle. The worker and UI
-communicate through `src/lib/calc/types.ts`. Run `bun run check:calculator` for
-the isolated upstream-compatible TypeScript check, and `bun run bench:calculators`
-for the deterministic manual benchmark. See [migration details](calculator-migration.md).
+communicate through `src/lib/calc/types.ts`. See
+[migration details](calculator-migration.md).
+
+`bun run update:data` also pre-calculates every pre-made team rotation's optimal
+reference stats and team damage, writing `src/configs/rotation_damage.json`.
+This checked-in snapshot is bundled with the app; opening or sorting the picker
+does not simulate pre-made teams. Invalid rotations retain their diagnostics.
+Data updates reuse this versioned snapshot, including on fresh checkouts, when
+the calculator fingerprint matches. Only missing or incomplete entries are
+calculated; a changed calculator fingerprint invalidates the old scores. Local
+checkpoints also resume interrupted calculations.
+The pinned Lily model omits Dream Perfume generation. Her pre-made reference
+scores are marked `≈` and retain a model warning instead of fabricating resource
+gains. Other failures, custom rotations, and inventory optimization remain
+subject to cast/buff and energy validation. Forte report counters may drain past
+zero during combos; explicit cast requirements determine whether a press is legal.
+Reference builds can replace authored 3-cost mains with real ER mains when the
+normal ER substat tiers cannot sustain the rotation. Passive main-echo choices
+remain valid even when their active cast is absent from the authored rotation.
+To regenerate only this snapshot after calculator changes, use
+`bun scripts/compile-rotation-damage.ts` (several minutes). The production build checks its
+fingerprint and coverage against the freshly bundled calculator.
+
+Custom rotations resolve their optimal stats in an isolated Riley worker before
+scoring. Builder playback and picker damage use the same reference scenario;
+cached custom scores include the calculator fingerprint and the full document,
+so team/action edits invalidate them. Inventory optimization still evaluates
+actual candidate echoes with the chosen chains and weapons.

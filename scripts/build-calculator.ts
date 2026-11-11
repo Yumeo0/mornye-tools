@@ -20,3 +20,17 @@ const result = await Bun.build({
 if (!result.success)
 	throw new AggregateError(result.logs, "Calculator bundle failed");
 console.log("Built pinned wuwa_calc simulation adapter");
+
+// Stable across checkout line endings. Reference-score caches also depend on
+// the app's scoring assumptions, not just the pinned upstream revision.
+const hasher = new Bun.CryptoHasher("sha256");
+hasher.update((await result.outputs[0]!.text()).replaceAll("\r\n", "\n"));
+hasher.update(
+	(
+		await Bun.file(join(root, "src/lib/calc/rotationDamage.ts")).text()
+	).replaceAll("\r\n", "\n"),
+);
+await Bun.write(
+	join(root, "src/lib/calc/riley/reference.generated.json"),
+	JSON.stringify({ revision: hasher.digest("hex") }),
+);

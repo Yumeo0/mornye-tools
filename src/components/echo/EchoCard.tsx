@@ -188,7 +188,7 @@ export function EchoCard({
 							src={sonataIcon128(set.icon)}
 							alt={set.name}
 							title={set.name}
-							className="absolute -top-1 -right-1 size-4 object-contain bg-muted/60"
+							className="absolute -top-1 -right-1 size-4 object-contain"
 						/>
 					)}
 				</div>

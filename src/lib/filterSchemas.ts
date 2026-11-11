@@ -74,7 +74,7 @@ export const rotationFiltersSchema = z.object({
 	characterId: z.string(),
 	role: z.enum(["any", "dps", "support"]),
 	ownership: z.enum(["any", "owned"]),
-	compatibility: z.enum(["any", "supported"]),
+	sort: z.enum(["name", "damage-desc", "damage-asc"]).default("name"),
 });
 
 export const visibilityOverridesSchema = z.record(z.string(), z.boolean());

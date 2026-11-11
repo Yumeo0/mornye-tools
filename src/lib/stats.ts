@@ -241,7 +241,8 @@ export function substatPriorityWeights(
 
 /**
  * Echo-value priorities: uncapped stats retain their guide order; Energy Regen
- * and explicit breakpoint stats share the lowest utility tier. ER's breakpoint
+ * and explicit breakpoint stats share the lowest regular tier's base weight.
+ * This keeps the lowest regular substat at ×1. ER's breakpoint
  * is applied separately by substatPriorityWeights.
  */
 export function rollValueSubstatTiers(
@@ -263,7 +264,11 @@ export function rollValueSubstatTiers(
 			}),
 		)
 		.filter((tier) => tier.length > 0);
-	if (utility.length > 0) priorities.push(utility);
+	if (utility.length > 0) {
+		const lowest = priorities.at(-1);
+		if (lowest) lowest.push(...utility);
+		else priorities.push(utility);
+	}
 	return priorities;
 }
 

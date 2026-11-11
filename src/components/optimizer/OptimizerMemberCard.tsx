@@ -1,5 +1,6 @@
 import type { KeyboardEvent } from "react";
 import { FilterSelect } from "@/components/filters";
+import { PreviewBadge } from "@/components/PreviewBadge";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { FieldGroup } from "@/components/ui/field";
@@ -12,8 +13,9 @@ import type {
 	OptResultStats,
 	TeamMemberProfile,
 } from "@/lib/calc/types";
-import { echoesByMonsterId } from "@/lib/catalog";
+import { charactersById, echoesByMonsterId } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
+import { weaponsById } from "@/lib/weapons";
 import { OptimizerInfo } from "./OptimizerInfo";
 import { RotationMemberArt } from "./RotationMemberArt";
 
@@ -30,10 +32,12 @@ function LoadoutInfo({
 	member,
 	build,
 	stats,
+	inventory,
 }: {
 	member: TeamMemberProfile;
 	build: MemberBuild;
 	stats?: OptResultStats;
+	inventory: boolean;
 }) {
 	return (
 		<OptimizerInfo label={`${member.name} loadout details`}>
@@ -43,7 +47,9 @@ function LoadoutInfo({
 			<p>
 				{build.echoSource === "rotation"
 					? "Recommended echo stats with rotation ER; no inventory reserved."
-					: "Uses equipped echoes."}
+					: inventory
+						? "Searches this profile's echo inventory."
+						: "Uses equipped echoes."}
 			</p>
 			{stats && build.echoSource === "rotation" && (
 				<dl className="grid grid-cols-2 gap-x-4 gap-y-1">
@@ -107,6 +113,7 @@ export function OptimizerMemberCard({
 					)}
 				>
 					<span className="truncate">{member.name}</span>
+					{charactersById.get(member.characterId)?.preview && <PreviewBadge />}
 					<Badge>
 						{selected ? "Target" : member.mainDps ? "DPS" : "Support"}
 					</Badge>
@@ -128,7 +135,12 @@ export function OptimizerMemberCard({
 								onChange={(v) => onPatch({ chain: Number(v) })}
 							/>
 						</div>
-						<LoadoutInfo member={member} build={build} stats={stats} />
+						<LoadoutInfo
+							member={member}
+							build={build}
+							stats={stats}
+							inventory={selected && !owned}
+						/>
 					</FieldGroup>
 				)}
 			</CardHeader>
@@ -151,6 +163,7 @@ export function OptimizerMemberCard({
 										value: String(w.id),
 										label: w.name,
 										icon: weaponIconUrl(w.id),
+										preview: weaponsById.get(w.id)?.preview,
 									})),
 							]}
 							onChange={(v) => {
@@ -182,7 +195,10 @@ export function OptimizerMemberCard({
 							disabled={!owned || selected}
 							value={build.echoSource ?? "equipped"}
 							options={[
-								{ value: "equipped", label: "Equipped" },
+								{
+									value: "equipped",
+									label: selected && !owned ? "Inventory" : "Equipped",
+								},
 								{ value: "rotation", label: "Rotation" },
 							]}
 							onChange={(v) =>

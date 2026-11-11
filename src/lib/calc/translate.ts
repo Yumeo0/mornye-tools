@@ -78,15 +78,23 @@ export function teamBuilds(
 		const role = snapshot.resonators.find(
 			(r) => Number(aliasRoleId(r.id)) === m.characterId,
 		);
-		if (!role) errors.push(`${m.name} is not owned by this profile.`);
 		const saved = role ? weaponForResonator(snapshot, role.id) : undefined;
 		const edit = overrides[m.characterId];
+		// The target always searches actual inventory, regardless of ownership.
+		// Teammates default to theoretical rotation stats; owned teammates may
+		// explicitly opt into their equipped echoes.
 		const echoSource =
 			m.characterId === targetId
 				? "equipped"
-				: (edit?.echoSource ?? "equipped");
-		const weaponId = edit?.weaponItemId ?? saved?.itemId ?? 0;
-		const weaponRank = edit?.weaponRank ?? saved?.rank ?? 1;
+				: !role
+					? "rotation"
+					: (edit?.echoSource ?? "rotation");
+		const weaponId =
+			edit?.weaponItemId ?? saved?.itemId ?? (!role ? m.defaultWeapon.id : 0);
+		const weaponRank =
+			edit?.weaponRank ??
+			saved?.rank ??
+			(!role && !edit?.weaponItemId ? m.defaultWeapon.rank : 1);
 		if (
 			!m.weapons.some((w) => w.id === weaponId && w.ranks.includes(weaponRank))
 		)

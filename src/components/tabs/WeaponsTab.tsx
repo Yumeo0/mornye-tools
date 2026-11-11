@@ -18,6 +18,7 @@ import {
 import { useAccount, type Weapon } from "@/lib/account";
 import { weaponFiltersSchema, weaponSortSchema } from "@/lib/filterSchemas";
 import { useFilterState } from "@/lib/persistentState";
+import { catalogWeapons } from "@/lib/weapons";
 
 const COLUMNS = [
 	{ minWidth: 1536, columns: 7 },
@@ -26,13 +27,38 @@ const COLUMNS = [
 	{ minWidth: 768, columns: 4 },
 	{ minWidth: 640, columns: 3 },
 ];
-const weaponKey = (weapon: Weapon, index: number) =>
-	`incr:${weapon.incrId}-${index}`;
+type DisplayWeapon = Weapon & { previewOnly?: boolean };
+const weaponKey = (weapon: DisplayWeapon, index: number) =>
+	weapon.previewOnly
+		? `preview:${weapon.itemId}`
+		: `incr:${weapon.incrId}-${index}`;
 
 export function WeaponsTab() {
 	const { snapshot, error } = useAccount();
 	const columns = useResponsiveColumns(COLUMNS, 2);
-	const weapons = snapshot.weapons;
+	// Catalog previews are display-only: never insert them into account inventory.
+	const weapons = useMemo<DisplayWeapon[]>(
+		() => [
+			...snapshot.weapons,
+			...catalogWeapons
+				.filter(
+					(entry) =>
+						entry.preview &&
+						!snapshot.weapons.some((w) => w.itemId === entry.item_id),
+				)
+				.map(
+					(entry): DisplayWeapon => ({
+						itemId: entry.item_id,
+						incrId: 0,
+						previewOnly: true,
+						level: 1,
+						rank: 1,
+						breach: 0,
+					}),
+				),
+		],
+		[snapshot.weapons],
+	);
 	const [filters, setFilters] = useFilterState<WeaponFilters>(
 		"weapons.filters",
 		EMPTY_WEAPON_FILTERS,
@@ -97,7 +123,12 @@ export function WeaponsTab() {
 					gap={12}
 					estimateRowHeight={280}
 					getItemKey={weaponKey}
-					renderItem={(weapon) => <WeaponCard weapon={weapon} />}
+					renderItem={(weapon) => (
+						<WeaponCard
+							weapon={weapon}
+							previewOnly={(weapon as DisplayWeapon).previewOnly}
+						/>
+					)}
 					className="min-h-0 flex-1 overflow-y-auto pr-1"
 				/>
 			)}

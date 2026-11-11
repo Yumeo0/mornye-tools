@@ -1,27 +1,13 @@
 import { useState } from "react";
+import { PreviewBadge } from "@/components/PreviewBadge";
 import { CardBadge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import type { Weapon } from "@/lib/account";
 import { charactersById } from "@/lib/catalog";
 import { qualityGradient, rarityTextClass } from "@/lib/rarity";
-import weaponData from "../../configs/weapon_data.json";
+import { type WeaponCatalogEntry, weaponsById } from "@/lib/weapons";
 
-export interface WeaponCatalogEntry {
-	item_id: number;
-	name: string;
-	type: number;
-	type_name: string;
-	rarity: number;
-	icon: string | null;
-	base_atk?: number | null;
-}
-
-export const weaponsById = new Map<number, WeaponCatalogEntry>(
-	(weaponData as WeaponCatalogEntry[]).map((weapon) => [
-		weapon.item_id,
-		weapon,
-	]),
-);
+export { type WeaponCatalogEntry, weaponsById } from "@/lib/weapons";
 
 export function weaponEntry(weapon: Weapon): WeaponCatalogEntry | undefined {
 	return weaponsById.get(weapon.itemId);
@@ -53,7 +39,13 @@ export function weaponIconUrl(itemId: number): string {
 	return weaponsById.get(itemId)?.icon ?? `/images/weapons/${itemId}.webp`;
 }
 
-export function WeaponCard({ weapon }: { weapon: Weapon }) {
+export function WeaponCard({
+	weapon,
+	previewOnly = false,
+}: {
+	weapon: Weapon;
+	previewOnly?: boolean;
+}) {
 	const entry = weaponEntry(weapon);
 	const name = weaponName(weapon);
 	const character =
@@ -63,7 +55,7 @@ export function WeaponCard({ weapon }: { weapon: Weapon }) {
 	const [failed, setFailed] = useState(false);
 
 	return (
-		<Card className="relative aspect-696/960 overflow-hidden">
+		<Card className="group/weapon relative aspect-696/960 overflow-hidden">
 			{/* rarity-tinted gradient, like the in-game item cards */}
 			<img
 				src={qualityGradient(entry?.rarity)}
@@ -74,7 +66,7 @@ export function WeaponCard({ weapon }: { weapon: Weapon }) {
 			<div className="absolute inset-x-0 bottom-0 h-2/5 bg-linear-to-t from-black/85 via-black/40 to-transparent" />
 
 			{/* weapon type glyph (top-left), equipped character (top-right) */}
-			<div className="absolute inset-x-0 top-0 flex items-start justify-between p-1.5">
+			<div className="absolute inset-x-0 top-0 z-10 flex items-start justify-between p-1.5">
 				{entry ? (
 					<img
 						src={WEAPON_TYPE_ICONS[entry.type]}
@@ -95,16 +87,17 @@ export function WeaponCard({ weapon }: { weapon: Weapon }) {
 				) : (
 					<span className="size-7" />
 				)}
+				{entry?.preview && <PreviewBadge />}
 			</div>
 
 			{/* weapon render */}
-			<div className="absolute inset-0 grid place-items-center px-3">
+			<div className="pointer-events-none absolute inset-x-0 top-5 bottom-12 grid place-items-center px-1">
 				{!failed && weapon.itemId ? (
 					<img
 						src={weaponIconUrl(weapon.itemId)}
 						alt={name}
 						onError={() => setFailed(true)}
-						className="size-24 object-contain drop-shadow-xl"
+						className="size-full object-contain drop-shadow-xl transition-transform duration-300 motion-safe:group-hover/weapon:scale-105"
 					/>
 				) : null}
 			</div>
@@ -116,12 +109,14 @@ export function WeaponCard({ weapon }: { weapon: Weapon }) {
 				>
 					{name}
 				</p>
-				<div className="flex flex-wrap items-center justify-center gap-1">
-					<CardBadge title={`Weapon level ${weapon.level}`}>
-						Lvl {weapon.level}
-					</CardBadge>
-					<CardBadge title="Resonance rank">Rank {weapon.rank}</CardBadge>
-				</div>
+				{!previewOnly && (
+					<div className="flex flex-wrap items-center justify-center gap-1">
+						<CardBadge title={`Weapon level ${weapon.level}`}>
+							Lvl {weapon.level}
+						</CardBadge>
+						<CardBadge title="Resonance rank">Rank {weapon.rank}</CardBadge>
+					</div>
+				)}
 			</div>
 		</Card>
 	);

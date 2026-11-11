@@ -138,7 +138,7 @@ describe("automatic echo batches", () => {
 		await runEchoUpgradeBatch("eu-123", f.snapshot.echoes, 75, f.deps);
 		expect(f.stages).toEqual([]);
 		expect(f.rows.get(20)?.outcome).toBe("below_threshold");
-		expect(f.rows.get(20)?.possible).toBe(60);
+		expect(f.rows.get(20)?.possible).toBe(64);
 	});
 
 	test("evaluates extra unlocked substats individually after oversized discarded EXP", async () => {

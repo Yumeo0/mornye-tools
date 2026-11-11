@@ -43,30 +43,30 @@ describe("roll value substat priorities", () => {
 		expect(energyRegenBreakpoint(null)).toBeUndefined();
 	});
 
-	test("breakpoint stats move below uncapped stats and use a shared utility weight", () => {
+	test("breakpoint stats share the lowest regular tier so its base weight stays at one", () => {
 		const tiers = rollValueSubstatTiers("ER:~110-130%+>CR:70%=CD>ATK%>HA%=ATK");
 		expect(tiers.map((tier) => tier.map((stat) => stat.code))).toEqual([
 			["CD"],
 			["ATK%"],
-			["HA%", "ATK"],
-			["ER", "CR"],
+			["HA%", "ATK", "ER", "CR"],
 		]);
 		expect(tiers.at(-1)?.map((stat) => stat.breakpoint)).toEqual([
+			undefined,
+			undefined,
 			"~110-130%+",
 			"70%",
 		]);
 		const weights = substatPriorityWeights(
 			tiers.map((tier) => tier.map((stat) => stat.name)),
 		);
-		expect([...weights.values()]).toEqual([2.5, 2, 1.5, 1.5, 1, 1]);
+		expect([...weights.values()]).toEqual([2, 1.5, 1, 1, 1, 1]);
 	});
 
 	test("Energy Regen is utility even without an explicit breakpoint", () => {
 		const tiers = rollValueSubstatTiers("ER=CR>CD");
 		expect(tiers.map((tier) => tier.map((stat) => stat.code))).toEqual([
 			["CR"],
-			["CD"],
-			["ER"],
+			["CD", "ER"],
 		]);
 	});
 

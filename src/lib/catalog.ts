@@ -7,12 +7,15 @@ import { assetUrl } from "./assets";
 
 import characterData from "@/configs/character_data.json";
 import echoData from "@/configs/echo_data.json";
+import previewData from "@/configs/preview_data.json";
 import { isExcludedCharacter } from "@/lib/stats";
+import { mergePreviewCatalog } from "./catalogMerge";
 
 /** One character of `character_data.json`; only fields the UI reads. */
 export interface CatalogCharacter {
 	character_id: number;
 	character_name: string;
+	preview?: boolean;
 	icon_head_256: string;
 	icon_pile: string;
 	element: string;
@@ -93,7 +96,11 @@ export function echoSpeciesVariantForSet(
 export const catalogCharacters: CatalogCharacter[] = (() => {
 	const seen = new Set<number>();
 	const list: CatalogCharacter[] = [];
-	for (const character of characterData as CatalogCharacter[]) {
+	for (const character of mergePreviewCatalog<CatalogCharacter>(
+		characterData as CatalogCharacter[],
+		previewData.characters,
+		(character) => character.character_id,
+	)) {
 		if (seen.has(character.character_id)) continue;
 		if (isExcludedCharacter(character.character_id)) continue;
 		seen.add(character.character_id);

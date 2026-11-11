@@ -9,6 +9,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import type { DragEvent } from "react";
 import { FilterSelect } from "@/components/filters";
+import { PreviewBadge } from "@/components/PreviewBadge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -323,6 +324,7 @@ export function RotationFlow({
 																	? "Wait"
 																	: (label?.type ?? "Missing")}
 															</Badge>
+															{character?.preview && <PreviewBadge />}
 														</span>
 														<span className="max-w-full whitespace-normal break-words text-xs">
 															{node.kind === "wait"

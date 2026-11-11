@@ -103,18 +103,3 @@ export function selectCandidates(
 			.length,
 	};
 }
-
-export function teamAvailability(
-	snapshot: AccountSnapshot,
-	profile: TeamProfile,
-): string[] {
-	const owned = new Set(
-		snapshot.resonators.map((r) => Number(aliasRoleId(r.id))),
-	);
-	return [
-		...profile.errors,
-		...profile.members
-			.filter((m) => !owned.has(m.characterId))
-			.map((m) => `${m.name} is not owned`),
-	];
-}

@@ -152,7 +152,7 @@ export async function searchInventory(
 			baselineError =
 				scored.result?.diagnostics.join(" ") ||
 				"Equipped baseline cannot execute this rotation.";
-	} else
+	} else if (target.echoes.length)
 		baselineError =
 			"Equipped baseline needs five legal echoes with the rotation's required main echo in slot one.";
 	const accept = (entry: OptResultEntry) => {

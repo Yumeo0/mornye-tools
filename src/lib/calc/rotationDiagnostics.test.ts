@@ -85,13 +85,28 @@ test("resource deficits use game units, skip off-tune, and retain transient shor
 			shownShort: [true, true, true, true],
 			shownAfter: [-1250, 50, -20000, -1234],
 		}),
-	).toEqual([
-		"Energy: short by 12.5",
-		"Concerto: depleted during action",
-		"Forte 1: short by 12.34",
-	]);
+	).toEqual(["Energy: short by 12.5", "Concerto: depleted during action"]);
 	expect(conditionProblems({ action: {} })).toEqual([]);
 });
+
+test("Forte report counters can drain past empty without hiding actual cast or buff requirements", () => {
+	const snapshot = {
+		action: {},
+		forteScale: [1, 0.01],
+		shownAfter: [0, 0, 0, 0, -422],
+		shownShort: [false, false, false, false, true],
+	};
+	expect(conditionProblems(snapshot)).toEqual([]);
+	expect(
+		conditionProblems({
+			...snapshot,
+			action: { castMin: [-Infinity, -Infinity, -Infinity, 10000] },
+			castUnmet: [false, false, false, true],
+			buffUnmet: [{ name: "Mechanism Dominion" }],
+		}),
+	).toEqual(["Requires: Forte 2 >= 100", "missing buff: Mechanism Dominion"]);
+});
+
 test("engine exceptions select the failing press, not the expected next press or an ambiguous duplicate", () => {
 	const first = action("Basic 1"),
 		next = action("Basic 2");

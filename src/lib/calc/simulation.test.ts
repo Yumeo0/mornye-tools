@@ -1,4 +1,5 @@
 import { expect, test } from "bun:test";
+import echoData from "@/configs/echo_data.json";
 import { makeFixture } from "../../../calculator/fixture";
 import {
 	evaluate,
@@ -6,6 +7,7 @@ import {
 	getCatalog,
 } from "./riley/engine.generated.js";
 import { objectiveScore } from "./search";
+import type { Scenario } from "./types";
 
 test("registry includes support alternatives, ordered roles, and distinct Phrolova rotations", () => {
 	const catalog = getCatalog();
@@ -83,6 +85,64 @@ test("fixed main type, unique owned instances, and supported weapon are enforced
 	const weapon = structuredClone(scenario);
 	weapon.members[2].weaponId = 1;
 	expect(() => evaluate(weapon)).toThrow("unsupported");
+});
+
+test("mapped main echoes pass equipment validation despite upstream name differences", () => {
+	const catalog = getCatalog();
+	const { scenario: fixture } = makeFixture(catalog);
+	for (const mainId of [6000199, 6000225, 6000201, 6000121]) {
+		const profile = catalog.teams.find(
+			(team) =>
+				!team.errors.length &&
+				team.members.some((m) => m.mainEcho.engineId === mainId),
+		)!;
+		const scenario: Scenario = {
+			profileId: "custom:mapped-main",
+			cycles: 1,
+			rotation: {
+				id: "mapped-main",
+				name: "Mapped main echo",
+				members: profile.members.map((m) => ({
+					loadoutId: m.loadoutId,
+					mainEchoId: m.mainEcho.engineId,
+					mainDps: m.mainDps,
+				})),
+				nodes: profile.members.map((m) => ({
+					id: `wait:${m.characterId}`,
+					kind: "wait",
+					characterId: m.characterId,
+					seconds: 0.1,
+				})),
+			},
+			members: profile.members.map((m, i) => ({
+				characterId: m.characterId,
+				chain: m.minSequence,
+				weaponId: m.weapons[0].id,
+				weaponRank: m.weapons[0].ranks[0],
+				echoes: fixture.members[i].echoes.map((echo, slot) => ({
+					...echo,
+					uid: `mapped:${mainId}:${m.characterId}:${slot}`,
+					...(slot === 0
+						? {
+								typeId: m.mainEcho.typeId,
+								name: m.mainEcho.name,
+								setId: echoData.find((e) => e.monster_id === m.mainEcho.typeId)!
+									.echo_sets[0].id,
+							}
+						: {}),
+				})),
+			})),
+		};
+		const member = profile.members.find((m) => m.mainEcho.engineId === mainId)!;
+		expect(
+			evaluateFast(scenario).stats[member.characterId].atk,
+		).toBeGreaterThan(0);
+		const wrong = structuredClone(scenario);
+		wrong.members.find(
+			(m) => m.characterId === member.characterId,
+		)!.echoes[0].typeId = -1;
+		expect(() => evaluateFast(wrong)).toThrow("slot one");
+	}
 });
 test("duplicate species do not activate a five-piece sonata", () => {
 	const { scenario } = makeFixture(getCatalog());

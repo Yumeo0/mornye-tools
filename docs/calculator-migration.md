@@ -60,9 +60,8 @@ editing, automatic team selection and roster expansion remain future work.
 
 `calculator/engine.ts` is the sole production upstream import boundary. Bun
 bundles it into ignored `src/lib/calc/riley/engine.generated.js`; install, dev and
-build regenerate it. `check:calculator` uses isolated TypeScript 5.6 because the
-pinned upstream does not type-check with TypeScript 7's typed-array definitions.
-The application continues using its existing TypeScript version. No upstream
+build regenerate it. The production build type-checks the application and bundles
+the upstream adapter without a separate upstream TypeScript check. No upstream
 source is patched.
 
 The adapter translates exact owned stats into gear, activates sets by distinct
@@ -94,13 +93,12 @@ echoes, team-wide UID exclusivity, ER boundary and later-cycle deficits, saved
 settings migration, pool truncation, strict rejection with lower-score fallbacks, cancellation/budget limits,
 and an independently enumerated real-engine support-search optimum.
 
-The full app/scripts suite passes (314 tests, five platform skips), as do both
-TypeScript checks and the production build. A clean source export with
+At migration cutover, the full app/scripts suite passed (314 tests, five platform
+skips), along with the TypeScript checks and production build. A clean source export with
 only the pinned Riley checkout successfully runs `bun install --frozen-lockfile`
 and `bun run build`, without old calculator files, game-data checkouts, generated
 output or `public/data`. Production-browser checks covered team browsing, own and support runs, ER
 readouts, progress, cancellation and restart with synthetic inventory. Native
 Tauri/WebView and live equipment application are manual checks; no game mutations were sent.
 
-See [manual benchmark and reproduction](calculator-benchmark.md), including
-preserved inputs/results from the earlier two-engine comparison.
+See the [production-browser smoke record](benchmarks/browser-results.json).

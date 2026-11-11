@@ -10,6 +10,7 @@ import { useFilterState } from "@/lib/persistentState";
 import { useEffect, useRef } from "react";
 import { CharacterFilterBar } from "@/components/characters/CharacterFilterBar";
 import { FilterLayout } from "@/components/filters";
+import { PreviewBadge } from "@/components/PreviewBadge";
 import { Button } from "@/components/ui/button";
 import { Modal, ModalHeader } from "@/components/ui/modal";
 import { VirtualGrid } from "@/components/VirtualGrid";
@@ -174,6 +175,7 @@ export function CharacterPickerDialog({
 									<span className="w-full truncate text-center text-xs">
 										{character.name}
 									</span>
+									{character.preview && <PreviewBadge />}
 									<span className="text-[10px] leading-none text-muted-foreground">
 										{account
 											? `Lvl ${account.level} · C${account.chain}`

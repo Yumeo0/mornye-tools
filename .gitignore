@@ -30,3 +30,4 @@ public/data/
 .cache/
 .playwright-cli/
 src/lib/calc/riley/engine.generated.js
+src/lib/calc/riley/reference.generated.json

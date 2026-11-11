@@ -21,6 +21,8 @@ export interface TeamMemberProfile {
 	minSequence: number;
 	maxSequence: number;
 	weapons: { id: number; name: string; ranks: number[] }[];
+	/** Authored signature/preferred weapon; option order has no meaning. */
+	defaultWeapon: { id: number; rank: number };
 	/** A separate kit stat target, not the energy needed to execute the rotation. */
 	kitMinEr: number;
 	kitMinCr: number;

@@ -1,7 +1,9 @@
 import { expect, test } from "bun:test";
+import { EMPTY_OPTIMIZER_FILTERS } from "@/components/optimizer/optimizerOptions";
 import echoData from "@/configs/echo_data.json";
 import { EMPTY_ACCOUNT } from "@/lib/account";
 import { makeFixture } from "../../../calculator/fixture";
+import { selectCandidates } from "./optimizer";
 import {
 	evaluate,
 	evaluateFast,
@@ -12,7 +14,83 @@ import { searchInventory } from "./search";
 import { teamBuilds } from "./translate";
 import type { Scenario } from "./types";
 
-test("rotation stats require ownership and the target always keeps owned echoes", () => {
+for (const targetIndex of [0, 2]) {
+	test(`unowned ${targetIndex === 0 ? "support" : "DPS"} searches actual account echoes with signature defaults`, async () => {
+		const { profile, inventory } = makeFixture(
+			getCatalog(),
+			5,
+			31415,
+			targetIndex,
+		);
+		const target = profile.members[targetIndex];
+		const snapshot = {
+			...EMPTY_ACCOUNT,
+			echoes: inventory.map((e, i) => ({
+				incrId: i + 1,
+				itemId: echoData.find((s) => s.monster_id === e.typeId)!.echo_id,
+				monsterId: e.typeId,
+				setId: e.setId,
+				level: e.level,
+				funcValue: 0,
+				stackCount: 1,
+				source: "manual" as const,
+				mainProps: e.mainStats,
+				subProps: e.substats,
+			})),
+		};
+		const before = JSON.stringify(snapshot);
+		const builds = teamBuilds(snapshot, profile, {}, target.characterId);
+		expect(builds.errors).toEqual([]);
+		const pool = selectCandidates(
+			snapshot,
+			profile,
+			builds.members,
+			target.characterId,
+			EMPTY_OPTIMIZER_FILTERS,
+		);
+		expect(pool.pool).toHaveLength(5);
+		expect(pool.mainCount).toBe(1);
+		const scenario = resolveRotationStats(
+			{ profileId: profile.id, cycles: 4, members: builds.members },
+			target.characterId,
+		);
+		const searched = scenario.members[targetIndex];
+		expect(searched.weaponId).toBe(target.defaultWeapon.id);
+		expect(searched.weaponRank).toBe(target.defaultWeapon.rank);
+		expect(searched.echoes).toEqual([]);
+		expect(searched.echoSource).toBe("equipped");
+		const result = await searchInventory(
+			{
+				scenario,
+				targetId: target.characterId,
+				objective:
+					targetIndex === 0
+						? { kind: "teamDamage" }
+						: { kind: "memberDamage", characterId: target.characterId },
+				inventory: pool.pool,
+				mainTypeId: target.mainEcho.typeId,
+				resultsLimit: 5,
+				budget: 10,
+			},
+			evaluateFast,
+			() => {},
+			undefined,
+			evaluate,
+		);
+		expect(result.results).toHaveLength(1);
+		expect(new Set(result.results[0].uids)).toEqual(
+			new Set(snapshot.echoes.map((e) => `incr:${e.incrId}`)),
+		);
+		expect(result.results[0].damage).toBeGreaterThan(0);
+		expect(result.results[0].stats).toBeDefined();
+		expect(result.baseline).toBeNull();
+		expect(result.baselineError).toBeNull();
+		expect(result.baselineEvaluation).toBeNull();
+		expect(JSON.stringify(snapshot)).toBe(before);
+	});
+}
+
+test("unowned teammates use rotation stats; any target uses account inventory", () => {
 	const { profile } = makeFixture(getCatalog());
 	const snapshot = {
 		...EMPTY_ACCOUNT,
@@ -42,11 +120,13 @@ test("rotation stats require ownership and the target always keeps owned echoes"
 		"equipped",
 	]);
 	expect(translated.members.every((m) => !m.echoes.length)).toBe(true);
-	expect(
-		teamBuilds(EMPTY_ACCOUNT, profile, overrides, 1404).errors.filter((e) =>
-			e.includes("not owned"),
-		),
-	).toHaveLength(3);
+	const unowned = teamBuilds(EMPTY_ACCOUNT, profile, overrides, 1404);
+	expect(unowned.errors).toEqual([]);
+	expect(unowned.members.map((m) => m.echoSource)).toEqual([
+		"rotation",
+		"rotation",
+		"equipped",
+	]);
 });
 
 test("reference builds are fixed, isolated, and independent of target equipment", () => {

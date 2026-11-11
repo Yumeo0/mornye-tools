@@ -35,6 +35,7 @@ const catalogs = [
 	"character_data",
 	"echo_data",
 	"weapon_data",
+	"preview_data",
 	"profile_portraits",
 	"progression",
 	"inventory_data",

@@ -1,4 +1,5 @@
 import { ChainNodes } from "@/components/characters/ChainNodes";
+import { PreviewBadge } from "@/components/PreviewBadge";
 import { CardBadge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { weaponIconUrl } from "@/components/weapon/WeaponCard";
@@ -25,7 +26,7 @@ export function CharacterCard({
 					src={character.image}
 					alt={character.name}
 					className={`absolute inset-0 h-full w-full object-cover ${
-						account ? "" : "grayscale opacity-70"
+						account || character.preview ? "" : "grayscale opacity-70"
 					}`}
 				/>
 			) : (
@@ -72,6 +73,7 @@ export function CharacterCard({
 						className="size-9 object-contain drop-shadow-md"
 					/>
 				)}
+				{character.preview && <PreviewBadge />}
 			</div>
 
 			<div className="absolute inset-x-0 bottom-0 space-y-1.5 px-2 pt-12 pb-2.5 text-center">

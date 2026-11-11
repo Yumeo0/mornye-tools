@@ -88,15 +88,38 @@ function Remount({ snapshot }: { snapshot: AccountSnapshot }) {
 	const team = useOptimizerTeam(snapshot, getCatalog());
 	return (
 		<span>
-			{team.profile?.id ?? "empty"}:{team.mode}
+			{team.profile?.id ?? "empty"}:{team.mode}:{team.targetId}
 		</span>
 	);
+}
+
+function UnownedTarget({ snapshot }: { snapshot: AccountSnapshot }) {
+	const catalog = getCatalog();
+	const { profile } = makeFixture(catalog);
+	const team = useOptimizerTeam(snapshot, catalog);
+	const [step, setStep] = useState(0);
+	if (step === 0) team.setProfileId(profile.id);
+	else if (step === 1) team.setTargetId(1404);
+	else {
+		expect(team.targetId).toBe(1404);
+		expect(team.errors).toEqual([]);
+		expect(team.members.map((m) => m.echoSource)).toEqual([
+			"rotation",
+			"rotation",
+			"equipped",
+		]);
+		expect(team.members[2].weaponId).toBe(profile.members[2].defaultWeapon.id);
+		return <span>unowned target selected</span>;
+	}
+	setStep(step + 1);
+	return null;
 }
 
 test("load rotation before choosing a target; retain setup across remounts and isolate accounts", async () => {
 	const original = Object.getOwnPropertyDescriptor(globalThis, "localStorage");
 	const disk = new Map<string, string>();
 	const written = Promise.withResolvers<void>();
+	const unownedWritten = Promise.withResolvers<void>();
 	Object.defineProperty(globalThis, "localStorage", {
 		configurable: true,
 		value: {
@@ -104,6 +127,8 @@ test("load rotation before choosing a target; retain setup across remounts and i
 			setItem: (key: string, value: string) => {
 				disk.set(key, value);
 				written.resolve();
+				if (key === `filters.${optimizerSetupKey("unowned-optimizer-target")}`)
+					unownedWritten.resolve();
 			},
 		},
 	});
@@ -138,6 +163,27 @@ test("load rotation before choosing a target; retain setup across remounts and i
 				/>,
 			),
 		).toContain("empty:damage");
+		const unownedSnapshot = {
+			...EMPTY_ACCOUNT,
+			profile: {
+				id: "unowned-optimizer-target",
+				playerId: 3,
+				serverId: "eu",
+				region: "EU",
+			},
+		};
+		expect(
+			renderToStaticMarkup(<UnownedTarget snapshot={unownedSnapshot} />),
+		).toContain("unowned target selected");
+		expect(
+			renderToStaticMarkup(<Remount snapshot={unownedSnapshot} />),
+		).toContain(`${profile.id}:damage:1404`);
+		await unownedWritten.promise;
+		expect(
+			JSON.parse(
+				disk.get(`filters.${optimizerSetupKey(unownedSnapshot.profile.id)}`)!,
+			).targetId,
+		).toBe(1404);
 	} finally {
 		if (original) Object.defineProperty(globalThis, "localStorage", original);
 		else Reflect.deleteProperty(globalThis, "localStorage");

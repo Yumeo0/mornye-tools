@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { FilterSelect } from "@/components/filters";
+import { PreviewBadge } from "@/components/PreviewBadge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,17 +20,19 @@ import {
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { VirtualGrid } from "@/components/VirtualGrid";
+import { useRotationDamage } from "@/hooks/useRotationDamage";
 import type { AccountSnapshot } from "@/lib/account";
-import { teamAvailability } from "@/lib/calc/optimizer";
 import type { TeamProfile } from "@/lib/calc/types";
 import { charactersById } from "@/lib/catalog";
 import { rotationFiltersSchema } from "@/lib/filterSchemas";
 import { useFilterState } from "@/lib/persistentState";
+import { OptimizerInfo } from "./OptimizerInfo";
 import { RotationMemberArt, shortRotationVariant } from "./RotationMemberArt";
 import {
 	EMPTY_ROTATION_FILTERS,
 	filterRotationProfiles,
 	type RotationFilters,
+	sortRotationProfiles,
 } from "./rotationProfiles";
 
 function TeamPortraits({ profile }: { profile: TeamProfile }) {
@@ -83,15 +86,39 @@ export function TeamProfilePicker({
 								value: String(m.characterId),
 								label: m.name,
 								icon: charactersById.get(m.characterId)?.icon_head_256,
+								preview: charactersById.get(m.characterId)?.preview,
 							},
 						]),
 				).values(),
 			].sort((a, b) => a.label.localeCompare(b.label)),
 		[profiles],
 	);
+	const matching = useMemo(
+		() =>
+			filterRotationProfiles(profiles, snapshot, {
+				search: filters.search,
+				characterId: filters.characterId,
+				role: filters.role,
+				ownership: filters.ownership,
+				sort: "name",
+			}),
+		[
+			profiles,
+			snapshot,
+			filters.search,
+			filters.characterId,
+			filters.role,
+			filters.ownership,
+		],
+	);
+	const sortingByDamage = filters.sort !== "name";
+	const { damage, error: scoringError } = useRotationDamage(
+		matching,
+		open && sortingByDamage,
+	);
 	const options = useMemo(
-		() => filterRotationProfiles(profiles, snapshot, filters),
-		[profiles, snapshot, filters],
+		() => sortRotationProfiles(matching, filters.sort, damage),
+		[matching, filters.sort, damage],
 	);
 	const filtered = Object.keys(EMPTY_ROTATION_FILTERS).some(
 		(key) =>
@@ -174,17 +201,15 @@ export function TeamProfilePicker({
 						}
 					/>
 					<FilterSelect
-						label="Compatibility"
-						value={filters.compatibility}
+						label="Sort"
+						value={filters.sort}
 						options={[
-							{ value: "any", label: "All rotations" },
-							{ value: "supported", label: "Supported rotations" },
+							{ value: "name", label: "Name" },
+							{ value: "damage-desc", label: "Damage ↓" },
+							{ value: "damage-asc", label: "Damage ↑" },
 						]}
-						onChange={(compatibility) =>
-							patch({
-								compatibility:
-									compatibility as RotationFilters["compatibility"],
-							})
+						onChange={(sort) =>
+							patch({ sort: sort as RotationFilters["sort"] })
 						}
 					/>
 				</FieldGroup>
@@ -192,7 +217,17 @@ export function TeamProfilePicker({
 					<p role="status" className="text-xs text-muted-foreground">
 						{options.length.toLocaleString()} of{" "}
 						{profiles.length.toLocaleString()} rotations
+						{sortingByDamage && ` · ${damage.size}/${options.length} scored`}
 					</p>
+					{sortingByDamage && (
+						<OptimizerInfo label="Rotation damage comparison">
+							<p>
+								Reference team damage · signature/default weapons · minimum
+								required chains · optimized rotation stats.
+							</p>
+							<p>Pre-made: opener + 3 repeats. Custom: saved flow.</p>
+						</OptimizerInfo>
+					)}
 					<Button
 						variant="ghost"
 						size="sm"
@@ -202,6 +237,11 @@ export function TeamProfilePicker({
 						Clear filters
 					</Button>
 				</div>
+				{scoringError && (
+					<p role="alert" className="text-xs text-destructive">
+						{scoringError}
+					</p>
+				)}
 				{!options.length ? (
 					<Empty>
 						<EmptyHeader>
@@ -220,7 +260,8 @@ export function TeamProfilePicker({
 						getItemKey={(p) => p.id}
 						className="min-h-0 flex-1 overflow-y-auto"
 						renderItem={(p) => {
-							const unavailable = teamAvailability(snapshot, p);
+							const unavailable = p.errors;
+							const score = damage.get(p.id);
 							return (
 								<Button
 									variant={p.id === selected?.id ? "secondary" : "outline"}
@@ -247,6 +288,9 @@ export function TeamProfilePicker({
 											>
 												<RotationMemberArt member={m} />
 												<span className="mt-1">{m.name}</span>
+												{charactersById.get(m.characterId)?.preview && (
+													<PreviewBadge />
+												)}
 												{shortRotationVariant(m.variant) && (
 													<span
 														className="text-xs text-muted-foreground"
@@ -261,11 +305,31 @@ export function TeamProfilePicker({
 											</span>
 										))}
 									</span>
-									{(unavailable.length > 0 || p.id === selected?.id) && (
-										<span className="flex justify-end gap-1">
-											<Badge>
-												{p.id === selected?.id ? "Loaded" : "Unavailable"}
-											</Badge>
+									{(sortingByDamage ||
+										unavailable.length > 0 ||
+										p.id === selected?.id) && (
+										<span className="flex items-center justify-between gap-2">
+											{sortingByDamage && (
+												<span
+													className="text-xs tabular-nums"
+													title={
+														score?.warning ??
+														score?.error ??
+														"Reference team damage"
+													}
+												>
+													{score
+														? score.damage == null
+															? "—"
+															: `${score.warning ? "≈ " : ""}${new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 2 }).format(score.damage)} DMG`
+														: "…"}
+												</span>
+											)}
+											{(unavailable.length > 0 || p.id === selected?.id) && (
+												<Badge>
+													{p.id === selected?.id ? "Loaded" : "Unavailable"}
+												</Badge>
+											)}
 										</span>
 									)}
 								</Button>

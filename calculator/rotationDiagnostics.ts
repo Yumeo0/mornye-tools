@@ -18,11 +18,13 @@ export class RotationNodeError extends Error {
 	}
 }
 
+interface GaugeConditions {
+	castMin?: readonly number[] | null;
+	castMax?: readonly number[] | null;
+}
+
 interface ConditionSnapshot {
-	action: {
-		castMin?: readonly number[] | null;
-		castMax?: readonly number[] | null;
-	};
+	action: GaugeConditions;
 	castUnmet?: readonly boolean[] | null;
 	buffUnmet?: readonly { name: string }[] | null;
 	buffForbidden?: readonly { name: string }[] | null;
@@ -92,9 +94,11 @@ export function conditionProblems(
 	for (const buff of snapshot.buffForbidden ?? [])
 		reasons.push(`blocked by buff: ${buff.name}`);
 	for (const [index, short] of (snapshot.shownShort ?? []).entries()) {
-		// Off-tune is shared by the enemy and is not a character resource condition.
-		if (!short || index === 2) continue;
-		const bar = index > 2 ? index - 1 : index;
+		// Forte banks are report counters, not cast gates: several kits drain past
+		// empty while finishing a combo. Riley declares actual Forte prerequisites
+		// in castMin/castMax and buffs, checked above. Off-tune belongs to the enemy.
+		if (!short || index >= 2) continue;
+		const bar = index;
 		if (snapshot.castUnmet?.[bar]) continue;
 		const deficit = -(snapshot.shownAfter?.[index] ?? 0) * scale(bar);
 		reasons.push(

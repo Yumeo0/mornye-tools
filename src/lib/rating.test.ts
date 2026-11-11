@@ -43,7 +43,7 @@ const fiveWant: CharacterInfo = {
 	},
 };
 
-/** Verina's scoring priority: ATK% > ATK > ER (utility). */
+/** Verina's scoring priority: ATK% > ATK, with ER sharing the lowest base tier. */
 const verina: CharacterInfo = {
 	character_id: 1503,
 	character_name: "Verina",
@@ -52,7 +52,7 @@ const verina: CharacterInfo = {
 		"4cost": [["Healing Bonus"]],
 		"3cost": [["Energy Regen"]],
 		"1cost": [["ATK%"]],
-		subs: [["ATK%"], ["ATK"], ["Energy Regen"]],
+		subs: [["ATK%"], ["ATK", "Energy Regen"]],
 	},
 };
 
@@ -97,13 +97,13 @@ describe("calculateRating", () => {
 			"ATK% 9.4%",
 			"Resonance Skill DMG Bonus 10.1%",
 		];
-		// ATK% ×2, ATK ×1.5, ER ×1, normalized to 100 at max rolls.
+		// ATK% ×1.5, ATK ×1, ER ×1, normalized to 100 at max rolls.
 		expect(calculateRating(verina, subs, healingMain)).toBe(91);
 	});
 
 	test("flat stats earn two points per tier", () => {
 		// Flat ATK 40 is tier 2/4: 25.33 presence + 2 x 2 points.
-		expect(calculateRating(verina, ["ATK 40"], healingMain)).toBe(29);
+		expect(calculateRating(verina, ["ATK 40"], healingMain)).toBe(25);
 	});
 
 	test("explicit wanted lists power the character detail", () => {
@@ -183,7 +183,7 @@ describe("priority weighting and main-stat suitability", () => {
 		);
 		for (let i = 1; i < scores.length; i++)
 			expect(scores[i]).toBeGreaterThan(scores[i - 1]);
-		expect(calculateRating(suisui, erRoll, critMain)).toBe(22);
+		expect(calculateRating(suisui, erRoll, critMain)).toBe(27);
 		const full = [
 			"Energy Regen 12.4%",
 			"Crit. DMG 21%",
@@ -264,10 +264,10 @@ describe("priority weighting and main-stat suitability", () => {
 		if (!jinhsi) throw new Error("Missing Jinhsi guide");
 		const weights = substatPriorityWeights(jinhsi.stats.subs);
 		expect(weights.get("energy regen")).toBe(1);
-		expect(weights.get("crit rate")).toBe(3.5);
-		expect(weights.get("crit dmg")).toBe(3.5);
-		expect(weights.get("atk%")).toBe(3);
-		expect(weights.get("resonance skill dmg bonus")).toBe(2.5);
+		expect(weights.get("crit rate")).toBe(3);
+		expect(weights.get("crit dmg")).toBe(3);
+		expect(weights.get("atk%")).toBe(2.5);
+		expect(weights.get("resonance skill dmg bonus")).toBe(2);
 		expect(
 			calculateRating(jinhsi, ["Crit. Rate 10.5%"], critMain),
 		).toBeGreaterThan(
@@ -277,10 +277,10 @@ describe("priority weighting and main-stat suitability", () => {
 
 	test("higher priority stats and their roll improvements contribute more", () => {
 		expect(calculateRating(verina, ["Energy Regen 12.4%"], healingMain)).toBe(
-			22,
+			29,
 		);
-		expect(calculateRating(verina, ["ATK% 11.6%"], healingMain)).toBe(44);
-		expect(calculateRating(verina, ["ATK 60"], healingMain)).toBe(33);
+		expect(calculateRating(verina, ["ATK% 11.6%"], healingMain)).toBe(43);
+		expect(calculateRating(verina, ["ATK 60"], healingMain)).toBe(29);
 		const erGain =
 			calculateRating(verina, ["Energy Regen 12.4%"], healingMain) -
 			calculateRating(verina, ["Energy Regen 6.8%"], healingMain);
@@ -313,8 +313,8 @@ describe("priority weighting and main-stat suitability", () => {
 	});
 
 	test("potential fills the highest-weight missing stats first", () => {
-		expect(maxPossibleRating(verina, [], healingMain, 1)).toBe(44);
-		expect(maxPossibleRating(verina, ["ATK 60"], healingMain, 2)).toBe(78);
+		expect(maxPossibleRating(verina, [], healingMain, 1)).toBe(43);
+		expect(maxPossibleRating(verina, ["ATK 60"], healingMain, 2)).toBe(71);
 		expect(
 			maxPossibleRating(
 				verina,
@@ -386,8 +386,7 @@ describe("priority weighting and main-stat suitability", () => {
 		);
 		expect(stats.subs).toEqual([
 			["Crit. Rate", "Crit. DMG"],
-			["ATK%"],
-			["Energy Regen"],
+			["ATK%", "Energy Regen"],
 		]);
 		expect(stats.erBreakpoint).toBe(120);
 		expect(stats["4cost"]).toEqual([["Crit. Rate", "Crit. DMG"]]);

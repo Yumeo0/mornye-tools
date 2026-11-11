@@ -4,16 +4,18 @@ import {
 	getCatalog,
 	resolveRotationStats,
 } from "./riley/engine.generated.js";
+import { measureRotationDamage } from "./rotationDamage";
 import { searchInventory } from "./search";
-import type { Scenario, SearchRequest } from "./types";
+import type { Scenario, SearchRequest, TeamProfile } from "./types";
 
 // One request at a time: upstream uses an ambient mutable context. Cancellation
 // terminates this worker, so a newly started run always has an isolated engine.
 self.onmessage = async (
 	event: MessageEvent<{
-		kind: "catalog" | "evaluate" | "search";
+		kind: "catalog" | "evaluate" | "search" | "rotation-damage";
 		input?: Scenario | SearchRequest;
 		targetId?: number;
+		profiles?: TeamProfile[];
 	}>,
 ) => {
 	try {
@@ -29,7 +31,16 @@ self.onmessage = async (
 					),
 				),
 			});
-		else {
+		else if (event.data.kind === "rotation-damage") {
+			for (const profile of event.data.profiles ?? []) {
+				self.postMessage({
+					kind: "rotation-damage",
+					id: profile.id,
+					value: measureRotationDamage(profile, resolveRotationStats, evaluate),
+				});
+			}
+			self.postMessage({ kind: "done" });
+		} else {
 			const request = event.data.input as SearchRequest;
 			if (
 				request.scenario.members.find((m) => m.characterId === request.targetId)

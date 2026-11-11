@@ -1,4 +1,5 @@
 import { useId } from "react";
+import { PreviewBadge } from "@/components/PreviewBadge";
 import {
 	Select,
 	SelectContent,
@@ -81,6 +82,7 @@ export function FilterSelect({
 					>
 						{selected?.label ?? value}
 					</span>
+					{selected?.preview && <PreviewBadge />}
 				</SelectTrigger>
 				<SelectContent
 					width={fitContent ? "content" : "trigger"}
@@ -101,6 +103,7 @@ export function FilterSelect({
 									/>
 								)}
 								{option.label}
+								{option.preview && <PreviewBadge />}
 							</SelectItem>
 						))}
 					</SelectGroup>

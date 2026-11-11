@@ -1,6 +1,7 @@
 import { expect, test } from "bun:test";
 import { EMPTY_ACCOUNT } from "@/lib/account";
 import { getCatalog } from "@/lib/calc/riley/engine.generated.js";
+import type { RotationDamage } from "@/lib/calc/rotationDamage";
 import {
 	EMPTY_ROTATION_FILTERS,
 	filterRotationProfiles,
@@ -31,7 +32,6 @@ test("rotation search combines teammates, variant and fixed main echo without lo
 	const matches = filterRotationProfiles(profiles, EMPTY_ACCOUNT, {
 		...EMPTY_ROTATION_FILTERS,
 		characterId: "1608",
-		compatibility: "supported",
 		search: "  SHOREKEEPER lucilla nightmare: hecate  ",
 	});
 	expect(matches.length).toBeGreaterThan(2);
@@ -49,7 +49,6 @@ test("rotation search combines teammates, variant and fixed main echo without lo
 	expect(
 		matches.every(
 			(p) =>
-				!p.errors.length &&
 				p.members.some((m) => m.name === "Shorekeeper") &&
 				p.members.some((m) => m.name === "Lucilla"),
 		),
@@ -57,7 +56,7 @@ test("rotation search combines teammates, variant and fixed main echo without lo
 	expect(profiles.map((p) => p.id)).toEqual(before);
 });
 
-test("ownership is team-wide, compatibility is independent, and defaults keep all profiles visible", () => {
+test("ownership is team-wide and rotations with compatibility errors remain visible", () => {
 	const profiles = getCatalog().teams;
 	expect(
 		filterRotationProfiles(profiles, EMPTY_ACCOUNT, EMPTY_ROTATION_FILTERS),
@@ -83,16 +82,64 @@ test("ownership is team-wide, compatibility is independent, and defaults keep al
 	const owned = filterRotationProfiles(profiles, snapshot, {
 		...EMPTY_ROTATION_FILTERS,
 		ownership: "owned",
-		compatibility: "supported",
 	});
 	expect(owned.some((p) => p.id === selected.id)).toBe(true);
 	expect(
-		owned.every(
-			(p) =>
-				!p.errors.length &&
-				p.members.every((m) =>
-					snapshot.resonators.some((r) => r.id === m.characterId),
-				),
+		owned.every((p) =>
+			p.members.every((m) =>
+				snapshot.resonators.some((r) => r.id === m.characterId),
+			),
 		),
 	).toBe(true);
+	const incompatible = {
+		...selected,
+		id: "incompatible",
+		errors: ["Missing mapping"],
+	};
+	expect(
+		filterRotationProfiles([incompatible], snapshot, EMPTY_ROTATION_FILTERS),
+	).toEqual([incompatible]);
+});
+
+test("damage sorting ranks valid scores in both directions with unknown scores last and stable ties", () => {
+	const template = getCatalog().teams[0];
+	const profiles = ["pending", "low", "invalid", "high-b", "high-a"].map(
+		(id) => ({ ...template, id, label: "Team" }),
+	);
+	const before = profiles.map((p) => p.id);
+	const scores = new Map<string, RotationDamage>([
+		["low", { damage: 100 }],
+		["high-a", { damage: 200 }],
+		["high-b", { damage: 200 }],
+		["invalid", { damage: null, error: "ER requirement" }],
+	]);
+	const sorted = (sort: "damage-desc" | "damage-asc" | "name") =>
+		filterRotationProfiles(
+			profiles,
+			EMPTY_ACCOUNT,
+			{ ...EMPTY_ROTATION_FILTERS, sort },
+			scores,
+		).map((p) => p.id);
+	expect(sorted("damage-desc")).toEqual([
+		"high-a",
+		"high-b",
+		"low",
+		"invalid",
+		"pending",
+	]);
+	expect(sorted("damage-asc")).toEqual([
+		"low",
+		"high-a",
+		"high-b",
+		"invalid",
+		"pending",
+	]);
+	expect(sorted("name")).toEqual([
+		"high-a",
+		"high-b",
+		"invalid",
+		"low",
+		"pending",
+	]);
+	expect(profiles.map((p) => p.id)).toEqual(before);
 });

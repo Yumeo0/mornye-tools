@@ -185,6 +185,9 @@ export async function collectAssetRefs(): Promise<Set<string>> {
 		walk(echo.echo_sets);
 	}
 	for (const weapon of await config("weapon_data")) walk(weapon.icon);
+	const previews = await config("preview_data");
+	walk(previews.characters);
+	walk(previews.weapons);
 	for (const profile of await config("profile_portraits"))
 		walk(profile.icon_head_256);
 	walk(await config("progression"));

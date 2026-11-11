@@ -19,6 +19,7 @@ import { z } from "zod";
 import { FilterSelect } from "@/components/filters";
 import { EnergyReadout } from "@/components/optimizer/EnergyReadout";
 import { OptimizerInfo } from "@/components/optimizer/OptimizerInfo";
+import { PreviewBadge } from "@/components/PreviewBadge";
 import {
 	flowRows,
 	ROTATION_DRAG_TYPE,
@@ -45,6 +46,15 @@ import {
 	evaluateScenario,
 	getCalculatorCatalog,
 } from "@/lib/calc/core";
+import {
+	referenceScenario,
+	rotationDamageFromResult,
+} from "@/lib/calc/rotationDamage";
+import {
+	rememberRotationDamage,
+	rotationDamageKey,
+	rotationReferenceRevision,
+} from "@/lib/calc/rotationDamageCache";
 import type {
 	CalculatorCatalog,
 	CustomRotation,
@@ -322,20 +332,16 @@ export function RotationBuilderTab({
 		cancelTest.current?.();
 		cancelTest.current = evaluateScenario(
 			{
-				profileId: profile.id,
-				rotation,
-				cycles: 1,
+				...referenceScenario(profile),
 				capturePlayback: true,
-				members: profile.members.map((m) => ({
-					characterId: m.characterId,
-					chain: m.minSequence,
-					weaponId: m.weapons[0].id,
-					weaponRank: m.weapons[0].ranks[0],
-					echoSource: "rotation",
-					echoes: [],
-				})),
 			},
 			(result, problem, diagnostic) => {
+				rememberRotationDamage(
+					rotationDamageKey(rotationReferenceRevision, profile),
+					result
+						? rotationDamageFromResult(result)
+						: { damage: null, error: problem ?? "Simulation failed." },
+				);
 				setTesting(false);
 				setTestResult({
 					key,
@@ -580,9 +586,9 @@ export function RotationBuilderTab({
 				<Empty>
 					<EmptyHeader>
 						<HugeiconsIcon icon={RepeatIcon} className="size-12 text-primary" />
-						<EmptyTitle>Your team. Your rhythm.</EmptyTitle>
+						<EmptyTitle>No rotations yet</EmptyTitle>
 						<EmptyDescription>
-							Choose three characters. Shape their rotation.
+							Create a rotation to select a team and add actions.
 						</EmptyDescription>
 					</EmptyHeader>
 					<Button onClick={() => create()} disabled={!catalog}>
@@ -628,6 +634,9 @@ export function RotationBuilderTab({
 							<div className="flex items-center justify-between">
 								<h2 className="text-xs font-semibold">Actions</h2>
 								{kit && <Badge variant="outline">{kit.member.name}</Badge>}
+								{kit && charactersById.get(kit.member.characterId)?.preview && (
+									<PreviewBadge />
+								)}
 							</div>
 							<FieldGroup className="gap-2">
 								<Field>

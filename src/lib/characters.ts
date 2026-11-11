@@ -32,6 +32,7 @@ export interface BuildEntry {
 
 export interface CharacterEntry {
 	id: number;
+	preview?: boolean;
 	name: string;
 	image: string;
 	rarity?: number;
@@ -88,6 +89,7 @@ export function sonataIcon(name: string): string {
 export const allCharacters: CharacterEntry[] = catalogCharacters
 	.map((character) => ({
 		id: character.character_id,
+		preview: character.preview,
 		name: character.character_name,
 		image: character.icon_pile,
 		rarity: character.rarity,

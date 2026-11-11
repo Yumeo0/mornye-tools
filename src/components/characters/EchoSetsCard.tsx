@@ -1,7 +1,8 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { echoIcon, type RoleBuild, sonataIcon } from "@/lib/characters";
 import { sonataNames, splitStatCodes, statIconAsset } from "@/lib/stats";
+import { cn } from "@/lib/utils";
 
 // "3+2" -> "3PC + 2PC"
 function pcLabel(variant: string | undefined): string {
@@ -27,7 +28,7 @@ function SonataIcon({ name }: { name: string }) {
 			src={sonataIcon(name)}
 			alt={name}
 			title={name}
-			className="size-7 object-contain bg-muted/60"
+			className="size-6 object-contain"
 		/>
 	);
 }
@@ -38,76 +39,53 @@ export function EchoSetsCard({ guide }: { guide: RoleBuild }) {
 
 	return (
 		<Card className="@container/echo-guide">
-			<CardContent className="p-4 space-y-3">
-				<Label className="text-base font-medium flex items-center gap-2">
-					<img
-						src="/icons/inventory/echo-sets.webp"
-						alt=""
-						className="size-5"
-					/>{" "}
-					Echo Sets
-				</Label>
-
-				<div className="grid items-start gap-3 @min-[640px]/echo-guide:grid-cols-[minmax(0,1fr)_minmax(0,3fr)]">
-					<div className="min-w-0 space-y-2">
+			<CardHeader>
+				<CardTitle>
+					<span className="flex items-center gap-2">
+						<img
+							src="/icons/inventory/echo-sets.webp"
+							alt=""
+							className="size-5 object-contain"
+						/>
+						Echo sets
+					</span>
+				</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<div className="grid items-start gap-3 @min-[440px]/echo-guide:grid-cols-[minmax(0,1fr)_minmax(0,3fr)]">
+					<div className="grid min-w-0 grid-cols-2 gap-2 @min-[440px]/echo-guide:grid-cols-1">
 						{sets.map((set) => {
 							const sonatas = sonataNames(set.sonata);
-							const [firstSonata, ...restSonatas] = sonatas;
 							return (
 								<div
 									key={`${set.variant}-${set.name}-${set.sonata ?? ""}`}
-									className="flex items-center gap-4 bg-muted/50 p-3"
+									className="relative flex min-w-0 flex-col items-center gap-2 border bg-muted/40 px-2 py-3"
 									title={set.name}
 								>
-									<div className="relative shrink-0 mr-2">
+									<div className="relative">
 										{echoIcon(set.name) ? (
 											<img
 												src={echoIcon(set.name)}
 												alt=""
-												className="size-14 object-contain bg-black/30"
+												className="size-20 object-contain drop-shadow-lg"
 											/>
 										) : (
-											<div className="size-14 bg-black/30" />
+											<div className="size-20 bg-muted" />
 										)}
-										{firstSonata && (
-											<img
-												src={sonataIcon(firstSonata)}
-												alt={firstSonata}
-												title={firstSonata}
-												className="absolute -top-2.5 -right-2.5 size-7 object-contain bg-muted/60"
-											/>
-										)}
+										<div className="absolute -top-1 -right-1 flex flex-col gap-1">
+											{sonatas.map((sonata) => (
+												<SonataIcon key={sonata} name={sonata} />
+											))}
+										</div>
 									</div>
-									<div className="flex-1 min-w-0">
-										{restSonatas.length > 0 && (
-											<div className="flex items-center gap-1.5">
-												<span className="text-sm font-medium leading-none">
-													+
-												</span>
-												{restSonatas.map((sonata, sonataIndex) => (
-													<span
-														key={sonata}
-														className="flex items-center gap-1.5"
-													>
-														{sonataIndex > 0 && (
-															<span className="size-1 rounded-full bg-muted-foreground/60" />
-														)}
-														<SonataIcon name={sonata} />
-													</span>
-												))}
-											</div>
-										)}
+									<div className="flex flex-wrap items-center justify-center gap-1.5">
 										{pcLabel(set.variant) && (
-											<p className="text-xs font-medium mt-0.5">
+											<span className="text-[10px] text-muted-foreground">
 												{pcLabel(set.variant)}
-											</p>
+											</span>
 										)}
+										{set.value && <Badge variant="outline">{set.value}</Badge>}
 									</div>
-									{set.value && (
-										<span className="text-xs font-bold bg-primary/15 text-primary px-2 py-1">
-											{set.value}
-										</span>
-									)}
 								</div>
 							);
 						})}
@@ -124,12 +102,18 @@ export function EchoSetsCard({ guide }: { guide: RoleBuild }) {
 							return (
 								<div
 									key={`${slot.cost}-${slot.index}`}
-									className={`flex items-center gap-2 bg-muted/50 px-3 py-2.5 ${slot.half ? "" : "col-span-2"}`}
+									className={cn(
+										"relative flex min-h-14 items-center gap-2 border bg-muted/30 px-3 py-3",
+										!slot.half && "col-span-2",
+									)}
 								>
-									<span className="text-xs text-muted-foreground font-medium">
+									<span
+										title={`${slot.cost}-cost echo`}
+										className="grid size-6 shrink-0 place-items-center border border-border text-xs text-muted-foreground font-medium"
+									>
 										{slot.cost}
 									</span>
-									<span className="text-sm font-medium flex flex-1 flex-wrap items-center justify-center gap-x-3 gap-y-1">
+									<span className="text-xs font-medium flex flex-1 flex-wrap items-center justify-center gap-x-3 gap-y-1">
 										{stats.map((stat) => (
 											<span key={stat} className="flex items-center gap-1.5">
 												{statIconAsset(stat) && (

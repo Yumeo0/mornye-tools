@@ -77,6 +77,22 @@ export function OptimizerResultsPanel({
 				<h3 className="text-sm font-medium">{title}</h3>
 				{summary}
 			</header>
+			{rows.length > 0 && (
+				<div
+					aria-hidden="true"
+					className="hidden items-center gap-3 overflow-y-auto [scrollbar-gutter:stable] border-b py-2 pl-3 pr-4 text-xs text-muted-foreground @min-[840px]/results:flex"
+				>
+					<span className="w-8 shrink-0">#</span>
+					<span className="w-24 shrink-0">Damage</span>
+					<span className="w-16 shrink-0">Change</span>
+					<div className="grid min-w-0 flex-1 grid-cols-4 gap-3 text-right">
+						{["ATK", "Crit. Rate", "Crit. DMG", "ER"].map((label) => (
+							<span key={label}>{label}</span>
+						))}
+					</div>
+					<span className="w-60 shrink-0 text-center">Echoes</span>
+				</div>
+			)}
 			{rows.length === 0 ? (
 				<p className="px-3 py-6 text-center text-[11px] text-muted-foreground">
 					{running ? runningText : idleText}

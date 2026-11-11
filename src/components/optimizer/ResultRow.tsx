@@ -25,19 +25,19 @@ function StatChips({ stats }: { stats: OptResultStats }) {
 		["ER", statPercent(stats.er)],
 	];
 	return (
-		<div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-muted-foreground">
+		<dl className="grid grid-cols-4 gap-3 text-xs text-muted-foreground">
 			{entries.map(([label, value]) => (
-				<span
+				<div
 					key={label}
-					className="inline-flex items-baseline gap-1 whitespace-nowrap"
+					className="flex min-w-0 items-baseline justify-end gap-1.5 whitespace-nowrap"
 				>
-					{label}{" "}
-					<span className="font-semibold tabular-nums text-foreground">
+					<dt className="@min-[840px]/results:sr-only">{label}</dt>
+					<dd className="font-semibold tabular-nums text-foreground">
 						{value}
-					</span>
-				</span>
+					</dd>
+				</div>
 			))}
-		</div>
+		</dl>
 	);
 }
 
@@ -51,12 +51,9 @@ function FullStats({ stats }: { stats: OptResultStats }) {
 		["Crit. DMG", statPercent(stats.cd)],
 	];
 	return (
-		<dl className="flex flex-wrap items-baseline gap-x-6 gap-y-1 text-[11px]">
+		<dl className="grid grid-cols-3 gap-x-5 gap-y-2 text-xs sm:grid-cols-6">
 			{entries.map(([label, value]) => (
-				<div
-					key={label}
-					className="inline-flex items-baseline gap-1.5 whitespace-nowrap"
-				>
+				<div key={label} className="flex flex-col gap-0.5 whitespace-nowrap">
 					<dt className="text-muted-foreground">{label}</dt>
 					<dd className="font-semibold tabular-nums">{value}</dd>
 				</div>
@@ -94,7 +91,7 @@ function EchoThumb({
 						: null;
 	return (
 		<span
-			title={`${label}${change ? ` · ${echoChangeLabels[change]}` : ""}`}
+			title={`${label}${change ? ` · ${echoChangeLabels[change]}` : ""}${echo ? `\n${statPropLines(echo.mainProps).join(" · ")}\n${statPropLines(echo.subProps).join(" · ")}` : ""}`}
 			className={cn(
 				"relative inline-flex size-7 shrink-0 bg-muted/60",
 				change === "kept" && "opacity-50",
@@ -210,13 +207,13 @@ export function ResultRow({
 					current ? "hover:bg-amber-400/15" : "hover:bg-muted/40"
 				}`}
 			>
-				<div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+				<div className="flex flex-wrap items-center gap-x-3 gap-y-1">
 					<span className="flex w-8 shrink-0 justify-start">
 						<span className="text-[11px] text-muted-foreground">
 							#{index + 1}
 						</span>
 					</span>
-					<span className="w-18 shrink-0 text-sm font-semibold tabular-nums">
+					<span className="w-24 shrink-0 text-sm font-semibold tabular-nums">
 						{formatDamage(result.damage)}
 					</span>
 					{current ? (
@@ -237,13 +234,15 @@ export function ResultRow({
 							{delta >= 0 ? "+" : ""}
 							{(delta * 100).toFixed(1)}%
 						</span>
-					) : null}
+					) : (
+						<span className="w-16 shrink-0" />
+					)}
 					{result.stats && (
-						<span className="hidden min-w-0 flex-1 @min-[840px]/results:block">
+						<span className="order-last basis-full min-w-0 @min-[840px]/results:order-none @min-[840px]/results:flex-1 @min-[840px]/results:basis-0">
 							<StatChips stats={result.stats} />
 						</span>
 					)}
-					<span className="ml-auto flex shrink-0 items-center gap-1">
+					<span className="ml-auto flex shrink-0 items-center justify-end gap-1 @min-[840px]/results:w-60">
 						{!current && hasChanges && (
 							<Badge
 								variant="outline"
@@ -327,14 +326,21 @@ export function ResultRow({
 								</figure>
 							)}
 							{equipAction && (
-								<Button
-									size="sm"
-									disabled={equipAction.disabled}
-									title={equipAction.reason}
-									onClick={equipAction.onEquip}
-								>
-									{equipAction.label}
-								</Button>
+								<div className="flex flex-col items-end gap-1">
+									<Button
+										size="sm"
+										disabled={equipAction.disabled}
+										title={equipAction.reason}
+										onClick={equipAction.onEquip}
+									>
+										{equipAction.label}
+									</Button>
+									{equipAction.disabled && equipAction.reason && (
+										<span className="max-w-72 text-right text-xs text-muted-foreground">
+											{equipAction.reason}
+										</span>
+									)}
+								</div>
 							)}
 						</div>
 					</div>
@@ -353,6 +359,11 @@ export function ResultRow({
 								>
 									<EchoCard
 										echo={echo}
+										compareTo={
+											!current && equippedEchoes?.uids[slot]
+												? echoByUid.get(equippedEchoes.uids[slot])
+												: undefined
+										}
 										rollValue={
 											ratingCharacter
 												? calculateRating(

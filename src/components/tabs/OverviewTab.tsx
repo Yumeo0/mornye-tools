@@ -16,7 +16,6 @@ import {
 	Card,
 	CardAction,
 	CardContent,
-	CardDescription,
 	CardFooter,
 	CardHeader,
 	CardTitle,
@@ -30,11 +29,23 @@ import {
 	EmptyTitle,
 } from "@/components/ui/empty";
 import { type AccountSnapshot, useAccount } from "@/lib/account";
-import { hasAccountData, overviewCounts, profilePortrait } from "@/lib/profileOverview";
+import {
+	hasAccountData,
+	overviewCounts,
+	profilePortrait,
+} from "@/lib/profileOverview";
 
 const COLLECTIONS = [
-	{ value: "characters", title: "Characters", image: "/icons/navigation/characters.webp" },
-	{ value: "weapons", title: "Weapons", image: "/icons/navigation/weapons.webp" },
+	{
+		value: "characters",
+		title: "Characters",
+		image: "/icons/navigation/characters.webp",
+	},
+	{
+		value: "weapons",
+		title: "Weapons",
+		image: "/icons/navigation/weapons.webp",
+	},
 	{ value: "echoes", title: "Echoes", image: "/icons/navigation/echoes.webp" },
 ] as const;
 
@@ -42,7 +53,8 @@ export type OverviewDestination =
 	| "characters"
 	| "weapons"
 	| "echoes"
-	| "settings";
+	| "settings"
+	| "inventory";
 
 /** Remounted on profile/tab changes; hidden UIDs never enter the DOM. */
 function PrivateUid({ uid }: { uid: number }) {
@@ -107,7 +119,7 @@ export function ProfileOverview({
 		profile?.serverId === "unknown" ? "Region not identified" : profile?.region;
 	return (
 		<div className="min-h-0 flex-1 overflow-y-auto pb-6 pr-1">
-			<div className="mx-auto flex w-full max-w-5xl flex-col gap-6 p-1 sm:p-3">
+			<div className="mx-auto flex w-full max-w-5xl flex-col gap-4 p-1 sm:p-3">
 				{error && (
 					<Alert variant="destructive">
 						<AlertTitle>Account data unavailable</AlertTitle>
@@ -139,7 +151,7 @@ export function ProfileOverview({
 						<Card>
 							<CardHeader>
 								<CardTitle>Current profile</CardTitle>
-								<CardDescription>Wuthering Waves</CardDescription>
+
 								{region && (
 									<CardAction className="max-w-48">
 										<Badge
@@ -157,21 +169,18 @@ export function ProfileOverview({
 							</CardHeader>
 							<CardContent className="flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-8 sm:py-4">
 								<Avatar
-										className="size-28"
-										key={`${profileKey}:${player?.headId ?? "none"}`}
-									>
-										{portrait && (
-											<AvatarImage
-												src={portrait}
-												alt="Selected in-game profile portrait"
-											/>
-										)}
-										<AvatarFallback>
-											<HugeiconsIcon
-												icon={UserCircleIcon}
-												className="size-12"
-											/>
-										</AvatarFallback>
+									className="size-28"
+									key={`${profileKey}:${player?.headId ?? "none"}`}
+								>
+									{portrait && (
+										<AvatarImage
+											src={portrait}
+											alt="Selected in-game profile portrait"
+										/>
+									)}
+									<AvatarFallback>
+										<HugeiconsIcon icon={UserCircleIcon} className="size-12" />
+									</AvatarFallback>
 								</Avatar>
 								<div className="flex min-w-0 flex-1 flex-col gap-5">
 									<div className="flex flex-wrap items-center justify-between gap-3">
@@ -188,12 +197,19 @@ export function ProfileOverview({
 									</p>
 									<dl className="flex flex-wrap gap-8">
 										{[
-											["Union level", player && player.level > 0 ? player.level : "—"],
+											[
+												"Union level",
+												player && player.level > 0 ? player.level : "—",
+											],
 											["World level", player?.worldLevel ?? "—"],
 										].map(([label, value]) => (
 											<div key={label} className="flex flex-col gap-1">
-												<dt className="text-xs text-muted-foreground">{label}</dt>
-												<dd className="text-2xl font-medium tabular-nums">{value}</dd>
+												<dt className="text-xs text-muted-foreground">
+													{label}
+												</dt>
+												<dd className="text-2xl font-medium tabular-nums">
+													{value}
+												</dd>
 											</div>
 										))}
 									</dl>
@@ -212,47 +228,50 @@ export function ProfileOverview({
 						<Card>
 							<CardHeader>
 								<CardTitle>Collection</CardTitle>
-								<CardDescription>
-									Saved locally for this profile.
-								</CardDescription>
 							</CardHeader>
 							<CardContent>
-								<dl className="grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-4">
+								<div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
 									{COLLECTIONS.map((item) => (
-										<div
+										<Button
 											key={item.value}
-											className="flex flex-col items-start gap-3"
+											aria-label={`View ${item.title.toLowerCase()}`}
+											variant="outline"
+											className="h-auto justify-start gap-4 p-4"
+											onClick={() => onNavigate(item.value)}
 										>
-											<dt className="flex items-center gap-2 text-xs text-muted-foreground">
-												<img
-													src={item.image}
-													alt=""
-													className="size-6 object-contain"
-												/>
-												{item.title}
-											</dt>
-											<dd className="text-4xl font-medium tracking-tight tabular-nums">
-												{counts[item.value].toLocaleString()}
-											</dd>
-											<Button
-												variant="ghost"
-												size="sm"
-												onClick={() => onNavigate(item.value)}
-											>
-												View {item.title.toLowerCase()}
-												<HugeiconsIcon
-													icon={ArrowRight01Icon}
-													data-icon="inline-end"
-												/>
-											</Button>
-										</div>
+											<img
+												src={item.image}
+												alt=""
+												className="size-10 shrink-0 object-contain"
+											/>
+											<span className="flex min-w-0 flex-1 flex-col items-start gap-1">
+												<span className="text-xs text-muted-foreground">
+													{item.title}
+												</span>
+												<span className="text-3xl font-medium tabular-nums">
+													{counts[item.value].toLocaleString()}
+												</span>
+											</span>
+											<HugeiconsIcon
+												icon={ArrowRight01Icon}
+												data-icon="inline-end"
+											/>
+										</Button>
 									))}
-								</dl>
+								</div>
 							</CardContent>
 							<CardFooter className="flex-wrap justify-between gap-3">
-								<span>
-									{counts.inventory.toLocaleString()} material / item types
-								</span>
+								<Button
+									variant="ghost"
+									size="sm"
+									onClick={() => onNavigate("inventory")}
+								>
+									{counts.inventory.toLocaleString()} item types
+									<HugeiconsIcon
+										icon={ArrowRight01Icon}
+										data-icon="inline-end"
+									/>
+								</Button>
 								<span>{counts.teams.toLocaleString()} saved formations</span>
 							</CardFooter>
 						</Card>

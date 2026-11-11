@@ -36,13 +36,6 @@ export function OptimizerSettingsCard() {
 			<CardContent>
 				<FieldGroup className="max-w-xl">
 					<Field>
-						<FieldLabel>Simulation engine</FieldLabel>
-						<FieldDescription>
-							Riley wuwa_calc · CPU worker. Both objectives use timed team
-							simulation and bounded inventory search.
-						</FieldDescription>
-					</Field>
-					<Field>
 						<FieldLabel htmlFor="optimizer-results">Results kept</FieldLabel>
 						<Input
 							id="optimizer-results"

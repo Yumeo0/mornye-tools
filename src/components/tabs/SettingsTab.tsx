@@ -1,10 +1,12 @@
 import {
 	Alert02Icon,
-	Download01Icon,
-	InstallingUpdates01Icon,
+	ArrowDown01Icon,
+	CodeIcon,
+	Database01Icon,
+	Settings01Icon,
+	ToolsIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { FileJson, Monitor, Sparkles, Wrench } from "lucide-react";
 import type { ReactNode } from "react";
 import { CaptureCard } from "@/components/settings/CaptureCard";
 import { DangerousFeaturesCard } from "@/components/settings/DangerousFeaturesCard";
@@ -19,61 +21,53 @@ import { PcapImportPanel } from "@/components/settings/PcapImportPanel";
 import { ShortcutsCard } from "@/components/settings/ShortcutsCard";
 import { UpdatesCard } from "@/components/settings/UpdatesCard";
 import { UpgradeAssistantCard } from "@/components/settings/UpgradeAssistantCard";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import {
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-/** The settings sections, in selector order. */
-const SECTIONS = [
-	{ value: "overlay", label: "Overlay", icon: <Monitor /> },
-	{ value: "assistant", label: "Upgrade Assistant", icon: <Sparkles /> },
-	{ value: "optimizer", label: "Optimizer", icon: <Sparkles /> },
-	{ value: "shortcuts", label: "Shortcuts", icon: <Wrench /> },
-	{ value: "export", label: "Export", icon: <FileJson /> },
-	{
-		value: "import",
-		label: "Import",
-		icon: <HugeiconsIcon icon={Download01Icon} />,
-	},
-	{
-		value: "updates",
-		label: "Updates",
-		icon: <HugeiconsIcon icon={InstallingUpdates01Icon} />,
-	},
-	{ value: "advanced", label: "Developer", icon: <Wrench /> },
-	{
-		value: "dangerous",
-		label: "Dangerous Features",
-		icon: <HugeiconsIcon icon={Alert02Icon} />,
-	},
-] as const;
-
-/**
- * One section tab. The stock trigger only tints its label against the list
- * track, so the row reads as one continuous line; here every segment draws
- * its own box, icons break up the text, `-ml-px` collapses neighbouring
- * borders into single dividers and the active tab is filled like a pressed
- * filter chip, so both the boundaries and the selection are unmistakable.
- */
-function SectionTab({
-	value,
-	label,
-	icon,
+const GROUPS = [
+	{ value: "general", label: "General", icon: Settings01Icon },
+	{ value: "tools", label: "Tools", icon: ToolsIcon },
+	{ value: "data", label: "Data", icon: Database01Icon },
+	{ value: "dangerous", label: "Dangerous Features", icon: Alert02Icon },
+	{ value: "advanced", label: "Advanced", icon: CodeIcon },
+];
+function groupFor(section: string) {
+	if (["assistant", "optimizer", "tools"].includes(section)) return "tools";
+	if (["export", "import", "data"].includes(section)) return "data";
+	if (section === "dangerous") return "dangerous";
+	if (section === "advanced") return "advanced";
+	return "general";
+}
+function AdvancedSection({
+	title,
+	children,
+	defaultOpen = false,
 }: {
-	value: string;
-	label: string;
-	icon: ReactNode;
+	title: string;
+	children: ReactNode;
+	defaultOpen?: boolean;
 }) {
 	return (
-		<TabsTrigger
-			value={value}
-			className="-ml-px h-8 flex-none border-border bg-background px-3 first:ml-0 hover:bg-muted hover:text-foreground data-active:z-10 data-active:border-primary data-active:bg-primary data-active:text-primary-foreground data-active:hover:bg-primary data-active:hover:text-primary-foreground dark:data-active:border-primary dark:data-active:bg-primary dark:data-active:text-primary-foreground"
-		>
-			{icon}
-			{label}
-		</TabsTrigger>
+		<Collapsible defaultOpen={defaultOpen} className="border bg-card">
+			<CollapsibleTrigger
+				render={<Button variant="ghost" />}
+				className="h-auto w-full justify-between p-4"
+			>
+				{title}
+				<HugeiconsIcon icon={ArrowDown01Icon} data-icon="inline-end" />
+			</CollapsibleTrigger>
+			<CollapsibleContent className="flex flex-col gap-4 border-t p-3">
+				{children}
+			</CollapsibleContent>
+		</Collapsible>
 	);
 }
-
 export function SettingsTab({
 	onImport,
 	section,
@@ -85,91 +79,77 @@ export function SettingsTab({
 }) {
 	return (
 		<Tabs
-			value={section}
+			value={groupFor(section)}
 			onValueChange={onSectionChange}
-			className="flex min-h-0 min-w-0 flex-1 flex-col gap-4"
+			className="flex min-h-0 min-w-0 flex-1 flex-col gap-4 p-4"
 		>
-			<TabsList className="h-auto max-w-full shrink-0 justify-start gap-0 overflow-x-auto overflow-y-clip bg-transparent p-0">
-				{SECTIONS.map((item) => (
-					<SectionTab
-						key={item.value}
-						value={item.value}
-						label={item.label}
-						icon={item.icon}
-					/>
+			<TabsList
+				variant="line"
+				className="shrink-0"
+				aria-label="Settings sections"
+			>
+				{GROUPS.map((group) => (
+					<TabsTrigger key={group.value} value={group.value}>
+						<HugeiconsIcon icon={group.icon} />
+						{group.label}
+					</TabsTrigger>
 				))}
 			</TabsList>
-
 			<TabsContent
-				value="overlay"
-				className="min-h-0 flex-1 space-y-6 overflow-y-auto pb-4"
-			>
-				<OverlayToggleCard />
-				<OcrResolutionCard />
-			</TabsContent>
-
-			<TabsContent
-				value="assistant"
-				className="min-h-0 flex-1 space-y-6 overflow-y-auto pb-4"
-			>
-				<UpgradeAssistantCard />
-			</TabsContent>
-
-			<TabsContent
-				value="optimizer"
+				value="general"
 				className="min-h-0 flex-1 overflow-y-auto pb-4"
 			>
-				<OptimizerSettingsCard />
-			</TabsContent>
-
-			<TabsContent
-				value="shortcuts"
-				className="min-h-0 flex-1 overflow-y-auto pb-4"
-			>
-				<ShortcutsCard />
-			</TabsContent>
-
-			<TabsContent
-				value="export"
-				className="min-h-0 flex-1 space-y-6 overflow-y-auto pb-4"
-			>
-				<ExportCard />
-			</TabsContent>
-
-			<TabsContent
-				value="import"
-				className="min-h-0 flex-1 overflow-y-auto pb-4"
-			>
-				<div className="flex flex-col gap-6">
-					<ImportCard />
-					<MapImportCard onImport={onImport} />
+				<div className="grid max-w-5xl items-start gap-4 lg:grid-cols-2">
+					<div className="flex flex-col gap-4">
+						<OverlayToggleCard />
+						<OcrResolutionCard />
+						<ShortcutsCard />
+					</div>
+					<UpdatesCard />
 				</div>
 			</TabsContent>
-
 			<TabsContent
-				value="updates"
-				className="min-h-0 flex-1 space-y-6 overflow-y-auto pb-4"
+				value="tools"
+				className="min-h-0 flex-1 overflow-y-auto pb-4"
 			>
-				<UpdatesCard />
+				<div className="grid max-w-5xl items-start gap-4 lg:grid-cols-2">
+					<UpgradeAssistantCard />
+					<OptimizerSettingsCard />
+				</div>
 			</TabsContent>
-
+			<TabsContent value="data" className="min-h-0 flex-1 overflow-y-auto pb-4">
+				<div className="grid max-w-5xl items-start gap-4 lg:grid-cols-2">
+					<ExportCard />
+					<div className="flex flex-col gap-4">
+						<ImportCard />
+						<MapImportCard onImport={onImport} />
+					</div>
+				</div>
+			</TabsContent>
+			<TabsContent
+				value="advanced"
+				className="min-h-0 flex-1 overflow-y-auto pb-4"
+			>
+				<div className="flex max-w-5xl flex-col gap-3">
+					<AdvancedSection
+						title="Capture diagnostics"
+						defaultOpen={section === "advanced"}
+					>
+						<CaptureCard />
+					</AdvancedSection>
+					<AdvancedSection title="OCR diagnostics">
+						<OcrDebugPanel />
+					</AdvancedSection>
+					<AdvancedSection title="Packet import">
+						<PcapImportPanel />
+					</AdvancedSection>
+				</div>
+			</TabsContent>
 			<TabsContent
 				value="dangerous"
 				className="min-h-0 flex-1 overflow-y-auto pb-4"
 			>
 				<DangerousFeaturesCard />
-			</TabsContent>
-			<TabsContent
-				value="advanced"
-				className="min-h-0 flex-1 space-y-6 overflow-y-auto pb-4"
-			>
-				<CaptureCard />
-
-				<div className="space-y-4 rounded-lg bg-muted/50 p-4">
-					<OcrDebugPanel />
-					<Separator />
-					<PcapImportPanel />
-				</div>
 			</TabsContent>
 		</Tabs>
 	);

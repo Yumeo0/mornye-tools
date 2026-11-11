@@ -1,11 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { FilterLayout, FilterPanel } from "@/components/filters";
+import {
+	activeFilterChips,
+	FilterLayout,
+	FilterPanel,
+} from "@/components/filters";
 import { OptimizerFilterRow } from "@/components/optimizer/OptimizerFilterRow";
 import { OptimizerInfo } from "@/components/optimizer/OptimizerInfo";
 import { OptimizerMemberCard } from "@/components/optimizer/OptimizerMemberCard";
 import { OptimizerResultsPanel } from "@/components/optimizer/OptimizerResultsPanel";
 import { OptimizerRunBar } from "@/components/optimizer/OptimizerRunBar";
+import {
+	EMPTY_OPTIMIZER_FILTERS,
+	EQUIPPED_OPTIONS,
+	mainStatOptions,
+	optimizerSetOptions,
+	substatOptions,
+} from "@/components/optimizer/optimizerOptions";
 import { SimulationInfo } from "@/components/optimizer/SimulationInfo";
 import { TeamProfilePicker } from "@/components/optimizer/TeamProfilePicker";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -126,7 +137,47 @@ export function OptimizerTab({ active }: { active: boolean }) {
 	return (
 		<FilterLayout
 			filters={
-				<FilterPanel label="Optimizer filters">
+				<FilterPanel
+					label="Optimizer filters"
+					activeFilters={activeFilterChips(
+						{
+							...run.filters,
+							...(run.filters.useRecommended
+								? { sets: [], mainStats: [], substats: [] }
+								: {}),
+						},
+						EMPTY_OPTIMIZER_FILTERS,
+						run.setFilters,
+						{
+							useRecommended: () => "Recommended",
+							equipped: (value) =>
+								EQUIPPED_OPTIONS.find((o) => o.value === value)?.label ?? value,
+							minLevel: (value) => `Min +${value}`,
+							sets: (values) =>
+								values
+									.map(
+										(v) =>
+											optimizerSetOptions.find((o) => o.value === v)?.label ??
+											v,
+									)
+									.join(" / "),
+							mainStats: (values) =>
+								values
+									.map(
+										(v) =>
+											mainStatOptions.find((o) => o.value === v)?.label ?? v,
+									)
+									.join(" / "),
+							substats: (values) =>
+								values
+									.map(
+										(v) =>
+											substatOptions.find((o) => o.value === v)?.label ?? v,
+									)
+									.join(" / "),
+						},
+					)}
+				>
 					<OptimizerFilterRow
 						filters={run.filters}
 						onFiltersChange={run.setFilters}
@@ -210,6 +261,16 @@ export function OptimizerTab({ active }: { active: boolean }) {
 									(run.update?.progress.progress ?? 0) * 100,
 								)}
 								canRun={run.canRun && !equipping}
+								disabledReason={
+									equipping
+										? "Equipping echoes…"
+										: (run.errors[0] ??
+											(!pool?.mainCount
+												? "No eligible main echo. Check the echo pool filters."
+												: pool.pool.length < 5
+													? "At least five eligible echoes are needed."
+													: "Preparing rotation…"))
+								}
 								onRun={run.handleRun}
 								onCancel={run.handleCancel}
 							/>
@@ -253,10 +314,10 @@ export function OptimizerTab({ active }: { active: boolean }) {
 								</AlertDescription>
 							</Alert>
 						)}
-						{(pool?.truncated || !!pool?.errors.length) && (
+						{pool && (
 							<div className="flex items-center gap-1 text-xs text-muted-foreground">
 								<span>
-									{pool?.pool.length} / {pool?.eligible} echoes
+									Eligible {pool.eligible} · Searched {pool.pool.length}
 								</span>
 								<OptimizerInfo label="Echo pool">
 									<p>

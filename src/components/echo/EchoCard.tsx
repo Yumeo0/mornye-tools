@@ -22,6 +22,7 @@ import { ECHO_MARK_ICONS } from "@/lib/echoMark";
 import {
 	normalizeStatName,
 	ratingColor,
+	shortStatLabel,
 	statIconAsset,
 	subStatRoll,
 	subStatTierColor,
@@ -96,35 +97,52 @@ function StatRow({
 	value,
 	muted,
 	weight,
+	previous,
 }: {
 	label: string;
 	value: string;
 	muted?: boolean;
 	weight?: number;
+	previous?: string | null;
 }) {
 	const icon = statIconAsset(label);
 	const numeric = muted && value ? Number.parseFloat(value) : null;
 	const roll = numeric !== null ? subStatRoll(label, numeric) : null;
 	const valueColor = roll ? subStatTierColor(roll.tier, roll.tierCount) : null;
 	return (
-		<div className="min-w-0" title={label}>
+		<div
+			className="group/stat min-w-0"
+			title={`${label}${previous !== undefined ? ` · Equipped: ${previous ?? "No roll"}` : ""}${weight !== undefined ? ` · Roll value weight ×${weight}` : ""}`}
+		>
 			<div className="flex items-center gap-1.5">
+				{previous !== undefined && previous !== value && (
+					<span
+						role="img"
+						aria-label="Changed substat"
+						className="size-1 shrink-0 rounded-full bg-primary"
+					/>
+				)}
 				{icon && <img src={icon} alt="" className="size-3 shrink-0" />}
 				<span
-					className={`flex-1 truncate text-[11px] ${muted ? "text-muted-foreground" : ""}`}
+					className={`flex-1 truncate text-xs ${muted ? "text-muted-foreground" : ""}`}
 				>
-					{label}
+					{shortStatLabel(label)}
 				</span>
 				{value && (
 					<span
-						className="text-[11px] font-semibold"
+						className="text-xs font-semibold tabular-nums"
 						style={valueColor ? { color: valueColor } : undefined}
 					>
 						{value}
 					</span>
 				)}
-				{weight !== undefined && (
-					<Badge title="Roll value priority weight">×{weight}</Badge>
+				{weight !== undefined && weight > 0 && (
+					<Badge
+						className="hidden group-hover/stat:inline-flex group-focus-within/card:inline-flex"
+						title="Roll value priority weight"
+					>
+						×{weight}
+					</Badge>
 				)}
 			</div>
 			{numeric !== null && (
@@ -149,6 +167,7 @@ export function EchoCard({
 	actions,
 	footer,
 	markActions,
+	compareTo,
 }: {
 	echo: Echo;
 	/** Character-specific roll rating (0-100); hidden when null. */
@@ -163,6 +182,8 @@ export function EchoCard({
 	actions?: ReactNode;
 	footer?: ReactNode;
 	markActions?: ReactNode;
+	/** Equipped echo in this slot; differences are marked with a dot. */
+	compareTo?: Echo;
 }) {
 	const image = echoImage(echo);
 	const set = echoSet(echo);
@@ -247,7 +268,7 @@ export function EchoCard({
 					<div className="flex shrink-0 items-start gap-1">{actions}</div>
 				)}
 			</div>
-			<div className="mt-2 space-y-0.5">
+			<div className="mt-2 flex flex-col gap-0.5">
 				{echo.mainProps.map((prop) => (
 					<StatRow
 						key={`${prop.propId}-${prop.key}`}
@@ -257,7 +278,7 @@ export function EchoCard({
 				))}
 			</div>
 			{echo.subProps.length > 0 && (
-				<div className="mt-1 space-y-0.5 border-t pt-1">
+				<div className="mt-1 flex flex-col gap-0.5 border-t pt-1">
 					{echo.subProps.map((prop, index) => (
 						<StatRow
 							// biome-ignore lint/suspicious/noArrayIndexKey: substat lines can repeat the same stat
@@ -265,6 +286,18 @@ export function EchoCard({
 							label={statLabel(prop.key)}
 							value={formatStatValue(prop.key, prop.value)}
 							muted
+							previous={
+								compareTo
+									? (() => {
+											const propBefore = compareTo.subProps.find(
+												(before) => before.key === prop.key,
+											);
+											return propBefore
+												? formatStatValue(propBefore.key, propBefore.value)
+												: null;
+										})()
+									: undefined
+							}
 							weight={
 								weights
 									? (weights.get(normalizeStatName(statLabel(prop.key))) ?? 0)

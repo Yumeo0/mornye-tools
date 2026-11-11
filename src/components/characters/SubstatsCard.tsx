@@ -7,6 +7,7 @@ import {
 	parseSubstatTiers,
 	rollValueSubstatTiers,
 	type StatTier,
+	shortStatLabel,
 	statIconAsset,
 	statIconUrl,
 	substatPriorityWeights,
@@ -24,6 +25,7 @@ function SubstatChip({
 }) {
 	return (
 		<div
+			title={stat.name}
 			className={cn(
 				"flex min-w-0 flex-[1_1_10rem] items-center gap-2 border bg-muted/30 px-2.5 py-2",
 				first && "border-primary/30 bg-primary/10",
@@ -35,7 +37,7 @@ function SubstatChip({
 				className="size-4 shrink-0"
 			/>
 			<span className="min-w-0 flex-1 text-xs font-medium">
-				{stat.name}
+				{shortStatLabel(stat.name)}
 				{stat.breakpoint && (
 					<span className="font-normal text-muted-foreground">
 						{" "}

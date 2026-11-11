@@ -517,24 +517,13 @@ export function MapTab({ active }: { active: boolean }) {
 							onSelect={selectReward}
 						/>
 						{region && (
-							<section
+							<nav
 								aria-label="Currently viewed region"
-								className="pointer-events-none absolute left-4 top-4 flex max-w-[calc(100%-2rem)] items-center gap-3 border bg-background/90 px-3 py-2 shadow-lg backdrop-blur-sm"
+								className="pointer-events-none absolute left-3 top-3 max-w-[calc(100%-2rem)] border bg-background/90 px-3 py-1.5 text-xs backdrop-blur-sm"
 							>
-								<img
-									src={region.icon}
-									alt=""
-									className="size-10 shrink-0 object-contain"
-								/>
-								<div className="flex min-w-0 flex-col gap-0.5">
-									<span className="truncate text-sm font-medium">
-										{region.name}
-									</span>
-									<span className="truncate text-xs text-muted-foreground">
-										{subregion}
-									</span>
-								</div>
-							</section>
+								<span className="text-muted-foreground">{region.name} / </span>
+								{subregion}
+							</nav>
 						)}
 
 						<div className="absolute bottom-12 right-3 flex flex-col gap-1 border bg-background/95 p-1 shadow-lg">

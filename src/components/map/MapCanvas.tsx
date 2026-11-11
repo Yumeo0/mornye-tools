@@ -6,6 +6,7 @@ import {
 	useRef,
 	useState,
 } from "react";
+import { Button } from "@/components/ui/button";
 import { useMapCamera } from "@/lib/map/camera";
 import { clusterMarkers, clusterZoomLevel } from "@/lib/map/clustering";
 import type { RewardMarker } from "@/lib/map/filters";
@@ -131,6 +132,7 @@ export function MapCanvas({
 		openGroup?.view === view && openGroup.markers === markers
 			? clusters.find((group) => group.id === openGroup.id)
 			: undefined;
+	const [showDetails, setShowDetails] = useState(false);
 	const [hover, setHover] = useState<string | null>(null);
 	const images = useRef(new Map<string, HTMLImageElement>());
 	const hits = useRef<
@@ -712,10 +714,25 @@ export function MapCanvas({
 					}}
 				/>
 			)}
-			<div className="pointer-events-none absolute bottom-3 left-4 flex items-center gap-3 text-[10px] text-[#e5e5d5]/70">
-				<span className="tracking-[.2em]">N ↑</span>
-				<span>Drag to explore · Scroll to zoom</span>
-				<span>{hover ?? `${Math.round(view.x)}, ${Math.round(view.y)}`}</span>
+			<div className="absolute bottom-3 left-4 flex max-w-[calc(100%-5rem)] items-center gap-2 bg-background/85 p-1 text-xs text-foreground backdrop-blur-sm">
+				<Button
+					variant="ghost"
+					size="sm"
+					aria-label="Map coordinates and controls"
+					aria-pressed={showDetails}
+					title="Show coordinates and controls"
+					onClick={() => setShowDetails(!showDetails)}
+				>
+					N ↑
+				</Button>
+				{showDetails && (
+					<div className="flex flex-wrap gap-x-3 gap-y-1 pr-2">
+						<span>Drag to pan · Scroll to zoom</span>
+						<span className="tabular-nums">
+							{hover ?? `${Math.round(view.x)}, ${Math.round(view.y)}`}
+						</span>
+					</div>
+				)}
 			</div>
 		</div>
 	);

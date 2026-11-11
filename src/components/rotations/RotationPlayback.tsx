@@ -30,6 +30,8 @@ export function RotationPlayback({
 	tab,
 	onTabChange,
 	onSelectNode,
+	hasActions,
+	hasTested,
 }: {
 	entries: RotationPlaybackEntry[];
 	pending: boolean;
@@ -38,6 +40,8 @@ export function RotationPlayback({
 	tab: string;
 	onTabChange: (tab: string) => void;
 	onSelectNode: (nodeId: string) => void;
+	hasActions: boolean;
+	hasTested: boolean;
 }) {
 	const [onlyAutomatic, setOnlyAutomatic] = useState(false);
 	const automatic = entries.filter((entry) => entry.automatic);
@@ -77,14 +81,8 @@ export function RotationPlayback({
 							</span>
 						</Button>
 						<OptimizerInfo label="Playback details">
-							<p>
-								Updates after edits. Auto marks engine-triggered attacks,
-								including off-field follow-ups.
-							</p>
-							<p>
-								Time is the cast start. Damage includes its hits. Generated
-								attacks are read-only.
-							</p>
+							<p>Press Test to refresh. Auto marks generated attacks.</p>
+							<p>Time = cast start. Damage includes all its hits.</p>
 						</OptimizerInfo>
 					</>
 				)}
@@ -111,7 +109,8 @@ export function RotationPlayback({
 									key={entry.id}
 									className={cn(
 										"relative flex items-center gap-2 border-b border-border/50 py-2",
-										entry.automatic && "bg-primary/5",
+										entry.automatic &&
+											"ml-4 border-l-2 border-l-primary/30 bg-primary/5 pl-2",
 									)}
 								>
 									<span className="w-11 shrink-0 text-right text-[10px] tabular-nums text-muted-foreground">
@@ -132,7 +131,7 @@ export function RotationPlayback({
 										/>
 									)}
 									<div className="z-10 min-w-0 flex-1">
-										<div className="flex items-center gap-1.5 text-[9px] text-muted-foreground">
+										<div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
 											<span>{label.type}</span>
 											{character?.preview && <PreviewBadge />}
 											{entry.automatic && (
@@ -145,7 +144,7 @@ export function RotationPlayback({
 											)}
 										</div>
 										<p
-											className="whitespace-normal break-words text-[11px]"
+											className="whitespace-normal break-words text-xs"
 											title={entry.name}
 										>
 											{label.name}
@@ -178,7 +177,11 @@ export function RotationPlayback({
 							? "Simulating…"
 							: onlyAutomatic
 								? "No automatic attacks"
-								: "Add actions to preview"}
+								: !hasActions
+									? "Add actions to preview"
+									: errors.length
+										? "Fix errors to preview"
+										: "Test to preview"}
 					</p>
 				)}
 			</TabsContent>
@@ -199,7 +202,9 @@ export function RotationPlayback({
 											variant="ghost"
 											className="h-auto w-full justify-start whitespace-normal p-0 text-left"
 											aria-label={`Show block: ${issue.message}`}
-											onClick={() => onSelectNode(issue.nodeId!)}
+											onClick={() => {
+												if (issue.nodeId) onSelectNode(issue.nodeId);
+											}}
 										>
 											<span className="min-w-0 flex-1">{issue.message}</span>
 											<HugeiconsIcon
@@ -217,11 +222,13 @@ export function RotationPlayback({
 				) : (
 					<Empty>
 						<EmptyHeader>
-							<EmptyTitle>No errors</EmptyTitle>
+							<EmptyTitle>{hasTested ? "No errors" : "Not tested"}</EmptyTitle>
 							<EmptyDescription>
 								{pending
 									? "Simulation is running."
-									: "Rotation checks appear here."}
+									: hasTested
+										? "Rotation checks passed."
+										: "Test the rotation to check it."}
 							</EmptyDescription>
 						</EmptyHeader>
 					</Empty>

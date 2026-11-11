@@ -22,6 +22,7 @@ export function OptimizerRunBar({
 	progress,
 	progressPercent,
 	canRun,
+	disabledReason,
 	onRun,
 	onCancel,
 }: {
@@ -34,6 +35,7 @@ export function OptimizerRunBar({
 	progress: OptPrgr | null;
 	progressPercent: number;
 	canRun: boolean;
+	disabledReason?: string;
 	onRun: () => void;
 	onCancel: () => void;
 }) {
@@ -106,6 +108,11 @@ export function OptimizerRunBar({
 					</Button>
 				</div>
 			</div>
+			{!running && !canRun && disabledReason && (
+				<p role="status" className="text-right text-xs text-muted-foreground">
+					{disabledReason}
+				</p>
+			)}
 
 			{running && (
 				<div className="flex items-center gap-2">

@@ -1,3 +1,5 @@
+import { ArrowDown01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { type ReactNode, useMemo } from "react";
 import {
 	FilterField,
@@ -7,6 +9,11 @@ import {
 } from "@/components/filters";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
 	Select,
 	SelectContent,
@@ -63,44 +70,46 @@ function AchievementRow({
 	const status = achievementStatus(entry);
 	const current = entry?.current;
 	const target = entry?.target;
+	const hasProgress = current != null && target != null && target > 1;
+	const finished =
+		entry && entry.finishedAt > 0 ? new Date(entry.finishedAt * 1000) : null;
 	return (
 		<article
-			className="flex min-h-36 flex-col gap-3 border bg-card p-4"
+			className="flex flex-col gap-2 border bg-card p-3"
 			aria-label={achievement.name}
+			title={`#${achievement.id}${achievement.hidden ? " · Hidden achievement" : ""}`}
 		>
-			<div className="flex items-start justify-between gap-3">
+			<header className="flex items-start justify-between gap-3">
 				<div className="flex min-w-0 flex-col gap-1">
-					<p className="text-[10px] tracking-widest text-muted-foreground">
-						{group}
-					</p>
-					<h2 className="text-sm font-medium leading-snug">
+					<p className="text-xs text-muted-foreground">{group}</p>
+					<h2 className="text-sm font-semibold leading-snug">
 						{achievement.name}
 					</h2>
 				</div>
 				<Badge variant={status === "unclaimed" ? "outline" : "secondary"}>
 					{STATUS_LABELS[status]}
 				</Badge>
-			</div>
-			<p className="whitespace-pre-line text-xs leading-relaxed text-muted-foreground">
+			</header>
+			<p className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
 				{achievement.description}
 			</p>
-			<div className="mt-auto flex items-center justify-between gap-3 text-[10px] text-muted-foreground">
-				<span>
-					{achievement.hidden ? "Hidden achievement" : `#${achievement.id}`}
-				</span>
-				{entry && entry.finishedAt > 0 ? (
-					<time dateTime={new Date(entry.finishedAt * 1000).toISOString()}>
-						{new Date(entry.finishedAt * 1000).toLocaleDateString()}
-					</time>
-				) : (
-					<span>
-						{current != null && target != null && target > 0
-							? `${current.toLocaleString()} / ${target.toLocaleString()}`
-							: STATUS_LABELS[status]}
-					</span>
-				)}
-			</div>
-			{current != null && target != null && target > 0 && (
+			{(finished || hasProgress) && (
+				<footer className="mt-auto flex items-center justify-between gap-3 text-xs text-muted-foreground">
+					{finished ? (
+						<time dateTime={finished.toISOString()}>
+							{finished.toLocaleDateString()}
+						</time>
+					) : (
+						<span />
+					)}
+					{hasProgress && (
+						<span className="tabular-nums">
+							{current.toLocaleString()} / {target.toLocaleString()}
+						</span>
+					)}
+				</footer>
+			)}
+			{hasProgress && (
 				<progress
 					aria-label={`${achievement.name} progress`}
 					className="h-1 w-full appearance-none overflow-hidden [&::-webkit-progress-bar]:bg-secondary [&::-webkit-progress-value]:bg-primary [&::-moz-progress-bar]:bg-primary"
@@ -142,7 +151,7 @@ function NavButton({
 			{children}
 			<span
 				className={cn(
-					"shrink-0 text-[10px]",
+					"shrink-0 text-[11px] tabular-nums",
 					complete ? "opacity-80" : "text-muted-foreground",
 				)}
 			>
@@ -282,7 +291,40 @@ export function AchievementsTab({ active }: { active: boolean }) {
 	return (
 		<FilterLayout
 			filters={
-				<FilterPanel label="Achievement filters">
+				<FilterPanel
+					label="Achievement filters"
+					activeFilters={[
+						...(search
+							? [{ label: `“${search}”`, onRemove: () => setSearch("") }]
+							: []),
+						...(status !== "all"
+							? [
+									{
+										label:
+											STATUSES.find((item) => item.value === status)?.label ??
+											status,
+										onRemove: () => setStatus("all"),
+									},
+								]
+							: []),
+						...(category !== "all"
+							? [
+									{
+										label:
+											groupById.get(Number(groupId))?.name ??
+											catalog.categories.find(
+												(item) => String(item.id) === category,
+											)?.name ??
+											"Category",
+										onRemove: () => selectCategory("all"),
+									},
+								]
+							: []),
+						...(showHidden
+							? [{ label: "Hidden", onRemove: () => setShowHidden(false) }]
+							: []),
+					]}
+				>
 					<div className="flex flex-col gap-4">
 						<FilterSearch
 							value={search}
@@ -342,7 +384,7 @@ export function AchievementsTab({ active }: { active: boolean }) {
 							onClick={() => selectCategory("all")}
 							count={countText(total, snapshot != null)}
 						>
-							<span className="min-w-0 flex-1 truncate font-medium">
+							<span className="min-w-0 flex-1 whitespace-normal break-words font-medium">
 								All achievements
 							</span>
 						</NavButton>
@@ -352,48 +394,62 @@ export function AchievementsTab({ active }: { active: boolean }) {
 							);
 							const counts = totals.get(entry.id);
 							return (
-								<div key={entry.id} className="flex flex-col gap-0.5">
-									<NavButton
-										active={category === String(entry.id)}
-										complete={isComplete(counts)}
-										onClick={() => selectCategory(String(entry.id))}
-										count={countText(counts, snapshot != null)}
-									>
-										<img
-											src={entry.icon}
-											alt=""
-											className="size-6 shrink-0 object-contain"
-										/>
-										<span className="min-w-0 flex-1 truncate font-medium">
-											{entry.name}
-										</span>
-									</NavButton>
-									<ul
-										aria-label={`${entry.name} sub-categories`}
-										className="ml-3 flex flex-col gap-0.5 border-l pl-1"
-									>
-										{groups.map((group) => {
-											const groupCounts = totals.get(group.id);
-											return (
-												<li key={group.id}>
-													<NavButton
-														active={groupId === String(group.id)}
-														complete={isComplete(groupCounts)}
-														onClick={() => {
-															setCategory(String(entry.id));
-															setGroupId(String(group.id));
-														}}
-														count={countText(groupCounts, snapshot != null)}
-													>
-														<span className="min-w-0 flex-1 truncate">
-															{subCategoryName(group, entry.name)}
-														</span>
-													</NavButton>
-												</li>
-											);
-										})}
-									</ul>
-								</div>
+								<Collapsible
+									key={entry.id}
+									defaultOpen={category === String(entry.id)}
+									className="flex flex-col gap-0.5"
+								>
+									<div className="flex items-center">
+										<NavButton
+											active={category === String(entry.id)}
+											complete={isComplete(counts)}
+											onClick={() => selectCategory(String(entry.id))}
+											count={countText(counts, snapshot != null)}
+										>
+											<img
+												src={entry.icon}
+												alt=""
+												className="size-6 shrink-0 object-contain"
+											/>
+											<span className="min-w-0 flex-1 whitespace-normal break-words font-medium">
+												{entry.name}
+											</span>
+										</NavButton>
+										<CollapsibleTrigger
+											render={<Button variant="ghost" size="icon-xs" />}
+											aria-label={`Expand ${entry.name} categories`}
+										>
+											<HugeiconsIcon icon={ArrowDown01Icon} />
+										</CollapsibleTrigger>
+									</div>
+									<CollapsibleContent>
+										<ul
+											aria-label={`${entry.name} sub-categories`}
+											className="ml-3 flex flex-col gap-0.5 border-l pl-1"
+										>
+											{groups.map((group) => {
+												const groupCounts = totals.get(group.id);
+												return (
+													<li key={group.id}>
+														<NavButton
+															active={groupId === String(group.id)}
+															complete={isComplete(groupCounts)}
+															onClick={() => {
+																setCategory(String(entry.id));
+																setGroupId(String(group.id));
+															}}
+															count={countText(groupCounts, snapshot != null)}
+														>
+															<span className="min-w-0 flex-1 whitespace-normal break-words">
+																{subCategoryName(group, entry.name)}
+															</span>
+														</NavButton>
+													</li>
+												);
+											})}
+										</ul>
+									</CollapsibleContent>
+								</Collapsible>
 							);
 						})}
 					</nav>
@@ -410,7 +466,7 @@ export function AchievementsTab({ active }: { active: boolean }) {
 						columns={columns}
 						minItemWidth={420}
 						gap={10}
-						estimateRowHeight={160}
+						estimateRowHeight={120}
 						getItemKey={achievementKey}
 						className="min-h-0 flex-1 overflow-y-auto pr-1"
 						renderItem={(achievement) => (

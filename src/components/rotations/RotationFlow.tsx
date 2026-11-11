@@ -7,7 +7,7 @@ import {
 	RepeatIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import type { DragEvent } from "react";
+import { type DragEvent, useEffect, useMemo, useState } from "react";
 import { FilterSelect } from "@/components/filters";
 import { PreviewBadge } from "@/components/PreviewBadge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -34,30 +34,11 @@ import {
 	rotationStageOptions,
 	splitRotationActionName,
 } from "@/lib/customRotations";
+import { flowRows, flowTurns } from "@/lib/rotationFlow";
 import { cn } from "@/lib/utils";
 
 export const ROTATION_DRAG_TYPE = "application/x-mornye-rotation";
-export interface FlowRow {
-	node: RotationNode;
-	parentId: string | null;
-	depth: number;
-	end?: boolean;
-}
-export function flowRows(
-	nodes: RotationNode[],
-	parentId: string | null = null,
-	depth = 0,
-): FlowRow[] {
-	return nodes.flatMap((node): FlowRow[] => [
-		{ node, parentId, depth },
-		...(node.kind === "loop"
-			? [
-					...flowRows(node.children, node.id, depth + 1),
-					{ node, parentId, depth, end: true },
-				]
-			: []),
-	]);
-}
+export { flowRows } from "@/lib/rotationFlow";
 export function RotationFlow({
 	nodes,
 	kits,
@@ -87,7 +68,21 @@ export function RotationFlow({
 	onAddLoop: () => void;
 	onEnding: (nodeId: string, actionId: string) => void;
 }) {
-	const rows = flowRows(nodes);
+	const rows = useMemo(() => flowTurns(flowRows(nodes)), [nodes]);
+	const [collapsed, setCollapsed] = useState<Set<string>>(() => new Set());
+	useEffect(() => {
+		const turnId = rows.find((row) => row.node.id === selectedId)?.turnId;
+		if (turnId)
+			setCollapsed((previous) => {
+				if (!previous.has(turnId)) return previous;
+				const next = new Set(previous);
+				next.delete(turnId);
+				return next;
+			});
+	}, [selectedId, rows]);
+	const visibleRows = rows.filter(
+		(row) => !row.turnId || row.turnStart || !collapsed.has(row.turnId),
+	);
 	const firstProblem = new Map<string, string>();
 	for (const issue of problems) {
 		if (issue.nodeId && !firstProblem.has(issue.nodeId))
@@ -124,16 +119,25 @@ export function RotationFlow({
 				</Empty>
 			) : (
 				<VirtualGrid
-					items={rows}
+					items={visibleRows}
 					columns={1}
 					gap={0}
 					estimateRowHeight={76}
 					getItemKey={(row) => `${row.node.id}${row.end ? ":end" : ""}`}
-					scrollToIndex={rows.findIndex(
+					scrollToIndex={visibleRows.findIndex(
 						(row) => row.node.id === selectedId && !row.end,
 					)}
 					className="min-h-0 flex-1 overflow-y-auto px-4 py-3"
-					renderItem={({ node, parentId, depth, end }, index) => {
+					renderItem={({
+						node,
+						parentId,
+						depth,
+						end,
+						index,
+						turnId,
+						turnStart,
+						turnCount,
+					}) => {
 						const kit =
 							node.kind !== "loop"
 								? kits.find((k) => k.member.characterId === node.characterId)
@@ -148,6 +152,13 @@ export function RotationFlow({
 							splitRotationActionName(rotationActionName(action), action.kind);
 						const key = `${node.id}${end ? ":end" : ""}`;
 						const problem = !end && firstProblem.get(node.id);
+						const folded = turnId && collapsed.has(turnId);
+						const turnErrors = turnStart
+							? rows.filter(
+									(row) =>
+										row.turnId === turnId && firstProblem.has(row.node.id),
+								).length
+							: 0;
 						const previous = rows
 							.slice(0, index)
 							.findLast((row) => row.node.kind !== "loop")?.node;
@@ -173,6 +184,12 @@ export function RotationFlow({
 										event.preventDefault();
 										event.stopPropagation();
 										onDropKey(key);
+										if (folded && turnId)
+											setCollapsed((previous) => {
+												const next = new Set(previous);
+												next.delete(turnId);
+												return next;
+											});
 									}
 								}}
 								onDragLeave={(event) => {
@@ -210,13 +227,49 @@ export function RotationFlow({
 								{dropKey === key && (
 									<span className="absolute inset-x-5 top-0 h-0.5 bg-primary" />
 								)}
-								{swapping && (
-									<div className="mb-2 flex items-center gap-1.5 text-[10px] text-muted-foreground">
-										<HugeiconsIcon icon={ArrowRight01Icon} className="size-3" />
-										<span>Swap</span>
-									</div>
+								{turnStart && character && turnId && (
+									<Button
+										variant="ghost"
+										className="mb-2 h-auto w-full justify-start gap-2 border-y bg-muted/40 px-2 py-2"
+										aria-label={`${folded ? "Expand" : "Collapse"} ${character.character_name} turn`}
+										aria-expanded={!folded}
+										onClick={() =>
+											setCollapsed((previous) => {
+												const next = new Set(previous);
+												if (next.has(turnId)) next.delete(turnId);
+												else next.add(turnId);
+												return next;
+											})
+										}
+									>
+										{swapping && (
+											<HugeiconsIcon
+												icon={ArrowRight01Icon}
+												data-icon="inline-start"
+											/>
+										)}
+										<img
+											src={character.icon_head_256}
+											alt=""
+											className="size-8 object-contain"
+										/>
+										<span>{character.character_name}</span>
+										<span className="text-xs text-muted-foreground">
+											{turnCount} actions
+										</span>
+										{turnErrors > 0 && (
+											<Badge variant="outline">{turnErrors} errors</Badge>
+										)}
+										<HugeiconsIcon
+											icon={ArrowDown01Icon}
+											className={cn(
+												"ml-auto size-4 transition-transform",
+												folded && "-rotate-90",
+											)}
+										/>
+									</Button>
 								)}
-								{end ? (
+								{folded ? null : end ? (
 									<div className="flex items-center gap-2 py-1 text-muted-foreground">
 										<HugeiconsIcon icon={RepeatIcon} className="size-3.5" />
 										<span className="text-[10px]">
@@ -310,13 +363,6 @@ export function RotationFlow({
 													onClick={() => onSelect(node.id)}
 													className="h-auto min-w-0 flex-1 justify-start gap-3 p-0"
 												>
-													{character && (
-														<img
-															src={character.icon_head_256}
-															alt={character.character_name}
-															className="size-10 shrink-0 object-contain"
-														/>
-													)}
 													<span className="flex min-w-0 flex-1 flex-col items-start gap-1 text-left">
 														<span className="flex max-w-full items-center gap-1.5">
 															<Badge variant="secondary">
@@ -387,7 +433,7 @@ export function RotationFlow({
 										</span>
 									</div>
 								)}
-								{problem && (
+								{problem && !folded && (
 									<Alert variant="destructive" className="border-t-0">
 										<AlertDescription>{problem}</AlertDescription>
 									</Alert>

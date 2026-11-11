@@ -1,7 +1,12 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { echoIcon, type RoleBuild, sonataIcon } from "@/lib/characters";
-import { sonataNames, splitStatCodes, statIconAsset } from "@/lib/stats";
+import {
+	shortStatLabel,
+	sonataNames,
+	splitStatCodes,
+	statIconAsset,
+} from "@/lib/stats";
 import { cn } from "@/lib/utils";
 
 // "3+2" -> "3PC + 2PC"
@@ -115,7 +120,11 @@ export function EchoSetsCard({ guide }: { guide: RoleBuild }) {
 									</span>
 									<span className="text-xs font-medium flex flex-1 flex-wrap items-center justify-center gap-x-3 gap-y-1">
 										{stats.map((stat) => (
-											<span key={stat} className="flex items-center gap-1.5">
+											<span
+												key={stat}
+												title={stat}
+												className="flex items-center gap-1.5"
+											>
 												{statIconAsset(stat) && (
 													<img
 														src={statIconAsset(stat)}
@@ -123,7 +132,7 @@ export function EchoSetsCard({ guide }: { guide: RoleBuild }) {
 														className="size-4 shrink-0 brightness-0 opacity-70 dark:brightness-100 dark:opacity-80"
 													/>
 												)}
-												{stat}
+												{shortStatLabel(stat)}
 											</span>
 										))}
 									</span>

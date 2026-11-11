@@ -61,6 +61,17 @@ interface StatsJson {
 }
 
 // Normalize a stat name for lookup (matches the overlay's normalization)
+/** Compact display only; matching and calculator names keep their full labels. */
+export function shortStatLabel(label: string): string {
+	return label
+		.replace("Resonance Liberation DMG Bonus", "Liberation DMG")
+		.replace("Resonance Skill DMG Bonus", "Skill DMG")
+		.replace("Basic Attack DMG Bonus", "Basic DMG")
+		.replace("Heavy Attack DMG Bonus", "Heavy DMG")
+		.replace("Healing Bonus", "Healing")
+		.replace(" DMG Bonus", " DMG");
+}
+
 export function normalizeStatName(stat: string): string {
 	return stat.replace(/\./g, "").replace(/\s+/g, " ").trim().toLowerCase();
 }

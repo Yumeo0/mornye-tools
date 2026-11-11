@@ -79,35 +79,33 @@ function QuestRow({
 }) {
 	return (
 		<article
-			className="flex min-h-36 items-start gap-3 border bg-card p-4"
+			className="flex flex-col gap-2 border bg-card p-3"
 			aria-label={quest.name}
 		>
-			<img
-				src={quest.icon}
-				alt=""
-				className="size-10 shrink-0 object-contain"
-			/>
-			<div className="flex min-w-0 flex-1 flex-col gap-3">
-				<div className="flex flex-wrap items-start justify-between gap-2">
+			<header className="flex items-start gap-3">
+				<img
+					src={quest.icon}
+					alt=""
+					className="size-10 shrink-0 object-contain"
+				/>
+				<div className="flex min-w-0 flex-1 flex-wrap items-start justify-between gap-2">
 					<div className="flex min-w-0 flex-1 flex-col gap-1">
-						<p className="text-[10px] tracking-widest text-muted-foreground">
-							{quest.typeName}
-						</p>
+						<p className="text-xs text-muted-foreground">{quest.typeName}</p>
 						<h2 className="text-sm font-medium leading-snug">{quest.name}</h2>
 					</div>
 					<Badge variant={status === "completed" ? "outline" : "secondary"}>
 						{QUEST_STATUS_LABELS[status]}
 					</Badge>
 				</div>
-				{quest.description && (
-					<p
-						title={quest.description}
-						className="line-clamp-3 whitespace-pre-line text-xs leading-relaxed text-muted-foreground"
-					>
-						{quest.description}
-					</p>
-				)}
-			</div>
+			</header>
+			{quest.description && quest.description.trim() !== quest.name.trim() && (
+				<p
+					title={quest.description}
+					className="line-clamp-2 whitespace-pre-line text-sm leading-relaxed text-muted-foreground"
+				>
+					{quest.description}
+				</p>
+			)}
 		</article>
 	);
 }
@@ -192,7 +190,27 @@ export function QuestsTab({ active }: { active: boolean }) {
 		>
 			<FilterLayout
 				filters={
-					<FilterPanel label="Quest filters">
+					<FilterPanel
+						label="Quest filters"
+						activeFilters={[
+							...(search
+								? [{ label: `“${search}”`, onRemove: () => setSearch("") }]
+								: []),
+							...(type !== "all"
+								? [{ label: type, onRemove: () => setType("all") }]
+								: []),
+							...(status !== "all"
+								? [
+										{
+											label:
+												STATUSES.find((item) => item.value === status)?.label ??
+												status,
+											onRemove: () => setStatus("all"),
+										},
+									]
+								: []),
+						]}
+					>
 						<header className="flex flex-col gap-2">
 							<h1 className="text-lg font-medium">Quests</h1>
 							<p className="text-xs text-muted-foreground">
@@ -225,11 +243,12 @@ export function QuestsTab({ active }: { active: boolean }) {
 							/>
 						</FieldGroup>
 						<div className="flex flex-col gap-3 text-xs text-muted-foreground">
-							<p>
-								{unknown > 0
-									? "Log in with account sync enabled to load all quest completion data."
-									: "Completion synced from your current account."}
-							</p>
+							{unknown > 0 && (
+								<p>
+									Log in with account sync enabled to load all quest completion
+									data.
+								</p>
+							)}
 							<span>{quests.length.toLocaleString()} shown</span>
 						</div>
 					</FilterPanel>
@@ -241,7 +260,7 @@ export function QuestsTab({ active }: { active: boolean }) {
 						columns={columns}
 						minItemWidth={420}
 						gap={10}
-						estimateRowHeight={160}
+						estimateRowHeight={130}
 						getItemKey={(entry) => entry.quest.id}
 						className="min-h-0 flex-1 overflow-y-auto pr-1"
 						renderItem={(entry) => (

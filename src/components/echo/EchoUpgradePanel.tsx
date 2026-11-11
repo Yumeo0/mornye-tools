@@ -192,7 +192,7 @@ export function EchoUpgradePanel({
 					<FieldGroup>
 						<Field data-invalid={!valid}>
 							<FieldLabel htmlFor="echo-upgrade-threshold">
-								Rating threshold (%)
+								Target roll value (%)
 							</FieldLabel>
 							<Input
 								id="echo-upgrade-threshold"
@@ -208,8 +208,7 @@ export function EchoUpgradePanel({
 								}}
 							/>
 							<FieldDescription>
-								Echoes that can still reach this rating continue to their level
-								limit.
+								Stop when this rating is no longer reachable.
 							</FieldDescription>
 						</Field>
 						<Separator />
@@ -217,10 +216,10 @@ export function EchoUpgradePanel({
 							<FieldLegend>Allowed fodder</FieldLegend>
 							<ToggleGroup
 								multiple
-								orientation="vertical"
+								orientation="horizontal"
 								variant="outline"
 								disabled={!rulesLoaded}
-								className="w-full items-stretch"
+								className="grid w-full grid-cols-5 gap-1"
 								spacing={1}
 								aria-label="Allowed upgrade fodder"
 								value={[
@@ -241,12 +240,12 @@ export function EchoUpgradePanel({
 							>
 								<ToggleGroupItem
 									value="discard"
-									className="relative h-12 w-full justify-start gap-3 px-3 pr-9"
+									className="relative h-24 w-full min-w-0 flex-col justify-center gap-1 px-1 py-2"
 									aria-label="Discarded echoes, used before tubes"
 									title="Discarded echoes · Used before tubes, even when their EXP passes a level checkpoint. Selected and equipped echoes are protected."
 								>
 									<span
-										className="invisible absolute right-3 top-1/2 -translate-y-1/2 group-aria-pressed/toggle:visible"
+										className="invisible absolute right-1 top-1 [&_svg]:size-3 group-aria-pressed/toggle:visible"
 										aria-hidden="true"
 									>
 										<HugeiconsIcon icon={CheckmarkCircle02Icon} />
@@ -256,25 +255,25 @@ export function EchoUpgradePanel({
 										alt=""
 										className="size-8 object-contain"
 									/>
-									<span className="text-[10px]">discarded</span>
+									<span className="text-[11px]">Echoes</span>
 								</ToggleGroupItem>
 								{TUBES.map((tube) => (
 									<ToggleGroupItem
 										key={tube.id}
 										value={String(tube.id)}
-										className="relative h-12 w-full justify-start gap-3 px-3 pr-9"
+										className="relative h-24 w-full min-w-0 flex-col justify-center gap-1 px-1 py-2"
 										aria-label={`${EXP_MATERIAL_NAMES[tube.id]}, ${count(tube.id).toLocaleString()} owned`}
 										title={`${EXP_MATERIAL_NAMES[tube.id]} · ${tube.exp.toLocaleString()} EXP · ${count(tube.id).toLocaleString()} owned`}
 									>
 										<span
-											className="invisible absolute right-3 top-1/2 -translate-y-1/2 group-aria-pressed/toggle:visible"
+											className="invisible absolute right-1 top-1 [&_svg]:size-3 group-aria-pressed/toggle:visible"
 											aria-hidden="true"
 										>
 											<HugeiconsIcon icon={CheckmarkCircle02Icon} />
 										</span>
 										<span
 											className={cn(
-												"flex items-center gap-3",
+												"flex flex-col items-center gap-0.5",
 												rarityTextClass(tube.rarity),
 											)}
 											aria-hidden="true"
@@ -286,7 +285,10 @@ export function EchoUpgradePanel({
 											/>
 											<span className="text-[10px]">{tube.rarity}★</span>
 										</span>
-										<span className="ml-auto tabular-nums" aria-hidden="true">
+										<span
+											className="text-[11px] tabular-nums"
+											aria-hidden="true"
+										>
 											{new Intl.NumberFormat(undefined, {
 												notation: "compact",
 												maximumFractionDigits: 1,
@@ -310,8 +312,7 @@ export function EchoUpgradePanel({
 									Mark failed echoes as discard
 								</FieldLabel>
 								<FieldDescription>
-									Mark an echo when its best possible rating falls below the
-									threshold, including locked echoes, then move to the next.
+									Below target, including locked echoes.
 								</FieldDescription>
 							</FieldContent>
 							<Switch

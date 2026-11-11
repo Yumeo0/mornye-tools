@@ -1,5 +1,6 @@
 import type { ComponentProps } from "react";
 import {
+	activeFilterChips,
 	FilterField,
 	FilterIconButton,
 	FilterPanel,
@@ -83,6 +84,20 @@ export function CharacterFilterBar({
 	return (
 		<FilterPanel
 			label="Character filters"
+			activeFilters={activeFilterChips(
+				filters,
+				DEFAULT_FILTERS,
+				onFiltersChange,
+				{
+					search: (value) => `“${value}”`,
+					elements: (value) => value.join(" / "),
+					weaponTypes: (value) => value.join(" / "),
+					rarity: (value) => value.map((r) => `${r}★`).join(" / "),
+					ownedOnly: () => "Owned",
+					levelRange: (value) => `Lv ${value.join("–")}`,
+					chainRange: (value) => `S${value.join("–")}`,
+				},
+			)}
 			className={className}
 			contentClassName={contentClassName}
 		>

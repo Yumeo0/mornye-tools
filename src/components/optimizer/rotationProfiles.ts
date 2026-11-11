@@ -72,3 +72,19 @@ export function sortRotationProfiles(
 		return a.label.localeCompare(b.label) || a.id.localeCompare(b.id);
 	});
 }
+
+/** Preserve the chosen sort order while collecting variants of the same team. */
+export function groupRotationProfiles(profiles: TeamProfile[]) {
+	const groups = new Map<string, { id: string; profiles: TeamProfile[] }>();
+	for (const profile of profiles) {
+		const id = profile.customRotation
+			? profile.id
+			: profile.members
+					.map((member) => `${member.characterId}:${member.mainDps}`)
+					.join("|");
+		const group = groups.get(id) ?? { id, profiles: [] };
+		group.profiles.push(profile);
+		groups.set(id, group);
+	}
+	return [...groups.values()];
+}

@@ -61,14 +61,22 @@ import {
 } from "@/lib/dangerous";
 import { hasAccountData } from "@/lib/profileOverview";
 
-export function AddPlayerProfileDialog({ onClose }: { onClose: () => void }) {
+export function AddPlayerProfileDialog({
+	onClose,
+	accountId,
+}: {
+	onClose: () => void;
+	/** Scope the dialog to an account, or "new" to add a game account. */
+	accountId?: string;
+}) {
 	const { status } = useDangerousFeatures();
 	const accounts = status?.accounts ?? [];
 	const { profiles } = useAccount();
 	const [choice, setChoice] = useState(
-		accounts.some((a) => a.id === status?.account_id)
-			? (status?.account_id ?? "new")
-			: "new",
+		accountId ??
+			(accounts.some((a) => a.id === status?.account_id)
+				? (status?.account_id ?? "new")
+				: "new"),
 	);
 	const selected = accounts.find((a) => a.id === choice);
 	const [email, setEmail] = useState(selected?.email ?? "");
@@ -153,7 +161,11 @@ export function AddPlayerProfileDialog({ onClose }: { onClose: () => void }) {
 			<DialogContent className="max-h-[85dvh] overflow-y-auto sm:max-w-2xl">
 				<DialogHeader>
 					<DialogTitle>
-						{discovery ? "Choose your player profile" : "Add player profile"}
+						{discovery
+							? "Choose your player profile"
+							: accountId === "new"
+								? "Add game account"
+								: "Add player profile"}
 					</DialogTitle>
 					<DialogDescription>
 						{discovery
@@ -224,7 +236,15 @@ export function AddPlayerProfileDialog({ onClose }: { onClose: () => void }) {
 						onSubmit={(event) => void findProfiles(event)}
 					>
 						<FieldGroup>
-							{accounts.length > 0 && (
+							{accountId && selected && savedSignIn && (
+								<p
+									className="truncate text-sm font-medium"
+									title={selected.email}
+								>
+									{selected.email}
+								</p>
+							)}
+							{accountId === undefined && accounts.length > 0 && (
 								<Field>
 									<FieldLabel htmlFor="profile-login-account">
 										Game account
@@ -279,6 +299,7 @@ export function AddPlayerProfileDialog({ onClose }: { onClose: () => void }) {
 											type="email"
 											autoComplete="username"
 											value={email}
+											readOnly={Boolean(accountId && selected)}
 											onChange={(e) => setEmail(e.target.value)}
 											disabled={pending}
 											required

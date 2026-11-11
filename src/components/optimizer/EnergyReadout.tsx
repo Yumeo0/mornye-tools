@@ -20,7 +20,7 @@ export function EnergyReadout({ energy }: { energy: EnergyStatus[] }) {
 								)}
 								<span
 									className={cn(
-										"whitespace-nowrap text-[11px] tabular-nums",
+										"whitespace-nowrap text-xs tabular-nums",
 										!e.feasible && "text-destructive",
 									)}
 								>
@@ -28,6 +28,16 @@ export function EnergyReadout({ energy }: { energy: EnergyStatus[] }) {
 									<span className="text-muted-foreground">
 										/ {Math.max(e.required, e.kitMinimum).toFixed(1)}%
 									</span>
+									{!e.feasible && (
+										<span className="ml-1">
+											(+
+											{Math.max(
+												0,
+												Math.max(e.required, e.kitMinimum) - e.actual,
+											).toFixed(1)}
+											% needed)
+										</span>
+									)}
 								</span>
 							</>
 						}

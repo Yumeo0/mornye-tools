@@ -161,7 +161,22 @@ export function InventoryTab() {
 		<div className="flex min-h-0 flex-1 flex-col gap-4">
 			<FilterLayout
 				filters={
-					<FilterPanel label="Inventory filters">
+					<FilterPanel
+						label="Inventory filters"
+						activeFilters={[
+							...(search
+								? [
+										{
+											label: `Search: ${search}`,
+											onRemove: () => setSearch(""),
+										},
+									]
+								: []),
+							...(category !== "any"
+								? [{ label: category, onRemove: () => setCategory("any") }]
+								: []),
+						]}
+					>
 						<FilterSearch
 							value={search}
 							onChange={setSearch}

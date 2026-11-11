@@ -5,7 +5,43 @@ import type { RotationDamage } from "@/lib/calc/rotationDamage";
 import {
 	EMPTY_ROTATION_FILTERS,
 	filterRotationProfiles,
+	groupRotationProfiles,
 } from "./rotationProfiles";
+
+test("team grouping preserves score order, roles and independently named custom rotations", () => {
+	const base = getCatalog().teams[0];
+	const first = { ...base, id: "best" };
+	const alternate = { ...base, id: "alternate" };
+	const otherRole = {
+		...base,
+		id: "role",
+		members: base.members.map((m, i) =>
+			i === 0 ? { ...m, mainDps: !m.mainDps } : m,
+		),
+	};
+	const custom = (id: string) => ({
+		...base,
+		id,
+		customRotation: { id, name: id, members: [], nodes: [] },
+	});
+	const profiles = [
+		first,
+		otherRole,
+		alternate,
+		custom("custom-a"),
+		custom("custom-b"),
+	];
+	expect(
+		groupRotationProfiles(profiles).map((g) => g.profiles.map((p) => p.id)),
+	).toEqual([["best", "alternate"], ["role"], ["custom-a"], ["custom-b"]]);
+	expect(profiles.map((p) => p.id)).toEqual([
+		"best",
+		"role",
+		"alternate",
+		"custom-a",
+		"custom-b",
+	]);
+});
 
 test("character role filters apply to that character rather than another teammate", () => {
 	const profiles = getCatalog().teams;
@@ -42,7 +78,7 @@ test("rotation search combines teammates, variant and fixed main echo without lo
 	expect(
 		new Set(
 			allPhrolova.map(
-				(p) => p.members.find((m) => m.characterId === 1608)!.loadoutId,
+				(p) => p.members.find((m) => m.characterId === 1608)?.loadoutId,
 			),
 		).size,
 	).toBe(3);
@@ -67,7 +103,8 @@ test("ownership is team-wide and rotations with compatibility errors remain visi
 			ownership: "owned",
 		}),
 	).toEqual([]);
-	const selected = profiles.find((p) => !p.errors.length)!;
+	const selected = profiles.find((p) => !p.errors.length);
+	if (!selected) throw new Error("Expected a compatible preset");
 	const snapshot = {
 		...EMPTY_ACCOUNT,
 		resonators: selected.members.map((m) => ({

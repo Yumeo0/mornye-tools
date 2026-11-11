@@ -1,7 +1,5 @@
 import { useMemo, useState } from "react";
 import { FilterSelect } from "@/components/filters";
-import { PreviewBadge } from "@/components/PreviewBadge";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -27,10 +25,11 @@ import { charactersById } from "@/lib/catalog";
 import { rotationFiltersSchema } from "@/lib/filterSchemas";
 import { useFilterState } from "@/lib/persistentState";
 import { OptimizerInfo } from "./OptimizerInfo";
-import { RotationMemberArt, shortRotationVariant } from "./RotationMemberArt";
+import { RotationTeamCard } from "./RotationTeamCard";
 import {
 	EMPTY_ROTATION_FILTERS,
 	filterRotationProfiles,
+	groupRotationProfiles,
 	type RotationFilters,
 	sortRotationProfiles,
 } from "./rotationProfiles";
@@ -111,15 +110,12 @@ export function TeamProfilePicker({
 			filters.ownership,
 		],
 	);
-	const sortingByDamage = filters.sort !== "name";
-	const { damage, error: scoringError } = useRotationDamage(
-		matching,
-		open && sortingByDamage,
-	);
+	const { damage, error: scoringError } = useRotationDamage(matching, open);
 	const options = useMemo(
 		() => sortRotationProfiles(matching, filters.sort, damage),
 		[matching, filters.sort, damage],
 	);
+	const groups = useMemo(() => groupRotationProfiles(options), [options]);
 	const filtered = Object.keys(EMPTY_ROTATION_FILTERS).some(
 		(key) =>
 			filters[key as keyof RotationFilters] !==
@@ -215,11 +211,12 @@ export function TeamProfilePicker({
 				</FieldGroup>
 				<div className="flex items-center justify-between gap-3">
 					<p role="status" className="text-xs text-muted-foreground">
-						{options.length.toLocaleString()} of{" "}
-						{profiles.length.toLocaleString()} rotations
-						{sortingByDamage && ` · ${damage.size}/${options.length} scored`}
+						{groups.length.toLocaleString()} teams ·{" "}
+						{options.length.toLocaleString()} rotations
+						{damage.size < options.length &&
+							` · ${damage.size}/${options.length} scored`}
 					</p>
-					{sortingByDamage && (
+					{options.length > 0 && (
 						<OptimizerInfo label="Rotation damage comparison">
 							<p>
 								Reference team damage · signature/default weapons · minimum
@@ -252,89 +249,24 @@ export function TeamProfilePicker({
 				) : (
 					<VirtualGrid
 						key={JSON.stringify(filters)}
-						items={options}
+						items={groups}
 						columns={2}
 						minItemWidth={340}
 						gap={12}
-						estimateRowHeight={200}
-						getItemKey={(p) => p.id}
+						estimateRowHeight={210}
+						getItemKey={(group) => group.id}
 						className="min-h-0 flex-1 overflow-y-auto"
-						renderItem={(p) => {
-							const unavailable = p.errors;
-							const score = damage.get(p.id);
-							return (
-								<Button
-									variant={p.id === selected?.id ? "secondary" : "outline"}
-									className="h-auto w-full flex-col items-stretch justify-start gap-2 whitespace-normal p-3 text-left"
-									aria-label={`Load ${p.label}, ${p.members.map((m) => `${m.variant}, ${m.mainEcho.name}`).join("; ")}`}
-									aria-pressed={p.id === selected?.id}
-									title={unavailable.length ? unavailable.join(" · ") : p.label}
-									onClick={() => {
-										onSelect(p.id);
-										setOpen(false);
-									}}
-								>
-									{p.customRotation && (
-										<span className="flex items-center gap-2">
-											<Badge variant="secondary">Custom</Badge>
-											<span className="truncate">{p.label}</span>
-										</span>
-									)}
-									<span className="grid grid-cols-3 gap-3">
-										{p.members.map((m) => (
-											<span
-												key={m.characterId}
-												className="flex min-w-0 flex-col items-center gap-1 text-center"
-											>
-												<RotationMemberArt member={m} />
-												<span className="mt-1">{m.name}</span>
-												{charactersById.get(m.characterId)?.preview && (
-													<PreviewBadge />
-												)}
-												{shortRotationVariant(m.variant) && (
-													<span
-														className="text-xs text-muted-foreground"
-														title={m.variant}
-													>
-														{shortRotationVariant(m.variant)}
-													</span>
-												)}
-												<Badge variant="outline">
-													{m.mainDps ? "DPS" : "Support"}
-												</Badge>
-											</span>
-										))}
-									</span>
-									{(sortingByDamage ||
-										unavailable.length > 0 ||
-										p.id === selected?.id) && (
-										<span className="flex items-center justify-between gap-2">
-											{sortingByDamage && (
-												<span
-													className="text-xs tabular-nums"
-													title={
-														score?.warning ??
-														score?.error ??
-														"Reference team damage"
-													}
-												>
-													{score
-														? score.damage == null
-															? "—"
-															: `${score.warning ? "≈ " : ""}${new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 2 }).format(score.damage)} DMG`
-														: "…"}
-												</span>
-											)}
-											{(unavailable.length > 0 || p.id === selected?.id) && (
-												<Badge>
-													{p.id === selected?.id ? "Loaded" : "Unavailable"}
-												</Badge>
-											)}
-										</span>
-									)}
-								</Button>
-							);
-						}}
+						renderItem={(group) => (
+							<RotationTeamCard
+								profiles={group.profiles}
+								selectedId={selected?.id}
+								damage={damage}
+								onSelect={(id) => {
+									onSelect(id);
+									setOpen(false);
+								}}
+							/>
+						)}
 					/>
 				)}
 			</DialogContent>

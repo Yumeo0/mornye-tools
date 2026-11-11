@@ -1,5 +1,4 @@
 import {
-	Add01Icon,
 	Alert02Icon,
 	Loading03Icon,
 	PlugSocketIcon,
@@ -8,10 +7,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { isTauri } from "@tauri-apps/api/core";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import {
-	AddPlayerProfileDialog,
-	ManagePlayerProfilesDialog,
-} from "@/components/settings/PlayerProfilesDialog";
+import { GameAccountsCard } from "@/components/settings/GameAccountsCard";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -32,14 +28,6 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
-import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { useAccount } from "@/lib/account";
 import {
@@ -47,7 +35,6 @@ import {
 	connectionAction,
 	disconnectDangerous,
 	refreshDangerousStatus,
-	selectDangerousAccount,
 	selectLinkedDangerousAccount,
 	setDangerousEnabled,
 	useDangerousFeatures,
@@ -108,20 +95,6 @@ export function DangerousFeaturesPrompt() {
 
 export function DangerousFeaturesCard() {
 	const { status, error } = useDangerousFeatures();
-	const { profiles } = useAccount();
-	const [dialog, setDialog] = useState<"add" | "manage" | null>(null);
-	const [pending, setPending] = useState(false);
-	const busy =
-		pending ||
-		Boolean(status && !["ready", "signed_out"].includes(status.phase));
-	async function select(id: string) {
-		setPending(true);
-		try {
-			await selectDangerousAccount(id);
-		} finally {
-			setPending(false);
-		}
-	}
 	if (!status)
 		return (
 			<Card>
@@ -141,10 +114,9 @@ export function DangerousFeaturesCard() {
 				</CardFooter>
 			</Card>
 		);
-	const accounts = status.accounts;
 	return (
-		<>
-			<Card className="max-w-3xl">
+		<div className="flex max-w-3xl flex-col gap-4">
+			<Card>
 				<CardHeader>
 					<CardTitle className="flex items-center gap-2">
 						<HugeiconsIcon icon={Alert02Icon} />
@@ -153,9 +125,6 @@ export function DangerousFeaturesCard() {
 							{status.enabled ? "Enabled" : "Disabled"}
 						</Badge>
 					</CardTitle>
-					<CardDescription>
-						Manage the player profiles you connect to from Mornye Tools.
-					</CardDescription>
 				</CardHeader>
 				<CardContent className="flex flex-col gap-5">
 					<Field orientation="horizontal">
@@ -178,90 +147,10 @@ export function DangerousFeaturesCard() {
 						<AlertTitle>Direct account access</AlertTitle>
 						<AlertDescription>{NOTICE}</AlertDescription>
 					</Alert>
-					{status.enabled && (
-						<>
-							<Field>
-								<FieldLabel htmlFor="dangerous-account">
-									Game account
-								</FieldLabel>
-								<Select
-									value={
-										accounts.some((a) => a.id === status.account_id)
-											? status.account_id
-											: null
-									}
-									disabled={busy || !accounts.length || !isTauri()}
-									items={accounts.map((a) => ({ value: a.id, label: a.email }))}
-									onValueChange={(value) => {
-										if (value) void select(value);
-									}}
-								>
-									<SelectTrigger id="dangerous-account" className="w-full">
-										<SelectValue
-											placeholder={
-												accounts.length
-													? "Choose an account"
-													: "No accounts added yet"
-											}
-										/>
-									</SelectTrigger>
-									<SelectContent>
-										<SelectGroup>
-											{accounts.map((account) => (
-												<SelectItem key={account.id} value={account.id}>
-													{account.email}
-												</SelectItem>
-											))}
-										</SelectGroup>
-									</SelectContent>
-								</Select>
-								<FieldDescription>
-									{accounts.length
-										? "Connect uses the account belonging to the player profile selected in the sidebar."
-										: "Add a player profile to sign in and choose your server."}
-								</FieldDescription>
-							</Field>
-							<div className="flex flex-wrap gap-2">
-								<Button
-									disabled={busy || !isTauri()}
-									onClick={() => setDialog("add")}
-								>
-									<HugeiconsIcon icon={Add01Icon} data-icon="inline-start" />
-									Add player profile
-								</Button>
-							</div>
-							{!isTauri() && (
-								<p className="text-xs text-muted-foreground">
-									Player profiles are available in the desktop app.
-								</p>
-							)}
-						</>
-					)}
-					<div>
-						<Button
-							variant="outline"
-							disabled={
-								busy || !profiles.some((p) => p.playerId > 0) || !isTauri()
-							}
-							onClick={() => setDialog("manage")}
-						>
-							Manage player profiles
-						</Button>
-					</div>
-					{(error || status.error) && (
-						<Alert variant="destructive">
-							<AlertDescription>{error ?? status.error}</AlertDescription>
-						</Alert>
-					)}
 				</CardContent>
 			</Card>
-			{dialog === "add" && (
-				<AddPlayerProfileDialog onClose={() => setDialog(null)} />
-			)}
-			{dialog === "manage" && (
-				<ManagePlayerProfilesDialog onClose={() => setDialog(null)} />
-			)}
-		</>
+			<GameAccountsCard status={status} error={error} />
+		</div>
 	);
 }
 

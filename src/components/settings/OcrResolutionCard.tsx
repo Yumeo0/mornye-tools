@@ -1,10 +1,17 @@
 import { ScanText } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import { Field, FieldLabel } from "@/components/ui/field";
 import {
 	Select,
 	SelectContent,
+	SelectGroup,
 	SelectItem,
 	SelectTrigger,
 } from "@/components/ui/select";
@@ -38,36 +45,35 @@ export function OcrResolutionCard() {
 	}, []);
 
 	return (
-		<Card>
-			<CardContent className="space-y-4">
-				<div className="space-y-0.5">
-					<Label className="flex items-center gap-2 text-base font-medium">
-						<ScanText className="size-4" /> OCR Text Detection
-					</Label>
-					<p className="text-xs text-muted-foreground">
-						Reads the echo on screen so the overlay can show it automatically.
-					</p>
-				</div>
-				<div className="space-y-2">
-					<Label htmlFor="resolution-select">Screen Resolution</Label>
+		<Card size="sm">
+			<CardHeader>
+				<CardTitle className="flex items-center gap-2">
+					<ScanText className="size-4" />
+					Echo detection
+				</CardTitle>
+				<CardDescription>Screen resolution for reading echoes.</CardDescription>
+			</CardHeader>
+			<CardContent>
+				<Field orientation="horizontal">
+					<FieldLabel htmlFor="resolution-select">Resolution</FieldLabel>
 					<Select
 						value={selectedResolution}
 						onValueChange={(value) => applyResolutionConfig(value ?? "")}
 					>
-						<SelectTrigger className="w-full">
-							{selectedResolution === ""
-								? "Select your screen resolution"
-								: selectedResolution}
+						<SelectTrigger id="resolution-select" className="w-44">
+							{selectedResolution || "Select resolution"}
 						</SelectTrigger>
 						<SelectContent>
-							{Object.keys(OCR_CONFIG.resolutions).map((resolution) => (
-								<SelectItem key={resolution} value={resolution}>
-									{resolution}
-								</SelectItem>
-							))}
+							<SelectGroup>
+								{Object.keys(OCR_CONFIG.resolutions).map((resolution) => (
+									<SelectItem key={resolution} value={resolution}>
+										{resolution}
+									</SelectItem>
+								))}
+							</SelectGroup>
 						</SelectContent>
 					</Select>
-				</div>
+				</Field>
 			</CardContent>
 		</Card>
 	);

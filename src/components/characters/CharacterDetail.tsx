@@ -8,7 +8,13 @@ import { EchoCard } from "@/components/echo/EchoCard";
 import { PreviewBadge } from "@/components/PreviewBadge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+	Card,
+	CardAction,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 import {
 	Select,
 	SelectContent,
@@ -81,6 +87,27 @@ export function CharacterDetail({
 					statPropLines(echo.subProps),
 					mainStatForEcho(echo),
 				);
+
+	const rolePicker = guide ? (
+		<Select value={role} onValueChange={setSelectedRole}>
+			<SelectTrigger
+				size="sm"
+				aria-label="Build role"
+				className="w-auto min-w-36 max-w-full"
+			>
+				{role}
+			</SelectTrigger>
+			<SelectContent>
+				<SelectGroup>
+					{roleNames.map((roleName) => (
+						<SelectItem key={roleName} value={roleName}>
+							{roleName}
+						</SelectItem>
+					))}
+				</SelectGroup>
+			</SelectContent>
+		</Select>
+	) : null;
 
 	return (
 		<div className="@container/character-detail flex flex-col gap-5 px-4 pt-1 pb-4 sm:px-6 sm:pb-6">
@@ -234,6 +261,7 @@ export function CharacterDetail({
 										<Badge variant="outline">{echoes.length}/5</Badge>
 									</span>
 								</CardTitle>
+								<CardAction>{rolePicker}</CardAction>
 							</CardHeader>
 							<CardContent>
 								<div className="grid gap-2 @min-[480px]/character-detail:grid-cols-2 @min-[800px]/character-detail:grid-cols-3 @min-[1200px]/character-detail:grid-cols-5">
@@ -256,27 +284,9 @@ export function CharacterDetail({
 							aria-label="Build recommendations"
 							className="flex flex-col gap-3"
 						>
-							<div className="flex flex-wrap items-center justify-between gap-3 border bg-background px-4 py-2.5">
-								<h3 className="text-xs font-semibold">Build</h3>
-								<Select value={role} onValueChange={setSelectedRole}>
-									<SelectTrigger
-										size="sm"
-										aria-label="Build role"
-										className="w-auto min-w-36 max-w-full"
-									>
-										{role}
-									</SelectTrigger>
-									<SelectContent>
-										<SelectGroup>
-											{roleNames.map((roleName) => (
-												<SelectItem key={roleName} value={roleName}>
-													{roleName}
-												</SelectItem>
-											))}
-										</SelectGroup>
-									</SelectContent>
-								</Select>
-							</div>
+							{echoes.length === 0 && (
+								<div className="flex justify-end">{rolePicker}</div>
+							)}
 							<div className="grid items-start gap-3 @min-[1000px]/character-detail:grid-cols-[minmax(0,1fr)_minmax(0,.65fr)]">
 								<EchoSetsCard guide={guide} />
 								<SubstatsCard

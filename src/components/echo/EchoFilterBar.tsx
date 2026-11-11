@@ -7,6 +7,7 @@ import {
 	EMPTY_ECHO_FILTERS,
 } from "@/components/echo/echoFilters";
 import {
+	activeFilterChips,
 	EquippedCharacterFilter,
 	FilterField,
 	type FilterOption,
@@ -85,7 +86,34 @@ export function EchoFilterBar({
 	};
 
 	return (
-		<FilterPanel label="Echo filters">
+		<FilterPanel
+			label="Echo filters"
+			activeFilters={activeFilterChips(
+				filters,
+				EMPTY_ECHO_FILTERS,
+				onFiltersChange,
+				{
+					search: (value) => `“${value}”`,
+					minLevel: (value) => `Min +${value}`,
+					maxLevel: (value) => `Max +${value}`,
+					cost: (value) => `${value.join(" / ")} cost`,
+					set: (value) => value.join(" / "),
+					mainStat: (value) =>
+						mainStatOptions.find((option) => option.value === value)?.label ??
+						value,
+					substat: (value) => `Substats: ${value.length}`,
+					character: (value) =>
+						value
+							.map(
+								(id) =>
+									characterOptions.find((option) => option.value === id)
+										?.label ?? id,
+							)
+							.join(" / "),
+					marks: (value) => value.join(" / "),
+				},
+			)}
+		>
 			<div className="flex min-w-0 flex-col gap-4">
 				<FilterSearch
 					value={filters.search}

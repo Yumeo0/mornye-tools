@@ -125,22 +125,24 @@ function EchoUpgraderContent({
 									Clear queue
 								</Button>
 							)}
-							{selectButton}
+							{rows.length > 0 && selectButton}
 						</div>
 					</div>
-					<p
-						role="status"
-						aria-live="polite"
-						className="text-xs text-muted-foreground"
-					>
-						{activeIndex >= 0
-							? `Upgrading echo ${activeIndex + 1} of ${rows.length} · ${rows[activeIndex].message}`
-							: running
-								? "Preparing the next echo…"
-								: results
-									? "Batch results appear on each echo below."
-									: "Each selected copy is upgraded separately, in queue order."}
-					</p>
+					{(running || results) && (
+						<p
+							role="status"
+							aria-live="polite"
+							className="text-xs text-muted-foreground"
+						>
+							{activeIndex >= 0
+								? `Upgrading echo ${activeIndex + 1} of ${rows.length} · ${rows[activeIndex].message}`
+								: running
+									? "Preparing the next echo…"
+									: results
+										? "Batch results appear on each echo below."
+										: ""}
+						</p>
+					)}
 					{rows.length > 0 ? (
 						<VirtualGrid
 							items={rows}
@@ -185,10 +187,9 @@ function EchoUpgraderContent({
 					) : (
 						<Empty className="border">
 							<EmptyHeader>
-								<EmptyTitle>Your upgrade queue is empty</EmptyTitle>
+								<EmptyTitle>No echoes selected</EmptyTitle>
 								<EmptyDescription>
-									Open the echo picker to filter your inventory and choose the
-									echoes you want to upgrade.
+									Choose echoes from your inventory to upgrade.
 								</EmptyDescription>
 							</EmptyHeader>
 							<EmptyContent>{selectButton}</EmptyContent>

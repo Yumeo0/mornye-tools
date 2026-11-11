@@ -1,4 +1,5 @@
 import {
+	activeFilterChips,
 	EquippedCharacterFilter,
 	FilterField,
 	FilterIconButton,
@@ -68,7 +69,35 @@ export function WeaponFilterBar({
 		sortAsc;
 
 	return (
-		<FilterPanel label="Weapon filters">
+		<FilterPanel
+			label="Weapon filters"
+			activeFilters={activeFilterChips(
+				filters,
+				EMPTY_WEAPON_FILTERS,
+				onFiltersChange,
+				{
+					search: (value) => `“${value}”`,
+					minLevel: (value) => `Min Lv ${value}`,
+					type: (value) =>
+						value
+							.map(
+								(id) =>
+									weaponTypeOptions.find((option) => option.value === id)
+										?.label ?? id,
+							)
+							.join(" / "),
+					rarity: (value) => value.map((r) => `${r}★`).join(" / "),
+					character: (value) =>
+						value
+							.map(
+								(id) =>
+									characterOptions.find((option) => option.value === id)
+										?.label ?? id,
+							)
+							.join(" / "),
+				},
+			)}
+		>
 			<div className="flex min-w-0 flex-col gap-4">
 				<FilterSearch
 					value={filters.search}

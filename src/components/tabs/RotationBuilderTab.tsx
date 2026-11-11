@@ -1050,6 +1050,8 @@ export function RotationBuilderTab({
 							<RotationPlayback
 								entries={measured?.result?.playback ?? []}
 								pending={testing}
+								hasActions={rows.length > 0}
+								hasTested={!!measured}
 								errors={problems}
 								onSelectNode={goToNode}
 								tab={reportTab}

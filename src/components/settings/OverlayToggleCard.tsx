@@ -2,8 +2,13 @@ import { getAllWindows } from "@tauri-apps/api/window";
 import { Monitor } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import {
+	Card,
+	CardAction,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 import { setOverlayVisible } from "@/lib/overlayWindow";
 import { readSetting, writeSetting } from "@/lib/settings";
 
@@ -34,26 +39,22 @@ export function OverlayToggleCard() {
 	};
 
 	return (
-		<Card>
-			<CardContent className="space-y-4">
-				<div className="space-y-0.5">
-					<Label className="flex items-center gap-2 text-base font-medium">
-						<Monitor className="size-4" /> Overlay
-					</Label>
-					<p className="text-xs text-muted-foreground">
-						Show the transparent overlay window on top of the game
-					</p>
-				</div>
-				<div className="flex items-center justify-between">
-					<Label>Enable Overlay</Label>
+		<Card size="sm">
+			<CardHeader>
+				<CardTitle className="flex items-center gap-2">
+					<Monitor className="size-4" />
+					Overlay
+				</CardTitle>
+				<CardDescription>Show over the game.</CardDescription>
+				<CardAction>
 					<Button
-						variant={overlayEnabled ? "destructive" : "default"}
+						variant={overlayEnabled ? "outline" : "default"}
 						onClick={toggleOverlay}
 					>
 						{overlayEnabled ? "Disable" : "Enable"}
 					</Button>
-				</div>
-			</CardContent>
+				</CardAction>
+			</CardHeader>
 		</Card>
 	);
 }

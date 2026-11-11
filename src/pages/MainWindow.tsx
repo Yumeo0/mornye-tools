@@ -76,11 +76,11 @@ function WindowButton({
 /** Inventory and tools stay separate in both expanded and collapsed navigation. */
 const NAV_GROUPS = [
 	{
-		title: "Inventory",
+		title: "Collection",
 		tabs: [
 			{
 				value: "inventory",
-				title: "Inventory",
+				title: "Items",
 				icon: "/icons/navigation/inventory.webp",
 			},
 			{
@@ -98,6 +98,11 @@ const NAV_GROUPS = [
 				title: "Weapons",
 				icon: "/icons/navigation/weapons.webp",
 			},
+		],
+	},
+	{
+		title: "Progression",
+		tabs: [
 			{
 				value: "achievements",
 				title: "Achievements",
@@ -126,7 +131,7 @@ const NAV_GROUPS = [
 			{ value: "map", title: "Map", icon: "/icons/navigation/map.webp" },
 			{
 				value: "echo-upgrader",
-				title: "Echo Upgrader",
+				title: "Upgrader",
 				icon: "/icons/navigation/echoes.webp",
 			},
 		],

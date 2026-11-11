@@ -149,13 +149,13 @@ export function OptimizerFilterRow({
 							<span className="font-medium text-foreground">
 								{counts.eligible.toLocaleString()}
 							</span>{" "}
-							/ {counts.total.toLocaleString()} echoes
+							eligible / {counts.total.toLocaleString()} echoes
 						</p>
-						<p>
+						<p title="Upper estimate before echo cost, set and duplicate-instance checks">
 							<span className="font-medium text-foreground">
 								{formatDamage(counts.combos)}
 							</span>{" "}
-							builds before legality checks
+							possible builds
 						</p>
 					</div>
 				)}

@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.3.6] - 2026-11-12
+
 ### Added
 
 - **Resonator build stats.** View attributes, damage bonuses, and healing stats below equipped Echoes in Resonator details, with recommended stats highlighted for the selected build guide.

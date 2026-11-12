@@ -20,7 +20,7 @@ fn apply_player_packet(
     packet: session::ReceivedPacket,
 ) -> Result<(), String> {
     let attributes = match packet.message_id {
-        15380 => {
+        mornye_game_client::message_id::BasicInfoNotify => {
             let info = pb::BasicInfoNotify::decode(packet.payload.as_slice())
                 .map_err(|_| "Could not decode player details.")?;
             if i64::from(info.id) != player.player_id {
@@ -28,7 +28,7 @@ fn apply_player_packet(
             }
             info.attributes
         }
-        20778 => {
+        mornye_game_client::message_id::PlayerAttrNotify => {
             pb::PlayerAttrNotify::decode(packet.payload.as_slice())
                 .map_err(|_| "Could not decode player attributes.")?
                 .attributes
@@ -59,8 +59,16 @@ fn probe_player(
     let schema = Schema::load().map_err(|_| "Could not load the game protocol.")?;
     // Only servers confirmed to contain a character by GetUserInfo are probed.
     // No account data is ingested and no character creation RPC is exposed.
-    let mut session = session::connect_recording(&prepared, &schema, cancelled, &[15380, 20778])
-        .map_err(|e| format!("{e:#}"))?;
+    let mut session = session::connect_recording(
+        &prepared,
+        &schema,
+        cancelled,
+        &[
+            mornye_game_client::message_id::BasicInfoNotify,
+            mornye_game_client::message_id::PlayerAttrNotify,
+        ],
+    )
+    .map_err(|e| format!("{e:#}"))?;
     let mut player = PlayerInfo {
         player_id: i64::from(session.player_id()),
         level,
@@ -431,7 +439,7 @@ mod tests {
     fn player_details_must_match_the_authenticated_uid() {
         let mut player = row().player.unwrap();
         let packet = |id| session::ReceivedPacket {
-            message_id: 15380,
+            message_id: mornye_game_client::message_id::BasicInfoNotify,
             kind: 4,
             rpc_id: None,
             payload: pb::BasicInfoNotify {

@@ -2,6 +2,19 @@
 
 ## [Unreleased]
 
+### Added
+
+- **Packet capture exports.** Record game traffic from Settings and export raw PCAP captures or parsed JSON with message names and decoded fields.
+- **Game compatibility warning.** A persistent notice shows when the installed game is newer than this build supports, with installed/supported versions and a shortcut to update settings.
+
+### Improved
+
+- **Wuthering Waves 3.8 support.** Updated game data, artwork, and packet decoding for the latest game release.
+
+### Fixed
+
+- Active sign-in now uses the correct protocol checksum fields from the installed game's login metadata.
+
 ## [0.3.4] - 2026-11-11
 
 Save upgrade materials, compare team rotations more easily, and browse your collection with a clearer interface.

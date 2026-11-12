@@ -1,24 +1,47 @@
 /**
- * Shared helpers of the data compilers (`compile_*_data.ts`): JSON loading
- * with their reporting, id indexing, cached directory listings and Unreal
+ * Shared helpers of the data compilers (`compile_*_data.ts`): JSON loading,
+ * id indexing, cached directory listings and Unreal
  * asset-path conversion.
  */
 
-import { readdirSync } from "node:fs";
-import { basename, extname, join } from "node:path";
+import { existsSync, readdirSync } from "node:fs";
+import { basename, dirname, extname, join } from "node:path";
 
-/** Load a JSON file, reporting the same failures the compilers always did. */
-export async function loadJson<T>(filePath: string): Promise<T | null> {
+/** Required inputs must fail the stage instead of silently keeping stale data. */
+export async function loadJson<T>(filePath: string): Promise<T> {
 	try {
 		return (await Bun.file(filePath).json()) as T;
 	} catch (error) {
-		if (error instanceof Error && "code" in error && error.code === "ENOENT") {
-			console.log(`Error: File not found at ${filePath}`);
-		} else {
-			console.log(`Error: Failed to parse ${filePath}`);
-		}
-		return null;
+		throw new Error(`Failed to load JSON: ${filePath}`, { cause: error });
 	}
+}
+
+/** Released tables can be a single JSON array or numbered shards (3.8+ entities). */
+export async function loadJsonTable<T>(filePath: string): Promise<T[]> {
+	const directory = dirname(filePath);
+	const stem = basename(filePath, ".json");
+	const paths = existsSync(filePath)
+		? [filePath]
+		: readdirSync(directory)
+				.filter(
+					(name) =>
+						name.startsWith(`${stem}_`) &&
+						/^\d+\.json$/.test(name.slice(stem.length + 1)),
+				)
+				.sort((a, b) => a.localeCompare(b, "en", { numeric: true }))
+				.map((name) => join(directory, name));
+	if (!paths.length)
+		throw new Error(`No JSON table or numbered shards found for ${filePath}`);
+	const rows: T[] = [];
+	// The entity shards are large; read sequentially and avoid spreading their
+	// rows as function arguments, which exceeds the JS argument limit.
+	for (const path of paths) {
+		const part = await loadJson<unknown>(path);
+		if (!Array.isArray(part))
+			throw new Error(`Expected a JSON array in ${path}`);
+		for (const row of part) rows.push(row);
+	}
+	return rows;
 }
 
 /**

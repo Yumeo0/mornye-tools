@@ -23,6 +23,7 @@
  */
 
 import { join } from "node:path";
+import { dataLog } from "./lib/data-log";
 
 const SCRIPTS_DIR = import.meta.dirname;
 const REPO_ROOT = join(SCRIPTS_DIR, "..");
@@ -157,7 +158,7 @@ function serializeIdMaps(sections: [string, Map<string, string>][]): string {
 }
 
 async function compileEchoProps(): Promise<void> {
-	console.log("Loading property tables...");
+	dataLog.detail("Loading property tables...");
 	const mainPropItemData = await readJson<PropItem[]>(MAIN_PROP_ITEM_PATH);
 	const subPropData = await readJson<PropItem[]>(SUB_PROPERTY_PATH);
 	const propertyData =
@@ -201,13 +202,13 @@ async function compileEchoProps(): Promise<void> {
 		}
 	}
 
-	console.log(
+	dataLog.info(
 		`Mapped ${main.size} main prop ids, ${sub.size} sub prop entries`,
 	);
 	if (unmappedMain.length > 0)
-		console.log(`WARNING unmapped main props: ${JSON.stringify(unmappedMain)}`);
+		dataLog.warn(`Unmapped main props: ${JSON.stringify(unmappedMain)}`);
 	if (unmappedSub.length > 0)
-		console.log(`WARNING unmapped sub props: ${JSON.stringify(unmappedSub)}`);
+		dataLog.warn(`Unmapped sub props: ${JSON.stringify(unmappedSub)}`);
 
 	await Bun.write(
 		OUTPUT_PATH,
@@ -217,7 +218,7 @@ async function compileEchoProps(): Promise<void> {
 		]),
 	);
 
-	console.log(`Successfully wrote ${OUTPUT_PATH}`);
+	dataLog.detail(`Wrote ${OUTPUT_PATH}`);
 }
 
 if (import.meta.main) {

@@ -4,6 +4,7 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { assetPath, indexBy } from "./lib/compile-data-util";
+import { dataLog } from "./lib/data-log";
 import { prepareCatalog } from "./lib/public-assets";
 
 interface PlayerHead {
@@ -67,7 +68,7 @@ export async function compileProfileData() {
 		join(root, "src/configs/profile_portraits.json"),
 		`${JSON.stringify(prepareCatalog(portraits), null, "\t")}\n`,
 	);
-	console.log(
+	dataLog.info(
 		`Compiled ${portraits.length} profile portraits (${heads.length - portraits.length} unavailable in the asset checkout).`,
 	);
 }

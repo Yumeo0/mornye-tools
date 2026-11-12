@@ -13,6 +13,21 @@ use tauri::{AppHandle, Manager};
 use super::ProcInfo;
 use crate::sniffer::SnifferState;
 
+pub fn client_directory(pid: u32) -> Option<std::path::PathBuf> {
+    // Wine's exe symlink can point to its loader; its working directory is in Client.
+    for link in ["cwd", "exe"] {
+        if let Ok(path) = std::fs::read_link(format!("/proc/{pid}/{link}")) {
+            if let Some(client) = path
+                .ancestors()
+                .find(|path| path.join("Content/Paks").is_dir())
+            {
+                return Some(client.to_path_buf());
+            }
+        }
+    }
+    None
+}
+
 /// Find running Wuthering Waves client/launcher processes.
 pub fn game_processes() -> Vec<ProcInfo> {
     let mut out = Vec::new();

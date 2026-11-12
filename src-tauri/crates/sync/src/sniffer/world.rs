@@ -3,6 +3,7 @@
 use std::collections::{HashMap, HashSet};
 use std::sync::LazyLock;
 
+use mornye_game_client::message_id as id;
 use serde::Deserialize;
 use spectrum::game::{proto as pb, GamePacket};
 use tauri::{AppHandle, Manager};
@@ -99,7 +100,15 @@ impl WorldCapture {
     pub fn handles(id: u16) -> bool {
         matches!(
             id,
-            15380 | 18559 | 25185 | 17769 | 24443 | 28349 | 27985 | 20398 | 18896
+            id::BasicInfoNotify
+                | id::JoinSceneNotify
+                | id::EntityAddNotify
+                | id::EntityRemoveNotify
+                | id::GetRewardTreasureBoxRequest
+                | id::GetRewardTreasureBoxResponse
+                | id::BehaviorTreeInfoNotify
+                | id::UpdateChildQuestNodeStatusNotify
+                | id::UpdateNodeStatusNotify
         )
     }
 
@@ -111,7 +120,7 @@ impl WorldCapture {
         player_id: i64,
         at: u64,
     ) -> Result<bool, spectrum::prost::DecodeError> {
-        if gp.msg_id == 15380 {
+        if gp.msg_id == id::BasicInfoNotify {
             let m = gp.parse_proto::<pb::BasicInfoNotify>()?;
             self.player_id = i64::from(m.id);
             self.map_id = None;
@@ -129,7 +138,7 @@ impl WorldCapture {
         } else {
             player_id
         };
-        if gp.msg_id == 18559 {
+        if gp.msg_id == id::JoinSceneNotify {
             let m = gp.parse_proto::<pb::JoinSceneNotify>()?;
             self.entities.clear();
             self.trees.clear();
@@ -175,21 +184,21 @@ impl WorldCapture {
             return Ok(false);
         }
         match gp.msg_id {
-            25185 => {
+            id::EntityAddNotify => {
                 let m = gp.parse_proto::<pb::EntityAddNotify>()?;
                 for e in m.entity_pbs {
                     self.entity(&e);
                 }
                 return Ok(false);
             }
-            17769 => {
+            id::EntityRemoveNotify => {
                 let m = gp.parse_proto::<pb::EntityRemoveNotify>()?;
                 for e in m.remove_infos {
                     self.entities.remove(&e.entity_id);
                 }
                 return Ok(false);
             }
-            24443 => {
+            id::GetRewardTreasureBoxRequest => {
                 let m = gp.parse_proto::<pb::GetRewardTreasureBoxRequest>()?;
                 if let (Some(rpc), Some(key)) = (gp.rpc_id, self.entities.get(&m.entity_id)) {
                     // Retain the placement through the removal that precedes the response.
@@ -200,7 +209,7 @@ impl WorldCapture {
                 }
                 return Ok(false);
             }
-            28349 => {
+            id::GetRewardTreasureBoxResponse => {
                 let m = gp.parse_proto::<pb::GetRewardTreasureBoxResponse>()?;
                 if let Some(key) = gp.rpc_id.and_then(|rpc| self.pending.remove(&rpc)) {
                     if m.error_code == 0 {
@@ -209,7 +218,7 @@ impl WorldCapture {
                 }
                 return Ok(false);
             }
-            27985 => {
+            id::BehaviorTreeInfoNotify => {
                 let m = gp.parse_proto::<pb::BehaviorTreeInfoNotify>()?;
                 for t in m.tree_infos {
                     if t.bt_type != 2 || i64::from(t.tree_owner_id) != player_id {
@@ -219,13 +228,13 @@ impl WorldCapture {
                 }
                 return Ok(false);
             }
-            20398 => {
+            id::UpdateChildQuestNodeStatusNotify => {
                 let m = gp.parse_proto::<pb::UpdateChildQuestNodeStatusNotify>()?;
                 if i64::from(m.tree_owner_id) == player_id && (m.status == 4 || m.status == 5) {
                     return Ok(self.claimed_node(m.tree_inc_id, m.node_id, snapshot, at));
                 }
             }
-            18896 => {
+            id::UpdateNodeStatusNotify => {
                 let m = gp.parse_proto::<pb::UpdateNodeStatusNotify>()?;
                 if i64::from(m.tree_owner_id) == player_id && m.status == 4 {
                     return Ok(self.claimed_node(m.tree_inc_id, m.node_id, snapshot, at));
@@ -293,7 +302,7 @@ mod tests {
         world
             .apply(
                 &packet(
-                    24443,
+                    id::GetRewardTreasureBoxRequest,
                     Some(957),
                     pb::GetRewardTreasureBoxRequest { entity_id: 19002 },
                 ),
@@ -306,7 +315,7 @@ mod tests {
         world
             .apply(
                 &packet(
-                    28349,
+                    id::GetRewardTreasureBoxResponse,
                     Some(958),
                     pb::GetRewardTreasureBoxResponse { error_code: 0 },
                 ),
@@ -319,7 +328,7 @@ mod tests {
         world
             .apply(
                 &packet(
-                    28349,
+                    id::GetRewardTreasureBoxResponse,
                     Some(957),
                     pb::GetRewardTreasureBoxResponse { error_code: 0 },
                 ),
@@ -346,7 +355,7 @@ mod tests {
         world
             .apply(
                 &packet(
-                    28349,
+                    id::GetRewardTreasureBoxResponse,
                     Some(5),
                     pb::GetRewardTreasureBoxResponse { error_code: 1 },
                 ),
@@ -360,7 +369,7 @@ mod tests {
         world
             .apply(
                 &packet(
-                    20398,
+                    id::UpdateChildQuestNodeStatusNotify,
                     None,
                     pb::UpdateChildQuestNodeStatusNotify {
                         tree_owner_id: 2,
@@ -406,7 +415,7 @@ mod tests {
         world
             .apply(
                 &packet(
-                    27985,
+                    id::BehaviorTreeInfoNotify,
                     None,
                     pb::BehaviorTreeInfoNotify {
                         tree_infos: vec![tree],
@@ -421,7 +430,7 @@ mod tests {
         world
             .apply(
                 &packet(
-                    18896,
+                    id::UpdateNodeStatusNotify,
                     None,
                     pb::UpdateNodeStatusNotify {
                         tree_owner_id: 1,
@@ -459,7 +468,7 @@ mod tests {
             let changed = world
                 .apply(
                     &packet(
-                        18896,
+                        id::UpdateNodeStatusNotify,
                         None,
                         pb::UpdateNodeStatusNotify {
                             tree_owner_id: owner,
@@ -490,7 +499,7 @@ mod tests {
         world
             .apply(
                 &packet(
-                    15380,
+                    id::BasicInfoNotify,
                     None,
                     pb::BasicInfoNotify {
                         id: 1,
@@ -513,7 +522,12 @@ mod tests {
             ..Default::default()
         };
         world
-            .apply(&packet(18559, None, join), &mut snapshot, 2, 3)
+            .apply(
+                &packet(id::JoinSceneNotify, None, join),
+                &mut snapshot,
+                2,
+                3,
+            )
             .unwrap();
         assert!(snapshot.scene.is_none());
         assert!(world.map_id.is_none());

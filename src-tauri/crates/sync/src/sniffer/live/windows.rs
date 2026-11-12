@@ -37,10 +37,37 @@ use windows_sys::Win32::Networking::WinSock::{
 use windows_sys::Win32::System::Diagnostics::ToolHelp::{
     CreateToolhelp32Snapshot, Process32FirstW, Process32NextW, PROCESSENTRY32W, TH32CS_SNAPPROCESS,
 };
+use windows_sys::Win32::System::Threading::{
+    OpenProcess, QueryFullProcessImageNameW, PROCESS_QUERY_LIMITED_INFORMATION,
+};
 use windows_sys::Win32::UI::Shell::IsUserAnAdmin;
 
 use super::ProcInfo;
 use crate::sniffer::SnifferState;
+
+/// Prefer the running client's installation when several launchers are installed.
+pub fn client_directory(pid: u32) -> Option<std::path::PathBuf> {
+    use std::os::windows::ffi::OsStringExt;
+    unsafe {
+        let process = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, 0, pid);
+        if process.is_null() {
+            return None;
+        }
+        let mut buffer = vec![0u16; 32768];
+        let mut size = buffer.len() as u32;
+        let ok = QueryFullProcessImageNameW(process, 0, buffer.as_mut_ptr(), &mut size);
+        CloseHandle(process);
+        if ok == 0 {
+            return None;
+        }
+        let executable =
+            std::path::PathBuf::from(std::ffi::OsString::from_wide(&buffer[..size as usize]));
+        executable
+            .ancestors()
+            .find(|path| path.join("Content/Paks").is_dir())
+            .map(std::path::Path::to_path_buf)
+    }
+}
 
 /// Synthetic Ethernet header prepended to bare IPv4 datagrams captured through
 /// `SIO_RCVALL`: dummy MACs and the IPv4 EtherType.

@@ -2,6 +2,7 @@ import { existsSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { assetUrl } from "../src/lib/assets";
 import { unrealPathToRelative } from "./lib/compile-data-util";
+import { dataLog } from "./lib/data-log";
 
 interface Item {
 	Id: number;
@@ -108,7 +109,7 @@ export async function compileInventoryData() {
 		join(root, "src/configs/inventory_data.json"),
 		`${JSON.stringify(catalog)}\n`,
 	);
-	console.log(
+	dataLog.info(
 		`Compiled ${catalog.length} inventory items; published ${published} icons.`,
 	);
 }

@@ -76,6 +76,10 @@
 		"icon_head_256": "/images/profiles/3702.webp"
 	},
 	{
+		"id": 82000020,
+		"icon_head_256": "/images/profiles/3801.webp"
+	},
+	{
 		"id": 82001102,
 		"icon_head_256": "/images/resonators/portraits/7.webp"
 	},
@@ -296,6 +300,10 @@
 		"icon_head_256": "/images/resonators/portraits/68.webp"
 	},
 	{
+		"id": 82001512,
+		"icon_head_256": "/images/resonators/portraits/77.webp"
+	},
+	{
 		"id": 82001601,
 		"icon_head_256": "/images/resonators/portraits/9.webp"
 	},
@@ -338,6 +346,10 @@
 	{
 		"id": 82011107,
 		"icon_head_256": "/images/profiles/6.webp"
+	},
+	{
+		"id": 82011108,
+		"icon_head_256": "/images/profiles/25.webp"
 	},
 	{
 		"id": 82011205,

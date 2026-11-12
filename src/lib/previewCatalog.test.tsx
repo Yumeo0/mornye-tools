@@ -5,10 +5,14 @@ import { WeaponCard, weaponIconUrl } from "@/components/weapon/WeaponCard";
 import characterData from "@/configs/character_data.json";
 import previewData from "@/configs/preview_data.json";
 import weaponData from "@/configs/weapon_data.json";
-import { charactersById } from "./catalog";
+import { type CatalogCharacter, charactersById } from "./catalog";
 import { mergePreviewCatalog } from "./catalogMerge";
 import { allCharacters } from "./characters";
-import { catalogWeapons, weaponsById } from "./weapons";
+import {
+	catalogWeapons,
+	type WeaponCatalogEntry,
+	weaponsById,
+} from "./weapons";
 
 test("released data replaces stale previews without duplicate entries or preview labels", () => {
 	const released = [{ id: 1, name: "Released" }];
@@ -27,7 +31,10 @@ test("released data replaces stale previews without duplicate entries or preview
 });
 
 test("preview characters and weapons reach the same shared lookups as released data", () => {
-	for (const preview of previewData.characters) {
+	const characters: CatalogCharacter[] = previewData.characters;
+	const weapons: (WeaponCatalogEntry & { icon: string })[] =
+		previewData.weapons;
+	for (const preview of characters) {
 		if (characterData.some((c) => c.character_id === preview.character_id))
 			continue;
 		expect(charactersById.get(preview.character_id)?.preview).toBe(true);
@@ -36,7 +43,7 @@ test("preview characters and weapons reach the same shared lookups as released d
 		expect(entries[0].image).toBe(preview.icon_pile);
 		expect(entries[0].preview).toBe(true);
 	}
-	for (const preview of previewData.weapons) {
+	for (const preview of weapons) {
 		if (weaponData.some((w) => w.item_id === preview.item_id)) continue;
 		expect(weaponsById.get(preview.item_id)?.preview).toBe(true);
 		expect(

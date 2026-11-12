@@ -6,7 +6,8 @@ import type {
 	QuestPoint,
 	SideQuest,
 } from "../src/lib/progression/types";
-import { unrealPathToRelative } from "./lib/compile-data-util";
+import { loadJsonTable, unrealPathToRelative } from "./lib/compile-data-util";
+import { dataLog } from "./lib/data-log";
 import { prepareCatalog } from "./lib/public-assets";
 
 interface QuestConfig {
@@ -140,10 +141,11 @@ export async function compileProgressionData(): Promise<void> {
 		),
 	);
 	const entities = new Map(
-		(await read<Entity[]>("level_entity/levelentityconfig.json")).map((row) => [
-			`${row.MapId}:${row.EntityId}`,
-			row,
-		]),
+		(
+			await loadJsonTable<Entity>(
+				join(bin, "level_entity/levelentityconfig.json"),
+			)
+		).map((row) => [`${row.MapId}:${row.EntityId}`, row]),
 	);
 	const mapId = (dungeon: number) => instances.get(dungeon) ?? dungeon;
 	const point = (
@@ -289,7 +291,7 @@ export async function compileProgressionData(): Promise<void> {
 		join(root, "src/configs/progression.json"),
 		`${JSON.stringify(prepareCatalog(catalog))}\n`,
 	);
-	console.log(
+	dataLog.info(
 		`Progression: ${allQuests.length} quests, ${catalog.quests.length} side quests (${catalog.quests.filter((quest) => quest.start).length} acceptance locations), ${achievements.length} achievements.`,
 	);
 }

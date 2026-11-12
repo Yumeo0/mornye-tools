@@ -1,0 +1,14 @@
+{
+  "format_version": 1,
+  "game_version": "3.8.0",
+  "resource_version": "3.8.9",
+  "assembly_mvid": "189fcfb2-e0f4-4645-9a95-eff50c2b9048",
+  "assembly_sha256": "77de035601e6e446417fadf1288140a366e7d15b76cfc813edda65529150e26a",
+  "source_archive": "Saved/Resources/3.8.0/Resource/3.8.9/pakchunk18-WindowsNoEditor_P.pak",
+  "proto_sha256": "55dcd3f063dff31ef60ef854f195a3e14d393659578ec4d878253d2742ff28e0",
+  "packet_ids_sha256": "4b4a482df7f2ef3cd8d5650a7ceda8d310531fdb4d6a8db4720591628fd5de39",
+  "messages": 5599,
+  "enums": 335,
+  "fields": 13802,
+  "packet_ids": 3953
+}

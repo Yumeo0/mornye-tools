@@ -14,6 +14,10 @@ drives the in-game overlay window.
 - Rust builds need `protoc` (the vendored `spectrum` crate compiles pinned
   protos).
 - On Windows the app must run elevated for raw capture.
+- `bun run update:data` refreshes all game data, assets and protocols, selecting
+  the newest numbered data release branch automatically. Update the installed
+  game first; extraction needs .NET 10 SDK and `protoc`. The client is discovered
+  automatically, or selected with `--game <Client directory>` / `WUWA_GAME`.
 
 ## Releases
 
@@ -36,6 +40,12 @@ drives the in-game overlay window.
   Keep profile selection separate from packet routing.
 - Never edit vendored or generated code: `src-tauri/crates/spectrum/`
   (including generated protos), `wuwa_calc/`, `data/` checkouts.
+- For protocol-tooling work, edit the first-party extractor in
+  `data/wuwa-protos/tools/Extractor` and regenerate with
+  `bun run update:protos --game <Client directory>`. This also publishes the
+  `src-tauri/protocol/` build snapshot. Never hand-edit either set of generated
+  protocol artifacts or hard-code packet IDs; use
+  `mornye_game_client::message_id`.
 - The main window lives in `src/pages/MainWindow.tsx` (tab shell with
   Overview / Characters / Echoes / Weapons / Optimizer / Settings tabs in
   `src/components/tabs/`); the overlay is a separate Vite entry

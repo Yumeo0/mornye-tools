@@ -9,7 +9,8 @@ import type {
 	MapReward,
 	RewardKind,
 } from "../src/lib/map/types";
-import { assetPath } from "./lib/compile-data-util";
+import { assetPath, loadJsonTable } from "./lib/compile-data-util";
+import { dataLog } from "./lib/data-log";
 import { mapAssetSources } from "./lib/map-assets";
 import { prepareMapCatalog } from "./lib/public-assets";
 import { additionalActivityMarkers } from "./map-activities";
@@ -286,7 +287,7 @@ export async function compileMapData(): Promise<void> {
 		}
 	}
 	if (missingTiles.length)
-		console.warn(
+		dataLog.warn(
 			`${missingTiles.length} tile references are unavailable in the installed game. Recorded in catalog.missingTiles; their placements remain visible.`,
 		);
 
@@ -430,9 +431,9 @@ export async function compileMapData(): Promise<void> {
 	const challengeRewards = new Set<string>();
 	const regionPlacements: RegionPlacement[] = [];
 	const rewardKeys = new Set<string>();
-	const entityRows = (await json(
-		"level_entity/levelentityconfig.json",
-	)) as Row[];
+	const entityRows = await loadJsonTable<Row>(
+		join(bin, "level_entity/levelentityconfig.json"),
+	);
 	const componentCache = new Map<Row, Row>();
 	const componentsFor = (row: Row): Row => {
 		let components = componentCache.get(row);
@@ -1036,7 +1037,7 @@ export async function compileMapData(): Promise<void> {
 			claimChecks,
 		}),
 	);
-	console.log(
+	dataLog.info(
 		`Map: ${catalog.maps.length} maps, ${catalog.maps.reduce((n, m) => n + m.tiles.length, 0)} tiles, ${catalog.icons.length} icons, ${rewards.length} placements, ${Object.keys(claimChecks).length} exact claim checks.`,
 	);
 }

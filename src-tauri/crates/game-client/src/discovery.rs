@@ -138,6 +138,12 @@ fn installed_versions(client: &Path) -> Result<(String, String, String)> {
     ))
 }
 
+/// Read only installed release metadata; no authentication, logs or networking.
+pub fn installed_game_version(game_dir: Option<&Path>) -> Result<String> {
+    let root = find_game(game_dir)?;
+    installed_versions(&root.join("Client")).map(|(game, _, _)| game)
+}
+
 fn normalize_root(path: &Path) -> Option<PathBuf> {
     [
         path.to_path_buf(),
@@ -312,7 +318,7 @@ fn login_check_from_text(text: &str) -> Result<Value> {
     )?;
     let mut fields = serde_json::Map::new();
     for captures in regex.captures_iter(text) {
-        let name = captures[1].replace("Md5", "MD5");
+        let name = captures[1].to_owned();
         let value = if name.ends_with("Version") {
             let Ok(number) = captures[2].parse::<i32>() else {
                 continue;
@@ -696,7 +702,7 @@ mod tests {
             launcher_version: "3.7.18".into(),
             resource_version: "3.7.18".into(),
             branch: Some("branch_3.7_final".into()),
-            login_check: json!({"ProtoVersion":8889113,"ProtoSeedMD5":"66998bb533bca97154a7baff3da5e37d"}),
+            login_check: json!({"ProtoVersion":8889113,"ProtoSeedMd5":"66998bb533bca97154a7baff3da5e37d"}),
             sdk: Sdk {
                 client_id: "installed-client".into(),
                 client_secret: "never-log-sdk-client-secret".into(),

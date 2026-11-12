@@ -1,6 +1,7 @@
 //! Server-authoritative quests and achievements. There are no UI mutation commands.
 use std::collections::HashMap;
 
+use mornye_game_client::message_id as id;
 use spectrum::game::{proto as pb, GamePacket};
 use tauri::{AppHandle, Manager};
 
@@ -32,20 +33,20 @@ impl ProgressionCapture {
     pub fn handles(id: u16) -> bool {
         matches!(
             id,
-            15380
-                | 17000
-                | 23759
-                | 24620
-                | 28378
-                | 27985
-                | 18896
-                | 20398
-                | 26649
-                | 25834
-                | 23250
-                | 21082
-                | 28476
-                | 29250
+            id::BasicInfoNotify
+                | id::QuestFinishListNotify
+                | id::QuestListNotify
+                | id::QuestReadyListNotify
+                | id::QuestStateUpdateNotify
+                | id::BehaviorTreeInfoNotify
+                | id::UpdateNodeStatusNotify
+                | id::UpdateChildQuestNodeStatusNotify
+                | id::AchievementInfoResponse
+                | id::AchievementProgressNotify
+                | id::AchievementListProgressNotify
+                | id::AchievementUpdateResponse
+                | id::AchievementCountChangeNotify
+                | id::MulAchievementReceiveResponse
         )
     }
 
@@ -77,7 +78,7 @@ impl ProgressionCapture {
         snapshot: &mut ProgressionSnapshot,
         at: u64,
     ) -> Result<bool, spectrum::prost::DecodeError> {
-        if gp.msg_id == 15380 {
+        if gp.msg_id == id::BasicInfoNotify {
             let message = gp.parse_proto::<pb::BasicInfoNotify>()?;
             if message.id <= 0 {
                 return Ok(false);
@@ -98,7 +99,7 @@ impl ProgressionCapture {
             return Ok(false);
         }
         match gp.msg_id {
-            23759 => {
+            id::QuestListNotify => {
                 let message = gp.parse_proto::<pb::QuestListNotify>()?;
                 snapshot.quests.states = message
                     .quests
@@ -108,14 +109,14 @@ impl ProgressionCapture {
                     .collect();
                 snapshot.quests.list_synced_at = Some(at);
             }
-            24620 => {
+            id::QuestReadyListNotify => {
                 let message = gp.parse_proto::<pb::QuestReadyListNotify>()?;
                 for id in message.quest_id {
                     snapshot.quests.available_ids.insert(id);
                     snapshot.quests.states.entry(id).or_insert(1);
                 }
             }
-            17000 => {
+            id::QuestFinishListNotify => {
                 let message = gp.parse_proto::<pb::QuestFinishListNotify>()?;
                 for id in message.quest_id {
                     snapshot.quests.completed_ids.insert(id);
@@ -125,7 +126,7 @@ impl ProgressionCapture {
                 }
                 snapshot.quests.completed_synced_at = Some(at);
             }
-            28378 => {
+            id::QuestStateUpdateNotify => {
                 let message = gp.parse_proto::<pb::QuestStateUpdateNotify>()?;
                 if !(0..=4).contains(&message.state) {
                     return Ok(false);
@@ -148,7 +149,7 @@ impl ProgressionCapture {
                     quests.active_nodes.remove(&message.quest_id);
                 }
             }
-            27985 => {
+            id::BehaviorTreeInfoNotify => {
                 let message = gp.parse_proto::<pb::BehaviorTreeInfoNotify>()?;
                 let mut changed = false;
                 for tree in message.tree_infos {
@@ -168,7 +169,7 @@ impl ProgressionCapture {
                 }
                 return Ok(changed);
             }
-            18896 => {
+            id::UpdateNodeStatusNotify => {
                 let message = gp.parse_proto::<pb::UpdateNodeStatusNotify>()?;
                 return Ok(self.node(
                     &mut snapshot.quests,
@@ -178,7 +179,7 @@ impl ProgressionCapture {
                     message.status == 2,
                 ));
             }
-            20398 => {
+            id::UpdateChildQuestNodeStatusNotify => {
                 let message = gp.parse_proto::<pb::UpdateChildQuestNodeStatusNotify>()?;
                 return Ok(self.node(
                     &mut snapshot.quests,
@@ -188,7 +189,7 @@ impl ProgressionCapture {
                     (1..=3).contains(&message.status),
                 ));
             }
-            26649 => {
+            id::AchievementInfoResponse => {
                 let message = gp.parse_proto::<pb::AchievementInfoResponse>()?;
                 snapshot.achievements = AchievementSnapshot {
                     synced_at: Some(at),
@@ -203,7 +204,7 @@ impl ProgressionCapture {
                     star_count: message.star_count,
                 };
             }
-            25834 => {
+            id::AchievementProgressNotify => {
                 let message = gp.parse_proto::<pb::AchievementProgressNotify>()?;
                 let Some(entry) = message.achievement_entry else {
                     return Ok(false);
@@ -212,7 +213,7 @@ impl ProgressionCapture {
                 snapshot.achievements.entries.insert(id, entry);
                 snapshot.achievements.updated_at = Some(at);
             }
-            23250 => {
+            id::AchievementListProgressNotify => {
                 let message = gp.parse_proto::<pb::AchievementListProgressNotify>()?;
                 snapshot
                     .achievements
@@ -220,7 +221,7 @@ impl ProgressionCapture {
                     .extend(message.achievement_entry_list.into_iter().map(achievement));
                 snapshot.achievements.updated_at = Some(at);
             }
-            21082 => {
+            id::AchievementUpdateResponse => {
                 let message = gp.parse_proto::<pb::AchievementUpdateResponse>()?;
                 if message.error_code != pb::ErrorCode::Success as i32 {
                     return Ok(false);
@@ -231,13 +232,13 @@ impl ProgressionCapture {
                     .extend(message.achievement_entry_list.into_iter().map(achievement));
                 snapshot.achievements.updated_at = Some(at);
             }
-            28476 => {
+            id::AchievementCountChangeNotify => {
                 let message = gp.parse_proto::<pb::AchievementCountChangeNotify>()?;
                 snapshot.achievements.finished_count = message.finish_count;
                 snapshot.achievements.star_count = message.star_count;
                 snapshot.achievements.updated_at = Some(at);
             }
-            29250 => {
+            id::MulAchievementReceiveResponse => {
                 let message = gp.parse_proto::<pb::MulAchievementReceiveResponse>()?;
                 if message.error_code != pb::ErrorCode::Success as i32 {
                     return Ok(false);
@@ -338,7 +339,7 @@ mod tests {
         capture
             .apply(
                 &packet(
-                    15380,
+                    id::BasicInfoNotify,
                     pb::BasicInfoNotify {
                         id: player,
                         ..Default::default()
@@ -354,7 +355,7 @@ mod tests {
         let mut capture = ProgressionCapture::default();
         let mut snapshot = ProgressionSnapshot::default();
         let finish = packet(
-            17000,
+            id::QuestFinishListNotify,
             pb::QuestFinishListNotify {
                 quest_id: vec![1, 2],
             },
@@ -365,7 +366,10 @@ mod tests {
         assert_eq!(snapshot.quests.completed_ids.len(), 2);
         capture
             .apply(
-                &packet(17000, pb::QuestFinishListNotify { quest_id: vec![3] }),
+                &packet(
+                    id::QuestFinishListNotify,
+                    pb::QuestFinishListNotify { quest_id: vec![3] },
+                ),
                 &mut snapshot,
                 3,
             )
@@ -374,7 +378,7 @@ mod tests {
         capture
             .apply(
                 &packet(
-                    28378,
+                    id::QuestStateUpdateNotify,
                     pb::QuestStateUpdateNotify {
                         quest_id: 2,
                         state: 2,
@@ -388,7 +392,7 @@ mod tests {
         capture
             .apply(
                 &packet(
-                    28378,
+                    id::QuestStateUpdateNotify,
                     pb::QuestStateUpdateNotify {
                         quest_id: 4,
                         state: 4,
@@ -402,7 +406,10 @@ mod tests {
         login(&mut capture, &mut snapshot, 10);
         capture
             .apply(
-                &packet(17000, pb::QuestFinishListNotify { quest_id: vec![3] }),
+                &packet(
+                    id::QuestFinishListNotify,
+                    pb::QuestFinishListNotify { quest_id: vec![3] },
+                ),
                 &mut snapshot,
                 6,
             )
@@ -439,7 +446,7 @@ mod tests {
         capture
             .apply(
                 &packet(
-                    27985,
+                    id::BehaviorTreeInfoNotify,
                     pb::BehaviorTreeInfoNotify {
                         tree_infos: vec![tree(99, 1, 100), tree(10, 2, 200), tree(10, 1, 300)],
                     },
@@ -453,7 +460,7 @@ mod tests {
         capture
             .apply(
                 &packet(
-                    20398,
+                    id::UpdateChildQuestNodeStatusNotify,
                     pb::UpdateChildQuestNodeStatusNotify {
                         tree_owner_id: 10,
                         tree_inc_id: 300,
@@ -484,7 +491,7 @@ mod tests {
         capture
             .apply(
                 &packet(
-                    25834,
+                    id::AchievementProgressNotify,
                     pb::AchievementProgressNotify {
                         achievement_entry: Some(entry(1, 0, false)),
                     },
@@ -498,7 +505,7 @@ mod tests {
         capture
             .apply(
                 &packet(
-                    26649,
+                    id::AchievementInfoResponse,
                     pb::AchievementInfoResponse {
                         achievement_group_info_list: vec![pb::AchievementGroupInfo {
                             achievement_group_entry: None,
@@ -518,7 +525,7 @@ mod tests {
         capture
             .apply(
                 &packet(
-                    25834,
+                    id::AchievementProgressNotify,
                     pb::AchievementProgressNotify {
                         achievement_entry: Some(entry(2, 123, true)),
                     },

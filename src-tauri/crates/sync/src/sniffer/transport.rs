@@ -3,7 +3,7 @@
 
 use etherparse::{SlicedPacket, TransportSlice};
 use kcp::Kcp;
-use mornye_game_client::codec;
+use mornye_game_client::{codec, message_id as id};
 use rsa::pkcs1::DecodeRsaPrivateKey;
 use spectrum::{
     game::GamePacket, KcpError, NetworkPacket, NetworkPacketError, Packet, SnifferError,
@@ -50,8 +50,8 @@ impl Sniffer {
         self.waiting_for_login = false;
     }
 
-    pub fn receive_packet(&mut self, frame: Vec<u8>) -> Result<Vec<Packet>, SnifferError> {
-        let (received, payload) = udp_payload(&frame)?;
+    pub fn receive_packet(&mut self, frame: impl AsRef<[u8]>) -> Result<Vec<Packet>, SnifferError> {
+        let (received, payload) = udp_payload(frame.as_ref())?;
         // Current SYN includes a trace and CRC; treating its 39 bytes as KCP
         // rejected the reconnect that should reset the passive mirror.
         if payload.len() == 1 || trace_handshake(payload) {
@@ -142,7 +142,7 @@ impl Sniffer {
     fn decode(&mut self, bytes: &[u8]) -> Result<GamePacket, spectrum::game::GamePacketError> {
         let packet = codec::decode(bytes, self.session_key.as_ref())
             .map_err(|error| packet_error(error.to_string()))?;
-        if packet.message == 111 {
+        if packet.message == id::ProtoKeyRequest {
             use spectrum::prost::Message;
             if let Ok(request) =
                 spectrum::game::proto::ProtoKeyRequest::decode(packet.payload.as_slice())
@@ -153,7 +153,7 @@ impl Sniffer {
                     self.session_key = request.trace_id.as_bytes().try_into().ok();
                 }
             }
-        } else if packet.message == 112 {
+        } else if packet.message == id::ProtoKeyResponse {
             use spectrum::prost::Message;
             if let Ok(response) =
                 spectrum::game::proto::ProtoKeyResponse::decode(packet.payload.as_slice())
@@ -196,6 +196,109 @@ mod tests {
     use super::*;
     use spectrum::prost::Message;
 
+    /// Uses the production passive transport without writing any account data.
+    /// The capture and its account payloads remain local; only aggregate counts are printed.
+    #[test]
+    #[ignore = "requires a full login PCAP in MORNYE_PROTOCOL_CAPTURE"]
+    fn current_protocol_decodes_login_capture() {
+        use mornye_game_client::schema::Schema;
+        use spectrum::game::proto as pb;
+        let capture =
+            std::env::var("MORNYE_PROTOCOL_CAPTURE").expect("set MORNYE_PROTOCOL_CAPTURE");
+        let frames = crate::sniffer::import_frames(&capture).unwrap();
+        let pem = std::fs::read_to_string(
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("../../../data/client_private_key.pem"),
+        )
+        .unwrap();
+        let mut sniffer = Sniffer::with_session_key(pem, None);
+        let schema = Schema::load().unwrap();
+        let names: std::collections::HashMap<u16, &str> = mornye_game_client::message_id::ALL
+            .iter()
+            .map(|&(name, id)| (id, name))
+            .collect();
+        let mut decoded = 0;
+        let mut nonempty = 0;
+        let mut rejected_datagrams = 0;
+        let mut identity = false;
+        let mut echoes = false;
+        let mut weapons = false;
+        let mut roles = false;
+        for frame in &frames {
+            // Login captures also include short probes and datagrams whose
+            // outer CRC fails. Reject those just as production capture does;
+            // every reconstructed game packet must still decrypt and decode.
+            let packets = match sniffer.receive_packet(frame) {
+                Ok(packets) => packets,
+                Err(SnifferError::Kcp(
+                    KcpError::SegmentTooShort { .. } | KcpError::CrcMismatch { .. },
+                )) => {
+                    rejected_datagrams += 1;
+                    continue;
+                }
+                Err(error) => panic!("unexpected capture transport error: {error}"),
+            };
+            for packet in packets {
+                let Packet::GamePacket(packet) = packet else {
+                    continue;
+                };
+                let packet = packet.expect("game packet must decrypt and parse");
+                let name = names
+                    .get(&packet.msg_id)
+                    .expect("captured message ID must be known");
+                schema
+                    .decode(name, &packet.raw_msg)
+                    .unwrap_or_else(|_| panic!("schema decode failed for {name}"));
+                assert_eq!(
+                    packet.get_msg_name(),
+                    Some(*name),
+                    "Spectrum and active IDs must agree"
+                );
+                decoded += 1;
+                nonempty += usize::from(!packet.raw_msg.is_empty());
+                match packet.msg_id {
+                    id::BasicInfoNotify => {
+                        identity |= packet.parse_proto::<pb::BasicInfoNotify>().unwrap().id > 0
+                    }
+                    id::PhantomItemResponse => {
+                        echoes |= !packet
+                            .parse_proto::<pb::PhantomItemResponse>()
+                            .unwrap()
+                            .phantom_item_list
+                            .is_empty()
+                    }
+                    id::WeaponItemResponse => {
+                        weapons |= !packet
+                            .parse_proto::<pb::WeaponItemResponse>()
+                            .unwrap()
+                            .weapon_item_list
+                            .is_empty()
+                    }
+                    id::PbGetRoleListResponse => {
+                        roles |= !packet
+                            .parse_proto::<pb::PbGetRoleListResponse>()
+                            .unwrap()
+                            .role_list
+                            .is_empty()
+                    }
+                    id::PbGetRoleListNotify => {
+                        roles |= !packet
+                            .parse_proto::<pb::PbGetRoleListNotify>()
+                            .unwrap()
+                            .role_list
+                            .is_empty()
+                    }
+                    _ => {}
+                }
+            }
+        }
+        println!("Validated {} frames, {decoded} game packets, {nonempty} nonempty payloads, and typed identity/echo/weapon/role snapshots; rejected {rejected_datagrams} short probes/invalid-CRC datagrams.", frames.len());
+        assert!(
+            identity && echoes && weapons && roles,
+            "capture must include identity and inventory snapshots (identity={identity}, echoes={echoes}, weapons={weapons}, roles={roles})"
+        );
+    }
+
     fn ethernet(payload: &[u8], received: bool) -> Vec<u8> {
         let (src, dst) = if received {
             (13101, 50000)
@@ -228,7 +331,7 @@ mod tests {
             trace_id: "0123456789abcdef0123456789abcdef".into(),
             ..Default::default()
         };
-        codec::encode(1, 0, 1, 111, &request.encode_to_vec(), None).unwrap()
+        codec::encode(1, 0, 1, id::ProtoKeyRequest, &request.encode_to_vec(), None).unwrap()
     }
 
     #[test]
@@ -237,7 +340,9 @@ mod tests {
         let packets = sniffer
             .receive_packet(ethernet(&segment(7, 0, &key_request(), 81), false))
             .unwrap();
-        assert!(matches!(&packets[0], Packet::GamePacket(Ok(packet)) if packet.msg_id == 111));
+        assert!(
+            matches!(&packets[0], Packet::GamePacket(Ok(packet)) if packet.msg_id == id::ProtoKeyRequest)
+        );
         assert_eq!(
             sniffer.session_key(),
             Some(*b"0123456789abcdef0123456789abcdef")
@@ -285,7 +390,8 @@ mod tests {
         let key = *b"0123456789abcdef0123456789abcdef";
         let mut sniffer = Sniffer::with_session_key(String::new(), Some(key));
         let payload = vec![0x5a; 70000];
-        let mut bytes = codec::encode(2, 1, 1, 26275, &payload, Some(&key)).unwrap();
+        let mut bytes =
+            codec::encode(2, 1, 1, id::PhantomItemResponse, &payload, Some(&key)).unwrap();
         bytes.extend(codec::encode(4, 2, 0, 103, b"next", Some(&key)).unwrap());
         let mut packets = Vec::new();
         for (sn, chunk) in bytes.chunks(1000).enumerate() {
@@ -356,7 +462,9 @@ mod tests {
             .unwrap();
         assert_eq!(packets.len(), 2);
         assert!(matches!(&packets[0], Packet::GamePacket(Err(_))));
-        assert!(matches!(&packets[1], Packet::GamePacket(Ok(packet)) if packet.msg_id == 111));
+        assert!(
+            matches!(&packets[1], Packet::GamePacket(Ok(packet)) if packet.msg_id == id::ProtoKeyRequest)
+        );
     }
 
     #[test]

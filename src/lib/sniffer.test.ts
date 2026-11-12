@@ -1,8 +1,13 @@
 import { expect, test } from "bun:test";
-import { captureHealth, type SnifferStatus } from "./sniffer";
+import {
+	captureHealth,
+	gameVersionWarning,
+	type SnifferStatus,
+} from "./sniffer";
 import { createSnifferMonitor } from "./snifferStatus";
 
 const healthy: SnifferStatus = {
+	game_version: { installed: "3.8.0", supported: "3.8.0", too_new: false },
 	capturing: true,
 	game_process_found: true,
 	capture_available: true,
@@ -28,7 +33,40 @@ const healthy: SnifferStatus = {
 	last_packet_at_ms: 2000,
 	last_error: null,
 	log: [],
+	recording: {
+		revision: 0,
+		recording: false,
+		frames: 0,
+		packets: 0,
+		stored_bytes: 0,
+		max_bytes: 64 * 1024 * 1024,
+		max_frames: 50_000,
+		limit_reached: false,
+		started_at_ms: null,
+	},
 };
+
+test("a newer installed game warns even before capture or when packets still decode", () => {
+	const game_version = {
+		installed: "3.9.0",
+		supported: "3.8.0",
+		too_new: true,
+	};
+	for (const game_process_found of [true, false]) {
+		const health = captureHealth(
+			{ ...healthy, game_version, game_process_found },
+			null,
+			3000,
+		);
+		expect(health.tone).toBe("warning");
+		expect(health.label).toBe("Game version unsupported");
+		expect(health.detail).toContain("Wuthering Waves 3.9.0");
+		expect(health.detail).toContain("3.8.0");
+	}
+	expect(gameVersionWarning(healthy.game_version)).toBeNull();
+	expect(gameVersionWarning({ ...game_version, installed: null })).toBeNull();
+	expect(gameVersionWarning(undefined)).toBeNull();
+});
 
 test("capture health distinguishes process, login, decoding and stalls", () => {
 	expect(captureHealth(null).label).toBe("Checking listener");

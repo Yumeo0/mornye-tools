@@ -30,7 +30,8 @@ test("Nanoka native texture references map to bundled game artwork paths", () =>
 });
 
 test("all imported preview images are valid bundled textures with source attribution", async () => {
-	for (const [url, source] of Object.entries(previewData.assets)) {
+	const assets: Record<string, string> = previewData.assets;
+	for (const [url, source] of Object.entries(assets)) {
 		expect(source.startsWith("https://static.nanoka.cc/assets/ww/")).toBe(true);
 		const { width, height } = await new Bun.Image(
 			join(publicRoot, url.slice(1)),

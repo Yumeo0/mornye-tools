@@ -6,6 +6,7 @@ use crate::sniffer::{
     teams::TeamCapture,
     world::WorldCapture,
 };
+use mornye_game_client::message_id as id;
 use spectrum::game::{proto as pb, GamePacket};
 
 #[derive(Default)]
@@ -34,7 +35,7 @@ impl AccountCapture {
         packet: &GamePacket,
     ) -> Result<Vec<&'static str>, String> {
         let player_id = store.snapshot().player.as_ref().map_or(0, |p| p.player_id);
-        if packet.msg_id == 15380 {
+        if packet.msg_id == id::BasicInfoNotify {
             let identity = packet
                 .parse_proto::<pb::BasicInfoNotify>()
                 .map_err(|_| "Could not decode player identity.")?;
@@ -152,15 +153,15 @@ mod tests {
     fn active_sync_records_inventory_echoes_weapons_and_identity() {
         let ids = AccountCapture::message_ids();
         for id in [
-            22445, // NormalItemResponse
-            15755, // NormalItemAddNotify
-            20661, // NormalItemUpdateNotify
-            29178, // NormalItemRemoveNotify
-            26275, // PhantomItemResponse
-            27089, // WeaponItemResponse
-            25557, // PbGetRoleListResponse
-            15380, // BasicInfoNotify
-            20778, // PlayerAttrNotify
+            id::NormalItemResponse,
+            id::NormalItemAddNotify,
+            id::NormalItemUpdateNotify,
+            id::NormalItemRemoveNotify,
+            id::PhantomItemResponse,
+            id::WeaponItemResponse,
+            id::PbGetRoleListResponse,
+            id::BasicInfoNotify,
+            id::PlayerAttrNotify,
         ] {
             assert!(ids.contains(&id), "message {id} is not recorded");
         }
@@ -172,7 +173,7 @@ mod tests {
         let mut capture = AccountCapture::default();
         let tables = ExtractTables::default();
         let login = packet(
-            15380,
+            id::BasicInfoNotify,
             pb::BasicInfoNotify {
                 id: 123,
                 attributes: vec![
@@ -195,7 +196,7 @@ mod tests {
         assert_eq!(player.signature.as_deref(), Some("Hello"));
 
         let update = packet(
-            20778,
+            id::PlayerAttrNotify,
             pb::PlayerAttrNotify {
                 attributes: vec![
                     number(pb::PlayerAttrKey::Level, 81),
@@ -213,7 +214,7 @@ mod tests {
                 &tables,
                 &mut fixture.1,
                 &packet(
-                    15380,
+                    id::BasicInfoNotify,
                     pb::BasicInfoNotify {
                         id: 123,
                         ..Default::default()
@@ -238,7 +239,7 @@ mod tests {
         let tables = ExtractTables::default();
         let before = serde_json::to_value(fixture.1.snapshot().player.as_ref().unwrap()).unwrap();
         let wrong = packet(
-            15380,
+            id::BasicInfoNotify,
             pb::BasicInfoNotify {
                 id: 456,
                 attributes: vec![text(pb::PlayerAttrKey::Name, "Wrong player")],
@@ -247,7 +248,7 @@ mod tests {
         );
         assert!(capture.apply(&tables, &mut fixture.1, &wrong).is_err());
         let invalid = packet(
-            20778,
+            id::PlayerAttrNotify,
             pb::PlayerAttrNotify {
                 attributes: vec![
                     text(pb::PlayerAttrKey::Level, "not an integer"),
@@ -261,7 +262,7 @@ mod tests {
             .unwrap()
             .is_empty());
         let rejected = packet(
-            22549,
+            id::PlayerBasicInfoGetResponse,
             pb::PlayerBasicInfoGetResponse {
                 error_code: 400003,
                 info: Some(pb::PlayerDetails {

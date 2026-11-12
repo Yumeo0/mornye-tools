@@ -149,6 +149,31 @@ login cannot reconstruct the missing KCP stream or session key: reconnect or
 relaunch the game while Mornye Tools is running. An open capture socket alone
 does not mean account sync is decoding data.
 
+The installed game release is checked at startup and every 30 seconds, independently
+of capture permissions or login. The running client's installation takes precedence
+over launcher discovery. A release newer than either the bundled game data or
+protocol snapshot produces a persistent warning with a shortcut to update settings;
+both versions also appear in capture diagnostics. Resource hotfix revisions are
+separate from the game release and do not trigger this warning by themselves.
+
+In **Settings → Advanced → Capture diagnostics**, **Start recording** keeps
+raw game-network frames and successfully decoded packet payloads in memory.
+Start before reconnecting the game to include the KCP handshake and key exchange.
+Recording also includes packets fed through offline import while it is enabled.
+It stops at a 64 MiB recording budget or 50,000 frames, preserving the beginning
+of the stream. Stop and clear the recording to release it; quitting also clears it.
+
+**Export raw (.pcap)** saves Ethernet-framed packets with timestamps, including
+frames that failed parsing or decryption. Windows frames have synthetic Ethernet
+headers. **Export parsed (.json)** includes packet headers, directions, source,
+decrypted payload hex, fields decoded with the pinned protocol, and decode errors.
+The document records the protocol version and hashes so a capture can be checked
+against the correct schema. After a game update, successful protobuf decoding
+alone does not prove that the pinned names and fields are still correct.
+Offline-import recording timestamps reflect when frames were processed.
+Exports go to Downloads without stopping the passive listener or changing profiles.
+They may contain account/login data and should be kept private.
+
 Passive capture and active sessions share the bounded game-frame codec in
 `mornye-game-client` (24-bit lengths, CRC, crypto and decompression). Passive KCP
 reassembly lives in `mornye-sync`; vendored Spectrum supplies protocol messages.
@@ -172,14 +197,76 @@ Do not edit vendored/generated code or submodule contents:
 
 | Task | Command |
 | --- | --- |
-| Update game-data/assets checkouts and rebuild configs/assets | `bun run update:data` |
+| Update all game data, assets and named protocols | `bun run update:data` |
 | Rebuild from the currently pinned checkouts | `bun scripts/compile_all_data.ts` |
 | Republish referenced images after changing asset paths | `bun scripts/copy_assets.ts` |
 | Refresh Tethys builds and team presets | `bun scripts/compile_build_guides.ts` |
 | Refresh community map icons / GHZS matching lookup | `bun run map:icons` / `bun run map:ghzs-mapping` |
 
-`data/VERSION.json` records input versions. Refresh pinned `data/wuwa-protos/`
-artifacts from a protocol extraction when the game protocol changes.
+The data pipeline reports numbered stages, timings, and output totals. Add
+`--verbose` (`bun run update:data --verbose` or
+`bun scripts/compile_all_data.ts --verbose`) for per-item processing and source
+diagnostics. Warnings remain visible in the default output. Required compiler
+failures stop the pipeline; unavailable Tethys/Nanoka updates are reported as
+skipped and retain the bundled data.
+
+`bun run update:data` initializes/refreshes `data/wuwa-assets` and the private
+`data/wuwa-protos` tooling, automatically selects the newest numbered upstream
+release branch of `data/wuwa-data` (including across major/minor updates), extracts
+named protocols and packet IDs, publishes the app protocol snapshot, then runs
+every compiler and asset publisher above. It does not update the calculator
+submodule. Git refreshes preserve local edits and stop on conflicts.
+
+Update the installed game first. Extraction requires the **.NET 10 SDK** and
+`protoc`; missing tools or a client/asset/data game-version mismatch stop the
+command. Steam libraries and Windows uninstall entries are searched automatically.
+For another installation, use `bun run update:data --game '<game root or Client>'`
+or set `WUWA_GAME`. `--keys <file or URL>` overrides the public PAK-key source;
+`--protoc <executable>` overrides `PROTOC` or `protoc` on PATH. Run
+`bun run update:data --help` for options. No packet IDs or branch pins need editing.
+
+`data/VERSION.json` records these input versions; protocol versions are tracked
+separately, and resource revisions can differ from the game version. For a
+protocol-only refresh, the same client discovery is available through
+`update:protos`. This command uses the currently checked-out extractor:
+
+```powershell
+git submodule update --init data/wuwa-protos
+bun run update:protos
+# Or select an installation explicitly:
+bun run update:protos --game 'C:/Games/Wuthering Waves/Client'
+# Or publish an already generated/pulled tooling snapshot:
+bun run update:protos --pinned
+```
+
+The extractor reads `Aki.Protocol.dll` from the newest base/patch archives,
+reconstructs messages, enums, field encodings, maps, oneofs and optional presence,
+then derives packet IDs from `EMessageId`. It reads metadata and IL without
+executing client code. `--keys <file or URL>` overrides the default public PAK-key
+source. See `data/wuwa-protos/README.md` for direct DLL input and checks.
+
+The update command validates artifact hashes and compiles the schema before
+copying the generated files into `src-tauri/protocol/` and recording the protocol
+game version. This committed build snapshot lets app and release builds run
+without access to the private extraction repository, .NET, or a local client.
+Commit the submodule revision and build snapshot together after an update.
+Do not edit either set of generated artifacts by hand.
+
+`mornye-game-client::message_id` is generated from that same packet map at build
+time. Passive capture, movement, exploration, progression, teams, active sessions,
+and profile discovery use those names; patch-specific numeric IDs never need
+manual replacement. Missing/renamed messages produce compile errors; changes
+to message semantics may still require converter updates.
+
+Extractor tests use synthetic protoc-generated assemblies:
+`python -S data/wuwa-protos/tests/run.py`. To validate a full local login capture
+through the app's production transport and schemas without writing account data:
+
+```powershell
+$env:MORNYE_PROTOCOL_CAPTURE = 'C:/Users/you/Downloads/mornye-capture.pcap'
+Set-Location src-tauri
+cargo test -p mornye-sync current_protocol_decodes_login_capture --locked -- --ignored --nocapture
+```
 
 Tracked `public/**` files are stored directly in Git; Git LFS is not required.
 Icons live in `public/icons/`, artwork in

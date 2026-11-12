@@ -3,6 +3,7 @@
 import { invoke } from "@tauri-apps/api/core";
 
 export interface SnifferStatus {
+	game_version: GameVersionStatus;
 	capturing: boolean;
 	game_process_found: boolean;
 	waiting_for_login: boolean;
@@ -34,12 +35,58 @@ export interface SnifferStatus {
 	stream_stalled: boolean;
 	last_error: string | null;
 	log: string[];
+	recording: RecordingStatus;
+}
+
+export interface GameVersionStatus {
+	installed: string | null;
+	supported: string;
+	too_new: boolean;
+}
+
+export interface RecordingStatus {
+	revision: number;
+	recording: boolean;
+	frames: number;
+	packets: number;
+	stored_bytes: number;
+	max_bytes: number;
+	max_frames: number;
+	limit_reached: boolean;
+	started_at_ms: number | null;
+}
+
+export interface CaptureExport {
+	path: string;
+	frames: number;
+	packets: number;
+}
+
+export function setPacketRecording(enabled: boolean): Promise<RecordingStatus> {
+	return invoke("sniffer_set_recording", { enabled });
+}
+
+export function clearPacketRecording(): Promise<RecordingStatus> {
+	return invoke("sniffer_clear_recording");
+}
+
+export function exportPacketCapture(
+	format: "raw" | "parsed",
+): Promise<CaptureExport> {
+	return invoke("sniffer_export_capture", { format });
 }
 
 export interface CaptureHealth {
 	label: string;
 	detail: string;
 	tone: "muted" | "ok" | "warning" | "error";
+}
+
+export function gameVersionWarning(
+	version: GameVersionStatus | undefined,
+): string | null {
+	if (!version?.too_new || !version.installed) return null;
+	return `Wuthering Waves ${version.installed} is newer than the ${version.supported} game version supported by this build. Account sync and game-data features may be incomplete. Update Mornye Tools when a compatible release is available.`;
 }
 
 /** Report progress in this capture, never a green light from old packet counts. */
@@ -59,6 +106,13 @@ export function captureHealth(
 	const problem = blockingErrors(status)[0] ?? status.last_error;
 	if (problem)
 		return { label: "Listener error", detail: problem, tone: "error" };
+	const compatibilityWarning = gameVersionWarning(status.game_version);
+	if (compatibilityWarning)
+		return {
+			label: "Game version unsupported",
+			detail: compatibilityWarning,
+			tone: "warning",
+		};
 	if (!status.game_process_found)
 		return {
 			label: "Waiting for game",

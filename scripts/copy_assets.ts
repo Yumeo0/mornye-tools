@@ -10,6 +10,8 @@ import {
 } from "node:fs";
 import { dirname, join, resolve, sep } from "node:path";
 import { buildAssetManifest } from "./build_asset_manifest";
+import { dataLog } from "./lib/data-log";
+import { rewriteJsonFile } from "./lib/json-file";
 import {
 	filesIn,
 	gameRoot,
@@ -45,20 +47,14 @@ const catalogs = [
 async function normalizeCatalogs() {
 	for (const name of catalogs) {
 		const path = join(root, `src/configs/${name}.json`);
-		await Bun.write(
+		await rewriteJsonFile(
 			path,
-			JSON.stringify(
-				prepareCatalog(await Bun.file(path).json()),
-				null,
-				["progression", "inventory_data"].includes(name) ? undefined : "\t",
-			) + "\n",
+			prepareCatalog,
+			["progression", "inventory_data"].includes(name) ? undefined : "\t",
 		);
 	}
 	const path = join(publicRoot, "map/catalog.json");
-	await Bun.write(
-		path,
-		JSON.stringify(prepareMapCatalog(await Bun.file(path).json())) + "\n",
-	);
+	await rewriteJsonFile(path, prepareMapCatalog);
 }
 
 /** All deletions are individual files below the resolved public root. */
@@ -76,6 +72,7 @@ function emptyDirectories(directory: string) {
 }
 
 export async function copyAssets(): Promise<void> {
+	dataLog.progress("Normalizing catalogs and resolving referenced images…");
 	await normalizeCatalogs();
 	const manifest = await buildAssetManifest();
 	const previousAliases: Record<string, string> = await Bun.file(
@@ -105,6 +102,7 @@ export async function copyAssets(): Promise<void> {
 	// Identical PNG sources can have different old WebP encodings. Group by
 	// source bytes and resize rules as well as by the published bytes below.
 	const bySource = new Map<string, string[]>();
+	dataLog.progress(`Checking ${manifest.assets.length} source textures…`);
 	for (const { source, url } of manifest.assets) {
 		const key = `${transform(url)}:${await sourceHash(source)}`;
 		bySource.set(key, [...(bySource.get(key) ?? []), url]);
@@ -121,7 +119,11 @@ export async function copyAssets(): Promise<void> {
 		(a, b) =>
 			Number(sourceAliases.has(a.url)) - Number(sourceAliases.has(b.url)),
 	);
-	for (const { source, url } of publicationOrder) {
+	for (const [index, { source, url }] of publicationOrder.entries()) {
+		if (index % 250 === 0)
+			dataLog.progress(
+				`Images: ${index}/${publicationOrder.length} checked · ${encoded} encoded`,
+			);
 		const input = sourceFile(source);
 		const output = publicPath(url);
 		if (
@@ -192,6 +194,7 @@ export async function copyAssets(): Promise<void> {
 		encoded++;
 	}
 	// Identical bytes get one canonical URL; catalogue aliases retain correct semantics.
+	dataLog.progress("Consolidating duplicate images and updating catalogs…");
 	const byHash = new Map<string, string[]>();
 	for (const url of manifest.urls) {
 		const file = Bun.file(
@@ -228,22 +231,21 @@ export async function copyAssets(): Promise<void> {
 					: value;
 	for (const name of catalogs) {
 		const path = join(root, `src/configs/${name}.json`);
-		await Bun.write(
+		await rewriteJsonFile(
 			path,
-			JSON.stringify(
-				rewrite(await Bun.file(path).json()),
-				null,
-				["progression", "inventory_data"].includes(name) ? undefined : "\t",
-			) + "\n",
+			rewrite,
+			["progression", "inventory_data"].includes(name) ? undefined : "\t",
 		);
 	}
 	const mapPath = join(publicRoot, "map/catalog.json");
-	const map = rewrite(await Bun.file(mapPath).json()) as { icons: string[] };
-	map.icons = [...new Set(map.icons)].sort();
-	await Bun.write(mapPath, JSON.stringify(map) + "\n");
+	await rewriteJsonFile<{ icons: string[] }>(mapPath, (catalog) => {
+		const map = rewrite(catalog) as typeof catalog;
+		map.icons = [...new Set(map.icons)].sort();
+		return map;
+	});
 	await Bun.write(
 		join(root, "src/configs/asset_aliases.json"),
-		JSON.stringify(aliases, null, "\t") + "\n",
+		`${JSON.stringify(aliases, null, "\t")}\n`,
 	);
 	const urls = [
 		...new Set(manifest.urls.map((url) => aliases[url] ?? url)),
@@ -258,7 +260,7 @@ export async function copyAssets(): Promise<void> {
 	].sort((a, b) => a.url.localeCompare(b.url));
 	await Bun.write(
 		manifestPath,
-		JSON.stringify({ assets, urls }, null, "\t") + "\n",
+		`${JSON.stringify({ assets, urls }, null, "\t")}\n`,
 	);
 	const expected = new Set(urls.map(publicPath));
 	// Validate every destination before removing any legacy or stale image.
@@ -295,7 +297,7 @@ export async function copyAssets(): Promise<void> {
 			removed++;
 		}
 	await syncAssetsVersion();
-	console.log(
+	dataLog.info(
 		`Published ${urls.length} images (${encoded} encoded); consolidated ${Object.keys(aliases).length} duplicates; removed ${removed} stale/legacy files.`,
 	);
 }

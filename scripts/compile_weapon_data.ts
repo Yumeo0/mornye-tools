@@ -23,8 +23,8 @@ import { prepareCatalog } from "./lib/public-assets";
  */
 
 import { join } from "node:path";
-
 import { assetPath, indexBy, loadJson } from "./lib/compile-data-util";
+import { dataLog } from "./lib/data-log";
 
 const SCRIPTS_DIR = import.meta.dirname;
 const REPO_ROOT = join(SCRIPTS_DIR, "..");
@@ -157,15 +157,14 @@ function withPythonFloatRatios(json: string): string {
 }
 
 async function compileWeaponData(): Promise<void> {
-	console.log("Loading weapon tables...");
+	dataLog.detail("Loading weapon tables...");
 	const multitextData = await loadJson<MultiTextEntry[]>(MULTITEXT_PATH);
 	const weaponData = await loadJson<WeaponConf[]>(WEAPON_CONF_PATH);
 	const propertyData =
 		await loadJson<PropertyIndexEntry[]>(PROPERTY_INDEX_PATH);
 
 	if (!multitextData || !weaponData || !propertyData) {
-		console.log("Error: Failed to load one or more required files");
-		return;
+		throw new Error("Failed to load one or more required weapon tables");
 	}
 
 	const textById = indexBy(multitextData, (entry) => entry.Id);
@@ -212,17 +211,17 @@ async function compileWeaponData(): Promise<void> {
 	}
 
 	if (unmappedSecondary.length > 0) {
-		console.log(
-			`WARNING unmapped weapon secondary props: ${JSON.stringify(unmappedSecondary.slice(0, 20))}`,
+		dataLog.warn(
+			`Unmapped weapon secondary props: ${JSON.stringify(unmappedSecondary.slice(0, 20))}`,
 		);
 	}
 
-	console.log(`Writing ${weapons.length} weapons to ${OUTPUT_PATH}...`);
+	dataLog.detail(`Writing ${weapons.length} weapons to ${OUTPUT_PATH}...`);
 	await Bun.write(
 		OUTPUT_PATH,
 		`${withPythonFloatRatios(JSON.stringify(prepareCatalog(weapons), null, "\t"))}\n`,
 	);
-	console.log(`Successfully wrote ${OUTPUT_PATH}`);
+	dataLog.info(`${weapons.length} weapons`);
 }
 
 if (import.meta.main) {

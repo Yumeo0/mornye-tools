@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { assetUrl } from "../src/lib/assets";
 import type { CatalogCharacter } from "../src/lib/catalog";
 import type { WeaponCatalogEntry } from "../src/lib/weapons";
+import { dataLog } from "./lib/data-log";
 import { publicRoot, root } from "./lib/public-assets";
 
 const site = "https://ww.nanoka.cc/";
@@ -166,7 +167,7 @@ export async function compilePreviewData(): Promise<void> {
 			"\t",
 		)}\n`,
 	);
-	console.log(
+	dataLog.info(
 		`Nanoka ${version}: ${characters.length} preview characters, ${weapons.length} preview weapons, ${downloads.length} images.`,
 	);
 }

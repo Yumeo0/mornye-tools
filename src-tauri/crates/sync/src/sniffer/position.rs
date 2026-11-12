@@ -1,6 +1,7 @@
 //! Transient player tracking. Movement never writes account.json.
 use std::collections::{HashMap, HashSet};
 
+use mornye_game_client::message_id as id;
 use serde::Serialize;
 use spectrum::game::{proto as pb, GamePacket};
 use tauri::{AppHandle, Emitter, Manager, State};
@@ -124,33 +125,33 @@ impl PositionTracker {
     fn handles(id: u16) -> bool {
         matches!(
             id,
-            15380
-                | 18559
-                | 28361
-                | 24756
-                | 24978
-                | 17992
-                | 25437
-                | 21436
-                | 26484
-                | 19470
-                | 20332
-                | 25706
-                | 21051
-                | 27633
-                | 17286
+            id::BasicInfoNotify
+                | id::JoinSceneNotify
+                | id::LeaveSceneNotify
+                | id::MovePackagePush
+                | id::UDPMovePackagePush
+                | id::MovePackageNotify
+                | id::UDPMovePackageNotify
+                | id::SwitchRoleNotify
+                | id::ChangeControlRoleNotify
+                | id::CombatSendPackRequest
+                | id::CombatSendPackResponse
+                | id::CombatReceivePackNotify
+                | id::UpdatePlayerAllFightRoleNotify
+                | id::ChangePlayerFightRoleNotify
+                | id::UpdateSceneGroupDataNotify
         )
     }
 
     pub fn apply(&mut self, gp: &GamePacket, at: u64) -> Result<(), spectrum::prost::DecodeError> {
         match gp.msg_id {
-            15380 => {
+            id::BasicInfoNotify => {
                 let m = gp.parse_proto::<pb::BasicInfoNotify>()?;
                 self.clear();
                 self.player = i64::from(m.id);
                 return Ok(());
             }
-            18559 => {
+            id::JoinSceneNotify => {
                 let m = gp.parse_proto::<pb::JoinSceneNotify>()?;
                 let player = self.player;
                 self.clear();
@@ -181,7 +182,7 @@ impl PositionTracker {
                 }
                 return Ok(());
             }
-            28361 => {
+            id::LeaveSceneNotify => {
                 if i64::from(gp.parse_proto::<pb::LeaveSceneNotify>()?.player_id) == self.player {
                     let player = self.player;
                     self.clear();
@@ -195,34 +196,34 @@ impl PositionTracker {
             return Ok(());
         }
         match gp.msg_id {
-            24756 => {
+            id::MovePackagePush => {
                 let m = gp.parse_proto::<pb::MovePackagePush>()?;
                 if i64::from(m.scene_owner_id) == self.owner {
                     self.movement(m.moving_entities, at);
                 }
             }
-            24978 => {
+            id::UDPMovePackagePush => {
                 let m = gp.parse_proto::<pb::UdpMovePackagePush>()?;
                 if i64::from(m.scene_owner_id) == self.owner {
                     self.movement(m.moving_entities, at);
                 }
             }
-            17992 => self.movement(
+            id::MovePackageNotify => self.movement(
                 gp.parse_proto::<pb::MovePackageNotify>()?.moving_entities,
                 at,
             ),
-            25437 => self.movement(
+            id::UDPMovePackageNotify => self.movement(
                 gp.parse_proto::<pb::UdpMovePackageNotify>()?
                     .moving_entities,
                 at,
             ),
-            21436 => {
+            id::SwitchRoleNotify => {
                 let m = gp.parse_proto::<pb::SwitchRoleNotify>()?;
                 if i64::from(m.player_id) == self.player && !m.on_stage_without_control {
                     self.control(m.up_entity_id, at);
                 }
             }
-            26484 => {
+            id::ChangeControlRoleNotify => {
                 let m = gp.parse_proto::<pb::ChangeControlRoleNotify>()?;
                 if i64::from(m.player_id) == self.player {
                     self.control(m.up_id, at);
@@ -233,8 +234,8 @@ impl PositionTracker {
                     }
                 }
             }
-            21051 | 27633 => {
-                let (player, roles) = if gp.msg_id == 21051 {
+            id::UpdatePlayerAllFightRoleNotify | id::ChangePlayerFightRoleNotify => {
+                let (player, roles) = if gp.msg_id == id::UpdatePlayerAllFightRoleNotify {
                     let m = gp.parse_proto::<pb::UpdatePlayerAllFightRoleNotify>()?;
                     (m.player_id, m.fight_role_infos)
                 } else {
@@ -250,7 +251,7 @@ impl PositionTracker {
                     }
                 }
             }
-            17286 => {
+            id::UpdateSceneGroupDataNotify => {
                 for p in gp
                     .parse_proto::<pb::UpdateSceneGroupDataNotify>()?
                     .player_scene_group_data_list
@@ -268,7 +269,7 @@ impl PositionTracker {
                     }
                 }
             }
-            19470 => {
+            id::CombatSendPackRequest => {
                 for d in gp.parse_proto::<pb::CombatSendPackRequest>()?.data {
                     match d.message {
                         Some(pb::combat_send_data::Message::Request(r)) => {
@@ -302,7 +303,7 @@ impl PositionTracker {
                     }
                 }
             }
-            20332 => {
+            id::CombatSendPackResponse => {
                 if let Some(pack) = gp
                     .parse_proto::<pb::CombatSendPackResponse>()?
                     .receive_pack_notify
@@ -310,7 +311,9 @@ impl PositionTracker {
                     self.receive(pack, at);
                 }
             }
-            25706 => self.receive(gp.parse_proto::<pb::CombatReceivePackNotify>()?, at),
+            id::CombatReceivePackNotify => {
+                self.receive(gp.parse_proto::<pb::CombatReceivePackNotify>()?, at)
+            }
             _ => {}
         }
         Ok(())
@@ -369,7 +372,7 @@ mod tests {
     fn join(t: &mut PositionTracker, map: i32) {
         t.apply(
             &packet(
-                15380,
+                id::BasicInfoNotify,
                 pb::BasicInfoNotify {
                     id: 1,
                     ..Default::default()
@@ -380,7 +383,7 @@ mod tests {
         .unwrap();
         t.apply(
             &packet(
-                18559,
+                id::JoinSceneNotify,
                 pb::JoinSceneNotify {
                     scene_info: Some(pb::SceneInformation {
                         instance_id: map,
@@ -451,7 +454,7 @@ mod tests {
         join(&mut t, 906);
         t.apply(
             &packet(
-                24756,
+                id::MovePackagePush,
                 pb::MovePackagePush {
                     scene_owner_id: 1,
                     moving_entities: vec![
@@ -480,7 +483,7 @@ mod tests {
         assert_eq!(t.latest.as_ref().unwrap().x, 2652.);
         t.apply(
             &packet(
-                24978,
+                id::UDPMovePackagePush,
                 pb::UdpMovePackagePush {
                     scene_owner_id: 2,
                     moving_entities: vec![moving(100, vec![sample(247., 999.)])],
@@ -498,7 +501,7 @@ mod tests {
         t.movement(vec![moving(92, vec![sample(233., 2602.)])], 3);
         let request = |without_control| {
             packet(
-                19470,
+                id::CombatSendPackRequest,
                 pb::CombatSendPackRequest {
                     data: vec![pb::CombatSendData {
                         message: Some(pb::combat_send_data::Message::Request(
@@ -526,7 +529,7 @@ mod tests {
         };
         let response = |id, code| {
             packet(
-                20332,
+                id::CombatSendPackResponse,
                 pb::CombatSendPackResponse {
                     receive_pack_notify: Some(pb::CombatReceivePackNotify {
                         data: vec![pb::CombatReceiveData {
@@ -574,7 +577,7 @@ mod tests {
         join(&mut t, 906);
         t.apply(
             &packet(
-                28361,
+                id::LeaveSceneNotify,
                 pb::LeaveSceneNotify {
                     player_id: 2,
                     ..Default::default()
@@ -586,7 +589,7 @@ mod tests {
         assert!(t.latest.is_some());
         t.apply(
             &packet(
-                28361,
+                id::LeaveSceneNotify,
                 pb::LeaveSceneNotify {
                     player_id: 1,
                     ..Default::default()
@@ -601,7 +604,7 @@ mod tests {
         assert_eq!(t.latest.as_ref().unwrap().map_id, 8);
         t.apply(
             &packet(
-                15380,
+                id::BasicInfoNotify,
                 pb::BasicInfoNotify {
                     id: 2,
                     ..Default::default()

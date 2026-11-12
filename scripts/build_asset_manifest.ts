@@ -1,4 +1,5 @@
 /** Build the exact publication list from rendered catalogue fields and UI code. */
+import { dataLog } from "./lib/data-log";
 import {
 	type AssetManifest,
 	assetSources,
@@ -35,7 +36,7 @@ export async function buildAssetManifest(): Promise<AssetManifest> {
 	}
 	const manifest = { assets, urls };
 	await Bun.write(manifestPath, `${JSON.stringify(manifest, null, "\t")}\n`);
-	console.log(
+	dataLog.info(
 		`Asset manifest: ${assets.length} game textures, ${urls.length - assets.length} authored images.`,
 	);
 	return manifest;

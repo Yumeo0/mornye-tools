@@ -1,48 +1,7 @@
 {
 	"source": "https://ww.nanoka.cc/",
 	"version": "3.8",
-	"characters": [
-		{
-			"character_id": 1512,
-			"character_name": "Lily",
-			"preview": true,
-			"rarity": 5,
-			"element": "Spectro",
-			"element_icon_round": "/icons/elements/spectro.webp",
-			"weapon_type": "Pistols",
-			"weapon_type_icon": "/icons/weapon-types/pistols.webp",
-			"icon_head_256": "/images/resonators/portraits/77.webp",
-			"icon_pile": "/images/resonators/artwork/lili.webp",
-			"chain_icons": [
-				"/images/resonators/sequences/lili-m1.webp",
-				"/images/resonators/sequences/lili-m2.webp",
-				"/images/resonators/sequences/lili-m3.webp",
-				"/images/resonators/sequences/lili-m4.webp",
-				"/images/resonators/sequences/lili-m5.webp",
-				"/images/resonators/sequences/lili-m6.webp"
-			]
-		}
-	],
-	"weapons": [
-		{
-			"item_id": 21030076,
-			"name": "Lullaby",
-			"preview": true,
-			"type": 3,
-			"type_name": "Pistols",
-			"rarity": 5,
-			"icon": "/images/weapons/21030076.webp"
-		}
-	],
-	"assets": {
-		"/images/resonators/portraits/77.webp": "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_77_UI.webp",
-		"/images/resonators/artwork/lili.webp": "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRolePile/T_IconRole_Pile_Lili_UI.webp",
-		"/images/resonators/sequences/lili-m1.webp": "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconDevice/T_IconDevice_LiliM1_UI.webp",
-		"/images/resonators/sequences/lili-m2.webp": "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconDevice/T_IconDevice_LiliM2_UI.webp",
-		"/images/resonators/sequences/lili-m3.webp": "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconDevice/T_IconDevice_LiliM3_UI.webp",
-		"/images/resonators/sequences/lili-m4.webp": "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconDevice/T_IconDevice_LiliM4_UI.webp",
-		"/images/resonators/sequences/lili-m5.webp": "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconDevice/T_IconDevice_LiliM5_UI.webp",
-		"/images/resonators/sequences/lili-m6.webp": "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconDevice/T_IconDevice_LiliM6_UI.webp",
-		"/images/weapons/21030076.webp": "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconWeapon/T_IconWeapon21030076_UI.webp"
-	}
+	"characters": [],
+	"weapons": [],
+	"assets": {}
 }

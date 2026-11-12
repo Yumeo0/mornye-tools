@@ -15,16 +15,16 @@ use tauri::AppHandle;
 mod linux;
 #[cfg(target_os = "linux")]
 pub use linux::{
-    capture_available, game_processes, is_elevated, open_error, open_socket, process_alive, run,
-    udp_ports,
+    capture_available, client_directory, game_processes, is_elevated, open_error, open_socket,
+    process_alive, run, udp_ports,
 };
 
 #[cfg(windows)]
 mod windows;
 #[cfg(windows)]
 pub use windows::{
-    capture_available, game_processes, is_elevated, open_error, open_socket, process_alive, run,
-    udp_ports,
+    capture_available, client_directory, game_processes, is_elevated, open_error, open_socket,
+    process_alive, run, udp_ports,
 };
 
 #[cfg(not(any(target_os = "linux", windows)))]
@@ -88,7 +88,12 @@ pub(crate) fn handle_frame(
     sniffer: &mut crate::sniffer::transport::Sniffer,
     frame: &[u8],
 ) {
-    crate::sniffer::process_frame(app, sniffer, frame.to_vec());
+    crate::sniffer::process_frame(
+        app,
+        sniffer,
+        frame.to_vec(),
+        super::recording::CaptureSource::Live,
+    );
 }
 
 /// Resolve the client process to capture, preferring the real client. The

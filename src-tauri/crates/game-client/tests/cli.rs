@@ -114,7 +114,7 @@ fn minimal_email_config_discovers_metadata_and_checks_offline() {
     assert_eq!(report["branch"], "branch_3.7_final");
     assert_eq!(report["login_check"]["ProtoVersion"], 8889113);
     assert_eq!(
-        report["login_check"]["ConfigMD5"],
+        report["login_check"]["ConfigMd5"],
         "d41d8cd98f00b204e9800998ecf8427e"
     );
     assert_eq!(report["sdk"]["product_id"], "A1834");
@@ -126,6 +126,41 @@ fn minimal_email_config_discovers_metadata_and_checks_offline() {
         assert!(!String::from_utf8_lossy(&result.stdout).contains("never-print"));
         assert!(!String::from_utf8_lossy(&result.stderr).contains("never-print"));
     }
+}
+
+#[test]
+fn compatibility_detects_new_game_without_reading_credentials_or_logs() {
+    use mornye_game_client::compatibility::GameVersionStatus;
+    let config = LocalConfig::new(&json!({}));
+    let root = install_fixture(&config);
+    let client = root.join("Client");
+    // The passive version check needs only the mount metadata, even with an unreadable SDK format.
+    fs::write(
+        client.join("Binaries/Win64/ThirdParty/KrPcSdk_Global/KRSDKRes/KRSDK.bin"),
+        "invalid SDK",
+    )
+    .unwrap();
+    let supported = GameVersionStatus::default().supported;
+    let next_major = supported.split('.').next().unwrap().parse::<u32>().unwrap() + 1;
+    let release = format!("{next_major}.0.0");
+    let mounts = client.join("Saved/Resources").join(&release).join("Mount");
+    fs::create_dir_all(&mounts).unwrap();
+    for kind in ["Launcher", "Resource"] {
+        fs::write(
+            mounts.join(format!("Mount{kind}.txt")),
+            format!("::Mount::\n{kind}/{next_major}.0.18/active.pak,22,hash\n"),
+        )
+        .unwrap();
+    }
+    let status = GameVersionStatus::detect(Some(&client));
+    assert_eq!(status.installed.as_deref(), Some(release.as_str()));
+    assert_eq!(status.supported, supported);
+    assert!(status.too_new);
+
+    // Missing metadata is unknown, not an unsupported-version warning or an auth failure.
+    let unknown = GameVersionStatus::detect(Some(&config.directory.join("missing")));
+    assert!(unknown.installed.is_none());
+    assert!(!unknown.too_new);
 }
 
 fn fixture(gateway: &str) -> serde_json::Value {

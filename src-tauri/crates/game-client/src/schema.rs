@@ -14,12 +14,10 @@ impl Schema {
         let pool = DescriptorPool::decode(
             include_bytes!(concat!(env!("OUT_DIR"), "/protocol.bin")).as_ref(),
         )?;
-        let names: HashMap<String, String> =
-            serde_json::from_str(include_str!("../../../../data/wuwa-protos/packetIds.json"))?;
-        let ids = names
-            .into_iter()
-            .map(|(id, name)| Ok((name, id.parse()?)))
-            .collect::<Result<_>>()?;
+        let ids = crate::message_id::ALL
+            .iter()
+            .map(|&(name, id)| (name.to_owned(), id))
+            .collect();
         Ok(Self { pool, ids })
     }
 
@@ -79,5 +77,24 @@ pub fn integer(message: &DynamicMessage, field: &str) -> Result<i32> {
     match message.get_field_by_name(field).as_deref() {
         Some(Value::I32(value)) => Ok(*value),
         _ => bail!("missing or invalid {field} field"),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn every_generated_id_has_a_schema_and_resolves_by_name() {
+        let schema = Schema::load().unwrap();
+        let mut seen = std::collections::HashSet::new();
+        for &(name, id) in crate::message_id::ALL {
+            assert!(seen.insert(id), "duplicate packet ID for {name}");
+            assert_eq!(schema.id(name).unwrap(), id);
+            assert!(
+                schema.pool.get_message_by_name(name).is_some(),
+                "schema absent for {name}"
+            );
+        }
     }
 }

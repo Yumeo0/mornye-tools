@@ -1,20 +1,21 @@
 //! Saved in-game formations. Player-scoped notifications carry the actual list;
 //! GetFormationDataResponse may be only an empty acknowledgement.
 
+use mornye_game_client::message_id as id;
 use spectrum::game::{proto as pb, GamePacket};
 use tauri::{AppHandle, Manager};
 
 use super::SnifferState;
 use crate::account::{model::SavedTeam, store::AccountStore, AccountState};
 
-const BASIC_INFO_NOTIFY: u16 = 15380;
-const UPDATE_FORMATION_NOTIFY: u16 = 23626;
-const FORMATION_UPDATE_NOTIFY: u16 = 16510;
-const GET_FORMATION_DATA_RESPONSE: u16 = 22433;
-const FORMATION_RESPONSE: u16 = 18151;
-const FORMATION_MODIFY_RESPONSE: u16 = 25309;
-const UPDATE_FORMATION_RESPONSE: u16 = 25651;
-const FORMATION_SWITCH_CURRENT_RESPONSE: u16 = 15112;
+const BASIC_INFO_NOTIFY: u16 = id::BasicInfoNotify;
+const UPDATE_FORMATION_NOTIFY: u16 = id::UpdateFormationNotify;
+const FORMATION_UPDATE_NOTIFY: u16 = id::FormationUpdateNotify;
+const GET_FORMATION_DATA_RESPONSE: u16 = id::GetFormationDataResponse;
+const FORMATION_RESPONSE: u16 = id::FormationResponse;
+const FORMATION_MODIFY_RESPONSE: u16 = id::FormationModifyResponse;
+const UPDATE_FORMATION_RESPONSE: u16 = id::UpdateFormationResponse;
+const FORMATION_SWITCH_CURRENT_RESPONSE: u16 = id::FormationSwitchCurrentResponse;
 
 #[derive(Default)]
 pub struct TeamCapture {

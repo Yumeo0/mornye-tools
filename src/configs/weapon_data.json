@@ -1734,5 +1734,19 @@
 			"value": 540,
 			"is_ratio": false
 		}
+	},
+	{
+		"item_id": 21030076,
+		"name": "Lullaby",
+		"type": 3,
+		"type_name": "Pistols",
+		"rarity": 5,
+		"icon": "/images/weapons/21030076.webp",
+		"base_atk": 33,
+		"secondary": {
+			"key": "energyRegen",
+			"value": 1712,
+			"is_ratio": false
+		}
 	}
 ]

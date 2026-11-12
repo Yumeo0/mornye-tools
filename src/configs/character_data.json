@@ -2176,5 +2176,38 @@
 		"icon_pile": "/images/resonators/artwork/suo-ming.webp",
 		"max_level": 90,
 		"is_show": false
+	},
+	{
+		"character_id": 1512,
+		"character_name": "Lily",
+		"nickname": null,
+		"introduction": "A young perfumer swept up in the Federated Cities' Resonator War, whose rare Resonance Ability made her a psychotherapist to the soldiers around her.\nShe could not stop the war. What a gentle girl could do was save whoever stood in front of her, with everything she had.",
+		"element": "Spectro",
+		"element_id": 5,
+		"element_icon_round": "/icons/elements/spectro.webp",
+		"weapon_type": "Pistols",
+		"weapon_type_id": 3,
+		"weapon_type_icon": "/icons/weapon-types/pistols.webp",
+		"chain_icons": [
+			"/images/resonators/sequences/lili-m1.webp",
+			"/images/resonators/sequences/lili-m2.webp",
+			"/images/resonators/sequences/lili-m3.webp",
+			"/images/resonators/sequences/lili-m4.webp",
+			"/images/resonators/sequences/lili-m5.webp",
+			"/images/resonators/sequences/lili-m6.webp"
+		],
+		"chain_names": [
+			"Look, White Flowers from the Ruins of Dreams",
+			"Listen, a Requiem from the Dream Cradle",
+			"May Your Soul Wander No More",
+			"May Your Past Sink into Silence",
+			"May You Find Peace in Endless Light",
+			"May My Reverie Never End"
+		],
+		"rarity": 5,
+		"icon_head_256": "/images/resonators/portraits/77.webp",
+		"icon_pile": "/images/resonators/artwork/lili.webp",
+		"max_level": 90,
+		"is_show": false
 	}
 ]

@@ -7,7 +7,10 @@
 [submodule "data/wuwa-data"]
 	path = data/wuwa-data
 	url = git@github.com:Arikatsu/WutheringWaves_Data.git
-	branch = 3.7
 [submodule "wuwa_calc"]
 	path = wuwa_calc
 	url = git@github.com:Riley31415/wuwa_calc.git
+[submodule "data/wuwa-protos"]
+	path = data/wuwa-protos
+	url = ssh://git@git.yumeo.dev:2222/Yumeo/wuwa-protos.git
+	branch = main

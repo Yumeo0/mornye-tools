@@ -1,4 +1,5 @@
 import { join } from "node:path";
+import { dataLog } from "./lib/data-log";
 
 interface EchoItem {
 	ItemId: number;
@@ -90,6 +91,9 @@ export async function compileEchoUpgrade() {
 			null,
 			"\t",
 		)}\n`,
+	);
+	dataLog.info(
+		`${items.length} echo items · ${qualities.length} quality tiers`,
 	);
 }
 

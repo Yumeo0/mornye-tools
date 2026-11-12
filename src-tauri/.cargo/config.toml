@@ -1,13 +1,13 @@
 # Point the vendored `spectrum` crate's build script at the pinned protocol
-# artifacts committed in this repository. Refresh them by hand from a
-# `wuwa-protos` extraction (protos.proto + packetIds.json); see
-# docs/DEVELOPMENT.md.
+# artifacts committed in this repository. `bun run update:protos` generates
+# this build snapshot from the private data/wuwa-protos tooling submodule.
+# See docs/DEVELOPMENT.md.
 #
 # `relative = true` resolves the value against the parent directory of this
-# `.cargo` directory (i.e. `src-tauri/`), so `../data/wuwa-protos` is
-# `<repo>/data/wuwa-protos`.
+# `.cargo` directory (i.e. `src-tauri/`), so `protocol` is
+# `<repo>/src-tauri/protocol`.
 [env]
-SPECTRUM_PROTO_DIR = { value = "../data/wuwa-protos", relative = true }
+SPECTRUM_PROTO_DIR = { value = "protocol", relative = true }
 
 # Use Rust's bundled LLVM linker instead of MSVC's memory-heavy debug link.
 # rustc locates rust-lld in its own toolchain; no separate LLVM install is needed.

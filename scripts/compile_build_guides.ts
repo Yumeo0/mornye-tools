@@ -17,6 +17,8 @@
  */
 
 import { join } from "node:path";
+import { dataLog } from "./lib/data-log";
+import { rewriteJsonFile } from "./lib/json-file";
 import { compileTeamGuides, type TeamGuideResonator } from "./lib/teamGuides";
 
 const SCRIPTS_DIR = import.meta.dirname;
@@ -145,7 +147,7 @@ async function findGuidesDataset(
 		try {
 			js = await fetchUrl(url);
 		} catch (error) {
-			console.log(`  ! Failed to download ${url}: ${error}`);
+			dataLog.warn(`Failed to download ${url}: ${error}`);
 			continue;
 		}
 
@@ -163,7 +165,7 @@ async function findGuidesDataset(
 				data[0] !== null &&
 				"guides" in data[0]
 			) {
-				console.log(`  Found guides dataset in ${url}`);
+				dataLog.detail(`Found guides dataset in ${url}`);
 				return data as Resonator[];
 			}
 		}
@@ -174,7 +176,7 @@ async function findGuidesDataset(
 /** Map character names to game ids from character_data.json. */
 async function loadCharacterIds(): Promise<Record<string, number>> {
 	if (!(await Bun.file(CHARACTER_DATA_PATH).exists())) {
-		console.log(`  ! ${CHARACTER_DATA_PATH} not found, skipping id mapping`);
+		dataLog.warn(`${CHARACTER_DATA_PATH} not found, skipping id mapping`);
 		return {};
 	}
 	const characters = (await Bun.file(
@@ -243,11 +245,7 @@ function compileGuides(
 }
 
 async function main({ teamsOnly = false } = {}): Promise<void> {
-	console.log("=".repeat(60));
-	console.log("Build Guide Compiler (tethys.gg)");
-	console.log("=".repeat(60));
-
-	console.log("\nFetching resonators page...");
+	dataLog.detail("Fetching tethys.gg resonators page...");
 	const page = await fetchUrl(RESONATORS_URL);
 
 	const chunkUrls = [
@@ -255,16 +253,15 @@ async function main({ teamsOnly = false } = {}): Promise<void> {
 			[...page.matchAll(CHUNK_RE)].map((match) => `${BASE_URL}${match[0]}`),
 		),
 	];
-	console.log(`Found ${chunkUrls.length} JS chunks to scan`);
+	dataLog.detail(`Found ${chunkUrls.length} JS chunks to scan`);
 
-	console.log("\nScanning chunks for guides dataset...");
+	dataLog.detail("Scanning chunks for guides dataset...");
 	const dataset = await findGuidesDataset(chunkUrls);
 	if (!dataset) {
-		console.log("Error: could not find the guides dataset in any chunk");
-		return;
+		throw new Error("Could not find the guides dataset in any chunk");
 	}
 
-	console.log(`\nFound ${dataset.length} resonators in dataset`);
+	dataLog.detail(`Found ${dataset.length} resonators in dataset`);
 
 	const characterIds = await loadCharacterIds();
 	const teams = compileTeamGuides(dataset, characterIds);
@@ -272,11 +269,12 @@ async function main({ teamsOnly = false } = {}): Promise<void> {
 		throw new Error(
 			"No team guides found; keeping the previous recommendations.",
 		);
-	await Bun.write(
+	await rewriteJsonFile(
 		join(REPO_ROOT, "src/configs/character_teams.json"),
-		`${JSON.stringify(teams, null, "\t")}\n`,
+		() => teams,
+		"\t",
 	);
-	console.log(
+	dataLog.info(
 		`Compiled team recommendations for ${Object.keys(teams).length} resonators`,
 	);
 	if (teamsOnly) return;
@@ -289,14 +287,13 @@ async function main({ teamsOnly = false } = {}): Promise<void> {
 	const multiRole = Object.values(builds).filter(
 		(entry) => Object.keys(entry.roles).length > 1,
 	).length;
-	console.log(
+	dataLog.info(
 		`Compiled ${rolesTotal} roles across ${Object.keys(builds).length} resonators (${multiRole} with multiple roles)`,
 	);
 
-	// Bun.write creates parent directories on its own.
-	await Bun.write(OUTPUT_PATH, `${JSON.stringify(builds, null, "\t")}\n`);
+	await rewriteJsonFile(OUTPUT_PATH, () => builds, "\t");
 
-	console.log(`\nDone! Successfully compiled build guides to ${OUTPUT_PATH}`);
+	dataLog.detail(`Wrote build guides to ${OUTPUT_PATH}`);
 }
 
 if (import.meta.main) {

@@ -294,10 +294,36 @@
 			"roleIds": [
 				"1412",
 				"1109",
+				"1512"
+			],
+			"notes": [
+				"Lucilla: Moonlit Clouds",
+				"Lily: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Sigrika",
+			"role": "Echo sDPS",
+			"roleIds": [
+				"1412",
+				"1109",
 				"1505"
 			],
 			"notes": [
 				"Lucilla: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Galbrena",
+			"role": "Echo sDPS",
+			"roleIds": [
+				"1208",
+				"1109",
+				"1512"
+			],
+			"notes": [
+				"Lucilla: Moonlit Clouds",
+				"Lily: Rejuvenating Glow"
 			]
 		},
 		{
@@ -912,6 +938,19 @@
 			"roleIds": [
 				"1208",
 				"1109",
+				"1512"
+			],
+			"notes": [
+				"Lucilla: Moonlit Clouds",
+				"Lily: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Echo mDPS",
+			"roleIds": [
+				"1208",
+				"1109",
 				"1505"
 			],
 			"notes": [
@@ -928,6 +967,19 @@
 			],
 			"notes": [
 				"Lucilla: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Echo mDPS",
+			"roleIds": [
+				"1208",
+				"1411",
+				"1512"
+			],
+			"notes": [
+				"Qiuyuan: Law of Harmony/Moonlit Clouds",
+				"Lily: Rejuvenating Glow"
 			]
 		},
 		{
@@ -1543,7 +1595,19 @@
 	],
 	"1304": [
 		{
-			"name": "Hypercarry",
+			"name": "Dual DPS (Unison)",
+			"role": "Main DPS",
+			"roleIds": [
+				"1304",
+				"1311",
+				"1512"
+			],
+			"notes": [
+				"Lily: Flower of Tinged Yearning"
+			]
+		},
+		{
+			"name": "Dual DPS (Unison)",
 			"role": "Main DPS",
 			"roleIds": [
 				"1304",
@@ -1553,7 +1617,17 @@
 			"notes": []
 		},
 		{
-			"name": "Hypercarry",
+			"name": "Alternative",
+			"role": "Main DPS",
+			"roleIds": [
+				"1304",
+				"1311",
+				"1505"
+			],
+			"notes": []
+		},
+		{
+			"name": "Alternative",
 			"role": "Main DPS",
 			"roleIds": [
 				"1304",
@@ -1563,7 +1637,7 @@
 			"notes": []
 		},
 		{
-			"name": "Hypercarry",
+			"name": "Alternative",
 			"role": "Main DPS",
 			"roleIds": [
 				"1304",
@@ -1573,7 +1647,7 @@
 			"notes": []
 		},
 		{
-			"name": "Hypercarry",
+			"name": "Alternative",
 			"role": "Main DPS",
 			"roleIds": [
 				"1304",
@@ -1583,7 +1657,7 @@
 			"notes": []
 		},
 		{
-			"name": "Hypercarry",
+			"name": "Alternative",
 			"role": "Main DPS",
 			"roleIds": [
 				"1304",
@@ -1595,7 +1669,7 @@
 			]
 		},
 		{
-			"name": "Hypercarry",
+			"name": "Alternative",
 			"role": "Main DPS",
 			"roleIds": [
 				"1304",
@@ -1605,36 +1679,6 @@
 			"notes": [
 				"Cantarella: Empyrean Anthem/Moonlit Clouds"
 			]
-		},
-		{
-			"name": "Quickswap",
-			"role": "Main DPS",
-			"roleIds": [
-				"1304",
-				"1206",
-				"1505"
-			],
-			"notes": []
-		},
-		{
-			"name": "Quickswap",
-			"role": "Main DPS",
-			"roleIds": [
-				"1304",
-				"1205",
-				"1505"
-			],
-			"notes": []
-		},
-		{
-			"name": "Quickswap",
-			"role": "Main DPS",
-			"roleIds": [
-				"1304",
-				"1305",
-				"1505"
-			],
-			"notes": []
 		}
 	],
 	"1305": [
@@ -1876,9 +1920,11 @@
 			"roleIds": [
 				"1311",
 				"1312",
-				"1505"
+				"1512"
 			],
-			"notes": []
+			"notes": [
+				"Lily: Flower of Tinged Yearning"
+			]
 		},
 		{
 			"name": "Standard",
@@ -1886,27 +1932,29 @@
 			"roleIds": [
 				"1311",
 				"1312",
-				"1307"
-			],
-			"notes": []
-		},
-		{
-			"name": "Alternative",
-			"role": "Unison mDPS",
-			"roleIds": [
-				"1311",
-				"1304",
 				"1505"
 			],
 			"notes": []
 		},
 		{
-			"name": "Alternative",
+			"name": "Dual DPS",
 			"role": "Unison mDPS",
 			"roleIds": [
 				"1311",
 				"1304",
-				"1503"
+				"1512"
+			],
+			"notes": [
+				"Lily: Flower of Tinged Yearning"
+			]
+		},
+		{
+			"name": "Dual DPS",
+			"role": "Unison mDPS",
+			"roleIds": [
+				"1311",
+				"1304",
+				"1505"
 			],
 			"notes": []
 		},
@@ -2002,9 +2050,11 @@
 			"roleIds": [
 				"1311",
 				"1312",
-				"1505"
+				"1512"
 			],
-			"notes": []
+			"notes": [
+				"Lily: Flower of Tinged Yearning"
+			]
 		},
 		{
 			"name": "Hypercarry",
@@ -2012,7 +2062,7 @@
 			"roleIds": [
 				"1311",
 				"1312",
-				"1307"
+				"1505"
 			],
 			"notes": []
 		},
@@ -2448,6 +2498,18 @@
 			"roleIds": [
 				"1412",
 				"1411",
+				"1512"
+			],
+			"notes": [
+				"Lily: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Sigrika",
+			"role": "Sub DPS",
+			"roleIds": [
+				"1412",
+				"1411",
 				"1407"
 			],
 			"notes": []
@@ -2463,14 +2525,16 @@
 			"notes": []
 		},
 		{
-			"name": "Sigrika",
+			"name": "Galbrena",
 			"role": "Sub DPS",
 			"roleIds": [
-				"1412",
+				"1208",
 				"1411",
-				"1209"
+				"1512"
 			],
-			"notes": []
+			"notes": [
+				"Lily: Rejuvenating Glow"
+			]
 		},
 		{
 			"name": "Galbrena",
@@ -2534,10 +2598,35 @@
 			"roleIds": [
 				"1412",
 				"1109",
+				"1512"
+			],
+			"notes": [
+				"Lucilla: Moonlit Clouds",
+				"Lily: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Hypercarry",
+			"role": "Main DPS",
+			"roleIds": [
+				"1412",
+				"1109",
 				"1505"
 			],
 			"notes": [
 				"Lucilla: Moonlit Clouds"
+			]
+		},
+		{
+			"name": "Alternative",
+			"role": "Main DPS",
+			"roleIds": [
+				"1412",
+				"1411",
+				"1512"
+			],
+			"notes": [
+				"Lily: Rejuvenating Glow"
 			]
 		},
 		{
@@ -2557,16 +2646,6 @@
 				"1412",
 				"1411",
 				"1407"
-			],
-			"notes": []
-		},
-		{
-			"name": "Alternative",
-			"role": "Main DPS",
-			"roleIds": [
-				"1412",
-				"1411",
-				"1209"
 			],
 			"notes": []
 		},
@@ -3339,6 +3418,80 @@
 				"1505"
 			],
 			"notes": []
+		}
+	],
+	"1512": [
+		{
+			"name": "Unison",
+			"role": "Support",
+			"roleIds": [
+				"1311",
+				"1312",
+				"1512"
+			],
+			"notes": [
+				"Lily: Flower of Tinged Yearning"
+			]
+		},
+		{
+			"name": "Unison",
+			"role": "Support",
+			"roleIds": [
+				"1311",
+				"1304",
+				"1512"
+			],
+			"notes": [
+				"Lily: Flower of Tinged Yearning"
+			]
+		},
+		{
+			"name": "Echo",
+			"role": "Support",
+			"roleIds": [
+				"1412",
+				"1109",
+				"1512"
+			],
+			"notes": [
+				"Lily: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Echo",
+			"role": "Support",
+			"roleIds": [
+				"1412",
+				"1411",
+				"1512"
+			],
+			"notes": [
+				"Lily: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Echo",
+			"role": "Support",
+			"roleIds": [
+				"1208",
+				"1109",
+				"1512"
+			],
+			"notes": [
+				"Lily: Rejuvenating Glow"
+			]
+		},
+		{
+			"name": "Echo",
+			"role": "Support",
+			"roleIds": [
+				"1208",
+				"1411",
+				"1512"
+			],
+			"notes": [
+				"Lily: Rejuvenating Glow"
+			]
 		}
 	],
 	"1602": [

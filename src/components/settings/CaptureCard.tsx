@@ -1,5 +1,6 @@
 import { Pulse02Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { PacketCapturePanel } from "@/components/settings/PacketCapturePanel";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
 	Card,
@@ -8,6 +9,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { captureHealth } from "@/lib/sniffer";
 import { useSnifferStatus } from "@/lib/snifferStatus";
 
@@ -21,6 +23,8 @@ export function CaptureCard() {
 	const { status, error } = useSnifferStatus();
 	const health = captureHealth(status, error);
 	const metrics = [
+		["Installed game version", status?.game_version.installed ?? "Unknown"],
+		["Supported game version", status?.game_version.supported ?? "—"],
 		["Game process", status?.game_pid ? `PID ${status.game_pid}` : "Waiting"],
 		["UDP ports", status?.game_ports?.join(", ") || "None detected"],
 		[
@@ -71,6 +75,12 @@ export function CaptureCard() {
 						</div>
 					))}
 				</dl>
+				<Separator />
+				<PacketCapturePanel
+					status={status?.recording}
+					available={Boolean(status) && !error}
+				/>
+				<Separator />
 				<div className="flex flex-col gap-2">
 					<p className="text-xs font-medium">
 						Capture log{" "}

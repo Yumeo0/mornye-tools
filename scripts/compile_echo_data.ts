@@ -10,12 +10,12 @@ import { prepareCatalog } from "./lib/public-assets";
  */
 
 import { join } from "node:path";
-
 import {
 	indexBy,
 	loadJson,
 	unrealPathToRelative,
 } from "./lib/compile-data-util";
+import { dataLog } from "./lib/data-log";
 
 const SCRIPTS_DIR = import.meta.dirname;
 const REPO_ROOT = join(SCRIPTS_DIR, "..");
@@ -207,7 +207,7 @@ function getPossibleSubstats(
 }
 
 async function compileEchoData(): Promise<void> {
-	console.log("Loading JSON files...");
+	dataLog.detail("Loading JSON files...");
 
 	const multitextData = await loadJson<MultiTextEntry[]>(MULTITEXT_PATH);
 	const phantomData = await loadJson<PhantomItem[]>(PHANTOM_ITEM_PATH);
@@ -229,11 +229,10 @@ async function compileEchoData(): Promise<void> {
 		!subPropData ||
 		!propertyData
 	) {
-		console.log("Error: Failed to load one or more required files");
-		return;
+		throw new Error("Failed to load one or more required echo tables");
 	}
 
-	console.log(`Found ${phantomData.length} phantom items`);
+	dataLog.detail(`Found ${phantomData.length} phantom items`);
 
 	const textById = indexBy(multitextData, (entry) => entry.Id);
 	const propertyById = indexBy(propertyData, (entry) => entry.Id);
@@ -298,18 +297,16 @@ async function compileEchoData(): Promise<void> {
 		});
 		processed += 1;
 
-		console.log(`Processed: ${echoName} (ID: ${echoId})`);
+		dataLog.detail(`Processed: ${echoName} (ID: ${echoId})`);
 	}
 
-	console.log(`\nWriting ${processed} echoes to ${OUTPUT_PATH}...`);
+	dataLog.detail(`Writing ${processed} echoes to ${OUTPUT_PATH}...`);
 	await Bun.write(
 		OUTPUT_PATH,
 		`${JSON.stringify(prepareCatalog(echoList), null, "\t")}\n`,
 	);
 
-	console.log(`✓ Successfully compiled echo data to ${OUTPUT_PATH}`);
-	console.log(`  Total echoes: ${processed}`);
-	console.log(`  Total substats: ${possibleSubstats.length}`);
+	dataLog.info(`${processed} echoes · ${possibleSubstats.length} substats`);
 }
 
 if (import.meta.main) {

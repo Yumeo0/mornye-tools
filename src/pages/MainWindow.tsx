@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { AccountProfileSelector } from "@/components/AccountProfileSelector";
 import { CaptureStatus } from "@/components/CaptureStatus";
+import { GameVersionBanner } from "@/components/GameVersionWarning";
 import { MapImportController } from "@/components/map/MapImportController";
 import {
 	DangerousConnectButton,
@@ -339,6 +340,12 @@ export default function MainWindow() {
 	return (
 		<div className="flex h-screen flex-col overflow-hidden bg-background">
 			<TitleBar />
+			<GameVersionBanner
+				onOpenUpdates={() => {
+					setSettingsSection("general");
+					setTab("settings");
+				}}
+			/>
 			<Tabs
 				orientation="vertical"
 				value={tab}

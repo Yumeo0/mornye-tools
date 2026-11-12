@@ -1821,6 +1821,10 @@
 			"url": "/images/items/c/c-089.webp"
 		},
 		{
+			"source": "UI/UIResources/Common/Image/IconC/T_IconC_090_UI.png",
+			"url": "/images/items/c/c-090.webp"
+		},
+		{
 			"source": "UI/UIResources/Common/Image/IconC/T_IconC_bianzhuhua_UI.png",
 			"url": "/images/items/c/c-bianzhuhua.webp"
 		},
@@ -2649,6 +2653,10 @@
 			"url": "/images/items/cook/cook-sp-33.webp"
 		},
 		{
+			"source": "UI/UIResources/Common/Image/IconCook/T_IconCook_SP_34_UI.png",
+			"url": "/images/items/cook/cook-sp-34.webp"
+		},
+		{
 			"source": "UI/UIResources/Common/Image/IconCook/T_IconCook_YJ_001_UI.png",
 			"url": "/images/items/cook/cook-yj-001.webp"
 		},
@@ -3475,6 +3483,10 @@
 		{
 			"source": "UI/UIResources/Common/Image/IconRup/T_IconRup_Part_1632_UI.png",
 			"url": "/images/items/rup/rup-part-1632.webp"
+		},
+		{
+			"source": "UI/UIResources/Common/Image/IconRup/T_IconRup_Part_1633_UI.png",
+			"url": "/images/items/rup/rup-part-1633.webp"
 		},
 		{
 			"source": "UI/UIResources/Common/Image/IconRup/T_IconRup_Part_1700_UI.png",
@@ -10549,6 +10561,10 @@
 			"url": "/images/profiles/24.webp"
 		},
 		{
+			"source": "UI/UIResources/Common/Image/IconRolePlayerHead256/T_IconRolePlayerHead256_25.png",
+			"url": "/images/profiles/25.webp"
+		},
+		{
 			"source": "UI/UIResources/Common/Image/IconRolePlayerHead256/T_IconRolePlayerHead256_3.png",
 			"url": "/images/profiles/3.webp"
 		},
@@ -10567,6 +10583,10 @@
 		{
 			"source": "UI/UIResources/Common/Image/IconRolePlayerHead256/T_IconRolePlayerHead256_3702_UI.png",
 			"url": "/images/profiles/3702.webp"
+		},
+		{
+			"source": "UI/UIResources/Common/Image/IconRolePlayerHead256/T_IconRolePlayerHead256_3801_UI.png",
+			"url": "/images/profiles/3801.webp"
 		},
 		{
 			"source": "UI/UIResources/Common/Image/IconRolePlayerHead256/T_IconRolePlayerHead256_4.png",
@@ -10687,6 +10707,10 @@
 		{
 			"source": "UI/UIResources/Common/Image/IconRolePile/T_IconRole_Pile_LiBeiKa_UI.png",
 			"url": "/images/resonators/artwork/li-bei-ka.webp"
+		},
+		{
+			"source": "UI/UIResources/Common/Image/IconRolePile/T_IconRole_Pile_Lili_UI.png",
+			"url": "/images/resonators/artwork/lili.webp"
 		},
 		{
 			"source": "UI/UIResources/Common/Image/IconRolePile/T_IconRole_Pile_lingyang_UI.png",
@@ -10977,6 +11001,10 @@
 			"url": "/images/resonators/portraits/56.webp"
 		},
 		{
+			"source": "UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_57_Skin1_UI.png",
+			"url": "/images/resonators/portraits/57-skin1.webp"
+		},
+		{
 			"source": "UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_57_UI.png",
 			"url": "/images/resonators/portraits/57.webp"
 		},
@@ -10987,6 +11015,10 @@
 		{
 			"source": "UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_6_UI.png",
 			"url": "/images/resonators/portraits/6.webp"
+		},
+		{
+			"source": "UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_60_Skin1_UI.png",
+			"url": "/images/resonators/portraits/60-skin1.webp"
 		},
 		{
 			"source": "UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_60_UI.png",
@@ -11011,6 +11043,10 @@
 		{
 			"source": "UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_66_UI.png",
 			"url": "/images/resonators/portraits/66.webp"
+		},
+		{
+			"source": "UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_67_Skin1_UI.png",
+			"url": "/images/resonators/portraits/67-skin1.webp"
 		},
 		{
 			"source": "UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_67_UI.png",
@@ -11055,6 +11091,10 @@
 		{
 			"source": "UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_76_UI.png",
 			"url": "/images/resonators/portraits/76.webp"
+		},
+		{
+			"source": "UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_77_UI.png",
+			"url": "/images/resonators/portraits/77.webp"
 		},
 		{
 			"source": "UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_8_UI.png",
@@ -11635,6 +11675,30 @@
 		{
 			"source": "UI/UIResources/Common/Image/IconDevice/T_IconDevice_LibeikaM6_UI.png",
 			"url": "/images/resonators/sequences/libeika-m6.webp"
+		},
+		{
+			"source": "UI/UIResources/Common/Image/IconDevice/T_IconDevice_LiliM1_UI.png",
+			"url": "/images/resonators/sequences/lili-m1.webp"
+		},
+		{
+			"source": "UI/UIResources/Common/Image/IconDevice/T_IconDevice_LiliM2_UI.png",
+			"url": "/images/resonators/sequences/lili-m2.webp"
+		},
+		{
+			"source": "UI/UIResources/Common/Image/IconDevice/T_IconDevice_LiliM3_UI.png",
+			"url": "/images/resonators/sequences/lili-m3.webp"
+		},
+		{
+			"source": "UI/UIResources/Common/Image/IconDevice/T_IconDevice_LiliM4_UI.png",
+			"url": "/images/resonators/sequences/lili-m4.webp"
+		},
+		{
+			"source": "UI/UIResources/Common/Image/IconDevice/T_IconDevice_LiliM5_UI.png",
+			"url": "/images/resonators/sequences/lili-m5.webp"
+		},
+		{
+			"source": "UI/UIResources/Common/Image/IconDevice/T_IconDevice_LiliM6_UI.png",
+			"url": "/images/resonators/sequences/lili-m6.webp"
 		},
 		{
 			"source": "UI/UIResources/Common/Image/IconDevice/T_IconDevice_LinNaiM1_UI.png",
@@ -12765,6 +12829,10 @@
 			"url": "/images/weapons/21030074.webp"
 		},
 		{
+			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030076_UI.png",
+			"url": "/images/weapons/21030076.webp"
+		},
+		{
 			"source": "UI/UIResources/Common/Image/IconWeapon/T_IconWeapon21030084_UI.png",
 			"url": "/images/weapons/21030084.webp"
 		},
@@ -13540,6 +13608,7 @@
 		"/images/items/c/c-087.webp",
 		"/images/items/c/c-088.webp",
 		"/images/items/c/c-089.webp",
+		"/images/items/c/c-090.webp",
 		"/images/items/c/c-bianzhuhua.webp",
 		"/images/items/c/c-com-002-1.webp",
 		"/images/items/c/c-com-003-1.webp",
@@ -13751,6 +13820,7 @@
 		"/images/items/cook/cook-sp-31.webp",
 		"/images/items/cook/cook-sp-32.webp",
 		"/images/items/cook/cook-sp-33.webp",
+		"/images/items/cook/cook-sp-34.webp",
 		"/images/items/cook/cook-yj-001.webp",
 		"/images/items/cook/cook-yj-002.webp",
 		"/images/items/cook/cook-yj-003.webp",
@@ -14036,6 +14106,7 @@
 		"/images/items/rup/rup-part-1630.webp",
 		"/images/items/rup/rup-part-1631.webp",
 		"/images/items/rup/rup-part-1632.webp",
+		"/images/items/rup/rup-part-1633.webp",
 		"/images/items/rup/rup-part-1700.webp",
 		"/images/items/rup/rup-skup-006-4.webp",
 		"/images/items/rup/rup-sm-gat-18-a.webp",
@@ -16041,11 +16112,13 @@
 		"/images/profiles/22.webp",
 		"/images/profiles/23.webp",
 		"/images/profiles/24.webp",
+		"/images/profiles/25.webp",
 		"/images/profiles/3.webp",
 		"/images/profiles/3501-a.webp",
 		"/images/profiles/3501.webp",
 		"/images/profiles/3701.webp",
 		"/images/profiles/3702.webp",
+		"/images/profiles/3801.webp",
 		"/images/profiles/4.webp",
 		"/images/profiles/5.webp",
 		"/images/profiles/6.webp",
@@ -16149,15 +16222,18 @@
 		"/images/resonators/portraits/54.webp",
 		"/images/resonators/portraits/55.webp",
 		"/images/resonators/portraits/56.webp",
+		"/images/resonators/portraits/57-skin1.webp",
 		"/images/resonators/portraits/57.webp",
 		"/images/resonators/portraits/58.webp",
 		"/images/resonators/portraits/6.webp",
+		"/images/resonators/portraits/60-skin1.webp",
 		"/images/resonators/portraits/60.webp",
 		"/images/resonators/portraits/61-skin1.webp",
 		"/images/resonators/portraits/61.webp",
 		"/images/resonators/portraits/64.webp",
 		"/images/resonators/portraits/65.webp",
 		"/images/resonators/portraits/66.webp",
+		"/images/resonators/portraits/67-skin1.webp",
 		"/images/resonators/portraits/67.webp",
 		"/images/resonators/portraits/68.webp",
 		"/images/resonators/portraits/69.webp",

@@ -18,15 +18,15 @@ use crate::account::store::AccountStore;
 use crate::account::AccountState;
 use crate::sniffer::{FuncValueChange, SnifferState};
 
-// Message ids from `data/wuwa-protos/packetIds.json`. The macro declares the
-// consts and the early-bail-out table from one list, so a new protocol message
-// is registered exactly once.
+// Message names resolve to generated IDs from the protocol build snapshot.
+// The macro declares consts and the early-bail-out table from one list, so a
+// new protocol message is registered exactly once.
 macro_rules! protocol_message_ids {
     ($(
         $(#[$doc:meta])*
-        $name:ident = $id:literal,
+        $name:ident = $message:ident,
     )*) => {
-        $( $(#[$doc])* pub const $name: u16 = $id; )*
+        $( $(#[$doc])* pub const $name: u16 = mornye_game_client::message_id::$message; )*
 
         /// Every message id [`handle_packet`] acts on. Anything else returns
         /// before the account store lock is taken: the vast majority of
@@ -40,53 +40,53 @@ macro_rules! protocol_message_ids {
 }
 
 protocol_message_ids! {
-    NORMALITEMRESPONSE = 22445,
-    NORMALITEMADDNOTIFY = 15755,
-    NORMALITEMUPDATENOTIFY = 20661,
-    NORMALITEMREMOVENOTIFY = 29178,
+    NORMALITEMRESPONSE = NormalItemResponse,
+    NORMALITEMADDNOTIFY = NormalItemAddNotify,
+    NORMALITEMUPDATENOTIFY = NormalItemUpdateNotify,
+    NORMALITEMREMOVENOTIFY = NormalItemRemoveNotify,
 
-    PB_GET_ROLE_LIST_RESPONSE = 25557,
-    PB_GET_ROLE_LIST_NOTIFY = 18368,
-    PB_ROLE_ACTIVE_NOTIFY = 27050,
-    PB_UP_LEVEL_ROLE_RESPONSE = 17222,
-    PB_ROLE_EXP_NOTIFY = 27992,
-    PB_ROLE_SKILL_LEVEL_NOTIFY = 17396,
-    PB_UP_LEVEL_SKILL_RESPONSE = 17988,
-    RESONANT_CHAIN_UNLOCK_RESPONSE = 29448,
-    ROLE_CHANGE_NOTIFY = 28197,
-    ROLE_SKILL_QUICK_LEVEL_UP_RESPONSE = 18822,
-    PHANTOM_ITEM_RESPONSE = 26275,
-    PHANTOM_ITEM_UPDATE_NOTIFY = 28162,
-    PHANTOM_ITEM_ADD_NOTIFY = 17848,
-    PHANTOM_ITEM_REMOVE_NOTIFY = 29775,
-    PHANTOM_EQUIP_INFO_NOTIFY = 15372,
-    PHANTOM_LEVEL_UP_RESPONSE = 22489,
-    PHANTOM_IDENTIFY_RESPONSE = 21034,
+    PB_GET_ROLE_LIST_RESPONSE = PbGetRoleListResponse,
+    PB_GET_ROLE_LIST_NOTIFY = PbGetRoleListNotify,
+    PB_ROLE_ACTIVE_NOTIFY = PbRoleActiveNotify,
+    PB_UP_LEVEL_ROLE_RESPONSE = PbUpLevelRoleResponse,
+    PB_ROLE_EXP_NOTIFY = PbRoleExpNotify,
+    PB_ROLE_SKILL_LEVEL_NOTIFY = PbRoleSkillLevelNotify,
+    PB_UP_LEVEL_SKILL_RESPONSE = PbUpLevelSkillResponse,
+    RESONANT_CHAIN_UNLOCK_RESPONSE = ResonantChainUnlockResponse,
+    ROLE_CHANGE_NOTIFY = RoleChangeNotify,
+    ROLE_SKILL_QUICK_LEVEL_UP_RESPONSE = RoleSkillQuickLevelUpResponse,
+    PHANTOM_ITEM_RESPONSE = PhantomItemResponse,
+    PHANTOM_ITEM_UPDATE_NOTIFY = PhantomItemUpdateNotify,
+    PHANTOM_ITEM_ADD_NOTIFY = PhantomItemAddNotify,
+    PHANTOM_ITEM_REMOVE_NOTIFY = PhantomItemRemoveNotify,
+    PHANTOM_EQUIP_INFO_NOTIFY = PhantomEquipInfoNotify,
+    PHANTOM_LEVEL_UP_RESPONSE = PhantomLevelUpResponse,
+    PHANTOM_IDENTIFY_RESPONSE = PhantomIdentifyResponse,
     /// Equipping one echo; splits its stack when it was part of one.
-    PHANTOM_PUT_ON_RESPONSE = 16317,
+    PHANTOM_PUT_ON_RESPONSE = PhantomPutOnResponse,
     /// The "auto equip" recommendation; may split and merge several stacks.
-    PHANTOM_AUTO_PUT_RESPONSE = 19223,
+    PHANTOM_AUTO_PUT_RESPONSE = PhantomAutoPutResponse,
     /// Stat re-roll of an echo; splits its stack when it was part of one.
-    PHANTOM_POLISH_RESPONSE = 16484,
+    PHANTOM_POLISH_RESPONSE = PhantomPolishResponse,
     /// Applying a saved echo loadout; may split and merge several stacks.
-    USE_PHANTOM_EQUIP_GROUP_RESPONSE = 21750,
-    WEAPON_ITEM_RESPONSE = 27089,
-    WEAPON_ALL_INFO_NOTIFY = 19780,
-    WEAPON_ADD_NOTIFY = 18560,
-    WEAPON_ITEM_ADD_NOTIFY = 24339,
-    WEAPON_LEVEL_UP_RESPONSE = 21842,
-    WEAPON_BREACH_RESPONSE = 24159,
-    WEAPON_RESON_UP_RESPONSE = 24490,
-    EQUIP_TAKE_ON_RESPONSE = 28184,
-    EQUIP_TAKE_ON_NOTIFY = 28760,
-    BASIC_INFO_NOTIFY = 15380,
-    PLAYER_ATTR_NOTIFY = 20778,
-    PLAYER_BASIC_INFO_GET_RESPONSE = 22549,
+    USE_PHANTOM_EQUIP_GROUP_RESPONSE = UsePhantomEquipGroupResponse,
+    WEAPON_ITEM_RESPONSE = WeaponItemResponse,
+    WEAPON_ALL_INFO_NOTIFY = WeaponAllInfoNotify,
+    WEAPON_ADD_NOTIFY = WeaponAddNotify,
+    WEAPON_ITEM_ADD_NOTIFY = WeaponItemAddNotify,
+    WEAPON_LEVEL_UP_RESPONSE = WeaponLevelUpResponse,
+    WEAPON_BREACH_RESPONSE = WeaponBreachResponse,
+    WEAPON_RESON_UP_RESPONSE = WeaponResonUpResponse,
+    EQUIP_TAKE_ON_RESPONSE = EquipTakeOnResponse,
+    EQUIP_TAKE_ON_NOTIFY = EquipTakeOnNotify,
+    BASIC_INFO_NOTIFY = BasicInfoNotify,
+    PLAYER_ATTR_NOTIFY = PlayerAttrNotify,
+    PLAYER_BASIC_INFO_GET_RESPONSE = PlayerBasicInfoGetResponse,
     /// Server push for an item's mark state (lock/discard) change. The overlay
     /// supervisor triggers it on purpose (see `overlay::toggle_echo_mark`) to
     /// learn which echo is on screen and to keep every echo's `FuncValue`
     /// current.
-    ITEM_FUNC_VALUE_UPDATE_NOTIFY = 23784,
+    ITEM_FUNC_VALUE_UPDATE_NOTIFY = ItemFuncValueUpdateNotify,
 }
 
 pub(crate) fn is_handled(msg_id: u16) -> bool {
@@ -211,7 +211,7 @@ impl ExtractTables {
 /// changed sections for the debounced `account-updated` event.
 pub fn handle_packet(app: &AppHandle, gp: &spectrum::game::GamePacket) {
     let account = app.state::<AccountState>();
-    if gp.msg_id == 15380 {
+    if gp.msg_id == BASIC_INFO_NOTIFY {
         if let Ok(info) = gp.parse_proto::<pb::BasicInfoNotify>() {
             if info.id > 0 {
                 if let Ok(mut profiles) = account.store.lock() {

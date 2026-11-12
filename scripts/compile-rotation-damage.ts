@@ -7,6 +7,7 @@ import type {
 } from "../src/lib/calc/rotationDamage";
 import { bundledRotationDamageSchema } from "../src/lib/calc/rotationDamageSchema";
 import type { TeamProfile } from "../src/lib/calc/types";
+import { dataLog } from "./lib/data-log";
 
 const root = join(import.meta.dirname, "..");
 
@@ -111,9 +112,11 @@ export async function compileRotationDamage() {
 	// in this process and in isolated workers. No vendored source is modified.
 	const build = Bun.spawn(
 		[process.execPath, join(root, "scripts/build-calculator.ts")],
-		{ cwd: root, stdout: "inherit", stderr: "inherit" },
+		{ cwd: root, stdout: "pipe", stderr: "inherit" },
 	);
+	const buildOutput = await new Response(build.stdout).text();
 	if ((await build.exited) !== 0) throw new Error("Calculator bundle failed.");
+	dataLog.detail(buildOutput.trim());
 	const { getCatalog } = await import(
 		"../src/lib/calc/riley/engine.generated.js"
 	);
@@ -135,7 +138,7 @@ export async function compileRotationDamage() {
 		),
 	);
 	mkdirSync(join(root, ".cache"), { recursive: true });
-	console.log(
+	dataLog.progress(
 		`Pre-calculating ${profiles.length} pre-made rotations (${Object.keys(checkpointScores).length} reused)…`,
 	);
 	const started = performance.now();
@@ -150,7 +153,7 @@ export async function compileRotationDamage() {
 					checkpoint,
 					JSON.stringify({ revision, scores: checkpointScores }),
 				);
-				console.log(
+				dataLog.progress(
 					`Rotations: ${completed}/${total} · ${((performance.now() - started) / 1000).toFixed(0)}s`,
 				);
 			}
@@ -166,7 +169,7 @@ export async function compileRotationDamage() {
 	const { rename } = await import("node:fs/promises");
 	await rename(temporary, output);
 	const valid = Object.values(scores).filter((s) => s.damage != null).length;
-	console.log(
+	dataLog.info(
 		`Saved ${valid} damage scores and ${profiles.length - valid} rotation diagnostics.`,
 	);
 }

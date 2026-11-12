@@ -829,6 +829,39 @@
 			}
 		}
 	},
+	"Lily": {
+		"character_id": 1512,
+		"roles": {
+			"Support": {
+				"echo_sets": {
+					"variant": "43311",
+					"sets": [
+						{
+							"variant": "4",
+							"name": "Formrender",
+							"sonata": "Flower of Tinged Yearning",
+							"value": "BIS"
+						},
+						{
+							"variant": "4",
+							"name": "Fallacy of No Return",
+							"sonata": "Rejuvenating Glow",
+							"value": "BIS"
+						}
+					],
+					"main_stats": [
+						"HP%",
+						"ER",
+						"ER/Spectro%",
+						"HP%",
+						"HP%"
+					]
+				},
+				"substats_priority": "ER:260%>CR=CD>HP%>HA%>ATK%>HP",
+				"url": "https://tethys.gg/resonators/1512?role=Support"
+			}
+		}
+	},
 	"Lucilla": {
 		"character_id": 1109,
 		"roles": {

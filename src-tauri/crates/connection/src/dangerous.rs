@@ -969,10 +969,10 @@ pub fn dangerous_connect(
                 // Older servers may only send LoginNotify. Seed the shared state
                 // machines with the player identity already verified by Session.
                 let initial = session.drain_packets();
-                if !initial.iter().any(|p| p.message_id == 15380) {
+                if !initial.iter().any(|p| p.message_id == mornye_game_client::message_id::BasicInfoNotify) {
                     use spectrum::prost::Message;
                     let packet = session::ReceivedPacket {
-                        message_id: 15380,
+                        message_id: mornye_game_client::message_id::BasicInfoNotify,
                         kind: 4,
                         rpc_id: None,
                         payload: spectrum::game::proto::BasicInfoNotify {

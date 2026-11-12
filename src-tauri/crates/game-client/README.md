@@ -12,7 +12,7 @@ disconnected. It exports inventory without changing equipment or spending items.
 
 ## Run
 
-Requires Rust, `protoc`, the pinned `data/wuwa-protos/` files, and an installed
+Requires Rust, `protoc`, the pinned `src-tauri/protocol/` build snapshot, and an installed
 global PC client. From the repository root:
 
 ```powershell

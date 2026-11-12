@@ -44,7783 +44,7869 @@ pub enum MessageId {
     #[allow(non_camel_case_types, non_upper_case_globals)]
     KcpConvResponse = 3729u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryRoleUpdateNotify = 15005u16,
+    RogueResTalentSkillLevelResponse = 15004u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlagChallengeBoxExpNotify = 15006u16,
+    TutorialInfoRequest = 15006u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ArtemisNodeUpdateNotify = 15008u16,
+    RunTurntableActivityRequest = 15007u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimePointActivityBatchRewardRequest = 15010u16,
+    DeadeyeShootHitRequest = 15008u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlayOpenResponse = 15023u16,
+    KurotatoStepAdvanceResponse = 15011u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RollBlockToggleHintRequest = 15024u16,
+    DailyQuestGetRewardRequest = 15012u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FollowTrackRequest = 15030u16,
+    PreheatSignSurveyInfoRequest = 15013u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GmLevelActionRequest = 15038u16,
+    RoleQuestStateNotify = 15015u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BeControlledEntityHoverResponse = 15043u16,
+    MoonPhaseRewardResponse = 15018u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlInstEventSelectNotify = 15046u16,
+    RoverRogueTalentUnlockResponse = 15025u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleQuestPointStateRequest = 15049u16,
+    GameplayCueResponse = 15031u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestRollBackEndNotify = 15053u16,
+    DangoBrawlItemEffectShowNotify = 15034u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerLeaveWorldTeamNotify = 15054u16,
+    CombatMaxCaseMessageResponse = 15035u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlagChallengeLevelInfoUpdateNotify = 15056u16,
+    HonamiStoryResidentTaskRewardResponse = 15037u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityCalabashSkinChangeNotify = 15059u16,
+    AbyssSelfPassResponse = 15039u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityRewardItemNotify = 15063u16,
+    EntityStaticHookMoveResponse = 15040u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MonthCardRequest = 15066u16,
+    ItemPkgFullNotify = 15052u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BlackSwordChallengeInfoResponse = 15067u16,
+    FormationModifyRequest = 15057u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CaptureEntityRequest = 15078u16,
+    UpdateSceneItemBlackboardRequest = 15059u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryLimitTaskRewardRequest = 15084u16,
+    QuestFinishActionRequest = 15063u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossPilingInstNotify = 15085u16,
+    DangoBrawlScoreRewardRequest = 15066u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UnlockMapBlockNotify = 15090u16,
+    MoonPhaseRandomRequest = 15067u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HitRequest = 15093u16,
+    SolarSchoolLoadRequest = 15073u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapTravelSoarRewardResponse = 15096u16,
+    SynthesisLevelRewardRequest = 15075u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ResonantChainUnlockRequest = 15098u16,
+    RoleTowerChallengeSettleNotify = 15085u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossRushTaskRewardResponse = 15100u16,
+    MotorFightBossDropNotify = 15088u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AwakeItemVehicleResponse = 15101u16,
+    EntityAccessRangeResponse = 15094u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FormationSwitchCurrentResponse = 15112u16,
+    TetrisFinishRequest = 15095u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ThroughTrainRequest = 15113u16,
+    NewTowerRewardResponse = 15099u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseGetSpecialRewardRequest = 15114u16,
+    QuestActionResponse = 15105u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DollGrabTimeBallRequest = 15115u16,
+    PlayerPsnSessionNotify = 15107u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CoopRoleRewardRequest = 15123u16,
+    SelectDetectionTargetResponse = 15118u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpringSignDrawRewardRequest = 15126u16,
+    MotorTechLevelUpResponse = 15127u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerMedalInfoResponse = 15134u16,
+    AbyssPluginItemAddNotify = 15136u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InstResultNotify = 15136u16,
+    ReviveRequest = 15137u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsLastInfoResponse = 15138u16,
+    LevelPlayOpenResponse = 15142u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlySkinWearRequest = 15148u16,
+    CancelMatchRequest = 15153u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MatchChangeReadyResponse = 15160u16,
+    MainPhantomRecommendRequest = 15154u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GivebackInfoRequest = 15161u16,
+    TimePointActivityBatchRewardResponse = 15156u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssRewardResponse = 15163u16,
+    SceneLoadingTimeOutNotify = 15159u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueTowerTrialSelectBossRequest = 15164u16,
+    DollDeliveryNotify = 15165u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapRemoveAllMarkRequest = 15166u16,
+    DetectionInvisibleNotify = 15166u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResGotoNextRoomRequest = 15168u16,
+    SolarSchoolGalleryUpdateNotify = 15173u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsRepeatedTaskRewardResponse = 15170u16,
+    ConnectorConnectEntityResponse = 15177u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConsumptiveActivityScoreResponse = 15172u16,
+    DangoBrawlRoleUnlockNotify = 15179u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WuWuKujiGachaResponse = 15175u16,
+    GivebackInfoRequest = 15189u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MoonPhaseRandomRequest = 15178u16,
+    RoverRogueShopBuyRequest = 15194u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VisionSkillChangeNotify = 15184u16,
+    DollGrabPauseEndRequest = 15196u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWhiteCatRecordResponse = 15186u16,
+    H5ViewActivityReadResponse = 15198u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateSceneDateRequest = 15194u16,
+    BuffItemUpdateNotify = 15200u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleEnterSlotResponse = 15195u16,
+    LoadingLevelAreaRequest = 15203u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    IllustratedRedDotResponse = 15199u16,
+    SeamlessTeleportResponse = 15205u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimerEndRequest = 15205u16,
+    TrackMoonSettleRequest = 15206u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleTrialSceneRollbackPush = 15207u16,
+    MonsterGachaDataChangeNotify = 15207u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ANStartResponse = 15208u16,
+    ItemUseRequest = 15211u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShortMessageReadRequest = 15211u16,
+    ActionOperationScreenSuccessRequest = 15213u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GmEntityFsmGroupInfoResponse = 15216u16,
+    AvoidBlockClientInitDoneRequest = 15216u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResTalentSkillLevelResponse = 15225u16,
+    RoguelikeSeasonDataRequest = 15218u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightRefreshBossPush = 15231u16,
+    RoleTowerSaveDeleteResponse = 15219u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ParkourChallengeEndNotify = 15236u16,
+    PhantomItemRemoveNotify = 15222u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DiscardWeaponRequest = 15239u16,
+    RTimeStopInstResponse = 15227u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FunPlayChallengeAwardResponse = 15240u16,
+    CertificateLevelRewardRequest = 15228u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MatchChangeReadyNotify = 15244u16,
+    BossPilingTaskInfoUpdateNotify = 15232u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ReceivedSilentFirstAwardResponse = 15246u16,
+    RecallItemBagObtainNotify = 15236u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TargetGearHitRequest = 15247u16,
+    PinballTeamDieRequest = 15247u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhBaPlanUsePlanRequest = 15249u16,
+    RemoveReviveRegionRequest = 15252u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ApplyJoinWorldNotify = 15258u16,
+    FishingShipFixRequest = 15255u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewPlayerSupportRewardTaskResponse = 15261u16,
+    AnimalDieResponse = 15258u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerGuideActivityInfoRequest = 15265u16,
+    TrapDefenseBdUpdateNotify = 15259u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ThemeCeleWuWuTaskNotify = 15267u16,
+    HarvestActivityPointRequest = 15260u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryInstTopTowerSettleNotify = 15272u16,
+    DetectionRequest = 15268u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EndSkillPush = 15273u16,
+    RogueTowerTrialReChallengeResponse = 15271u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlShopLockRequest = 15276u16,
+    GachaNewNotify = 15278u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneModeChangeFinishResponse = 15283u16,
+    PlaceItemOnBoardNotify = 15283u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhotoMemoryRewardRequest = 15289u16,
+    CaptureEntityResponse = 15289u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssChallengeQuitRequest = 15291u16,
+    NewTowerRecommendResponse = 15290u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ArtemisNodeUpdateRequest = 15301u16,
+    ScheduleRewardRequest = 15291u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HarvestActivityLevelResponse = 15302u16,
+    HonamiStoryAreaInfoUpdateNotify = 15296u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeQuitResponse = 15309u16,
+    CaptureEntityRequest = 15300u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueTowerTrialResultResponse = 15310u16,
+    ChapterResultRewardResponse = 15304u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchWeeklyResponse = 15313u16,
+    RhythmTaskUpdateNotify = 15309u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VisionExploreSkillNotify = 15314u16,
+    LongShanScoreRewardRequest = 15312u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LowMemoryChangeSceneFinishResponse = 15315u16,
+    PlayerBattleStateChangeNotify = 15313u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    JokerGuessPlayCardResponse = 15319u16,
+    NewTowerCycleStartResponse = 15315u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SlashAndTowerResultNotify = 15320u16,
+    SkinRewardInfoUpdateNotify = 15316u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerRoleVoiceSetResponse = 15331u16,
+    ReadCardRequest = 15318u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CalabashLevelsRewardNotify = 15335u16,
+    OrnamentInfoNotify = 15327u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MonsterGachaDataChangeNotify = 15337u16,
+    AbyssPluginSynthesisRequest = 15330u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NpcPhantomBattleFightInfoNotify = 15338u16,
+    WeekCardRewardResponse = 15339u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerEndNotify = 15343u16,
+    BossPilingInstNotify = 15347u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseSyncGainingGroupsNotify = 15348u16,
+    NewPlayerSupportActivityTrialRoleUpdateV2Notify = 15348u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TetrisUpdateRequest = 15349u16,
+    MapTravelSoarRewardRequest = 15351u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResCurrencyUpdateNotify = 15356u16,
+    FishingGhostStateNotify = 15355u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DollGrabStopResponse = 15359u16,
+    MotorFightGameOverNotify = 15356u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueEventNotify = 15360u16,
+    PressRequest = 15361u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballFriendRankRequest = 15366u16,
+    SimpleTrackReportRequest = 15365u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FsmStateBehaviorRequest = 15369u16,
+    FishingNoticeUpdateNotify = 15366u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomEquipInfoNotify = 15372u16,
+    DangoBrawlShopComposeResponse = 15368u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SynthesisInfoResponse = 15373u16,
+    RoleTowerStageSettleResponse = 15371u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorParkourLevelRewardRequest = 15375u16,
+    RealmBetweenFullRewardRequest = 15385u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BasicInfoNotify = 15380u16,
+    RogueWeeklyCurrencyUpdateNotify = 15390u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsMatchInfoResponse = 15383u16,
+    ClientCurrentRoleReportResponse = 15392u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LanguageSettingUpdateRequest = 15385u16,
+    ApplyJoinWorldResponse = 15396u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlItemGiveCoinNotify = 15390u16,
+    PhantomBattleDealCardNotify = 15397u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomMusicUnlockRequest = 15391u16,
+    NetTestDataNotify = 15406u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingShipSkinChangeResponse = 15401u16,
+    MailGetAttachmentRequest = 15409u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneItemAiPatrolPointNotify = 15402u16,
+    TowerDefenceScoreRewardResponse = 15411u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoSettlementNotify = 15404u16,
+    NewPlayerSupportRewardTaskRequest = 15421u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CancelMatchNotify = 15420u16,
+    HookLockPointExitRequest = 15425u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddTemporaryTeleportInfoNotify = 15428u16,
+    SceneItemSetPosSenderNotify = 15429u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardSelectRequest = 15431u16,
+    RoleSkinResponse = 15433u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MatchTeamNotify = 15432u16,
+    RoverRogueTaskRewardTakeResponse = 15438u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlayVarRequest = 15438u16,
+    KurotatoShopRewardNotify = 15439u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CreateBulletPush = 15442u16,
+    TeleportFlowEndResponse = 15441u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PbUpLevelRoleRequest = 15445u16,
+    MapUnlockFieldInfoRequest = 15442u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BeControlledEntityHoverRequest = 15453u16,
+    InstanceTimerNotify = 15453u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FriendRecentlyTeamRequest = 15455u16,
+    SignActivityFreeDropResponse = 15457u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InstPlayDataNotify = 15456u16,
+    MotorUseSceneRequest = 15459u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestTreeInfoNotify = 15465u16,
+    RoguelikeInfoNotify = 15467u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResOpDataUpdateNotify = 15468u16,
+    PinballTeamReviveResponse = 15477u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeatherControlUnlockNotify = 15470u16,
+    FloroRanchPlayShopBuyResponse = 15480u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulGetAdventureRewardRequest = 15472u16,
+    RollBlockOpenGamePlayNotify = 15482u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RunTurntableActivityRequest = 15475u16,
+    IllustratedInfoRequest = 15484u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneItemMoveTargetNotify = 15478u16,
+    PhBaPlanSaveUsePlanRequest = 15491u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LstBattleRecordResponse = 15485u16,
+    AdviceVoteUpdateNotify = 15493u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneBlockSplitSwitchStatePush = 15490u16,
+    RoguelikeTokenReceiveResponse = 15495u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RiskHarvestBuffCountRewardRequest = 15493u16,
+    AtomicProcessAddBuffResponse = 15504u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlShopBuyResponse = 15499u16,
+    RemoveBuffByServerIdS2cRequestNotify = 15505u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CombatMessagePostInfoRequest = 15505u16,
+    EntityCameraAlertRequest = 15507u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LifePointChallengeUpdateNotify = 15515u16,
+    RoguelikeTrialRoleInfoResponse = 15508u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerRecommendResponse = 15516u16,
+    RoleFavorTalkScoreResponse = 15509u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoShopRewardSelectResponse = 15517u16,
+    AnimationGameplayTagPush = 15510u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewPlayerSupportSetCurUseTrialRoleRequest = 15519u16,
+    DetectionTargetChangeNotify = 15512u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsMatchInfoRequest = 15531u16,
+    TowerDefenceSelfPassRequest = 15513u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BeControlledShowRequest = 15548u16,
+    RunTurntableActivityResponse = 15518u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorDevelopTaskUpdateNotify = 15550u16,
+    QuestTreeInfoRequest = 15519u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    StorageInfoUpdateResponse = 15571u16,
+    HookLockPointFinishRequest = 15520u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActionResetPosPrePerformanceNotify = 15572u16,
+    EquipSkinUnLoadResponse = 15525u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoUpgradeRewardRefreshResponse = 15573u16,
+    RoleTrainRequest = 15533u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsResultResponse = 15576u16,
+    AbyssLikeRequest = 15542u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightMonsterDropNotify = 15577u16,
+    MotorFightSettleRequest = 15544u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AnimationStateChangedNotify = 15580u16,
+    PinballWeaponDegradeRequest = 15550u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardOutLookUpResponse = 15581u16,
+    WeaponRemoveNotify = 15552u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ThemeWorldScoreResponse = 15587u16,
+    RollBlockToggleHintRequest = 15560u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AwakeItemVehicleRequest = 15589u16,
+    FriendApplySendResponse = 15562u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TutorialInfoRequest = 15592u16,
+    InviteRechallengeResponse = 15563u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetAlertUiVisibleRequest = 15594u16,
+    RoguelikeResultResponse = 15568u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityBlackboardRequest = 15598u16,
+    RoverRogueUpdateReviveTimesNotify = 15569u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PressGameRequest = 15600u16,
+    FriendDeletedNotify = 15578u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingSkillBombRequest = 15602u16,
+    SunSpiritListNotify = 15581u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResInstStartResponse = 15616u16,
+    DamageRecordNotify = 15583u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBatchRefiningRequest = 15619u16,
+    TrackMoonBuildingDataResponse = 15600u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AcceptEntrustRequest = 15620u16,
+    PlayerVoxelEnvResponse = 15604u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlayVarResponse = 15621u16,
+    TeamMatchInviteRetToHostNotify = 15606u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddUnlockedDetectionTextNotify = 15632u16,
+    ExploreSkillRouletteSetRequest = 15609u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightSelectCollectionRequest = 15634u16,
+    EnterMatchInstResponse = 15610u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RhythmChangePartnerRoleResponse = 15635u16,
+    TargetGearHitResponse = 15616u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorOutlookInfoResponse = 15636u16,
+    RoverRogueTalentInfoResponse = 15617u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrackMoonBuildingDataRequest = 15645u16,
+    PhantomMusicSwitchResponse = 15618u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulGetAdventureRewardResponse = 15647u16,
+    PhantomBattleNpcShowOverResponse = 15620u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PassiveSkillRemovePush = 15649u16,
+    AiBlackboardCdRequest = 15625u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleDevelopConfigResponse = 15651u16,
+    LivenessTakeResponse = 15626u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeRoleRoomNotify = 15652u16,
+    FlySkinWearAllRoleResponse = 15632u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShortMessageInfoRequest = 15653u16,
+    TeamMatchFlagNotify = 15636u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingHandInResponse = 15662u16,
+    HoldHandRequest = 15637u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomFetterRecommendResponse = 15665u16,
+    MulPhantomBattleMasterLevelRewardResponse = 15639u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoEndSpecialWaveCombatResponse = 15668u16,
+    SceneAreaStateNotify = 15646u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapRemoveMarkRequest = 15669u16,
+    DangoBrawlSaveMatchBriefNotify = 15653u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchAnimationRequest = 15672u16,
+    ConsumptiveActivityScoreResponse = 15654u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SwitchCharacterStateNotify = 15678u16,
+    CalabashMsgResponse = 15659u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoAllItemUpdateNotify = 15679u16,
+    InfrLibraryTaskUpdateNotify = 15668u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OnlineMotorActivityLevelRequest = 15684u16,
+    TraceQuestResponse = 15680u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveGuestNotify = 15691u16,
+    MotorOutlookEquippedChangeNotify = 15683u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PreheatSignRewardResponse = 15694u16,
+    PinballTeamDieResponse = 15684u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallExploreSkillRouletteNotify = 15696u16,
+    RacingBetsCloseSettleMenuRequest = 15685u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrackMoonRoleDataRequest = 15705u16,
+    SceneChangeDataLayerNotify = 15688u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FuncShowRequest = 15710u16,
+    MatchConfirmResponse = 15699u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DeconstructTrapRequest = 15715u16,
+    HoldWeaponNotify = 15700u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestBranchUpdateNotify = 15721u16,
+    KurotatoItemUpdateNotify = 15702u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssChallengeQuitResponse = 15723u16,
+    UnlockMapBlockNotify = 15704u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InterruptSkillInDelayResponse = 15726u16,
+    HonamiStorySellItemResponse = 15708u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerSeasonScoreRewardResponse = 15733u16,
+    NewbieAdventureTaskRewardResponse = 15720u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerUpdateRecordNotify = 15739u16,
+    BlackScreenStatePush = 15727u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MowTowerLevelsInfoUpdateNotify = 15746u16,
+    GuideInfoRequest = 15732u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveTreasureBoxSlotRequest = 15750u16,
+    DailyQuestChangePreferResponse = 15733u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NormalItemAddNotify = 15755u16,
+    PhantomBattleBackLibraryResponse = 15743u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CheckPublicResourceVersionResponse = 15757u16,
+    FishingExitResponse = 15747u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GetDetectionLabelInfoRequest = 15760u16,
+    UseSkillFailPush = 15749u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyLastInfoResponse = 15761u16,
+    PhantomBatchOperRequest = 15779u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TraceMoonPhaseRewardRequest = 15762u16,
+    RecallQuestFinishActionResponse = 15780u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EncircleChallengeCompleteRequest = 15763u16,
+    RoverRogueSubLevelNotify = 15783u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCheckCardSkillUnlockRequest = 15765u16,
+    RogueWeeklyInstInfoNotify = 15788u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BtRangeFailWarningNotify = 15770u16,
+    RecallMapMarkUpdateNotify = 15791u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssLittleRoleLevelUpResponse = 15774u16,
+    ScratchCardRewardResponse = 15806u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoPropertyUpdateNotify = 15776u16,
+    DangoBrawlShopRefreshResponse = 15810u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SwitchDarkTideWeaponPush = 15777u16,
+    DollGrabTimeBallRequest = 15812u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeekCardInfoRequest = 15779u16,
+    EntityDynamicInteractRequest = 15821u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DebugFightErrInfoNotify = 15787u16,
+    PayGiftInfoResponse = 15822u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GravityHookLockPointChangeGravityResponse = 15803u16,
+    QueryOnlinePlayersAreaRequest = 15827u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestTreeInfoResponse = 15806u16,
+    SummonResponse = 15829u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MailBindRewardResponse = 15814u16,
+    PhotoMemoryRewardResponse = 15832u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CommitBoardResponse = 15817u16,
+    StorageInfoResponse = 15837u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AchievementGroupProgressNotify = 15821u16,
+    CancelQuestFocusModeRequest = 15853u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueTowerTrialReChallengeNotify = 15826u16,
+    ValidTimeItemUpdateNotify = 15855u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DailyAdventureTaskRewardRequest = 15828u16,
+    InfrV2FireUpdateNotify = 15857u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlayRewardCountResetNotify = 15831u16,
+    UseSkillFailRequest = 15861u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseRewardGainingGroupsNotify = 15832u16,
+    UseSkillRequest = 15873u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorOnlineProgressReportPush = 15835u16,
+    EnterBigWorldInstResponse = 15876u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ReceiveRechallengePlayerIdsNotify = 15842u16,
+    SetFocusModeDeterCondResponse = 15892u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCallCardNotify = 15843u16,
+    TrapDefenseTechPointUpdateNotify = 15898u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsOpDataUpdateNotify = 15846u16,
+    MotorLevelOneKeyRewardRequest = 15900u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetPlayerYuXueModeResponse = 15847u16,
+    SneakRequest = 15909u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GetDebugInfoNotify = 15849u16,
+    PhantomBattleCardUpdateNotify = 15912u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeekCardRewardRequest = 15854u16,
+    BulletPatternPush = 15914u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ReceiveRechallengeRequest = 15865u16,
+    CreateBulletNotify = 15915u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RealmBetweenLevelUpResponse = 15881u16,
+    GachaDiscountNotify = 15918u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetMatchRoundActionResponse = 15882u16,
+    UseSoundBoxSkillRequest = 15919u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlaySelectCardGroupRequest = 15883u16,
+    RogueWeeklyOptionSelectResponse = 15921u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HookLockPointFinishResponse = 15889u16,
+    GivebackUnlockNotify = 15923u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AppGradeNotify = 15895u16,
+    HitEndPush = 15924u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MatchTeamStateNotify = 15902u16,
+    SunSpiritActionOperationNotify = 15928u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardSkillRequest = 15904u16,
+    PressNotify = 15929u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BanItemUseNotify = 15908u16,
+    OperationRestrictionNotify = 15930u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoadBookMotorRewardResponse = 15914u16,
+    RemoveBuffByIdS2cResponsePush = 15939u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossRushSettlementResponse = 15915u16,
+    RoguelikeRoleRoomSelectResponse = 15944u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LivenessUpdateNotify = 15921u16,
+    QuestTreeInfoResponse = 15945u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleLevelUpViewResponse = 15925u16,
+    RogueResMoveResponse = 15952u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SneakGameStateNotify = 15930u16,
+    BeControlledEntityHoverRequest = 15955u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyArtifactInfoResponse = 15940u16,
+    ShortMessageChatCharmChangeResponse = 15958u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SummonEntityNotify = 15942u16,
+    PhantomBattleReconstructCardNotify = 15963u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeatherControlInfoResponse = 15945u16,
+    OrderApplyBuffResponse = 15979u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MatchChangeRoleNotify = 15946u16,
+    AddGuestNotify = 15984u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulExploreScoreRewardResponse = 15959u16,
+    SitChairResponse = 15985u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HarvestActivityLevelDiffResponse = 15960u16,
+    KurotatoShopRewardLockResponse = 15987u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneItemSequenceFrameEndRequest = 15970u16,
+    BabelTowerSelfPassResponse = 15993u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HookLockBatchCollectNotify = 15974u16,
+    RacingBetsTaskNotify = 15994u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FollowerChairPresentationChangeNotify = 15976u16,
+    PhotoFightSettleRequest = 15995u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BabelActivityUseReviveCountNotify = 15978u16,
+    RemoveGameplayEffectRequest = 15998u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SlashAndTowerRecommendResponse = 15984u16,
+    ActivityResponse = 15999u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResGridDataUpdateNotify = 15986u16,
+    LeaveWorldTeamRequest = 16004u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InteractiveUpdateResponse = 15988u16,
+    PbRoleActiveNotify = 16014u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerPsnInfoGetResponse = 15989u16,
+    SpringFestivalAreaUnlockNotify = 16024u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomFetterRecommendRequest = 15990u16,
+    SubmitAwakeAndLoadEntityNodeResponse = 16025u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityAttachChangeNotify = 15996u16,
+    ActivateBuffPush = 16028u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpringFestivalAtmosphereUpdateNotify = 15997u16,
+    QuestFocusInfoNotify = 16030u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreSkillActionResponse = 16000u16,
+    MowTowerLevelsInfoUpdateNotify = 16031u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballWeaponDegradeResponse = 16001u16,
+    InstTeleportToResetPointResponse = 16034u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WuWuTaskUpdateNotify = 16006u16,
+    InfrPhoneTaskRewardRequest = 16037u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlayOpenTimeNotify = 16016u16,
+    BossRushResultNotify = 16040u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestRedDotRequest = 16021u16,
+    AiControlSwitchNotify = 16041u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FriendApplySendRequest = 16030u16,
+    RoleMotionListNotify = 16046u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemUseRequest = 16031u16,
+    CheatInputRequest = 16047u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlowEndRequest = 16032u16,
+    XboxSettingUpdateResponse = 16049u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayGiftInfoResponse = 16033u16,
+    ChangePhantomEquipGroupNameResponse = 16060u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightAddEnemyBuffNotify = 16034u16,
+    AchievementReceiveRequest = 16062u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DecalAddNotify = 16035u16,
+    PhantomBattleCardGroupAddResponse = 16063u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EquipSkinUnLoadResponse = 16037u16,
+    ItemDecomposePreviewResponse = 16064u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneBlockSplitPlayerNeedBlockPush = 16044u16,
+    BabelTowerShowNameRequest = 16067u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SysErrorNotify = 16045u16,
+    RiskHarvestInstRewardRequest = 16068u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LinkageRewardRequest = 16047u16,
+    CreatureDetailResponse = 16069u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CertificateLevelRewardRequest = 16054u16,
+    SceneTempFishPointInfoUpdateNotify = 16073u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NetTestDataRequest = 16056u16,
+    TowerDefenceRandListRequest = 16075u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SwitchRoleResponse = 16059u16,
+    ActivityRequest = 16076u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AdviceCreateRequest = 16066u16,
+    SecWorldSEndFlowRequest = 16078u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EquipSkinUnLoadRequest = 16068u16,
+    FishingShipInfoUpdateNotify = 16082u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityAccessCasketResponse = 16078u16,
+    HonamiStoryScoreRewardRequest = 16084u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomMusicNotify = 16079u16,
+    RogueResGotoNextRoomResponse = 16110u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleTrialOpenNotify = 16081u16,
+    TowerRewardResponse = 16113u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerDefenceRoleReviveNotify = 16084u16,
+    CheckUseSoundBoxSkillRequest = 16116u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GuideCondDoneNotify = 16087u16,
+    DangoBrawlInstEventSelectNotify = 16117u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemDecomposePreviewResponse = 16088u16,
+    TrapDefenseUseItemRequest = 16123u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LinkageCheckInRewardResponse = 16096u16,
+    TeleportFlowEndRequest = 16124u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InviteRechallengeResponse = 16100u16,
+    KurotatoStepAdvanceRequest = 16129u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfluenceRewardRequest = 16109u16,
+    ShopBuyNotify = 16134u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CheckGearResponse = 16110u16,
+    TetrisFinishResponse = 16139u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AchievementReceiveRequest = 16111u16,
+    MotorDevelopTaskRewardRequest = 16150u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MingSuHandRewardResponse = 16113u16,
+    PhantomBattleCardSelectRequest = 16151u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsGearRefundResponse = 16117u16,
+    PhantomBattleCardGroupDeleteRequest = 16154u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ContextIdNotify = 16119u16,
+    LevelPlayStateRequest = 16155u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ValidTimeItemRequest = 16123u16,
+    MatchChangePlayerUiStateNotify = 16156u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleAddBuffInfoNotify = 16131u16,
+    SpringFestivalUpdateNotify = 16164u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnterBigWorldInstResponse = 16135u16,
+    RoverRogueQuitResponse = 16168u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BlackScreenStatePush = 16136u16,
+    NewbieCourseV2RewardResponse = 16170u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssShowNameResponse = 16143u16,
+    SetQuestFocusModeRequest = 16174u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssReviveCharacterRequest = 16144u16,
+    ShortMessageReadResponse = 16177u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SecRoleFightFlowResponse = 16148u16,
+    PhantomMusicInfoRequest = 16180u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerPsnSessionNotify = 16152u16,
+    CountryExploreScoreInfoRequest = 16184u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityElementalAbilityEnableNotify = 16164u16,
+    FishingEntrustRefreshResponse = 16187u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeStateConfirmPush = 16165u16,
+    RiskHarvestBuffUnlockNotify = 16190u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EffectiveWeekCardInfoNotify = 16179u16,
+    EntityFlyEquipChangeNotify = 16196u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreScoreRewardResponse = 16181u16,
+    CharacterBattleStateChangeNotify = 16199u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapMarkInfoNotify = 16185u16,
+    UnlockInstEntranceRequest = 16204u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BirthDayCardRoleResponse = 16190u16,
+    InitRangeRequest = 16207u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MailDeleteNotify = 16201u16,
+    CommonUiSettingNotify = 16208u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FragileChangeResponse = 16203u16,
+    DollGrabPauseStartRequest = 16209u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UnblockPlayerRequest = 16206u16,
+    NewTowerUpdateRecordRequest = 16212u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PrivateChatOperateResponse = 16211u16,
+    RogueWeeklyRewardRequest = 16216u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeRoleInstStartResponse = 16214u16,
+    HarvestActivityLevelDiffRequest = 16220u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseSystemInfoUpdateNotify = 16215u16,
+    VfxNpcPatrolFinishResponse = 16241u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MoveSceneItemResetPositionRequest = 16218u16,
+    ExitViewDirectionRequest = 16245u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchRewardTaskRequest = 16221u16,
+    HonamiStoryItemCollectionInfoUpdateNotify = 16250u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChatMutePlayerRequest = 16226u16,
+    ConditionGroupStateResponse = 16252u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingShipSkinChangeRequest = 16229u16,
+    ItemExchangeInfoRequest = 16256u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryScoreRewardInfoUpdateNotify = 16232u16,
+    PlayerPsnBlockListRequest = 16257u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UnOpenedAreaPullbackResponse = 16235u16,
+    TrapDefenseAuxiliaryBranchRequest = 16263u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorDecalMotorIpRequest = 16237u16,
+    RoleConfigInfoUpdateNotify = 16265u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AvoidBlockSubmitOverNodeRequest = 16244u16,
+    ClientVersionNoMatchNotify = 16267u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AnimalDestroyRequest = 16245u16,
+    FishingExitRequest = 16269u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrV2ManualCancelTraceTreeRequest = 16247u16,
+    RacingBetsGearRequest = 16270u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryInstLeaveResponse = 16258u16,
+    WeekCardInfoResponse = 16279u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MoralePosResponse = 16263u16,
+    TeamParkourSettleNotify = 16281u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GolemCrackUpdateResponse = 16269u16,
+    MapRemoveMarkRequest = 16284u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattlePassTaskTakeResponse = 16270u16,
+    TowerDefenceRankShowNameRequest = 16285u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingIllustratedRewardRequest = 16271u16,
+    PhantomBattleDiscardCardRequest = 16286u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayShopItemUpdateRequest = 16274u16,
+    SetNpcPerformStateNotify = 16291u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActivityResultRewardRequest = 16280u16,
+    ModifyNameResponse = 16293u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorTechTreeUnlockNotify = 16286u16,
+    ValidTimeItemResponse = 16298u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BoneVisibleChangeNotify = 16295u16,
+    PrivateChatHistoryNotify = 16299u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityAdsorbRequest = 16297u16,
+    RemoveBuffS2cResponsePush = 16300u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PreheatSignSurveyInfoRequest = 16302u16,
+    HookLockPointRequest = 16301u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlayOpenRequest = 16306u16,
+    GameplayTagResponse = 16302u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomPutOnResponse = 16317u16,
+    TowerFormationRecommendRequest = 16303u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MatchChangeRoleRequest = 16318u16,
+    PhantomBattleCardGroupAddRequest = 16307u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeInfoNotify = 16321u16,
+    DailyQuestUnlockAreaNotify = 16310u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FuncOpenUpdateNotify = 16322u16,
+    PhantomBattleEnterSlotResponse = 16311u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlLoseCountUpdateNotify = 16325u16,
+    CommitBoardResponse = 16328u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeleportToTargetResponse = 16327u16,
+    PhantomMusicInfoResponse = 16334u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallItemBagRemoveNotify = 16328u16,
+    SceneStepInfoNotify = 16336u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeamMatchAcceptInviteNotify = 16329u16,
+    FixToolRequest = 16354u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestActionResponse = 16333u16,
+    BabelActivitySettleInfoNotify = 16355u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlShopBuyRequest = 16336u16,
+    PbRoleSkillLevelNotify = 16361u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCallCardRequest = 16342u16,
+    TowerDefenceChallengeQuitResponse = 16362u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PrivateChatDataRequest = 16343u16,
+    TimeLockInfoNotify = 16370u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryInstInfoNotify = 16347u16,
+    ActionOperationScreenNotify = 16381u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhotoMemoryRequest = 16350u16,
+    PhantomEquipGroupInfoNotify = 16384u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShortMessageReceivedRequest = 16353u16,
+    DragonPoolConfResponse = 16385u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestChangeTraceNotify = 16354u16,
+    EntityPatrolChangeDirRequest = 16389u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryUnlockSlotRequest = 16355u16,
+    RoverRogueInfoNotify = 16398u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleEnterSlotRequest = 16359u16,
+    H5CircumFluenceActivityDataNotify = 16402u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RegressBonusResponse = 16360u16,
+    RacingBetMatchRoundActionRequest = 16403u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeQuitRequest = 16370u16,
+    VehicleUpdateEntityNotify = 16415u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayShopConditionFinishNotify = 16372u16,
+    EquipSkinTakeOnRequest = 16426u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CameraSettingQueryRequest = 16381u16,
+    BeControlledThrowResponse = 16431u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssLikeRequest = 16399u16,
+    MulMapTravelTaskRewardResponse = 16436u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhBaPlanSetFiveStarSwitchResponse = 16406u16,
+    BuffStackCountResponse = 16438u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AnimationStateChangedResponse = 16407u16,
+    DestroyRecallQuestsNotify = 16440u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingSailingResponse = 16408u16,
+    RiskHarvestBuffCountRewardRequest = 16445u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnterBigWorldInstRequest = 16410u16,
+    AwakeItemVehicleResponse = 16446u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ZitherPlayStateResponse = 16415u16,
+    RollBlockToggleHintResponse = 16448u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoMonopolyGridRewardResponse = 16416u16,
+    RoleGoDownPush = 16452u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DarkTideMapMarkRequest = 16419u16,
+    RogueResGridEventRequest = 16464u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateInstanceOwnerInfoNotify = 16427u16,
+    GetLevelPlayRewardsRequest = 16467u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlShopLockResponse = 16429u16,
+    KurotatoRoleUnlockNotify = 16470u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DailyAdventurePtRewardResponse = 16430u16,
+    DamageExecuteResponse = 16478u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HarvestActivityResultRequest = 16437u16,
+    HonamiStoryActivateTalentResponse = 16479u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GravityFlipInteractRequest = 16440u16,
+    DollDeliveryResponse = 16482u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityBlackboardNotify = 16442u16,
+    TimelineTraceExitResponse = 16487u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GetYuXueModeInfoResponse = 16446u16,
+    ExploreActivityTaskInfoNotify = 16491u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingTechLevelUpRequest = 16447u16,
+    PhantomBattleAreaSkillNotify = 16501u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomLevelUpRequest = 16448u16,
+    PayShopItemUpdateResponse = 16503u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlyEquipAddNotify = 16449u16,
+    RoleSkinChangeNotify = 16509u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SyncPlayerLocationNotify = 16455u16,
+    OccupationInfoNotify = 16517u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BathPhotoResponse = 16457u16,
+    KurotatoShopRewardRefreshResponse = 16518u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoReChallengeResponse = 16458u16,
+    PrivateChatOperateRequest = 16521u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlagChallengeRewardResponse = 16460u16,
+    InvestRequest = 16522u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlayFastReturnPosRequest = 16463u16,
+    SneakTimeResponse = 16525u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TraceEntityPosRequest = 16467u16,
+    PinballTaskRewardResponse = 16536u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyArtifactSelectResponse = 16473u16,
+    KurotatoEndSpecialWaveCombatRequest = 16538u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AnimationStateInitRequest = 16475u16,
+    ParkourChallengeTransResponse = 16542u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HitResponse = 16481u16,
+    SceneSubLevelsRequest = 16545u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomPolishResponse = 16484u16,
+    LinkExitNotify = 16547u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerResponse = 16485u16,
+    RoverRogueTalentUnlockRequest = 16548u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomInteractionUnlockNotify = 16490u16,
+    RoleTowerConsumeItemResponse = 16552u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConditionGroupStateRequest = 16491u16,
+    LogicStateInitNotify = 16553u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryItemCollectionResponse = 16494u16,
+    FloroRanchPlayRemoveUnitResponse = 16556u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CorniceChallengeEndNotify = 16495u16,
+    SimpleCombatEntityDieResponse = 16558u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuickHackOpenPush = 16504u16,
+    MotorFightSelectBuffGateRequest = 16560u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AiInformationResponse = 16509u16,
+    ModifySignatureRequest = 16561u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FormationUpdateNotify = 16510u16,
+    DrownNotify = 16564u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FeiXuePreheatInfoRewardRequest = 16511u16,
+    MotorFightRefreshNextWaveGroupRequest = 16568u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleMotionListNotify = 16513u16,
+    BabelTowerRankListResponse = 16572u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerFormationRecommendRequest = 16517u16,
+    LeaveWorldTeamResponse = 16579u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoadBookLevelUpResponse = 16518u16,
+    RTimeStopRequest = 16580u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerSeasonTaskDataUpdateNotify = 16522u16,
+    MowTowerLevelsRewardRequest = 16582u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerSeasonTaskDataUpdateRequest = 16526u16,
+    RogueResOpDoneResponse = 16584u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewJourneyResponse = 16530u16,
+    RogueWeeklyLastInfoResponse = 16590u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightLevelUpdateNotify = 16531u16,
+    RecallItemBagRemoveNotify = 16591u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsTaskRewardRequest = 16541u16,
+    PhantomReturnRequest = 16594u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoShopRewardLockResponse = 16545u16,
+    TrapDefenseChallengeUpdateNotify = 16595u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OrderRemoveBuffByTagsResponse = 16551u16,
+    MulRogueWeeklyRewardRequest = 16599u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MailBindInfoNotify = 16566u16,
+    CombineEntitiesResponse = 16600u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RegressBuyBonusLvRequest = 16574u16,
+    BabelTowerTaskRewardResponse = 16607u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewbieCourseV2RewardRequest = 16575u16,
+    DeleteStoryCharacterResponse = 16614u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsCloseSettleMenuRequest = 16577u16,
+    PayGiftRequest = 16617u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallQuestFinishActionEndRequest = 16583u16,
+    MotorOutlookInfoRequest = 16618u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlTaskRewardResponse = 16585u16,
+    ExploreToolAuthorizationNotify = 16622u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoMonopolyNextBoardResponse = 16590u16,
+    DangoBrawlFightOverResponse = 16631u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpringSignSkinRewardRequest = 16596u16,
+    WeaponAllInfoNotify = 16632u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AttachEntityResponse = 16598u16,
+    RogueWeeklyArtifactInfoResponse = 16633u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightSelectCollectionResponse = 16600u16,
+    PlayerRenameNotify = 16634u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoStepUpdateNotify = 16601u16,
+    SimpleCombatEntityAttributeUpdateNotify = 16636u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeamMatchAcceptInviteResponse = 16611u16,
+    EnergySyncResponse = 16637u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeeklyFrameworkInfoRequest = 16625u16,
+    TraceEntityPosResponse = 16641u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SeamlessTeleportVehicleRequest = 16632u16,
+    LogicStateInitPush = 16642u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BlockPlayerRequest = 16633u16,
+    PayShopUnlockNotify = 16644u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PrivateChatResponse = 16640u16,
+    ExitViewDirectionPush = 16646u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RollBlockSwitchControlBlockRequest = 16642u16,
+    ChangeDataLayerFinishRequest = 16648u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InstEntityTeleportRequest = 16644u16,
+    AvignonRewardRequest = 16650u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BabelTowerRankListRequest = 16651u16,
+    RegressTrialRoleLvUpRequest = 16654u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LobbyListResponse = 16660u16,
+    GameStatsShowRequest = 16656u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayItemResponse = 16661u16,
+    DestroyBulletNotify = 16659u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShopBuyRequest = 16667u16,
+    PhantomBattleReconstructCardResponse = 16661u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsRankRequest = 16670u16,
+    NewbieAdventureChapterDropRequest = 16662u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayGiftResponse = 16671u16,
+    XboxSettingResponse = 16665u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingEntrustTraceResponse = 16672u16,
+    BathPhotoResponse = 16666u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GiftPackPreviewRequest = 16675u16,
+    EntityHonamiStoryEnhanceLevelNotify = 16677u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossRushChooseBuffResponse = 16679u16,
+    PhantomItemUpdateNotify = 16679u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyResultResponse = 16682u16,
+    HonamiStorySellItemRequest = 16688u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardUnlockResponse = 16683u16,
+    FishingCageInfoResponse = 16693u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneChangeDataLayerNotify = 16684u16,
+    SeamlessTeleportVehicleRequest = 16695u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsUpdateOddsResponse = 16685u16,
+    AiBlackboardsPush = 16697u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DailyAdventureTaskRewardResponse = 16686u16,
+    MapMarkShowIdInfoUpdateNotify = 16700u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SplineMoveRequest = 16693u16,
+    PayItemRequest = 16704u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallItemBagDeltaNotify = 16700u16,
+    TimeStopPush = 16707u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorParkourResultNotify = 16702u16,
+    AllApplyJoinNotify = 16708u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CalabashMsgResponse = 16706u16,
+    TrapDefensePreviewFinishRequest = 16711u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdatePlayerPassiveSkillRequest = 16711u16,
+    MotorFightRefreshCollectionTimesChangeNotify = 16712u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneTempFishPointInfoUpdateNotify = 16713u16,
+    TeamChallengeRequest = 16714u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BlockListResponse = 16716u16,
+    DeletePhantomEquipGroupResponse = 16721u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AvoidBlockRoundInfoNotify = 16725u16,
+    KurotatoChestRewardSelectRequest = 16722u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AtomicProcessAddBuffRequest = 16727u16,
+    RoleTrialCloseNotify = 16731u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorInfoRequest = 16731u16,
+    InfrV2TaskRewardResponse = 16735u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingCageInfoRequest = 16732u16,
+    PlayerCreatePsnSessionResponse = 16742u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlBagOperateRequest = 16736u16,
+    RogueResInstOptionsNotify = 16744u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UseDetectionSkillRequest = 16737u16,
+    UpdatePlayersFightRolesInfoNotify = 16745u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballFixSpawnFinishNotify = 16738u16,
+    TrapDefenseDevelopInfoUpdateNotify = 16748u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhBaPlanSetPlanStatusRequest = 16741u16,
+    ZitherPlayNotePush = 16749u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestFinishActionEndResponse = 16750u16,
+    RogueResEndingUpdateNotify = 16750u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AchievementFinishRequest = 16752u16,
+    RogueTowerTrialSelectBossNotify = 16751u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhotoFightLevelInfoNotify = 16757u16,
+    ChangeOrnamentRequest = 16754u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BeControlledShowNotify = 16761u16,
+    FormationChangeRequest = 16758u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SimpleCombatEntityAttributeUpdateNotify = 16764u16,
+    MotorCreateResponse = 16761u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleIllustratedInfoResponse = 16765u16,
+    CombatMessagePrefixInfoResponse = 16765u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WuWuKujiGachaRequest = 16766u16,
+    MotorOutlookDeletePresetResponse = 16772u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ModifyBulletParamsRequest = 16767u16,
+    PhantomFormationChangeNotify = 16773u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ScratchCardActivityInfoResponse = 16768u16,
+    SecFBRoundEndFlowReportResponse = 16776u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomInteractionEquipRequest = 16770u16,
+    TowerGuideActivityRewardRequest = 16778u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemDecomposeRequest = 16771u16,
+    MulMapTravelSoarRewardResponse = 16779u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DestroyBulletNotify = 16776u16,
+    BeControlledRequest = 16785u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallMapMarkInfoNotify = 16779u16,
+    BehaviorTreeInfoNotify = 16786u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlowTeleportToPlotPosRequest = 16785u16,
+    ThroughTrainFinishViewRequest = 16804u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestReviewInfoResponse = 16788u16,
+    MotorOutlookFullChangeNotify = 16805u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhotoMemoryCollectNotify = 16791u16,
+    ScratchCardCountInfoNotify = 16808u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RealmBetweenMotorRewardResponse = 16795u16,
+    NewTowerCycleStartRequest = 16812u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhBaPlanSaveUsePlanResponse = 16798u16,
+    PhantomBattleRepeatedTaskRewardResponse = 16815u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BabelTowerTaskRewardRequest = 16805u16,
+    SwitchRoleResponse = 16820u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AudioStateUpdateNotify = 16806u16,
+    SignActivityKeepTimeNotify = 16823u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewPlayerSupportActivityTrialRoleUpdateNotify = 16807u16,
+    NewbieAdventureRoleRewardRequest = 16825u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityEquipChangeNotify = 16817u16,
+    SceneModeChangeFinishRequest = 16826u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WorldLevelDownRequest = 16824u16,
+    FlowSeqSetPlayerPosResponse = 16827u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BtSetTimerInfoRequest = 16825u16,
+    PinballBonusFullWinResponse = 16828u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CreateBulletRequest = 16833u16,
+    WeaponBreachRequest = 16833u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallQuestFinishListNotify = 16834u16,
+    RoleQuestNewUnlockNotify = 16834u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DollGarbStartRequest = 16837u16,
+    MotorIsEnablePush = 16848u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestBranchSelectResponse = 16841u16,
+    ModifyBulletParamsPush = 16856u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhotoMemoryRewardResponse = 16842u16,
+    MotorFightLastSaveDataRequest = 16858u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallMapMarkUpdateNotify = 16865u16,
+    AddTreasureBoxSlotResponse = 16859u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FsmResetNotify = 16867u16,
+    CaughtPush = 16870u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrRoadUpdateNotify = 16869u16,
+    MapMarkRequest = 16871u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CharacterDeathPush = 16870u16,
+    JokerGuessStartNewRequest = 16872u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulCorniceMeetingRewardResponse = 16872u16,
+    ActorVisiblePush = 16875u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeaponItemRemoveNotify = 16873u16,
+    AgreeJoinResultRequest = 16876u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhBaPlanSetPlanStatusResponse = 16878u16,
+    FormationAttrNotify = 16879u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardInfoUpdateNotify = 16880u16,
+    AdviceContentUpdateNotify = 16880u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AccessPathConfigRequest = 16883u16,
+    KurotatoResTaskReceiveRequest = 16881u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerEnterPollutionRequest = 16885u16,
+    MotorFightKillResponse = 16884u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ApplyBuffS2cResponsePush = 16890u16,
+    EntityElementalAbilityEnableNotify = 16885u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneItemSetPosSenderNotify = 16894u16,
+    SolarSchoolTaskUpdateNotify = 16887u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpringFestivalScoreRewardRequest = 16898u16,
+    RoleUpdateDevelopTargetResponse = 16891u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorOutlookEquippedChangeNotify = 16900u16,
+    HonamiStoryLimitShopConsumeNumNotify = 16893u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ElevatorStateChangeResponse = 16901u16,
+    TeamRecommendResponse = 16900u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleShowListUpdateRequest = 16909u16,
+    LordGymBeginRequest = 16902u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchStartPlayRequest = 16910u16,
+    FishingSkillBombResponse = 16903u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattlePassTakeRewardResponse = 16911u16,
+    ForgeInfoRequest = 16907u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActionRelatedEntityInfoNotify = 16914u16,
+    SetFanStateRequest = 16914u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LastBigSceneMiniMapInfoRequest = 16921u16,
+    DangoBrawlInstBaseNotify = 16916u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingActivityMileStoneNotify = 16931u16,
+    SceneItemSequenceFrameStartResponse = 16917u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LeaveQuestRecallNotify = 16941u16,
+    HonamiStoryUnlockSlotResponse = 16925u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossRushSelectBuffNotify = 16943u16,
+    RolePropResponse = 16928u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ResetPointEntityNotify = 16945u16,
+    ItemExchangeRequest = 16929u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayShopBuyRequest = 16947u16,
+    StopHoldHandNotify = 16932u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeSeasonRewardReceiveRequest = 16953u16,
+    MotorParkourLevelRewardUpdateNotify = 16941u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MaterialReplaceRequest = 16956u16,
+    RoverRogueEventNotify = 16943u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CoopSpRewardResponse = 16957u16,
+    ANStartNotify = 16944u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AutoQuestNotify = 16961u16,
+    UpdateSceneGroupDataRequest = 16945u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LeaveWorldTeamResponse = 16965u16,
+    FarmGoldLevelPlayRepeatedResponse = 16947u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BuffEffectResponse = 16967u16,
+    ExecuteQtePush = 16952u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeLastInfoResponse = 16971u16,
+    DirectTrainInfoUpdateNotify = 16954u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BuffDurationNotify = 16974u16,
+    MotorSliderResponse = 16957u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FriendAllRequest = 16982u16,
+    DamageShowNotify = 16964u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeamParkourRewardResponse = 16986u16,
+    RecallQuestStatusUpdateNotify = 16968u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResInstStartRequest = 16991u16,
+    TrapDefenseBuildingBranchResponse = 16970u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingTeleportToBoatResponse = 16996u16,
+    RoverRogueBlessGroupSelectResponse = 16971u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlySkinAllUnLoadResponse = 16998u16,
+    VisionExploreSkillSetRequest = 16974u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestFinishListNotify = 17000u16,
+    InfrV2ManualCancelTraceTreeResponse = 16976u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossPilingRewardRequest = 17008u16,
+    KurotatoRoleRecordResponse = 16983u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MatchingNotify = 17009u16,
+    PhantomBattleCardRoleSkillRequest = 16984u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleSceneVoiceSwitchNotify = 17013u16,
+    RenjuResetRequest = 16999u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DarkTideMapMarkResponse = 17014u16,
+    HonamiStoryInstInfoNotify = 17000u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueCurrencyNotify = 17019u16,
+    SpringSignDrawRewardRequest = 17001u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FightDataCheckNotify = 17021u16,
+    NetTestDataRequest = 17003u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryPollutionBoxSteadyLimitNotify = 17022u16,
+    ThirdPartyShareRequest = 17006u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeatherSwitchInfoRequest = 17029u16,
+    WuWuKujiGachaResponse = 17008u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityDynamicInteractResponse = 17030u16,
+    SwitchCharacterStatePush = 17009u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeHeadPhotoRequest = 17034u16,
+    FloroRanchPlayGachaRefreshRequest = 17012u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssPluginPutRequest = 17042u16,
+    RoguelikeLastInfoRequest = 17013u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrV2ScoreRewardRequest = 17050u16,
+    WorldLevelDownRequest = 17014u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GetTraceQuestYuXueModeResponse = 17059u16,
+    AnimationStateChangedRequest = 17015u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GameplayTagInitNotify = 17063u16,
+    SelfPortraitStateRequest = 17018u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShortMessageUpdateResponse = 17070u16,
+    PhantomUpdateNotify = 17025u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShortMessageReplyRequest = 17071u16,
+    RoverRogueLootInfoResponse = 17028u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LoadCalabashSkinInfoResponse = 17073u16,
+    SettingNotify = 17038u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballTeamReviveResponse = 17085u16,
+    MaterialReplaceResponse = 17042u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardDurableEmptyNotify = 17095u16,
+    PartComponentInitResponse = 17051u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RealmBetweenFullRewardResponse = 17101u16,
+    RoleActivateSkillResponse = 17055u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MatchConfirmNotify = 17104u16,
+    NewPlayerSupportTrialRoleLvUpV2Request = 17058u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewbieCarnivalAwardRequest = 17112u16,
+    WeaponLevelUpResponse = 17061u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlShopSellRequest = 17114u16,
+    SwitchLogicStateRequest = 17062u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveCombineRelationNotify = 17117u16,
+    EnterBigWorldInstRequest = 17063u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleFavorNewCanUnLockNotify = 17127u16,
+    SummonRandomResponse = 17070u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    JokerGuessPlayCardRequest = 17130u16,
+    PhantomEquipGroupInfosResponse = 17071u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapReplaceMarkRequest = 17142u16,
+    PhantomMusicSaveRequest = 17072u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActivateBuffRequest = 17149u16,
+    NewbieAdventureRoleRewardResponse = 17073u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DropCatchLevelFinishResponse = 17151u16,
+    DodgeInfoPush = 17078u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseChallengeQuitRequest = 17166u16,
+    CalabashDevelopRewardUnlockNotify = 17081u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DollGarbInsertCoinResponse = 17171u16,
+    PinballTaskRewardRequest = 17084u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssLikeNotify = 17176u16,
+    HonamiStoryRoleUpdateNotify = 17089u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CircumFluenceTaskRewardRequest = 17180u16,
+    ItemPkgOpenNotify = 17095u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeleportDungeonActionResponse = 17189u16,
+    SceneRoadSyncNotify = 17096u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsResultRequest = 17194u16,
+    TrackMoonTargetRewardResponse = 17100u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerDifficultyUpdateNotify = 17198u16,
+    FriendApplyReceivedNotify = 17101u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AdviceResponse = 17200u16,
+    SilenceNpcNotify = 17104u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HookLockBatchCollectRequest = 17206u16,
+    PlayerXboxInfoGetRequest = 17106u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestLockInfoNotify = 17210u16,
+    ChangeSceneModeEndNotify = 17107u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShortMessageUpdateRequest = 17215u16,
+    ThirdPartySharedNotify = 17110u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PbUpLevelRoleResponse = 17222u16,
+    JoinWorldTeamNotify = 17115u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SkinRewardRequest = 17224u16,
+    PhantomBatchPolishRequest = 17121u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorChangeOutlookRequest = 17225u16,
+    FishingShipSkinChangeRequest = 17127u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MatchChangeReadyRequest = 17228u16,
+    TowerFloorUpdateNotify = 17128u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityBattleInfoRequest = 17230u16,
+    ConstructTrapRequest = 17132u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemExchangeInfoRequest = 17245u16,
+    AwakeDynamicPortalResponse = 17133u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimeCheckResponse = 17250u16,
+    MiniWriteLetterSaveContentResponse = 17140u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RegressDisposableRewardRequest = 17251u16,
+    AddUnlockedDetectionTextNotify = 17144u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FriendAllResponse = 17252u16,
+    RacingBetMatchRoundRequest = 17145u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeBossInstStartResponse = 17253u16,
+    BattlePassTaskTakeResponse = 17148u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrackMoonEntrustDataResponse = 17258u16,
+    EnergySyncRequest = 17150u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleElementChangeResponse = 17259u16,
+    PbOverRoleRequest = 17152u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AcceptFocusWaitQuestResponse = 17260u16,
+    CancelMatchResponse = 17155u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlSettleNotify = 17267u16,
+    DollGrabPauseEndResponse = 17158u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ZitherPlayStateRequest = 17270u16,
+    EntityAccessCasketRequest = 17160u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerDefenceRandListResponse = 17275u16,
+    EnterAreaResponse = 17162u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddHackingEntityNotify = 17276u16,
+    MonsterBoomRequest = 17163u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsTaskNotify = 17279u16,
+    RemoveSummonEntityRequest = 17165u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeleportFlowNotify = 17285u16,
+    RoguelikeEventGainNotify = 17169u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateSceneGroupDataNotify = 17286u16,
+    FlySkinAllUnLoadRequest = 17171u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemGiftUseResponse = 17290u16,
+    WeaponSkinAddNotify = 17173u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryLifeSupportUpRequest = 17291u16,
+    RacingBetsUpdateOddsRequest = 17175u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CommitBoardSuccessNotify = 17294u16,
+    HonamiStoryItemCollectionResponse = 17176u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GetChapterRewardResponse = 17302u16,
+    RegressTaskRequest = 17178u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MixDrinkTopicSelectRequest = 17303u16,
+    InfrV2InfoNotify = 17182u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DestroyQuestsNotify = 17308u16,
+    EntityAddDynamicInteractNotify = 17186u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HookLockPointFinishRequest = 17312u16,
+    ShopUpdateRequest = 17187u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeRoleInstStartRequest = 17317u16,
+    GameplayTagInitNotify = 17191u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShopInfoRequest = 17320u16,
+    XboxSettingRequest = 17199u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrV2InfoResponse = 17321u16,
+    MapCancelTraceRequest = 17205u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseDevelopResetResponse = 17328u16,
+    InfrV2TreeBuildRequest = 17207u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RhythmMainLineInfoRequest = 17337u16,
+    SceneStepGroupInfoNotify = 17210u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AdviceModifyRequest = 17345u16,
+    LevelPlayRewardResponse = 17215u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattlePassTakeRewardRequest = 17354u16,
+    RecallQuestReadyForGiveUpRequest = 17217u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerSeasonTaskDataUpdateResponse = 17355u16,
+    BattlePassPaidNotify = 17219u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeleportDungeonForbidNotify = 17358u16,
+    TraceMoonPhaseRewardResponse = 17223u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ProgressBarFinishRequest = 17360u16,
+    MowTowerLevelsRewardResponse = 17233u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WuWuTaskRewardRequest = 17363u16,
+    LinkageCheckInRewardRequest = 17237u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CombineEntitiesResponse = 17364u16,
+    PhantomBattleSlotInsteadResponse = 17240u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattleScoreNotify = 17365u16,
+    ValidTimeItemRequest = 17241u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerRenameNotify = 17369u16,
+    RogueResFovUpdateNotify = 17242u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LoopTeleportVolumeActionRequest = 17374u16,
+    StorageInfoNotify = 17245u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetMatchActionRequest = 17379u16,
+    SpecialItemEquipResponse = 17256u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    StartSetQuestFocusNotify = 17380u16,
+    MotorOutlookRegionInfoNotify = 17258u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayShopUpdateRequest = 17383u16,
+    RacingBetsGearRefundResponse = 17259u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlagChallengePerRoleLevelNotify = 17390u16,
+    HonamiStoryPickUpItemRequest = 17260u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimelineTraceStartRequest = 17394u16,
+    QuickHackSkillResponse = 17263u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PbRoleSkillLevelNotify = 17396u16,
+    RogueWeeklyArtifactSelectResponse = 17264u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoEndShopStepRequest = 17398u16,
+    RoverRogueChooseDataNotify = 17268u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreProgressRewardRequest = 17400u16,
+    QuestFinishActionResponse = 17278u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityIsVisibleNotify = 17405u16,
+    PinballWeaponWearResponse = 17279u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeamMatchInviteRequest = 17409u16,
+    LevelPlayFastReturnPosResponse = 17289u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AiBlackboardsRequest = 17413u16,
+    ContextIdNotify = 17290u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleDevelopConfigRequest = 17421u16,
+    TimeOccupationNotify = 17295u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorDecalTaskRequest = 17422u16,
+    SceneItemAttributeChangeNotify = 17296u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DollGrabRequest = 17423u16,
+    FishingHandInRequest = 17299u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapTravelInfoUpdateNotify = 17425u16,
+    ModifyBulletParamsResponse = 17302u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorParkourLevelRewardUpdateNotify = 17426u16,
+    SetInitTagResponse = 17305u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnterInstRequest = 17431u16,
+    SlashAndTowerOverNotify = 17309u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OpenSystemBoardResultResponse = 17436u16,
+    TrapDefenseBuildingBranchRequest = 17310u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UsePhantomEquipGroupRequest = 17437u16,
+    NewTowerLastCycleInfoResponse = 17319u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActionResetPosPrePerformanceEndRequest = 17446u16,
+    SurvivorsResultRequest = 17323u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MixDrinkRoleRewardResponse = 17448u16,
+    PlayerPsnBlockListResponse = 17327u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityFlyEquipChangeNotify = 17450u16,
+    SubmitWalkingPatternPointRequest = 17328u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OrderRemoveBuffResponse = 17452u16,
+    CiacconaActivityStateUnlockUpdateNotify = 17332u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerNetStatePush = 17456u16,
+    ResonantChainUnlockRequest = 17339u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestTreeInfoRequest = 17462u16,
+    AddPhantomEquipGroupResponse = 17340u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SheriffZoneInfoRequest = 17467u16,
+    MotorDecalTaskRequest = 17341u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewbieAdventureTaskRewardRequest = 17476u16,
+    ReceivedSilentFirstAwardRequest = 17342u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardGroupAddResponse = 17478u16,
+    HonamiStoryWeaponDressRequest = 17346u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueShopBuyRequest = 17480u16,
+    PhantomBattleCardGroupInfoNotify = 17347u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActionOperationScreenSuccessResponse = 17481u16,
+    RhythmMainLineInfoRequest = 17348u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DollGrabStopRequest = 17493u16,
+    RollBlockInputResponse = 17349u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsStepAdvanceRequest = 17496u16,
+    UpdateMonsterUnlockNotify = 17351u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GuideInfoRequest = 17498u16,
+    PbUpLevelRoleRequest = 17360u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ElevatorMoveNotify = 17500u16,
+    RoleLevelUpViewResponse = 17361u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DrownEndTeleportResponse = 17520u16,
+    MatchChangeReadyNotify = 17363u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballQuitResponse = 17521u16,
+    RiskHarvestStarRewardResponse = 17366u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleNpcShowOverResponse = 17530u16,
+    ExploreSkillActionRequest = 17369u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ReadDisplayInfoRequest = 17532u16,
+    ChangeStateConfirmRequest = 17371u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BuffEffectExecuteResponse = 17533u16,
+    AbyssReviveCharacterResponse = 17377u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseBuildingBranchResponse = 17534u16,
+    SceneGamePlayOpenTimeNotify = 17378u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssLikeResponse = 17535u16,
+    BirthDayRewardRequest = 17381u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DetectionResponse = 17538u16,
+    AbyssRoleInfoUpdateNotify = 17390u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyStartResponse = 17543u16,
+    RoleSkillViewResponse = 17396u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleLeaveSlotRequest = 17547u16,
+    CheckPublicResourceVersionRequest = 17400u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapMarkInfoUpdateResponse = 17549u16,
+    GetYuXueModeInfoResponse = 17403u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlySkinAllUnLoadRequest = 17550u16,
+    TrapDefenseRefreshShopRequest = 17409u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SynthesisItemRequest = 17552u16,
+    TeleportDungeonActionRequest = 17415u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleActivateSkillResponse = 17555u16,
+    NormalItemRequest = 17423u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueGiveUpGainRequest = 17559u16,
+    FriendDeleteResponse = 17425u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeCurrencyNotify = 17560u16,
+    MutiplayerTeamRefreshNearListRequest = 17426u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InterruptSkillInDelayRequest = 17561u16,
+    MoveSplineStatusNotify = 17431u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestShowListNotify = 17562u16,
+    KurotatoWeaponUnlockNotify = 17432u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RiskHarvestBuffUpdateNotify = 17563u16,
+    ApplyBuffS2cResponsePush = 17435u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeChooseDataResultResponse = 17572u16,
+    JoinSceneNotifyConfirmResponse = 17440u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RTimeStopRequest = 17578u16,
+    ApplyGameplayEffectPush = 17445u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattlePassPaidNotify = 17586u16,
+    SpringFestivalAtmosphereRewardResponse = 17452u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CaughtResponse = 17589u16,
+    SkillResponse = 17453u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MainPhantomRecommendResponse = 17594u16,
+    MulCalabashLevelRewardRequest = 17463u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingExitResponse = 17597u16,
+    SlientFirstAwardNotify = 17464u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerVoiceLanguageResponse = 17604u16,
+    BossRushLevelScoreRewardResponse = 17469u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingSkinUnlockNotify = 17605u16,
+    FollowDetectionTargetUpdateNotify = 17471u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DeconstructTrapResponse = 17614u16,
+    PassiveSkillAddRequest = 17475u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VfxNpcPatrolFinishRequest = 17617u16,
+    WeaponResonUpRequest = 17476u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GaSwitchCommonEnemyProCampRequest = 17625u16,
+    MatchConfirmRequest = 17484u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlCoinUpdateNotify = 17630u16,
+    RoguelikeChooseDataResponse = 17486u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewbieCarnivalSwitchRoleRequest = 17631u16,
+    BabelActivityInstInfoNotify = 17488u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AnimationGameplayTagNotify = 17636u16,
+    HitRequest = 17489u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardRoleSkillRequest = 17639u16,
+    TeamMatchInviteResponse = 17491u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SynthesisFormulaUnlockResponse = 17641u16,
+    RogueResEndingRewardResponse = 17493u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleFavorTalkScoreResponse = 17643u16,
+    LordGymLevelPlayResultNotify = 17494u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWhiteCatLimitedUpdateNotify = 17645u16,
+    DailyAdventureTaskRewardResponse = 17499u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TurntableCompleteRequest = 17646u16,
+    BossRushClaimRewardRequest = 17500u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapTraceRequest = 17647u16,
+    GameplayTagRequest = 17502u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerAoiRangeNotify = 17657u16,
+    DangoBrawlBagOperateResponse = 17507u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorSliderResponse = 17663u16,
+    PhantomBattleDebugInfoResponse = 17509u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ModifyBulletParamsNotify = 17666u16,
+    TrapDefenseBuyShopProductRequest = 17521u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResElementUpdateNotify = 17669u16,
+    SceneItemStateResponse = 17526u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SynthesisLevelRewardRequest = 17671u16,
+    MulCalabashLevelRewardResponse = 17527u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightKillRequest = 17673u16,
+    TowerDefenceRankShowNameResponse = 17528u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PressGameNotify = 17678u16,
+    PhantomBattleChallengeInfoUpdateNotify = 17529u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleSkillLevelUpViewResponse = 17683u16,
+    MaterialRequest = 17530u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SynthesisLevelUpdateNotify = 17684u16,
+    RoleElementChangeResponse = 17531u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddPlacementNotify = 17686u16,
+    UnOpenedAreaPullbackRequest = 17532u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveSummonEntityResponse = 17688u16,
+    BeControlledNotify = 17537u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballRoleLevelUpRequest = 17691u16,
+    NewTowerLastCycleInfoRequest = 17540u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SlashAndTowerLevelPlayNotify = 17693u16,
+    MoralePosRequest = 17542u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GetFormationDataRequest = 17698u16,
+    RoleSexChangeRequest = 17543u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseAuxiliaryResetRequest = 17701u16,
+    TeleportToTargetResponse = 17547u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FriendRecentlyTeamUpdateNotify = 17712u16,
+    RoguelikeTalentInfoRequest = 17548u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlySkinWearResponse = 17717u16,
+    InfrLevelUpResponse = 17552u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoWeaponUpdateNotify = 17722u16,
+    MotorTechTreeSwitchResponse = 17554u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FoundationResponse = 17723u16,
+    BattlePassTaskUpdateNotify = 17567u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerCreateXboxSessionResponse = 17732u16,
+    ItemDecomposeRequest = 17570u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleDiscardCardResponse = 17740u16,
+    DetectionResponse = 17575u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PartComponentInitRequest = 17744u16,
+    SelectBabelActivityDeTermRequest = 17576u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlagChallengeTaskInfoUpdateNotify = 17747u16,
+    PbRolePropsNotify = 17579u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorOutlookCreatePresetResponse = 17753u16,
+    AccessPasserbyNpcSpawnerResponse = 17585u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FarmGoldLevelDiffResponse = 17755u16,
+    FishingPortUpdateNotify = 17589u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingInfoRequest = 17766u16,
+    ActorVisibleRequest = 17594u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityRemoveNotify = 17769u16,
+    InvalidItemRequest = 17597u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ThemePersonalScoreResponse = 17773u16,
+    MotorLevelOneKeyRewardResponse = 17604u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AttributeChangedRequest = 17782u16,
+    SubmitAwakeAndLoadEntityNodeRequest = 17608u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InputSettingRequest = 17784u16,
+    ApplyBuffS2cRequestNotify = 17614u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CameraSettingModifyResponse = 17786u16,
+    UpdateEnableSystemNotify = 17615u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MontagePlayNotify = 17788u16,
+    RoleActivateSkillRequest = 17616u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BeControlledThrowRequest = 17791u16,
+    SpringFestivalScoreRewardRequest = 17619u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CaughtNotify = 17797u16,
+    PlayerAoiRangeNotify = 17622u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueTowerTrialResultRequest = 17805u16,
+    PhotoFightResultNotify = 17633u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OrderRemoveBuffNotify = 17807u16,
+    NewJourneyResponse = 17635u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityOnLandedResponse = 17811u16,
+    PhantomBattleCardTargetInfoResponse = 17636u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingTechInfoUpdateNotify = 17814u16,
+    AdventureManualRequest = 17641u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossPilingSettleRequest = 17839u16,
+    NewBieCourseRewardResponse = 17644u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlayStateNotify = 17840u16,
+    DollDeliveryRequest = 17654u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CaptureBatchEntityRequest = 17846u16,
+    FlySkinWearAllRoleRequest = 17655u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerDefenceScoreRewardRequest = 17847u16,
+    MowTowerResultNotify = 17664u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomItemAddNotify = 17848u16,
+    PlayerMotionRequest = 17665u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FriendApplyReceivedNotify = 17851u16,
+    AudioStateUpdateNotify = 17667u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DarkTideBagSortRequest = 17853u16,
+    LivenessRefreshNotify = 17669u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DailyAdventurePtRewardRequest = 17854u16,
+    BattleStateChangeNotify = 17671u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeaponBreachRequest = 17857u16,
+    RoleTrialOpenNotify = 17675u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimelineTraceControlRequest = 17862u16,
+    InfrManualCancelTraceRoadRequest = 17676u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CoopRoleRewardResponse = 17866u16,
+    DailyAdventurePtRewardResponse = 17678u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AdventureManualDataResponse = 17876u16,
+    MapCancelTraceNotify = 17682u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrackMoonTargetRewardRequest = 17884u16,
+    SelectBabelActivityDeTermResponse = 17683u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PbFormationAutoAddRoleNotify = 17889u16,
+    PlayerAttrNotify = 17685u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SystemMarkHideInfoNotify = 17890u16,
+    ApplyJoinWorldRequest = 17687u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SimpleCombatEntityBuffUpdateNotify = 17893u16,
+    CdKeyVerifyRequest = 17701u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleDiscardCardNotify = 17903u16,
+    SecWorldSEndFlowResponse = 17703u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AdviceSetRequest = 17909u16,
+    PlayerXboxBlockListRequest = 17705u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LongShanScoreRewardRequest = 17915u16,
+    CaughtRequest = 17706u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GmLevelActionResponse = 17916u16,
+    SwitchCharacterStateNotify = 17711u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ReceiveRechallengeNotify = 17918u16,
+    HonamiStoryBagOperateResponse = 17717u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpringFestivalAreaUnlockNotify = 17922u16,
+    SpecialItemEquipRequest = 17718u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulCalabashLevelRewardResponse = 17924u16,
+    VehicleFinishResponse = 17721u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleSkillBranchModifyResponse = 17930u16,
+    QuestLockInfoNotify = 17725u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddTemporaryTeleportResponse = 17932u16,
+    DollGrabPauseStartResponse = 17732u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlStartFightNotify = 17934u16,
+    OrderRemoveBuffResponse = 17733u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneItemMoveTargetResponse = 17935u16,
+    BuffStackCountPush = 17747u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RelationIdNotify = 17936u16,
+    PrivateChatDataRequest = 17748u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CancelMatchResponse = 17942u16,
+    PayShopConditionFinishNotify = 17751u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GiantMaxLevelDeliveryItemResponse = 17949u16,
+    AiHateNotify = 17752u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpringFestivalUpdateNotify = 17951u16,
+    SheriffAnomalyInfoUpdateNotify = 17753u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrV2TreeUpdateNotify = 17953u16,
+    ActionGroupCompleteNotify = 17755u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RenameFormationResponse = 17954u16,
+    FunPlayChallengeSettleNotify = 17763u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleGuideRewardRequest = 17961u16,
+    ResonantChainOptionalLimitRequest = 17766u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightPlayerDeadResponse = 17964u16,
+    CombatMessagePostInfoRequest = 17769u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NetTestDataNotify = 17969u16,
+    PhBaPlanUsePlanResponse = 17771u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HeadIdUpdateNotify = 17973u16,
+    VisionExploreSkillNotify = 17772u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FarmGoldLevelPlayResponse = 17979u16,
+    GiantModelEnableNotify = 17776u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    IllustratedInfoRequest = 17985u16,
+    DecalAddNotify = 17780u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PbUpLevelSkillResponse = 17988u16,
+    RoleTowerConsumeItemRequest = 17781u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShopUpdateRequest = 17990u16,
+    InfrV2TaskRewardRequest = 17782u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MovePackageNotify = 17992u16,
+    QuestFinishListNotify = 17785u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MobileButtonSettingUpdateRequest = 17995u16,
+    PassiveSkillNotify = 17786u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BtVarUpdateNotify = 17997u16,
+    RecoverPropChangedNotify = 17789u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EdgeRunnerScoreRewardRequest = 17999u16,
+    RollBlockSwitchControlBlockRequest = 17791u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SlashAndTowerScoreRewardResponse = 18008u16,
+    ShowInvalidItemResponse = 17796u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ResonantChainOptionalLimitRequest = 18010u16,
+    InvestResponse = 17799u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapUnlockFieldNotify = 18018u16,
+    KurotatoSystemInfoNotify = 17800u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueLootChangeRequest = 18020u16,
+    UpdateInstanceTimerNotify = 17805u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeleportFinishResponse = 18021u16,
+    AnimationGameplayTagNotify = 17808u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VehicleFinishRequest = 18022u16,
+    MotorInfoRequest = 17813u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleFavorAcceptQuestRequest = 18026u16,
+    SecWorldStartFlowResponse = 17814u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FixToolRequest = 18028u16,
+    HonamiStoryPollutionBoxSteadyLimitNotify = 17818u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallInfoNotify = 18029u16,
+    BuffItemRequest = 17824u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingQuickSellPreviewRequest = 18031u16,
+    DollGrabRequest = 17827u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntitySimplyMoveInfoPackagePush = 18037u16,
+    VehicleShareNotify = 17830u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleMasterInfoNotify = 18038u16,
+    EdgeRunnerTaskRewardResponse = 17834u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsScoreAwardRequest = 18039u16,
+    MotorAnimReplaySampleUdpNotify = 17840u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseBuildingResetResponse = 18053u16,
+    SetClientGlobalVarResponse = 17849u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ReplaceVehicleEntityNotify = 18061u16,
+    NewTrialRoleGetNightmarePhantomInstInfoRequest = 17854u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RiskHarvestSettleRequest = 18062u16,
+    KurotatoLevelDataUpdateNotify = 17855u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlaceItemOnBoardResponse = 18063u16,
+    LevelPlayStateListRequest = 17858u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CookingInfoUpdateNotify = 18067u16,
+    MotorTechUnlockNotify = 17862u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SignActivityResponse = 18069u16,
+    ActivityUpdateNotify = 17864u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DrownRequest = 18070u16,
+    RoguelikeTalentUnlockNotify = 17875u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerVoxelEnvRequest = 18071u16,
+    BossPilingSettleResponse = 17879u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateWorldTeamPlayerFightInfoNotify = 18073u16,
+    MonthCardUseNotify = 17882u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerStartResponse = 18078u16,
+    XboxSettingUpdateRequest = 17883u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GachaNewNotify = 18079u16,
+    WeaponSkinUnLoadNotify = 17893u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsLegMatchInfoResponse = 18082u16,
+    EntityInteractingNotify = 17894u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SecWorldInfoFlowRequest = 18083u16,
+    BeamReceiveNotify = 17895u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SwitchDarkTideWeaponSlotNotify = 18091u16,
+    LifePointChallengeStartRequest = 17900u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulExploreScoreRewardRequest = 18094u16,
+    SeamlessTeleportRequest = 17907u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueShopRefreshRequest = 18096u16,
+    RoadNetworkEntityUpdateCurRoadPush = 17914u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BuffEffectExecutePush = 18099u16,
+    SurvivorsChallengeInfoUpdateNotify = 17917u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlShopComposeRequest = 18102u16,
+    MailFavoriteResponse = 17919u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FarmGoldPointRequest = 18106u16,
+    RoleFavorAcceptQuestResponse = 17922u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsScoreAwardResponse = 18111u16,
+    EntityRemoveNotify = 17927u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddDecalRequest = 18113u16,
+    IllustratedRedDotRequest = 17930u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomCollectReceiveRequest = 18117u16,
+    RacingBetsTaskRewardRequest = 17938u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExhibitionItemSaveRequest = 18118u16,
+    PlayerCreateXboxSessionResponse = 17939u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangePhantomEquipGroupNameRequest = 18119u16,
+    SceneFishPointInfoUpdateNotify = 17940u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleAreaSkillResponse = 18122u16,
+    FeiXuePreheatInfoRewardRequest = 17951u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnergySyncResponse = 18125u16,
+    SecFBRoundEndFlowReportRequest = 17956u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RenjuExitMatchedActionResponse = 18128u16,
+    TotalTopUpRewardNotify = 17958u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleSkillNodeNotify = 18129u16,
+    EntityBlackboardNotify = 17963u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoRoleRecordNotify = 18134u16,
+    EntityEquipSkinChangeNotify = 17965u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PbOverRoleRequest = 18138u16,
+    ShortMessageInfoResponse = 17966u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FormationResponse = 18151u16,
+    MotorFightAddEnemyBuffNotify = 17969u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallTeleportToMarkIdResponse = 18152u16,
+    WuWuPackageRewardResponse = 17971u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ZitherPlayNoteNotify = 18156u16,
+    LevelPlayVarRequest = 17974u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateSceneDateResponse = 18163u16,
+    ConnectorCanConnectResponse = 17977u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestFocusInfoNotify = 18164u16,
+    RemoveEntityAoiNotify = 17978u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomIdentifyRequest = 18169u16,
+    MonsterDetectionInfoResponse = 17979u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorBattleContextNotify = 18170u16,
+    MovePackageNotify = 17980u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HardnessModeChangedRequest = 18173u16,
+    PhBaPlanSetFiveStarSwitchRequest = 17981u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CommitBoardRequest = 18174u16,
+    DollGrabResponse = 17987u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeleportDungeonActionNotify = 18177u16,
+    HonamiStorySafeLeaveNotify = 17990u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UiGamePlayResponse = 18181u16,
+    GameplayTagChangedNotify = 17995u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResTaskUpdateNotify = 18189u16,
+    ActivityResultRewardResponse = 18003u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueBlackFlowerNotify = 18190u16,
+    GolemCrackUpdateRequest = 18010u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OnlineMotorStartNotify = 18191u16,
+    ConsumptiveActivityInfoResponse = 18014u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddPhantomEquipGroupResponse = 18193u16,
+    RiskHarvestActivityUpdateNotify = 18015u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewPlayerSupportTrialRoleLvUpV2Response = 18194u16,
+    FsmConditionPassResponse = 18028u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChannelChatResponse = 18195u16,
+    PinballInGameSyncPayloadRequest = 18030u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerPsnBlockListRequest = 18200u16,
+    SolarSchoolLoadResponse = 18031u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoRoleUnlockNotify = 18201u16,
+    StartRecallRequest = 18032u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrV2TreeFinishCondUpdateNotify = 18202u16,
+    RemoveCombineRelationNotify = 18044u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActivityDisableNotify = 18208u16,
+    DragonPoolConfRequest = 18045u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrackMoonBuildFlowResponse = 18212u16,
+    DangoMonopolyTaskAddNotify = 18048u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FoodProcessRequest = 18213u16,
+    PhantomMusicCollectUpdateResponse = 18049u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityVarUpdateNotify = 18216u16,
+    BtGiveUpRequest = 18051u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActionOperationScreenNotify = 18224u16,
+    AdviceDeleteRequest = 18057u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangePhantomEquipGroupNameResponse = 18227u16,
+    AbyssChallengeSubLevelNotify = 18059u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrackMoonIllustratedRequest = 18233u16,
+    InitRangeResponse = 18075u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueBlackFlowerResponse = 18239u16,
+    AdviceVoteResponse = 18076u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChatResponse = 18241u16,
+    FloroRanchUnlockTechPointResponse = 18079u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SecWorldStartFlowRequest = 18243u16,
+    CommonOrganResetTimeResponse = 18085u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleConfigInfoNotify = 18250u16,
+    ItemObtainNotify = 18089u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyCurrencyUpdateNotify = 18251u16,
+    RoguelikeTokenReceiveRequest = 18099u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LstBattleRecordRequest = 18253u16,
+    PlayerNetStateS2cNotify = 18103u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneItemAttributeChangeNotify = 18254u16,
+    RoleFavorLevelUpdateNotify = 18110u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DarkTidePoisonCircleDayInitNotify = 18257u16,
+    MotorFightRankListSelfDataResponse = 18113u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreToolAuthorizationNotify = 18264u16,
+    EndSkillPush = 18120u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChannelChatHistoryNotify = 18271u16,
+    SurvivorsOpDoneResponse = 18127u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetBaoziStateRequest = 18278u16,
+    DangoMonopolyNextBoardResponse = 18128u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorUseSkinResponse = 18288u16,
+    TrapDefenseBuildingLevelUpRequest = 18133u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerDefencePlayerReviveNotify = 18289u16,
+    AttributeInitRequest = 18143u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BlockListRequest = 18290u16,
+    ActivityPreOpenRequest = 18144u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeatherNotify = 18291u16,
+    PhantomBattleBoardInfoNotify = 18147u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SlientFirstAwardNotify = 18295u16,
+    SlashAndTowerLevelPlayNotify = 18154u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RegressTrialRoleLvUpResponse = 18298u16,
+    RTimeStopInstRequest = 18157u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AiControlSwitchRequest = 18300u16,
+    SceneBlockSplitHumanSwitchStateNotify = 18158u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneGamePlayInfoNotify = 18306u16,
+    AdviceModifyResponse = 18162u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssRewardRequest = 18308u16,
+    QuestActionRequest = 18164u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DrownResponse = 18315u16,
+    RoguelikeRoleRoomSelectRequest = 18165u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResLastInstInfoRequest = 18322u16,
+    TutorialReceiveResponse = 18170u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayInfoRequest = 18331u16,
+    JokerGuessStartNewResponse = 18171u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlRoleUnlockNotify = 18339u16,
+    RemoveGameplayEffectNotify = 18172u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoUpgradeRewardNotify = 18341u16,
+    PhantomAttrRecommendRequest = 18178u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DailyQuestChangePreferRequest = 18344u16,
+    RoleTowerChallengeSettleResponse = 18185u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveGameplayEffectNotify = 18345u16,
+    DollGrabStopRequest = 18186u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityDynamicInteractRequest = 18350u16,
+    FloroRanchPlayRefreshShopResponse = 18191u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GiantStableValueActivityRequest = 18354u16,
+    MotorParkourLevelRewardRequest = 18192u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityStaticHookMoveRequest = 18356u16,
+    PhantomInteractionSkinChangeResponse = 18194u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResMoodUpdateNotify = 18361u16,
+    PlayerHeadRequest = 18199u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleSelectReserveCardResponse = 18367u16,
+    SpringSignDrawRoleRequest = 18204u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PbGetRoleListNotify = 18368u16,
+    SynthesisLevelUpdateNotify = 18205u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SummonRandomRequest = 18382u16,
+    TrapDefenseEntityDataChangeNotify = 18208u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemGiftUseRequest = 18386u16,
+    InstDataNotify = 18211u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResTalentSkillLevelRequest = 18391u16,
+    LowMemoryChangeSceneFinishResponse = 18214u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LoopTeleportVolumeActionResponse = 18393u16,
+    AbyssChallengeRoomInfoNotify = 18217u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrackMoonBuildFlowRequest = 18395u16,
+    MotorFightRefreshCollectionResponse = 18221u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SneakFinishResponse = 18398u16,
+    ButtonIsEnableRequest = 18232u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewbieCarnivalSwitchRoleResponse = 18412u16,
+    RoleTowerTokenUpdateNotify = 18236u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingSceneFishCageInfoUpdateNotify = 18416u16,
+    GiantActivityNodeActiveNotify = 18243u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallQuestNpcMoveOverResponse = 18418u16,
+    MixDrinkRoleInviteResponse = 18245u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpringFestivalAtmosphereRewardRequest = 18419u16,
+    CreateBulletRequest = 18246u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoMonopolyRewardNotify = 18421u16,
+    KurotatoGoldAddRequest = 18249u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QueryOnlinePlayersAreaRequest = 18422u16,
+    TrapDefenseSelectGainingGroupRequest = 18252u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DollGrabResponse = 18423u16,
+    CorniceMeetingRewardResponse = 18253u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleEvolveRequest = 18425u16,
+    RoguelikeSeasonRewardReceiveResponse = 18258u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CalabashExpAddNotify = 18431u16,
+    RoguelikeRoleInstStartResponse = 18259u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BeControlledResponse = 18432u16,
+    LogicStateInitRequest = 18260u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingActivityLimitRewardResponse = 18435u16,
+    InfrFireUpdateNotify = 18262u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SwitchLogicStateRequest = 18438u16,
+    BtRollbackNotify = 18266u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BeamReceiveNotify = 18439u16,
+    RhythmSettleRequest = 18268u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MailDeleteRequest = 18443u16,
+    SimpleCombatEntityBuffUpdateNotify = 18273u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ScheduleRewardRequest = 18448u16,
+    RoleQuestAcceptRequest = 18275u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GetYuXueModeInfoRequest = 18449u16,
+    PhantomReturnPreviewRequest = 18276u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InputSettingUpdateNotify = 18450u16,
+    FloroRanchPlayGachaRequest = 18280u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueUpdateReviveTimesNotify = 18452u16,
+    KurotatoUpgradeRewardNotify = 18286u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsStepAdvanceResponse = 18453u16,
+    ItemGiftUseNotify = 18287u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PsnSettingUpdateResponse = 18454u16,
+    FishingSellRequest = 18289u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueGotoNextRoomCommitResponse = 18455u16,
+    RoleFavorExpTipsNotify = 18293u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GiantItemUnlockNotify = 18458u16,
+    GiantDeliveryItemResponse = 18294u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingIllustratedInfoUpdateNotify = 18459u16,
+    VehiclePlatformGetOnResponse = 18298u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ReadCardRequest = 18462u16,
+    SlashAndTowerScoreRewardResponse = 18302u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrackMoonActivityRewardResponse = 18470u16,
+    QuestFinishActionEndResponse = 18310u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    IllustratedUnlockResponse = 18471u16,
+    EntityRemoveDynamicInteractNotify = 18312u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DarkTidePickUpItemResponse = 18475u16,
+    TimePointActivityRewardResponse = 18317u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RiskHarvestBuffUnlockNotify = 18477u16,
+    QuestListNotify = 18320u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ForgeFormulaUnlockResponse = 18480u16,
+    RogueResTeamLevelUpdateNotify = 18322u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CameraSettingModifyRequest = 18483u16,
+    SheriffZoneItemUpdateNotify = 18326u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LivenessTaskTakeResponse = 18488u16,
+    EntityRandomInteractRequest = 18332u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightRefreshNextWaveGroupRequest = 18493u16,
+    RogueResLastInstInfoResponse = 18335u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightRoundInfoNotify = 18494u16,
+    RecallQuestFinishActionEndResponse = 18345u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GravityHookLockPointChangeGravityRequest = 18495u16,
+    MotorOnlineProgressReportPush = 18346u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MatchConfirmResponse = 18498u16,
+    MapTravelFullRewardResponse = 18348u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWhiteCatLimitedRewardRequest = 18506u16,
+    MotorFightAddBuffNotify = 18353u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ReorderFormationRequest = 18507u16,
+    CorniceChallengeEndNotify = 18364u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightScoreNotify = 18508u16,
+    MotorOutlookInfoResponse = 18366u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleSkinChangeNotify = 18513u16,
+    TotalTopUpScoreInfoRequest = 18368u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleReconstructCardResponse = 18514u16,
+    FlowerPollutionSplinePush = 18370u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseSlotUpdateResponse = 18521u16,
+    LeaveMatchTeamResponse = 18375u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HandInInfoUpdateNotify = 18524u16,
+    VisionExploreSkillSetResponse = 18378u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoLimitTaskReceiveResponse = 18530u16,
+    WeekCardRewardRequest = 18381u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomEquipGroupInfosRequest = 18533u16,
+    CorniceMeetingRewardRequest = 18385u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueLootChangeNotify = 18535u16,
+    GaSwitchCommonEnemyProCampRequest = 18387u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStorySellItemResponse = 18536u16,
+    MoonPhaseRandomResponse = 18392u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerGuideActivityInfoResponse = 18537u16,
+    RacingBetMatchResponse = 18394u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlayFastReturnPosResponse = 18541u16,
+    InfrFireAddNotify = 18395u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RhythmTaskOneKeyRewardResponse = 18542u16,
+    FishingSkillTeleportRequest = 18398u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DrownPush = 18544u16,
+    JokerGuessPlayCardRequest = 18401u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SecFBRoundStartFlowResponse = 18546u16,
+    ModifyNameRequest = 18421u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShowInvalidItemResponse = 18549u16,
+    SceneBlockSplitHumanFullNotify = 18425u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerDefenceInfoUpdateNotify = 18554u16,
+    TurntableCompleteResponse = 18435u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnrichmentAreaResponse = 18556u16,
+    TeamMatchInviteRequest = 18437u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    JoinSceneNotify = 18559u16,
+    FishingInfoRequest = 18438u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeaponAddNotify = 18560u16,
+    MulPhantomBattleMasterLevelRewardRequest = 18455u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ToughCalcExtraRatioChangeResponse = 18566u16,
+    InfrPhoneTaskRewardResponse = 18459u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ValidTimeItemRemoveNotify = 18573u16,
+    SwitchLogicStatePush = 18461u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActivityRecommendNotify = 18576u16,
+    NewTowerSeasonTaskDataUpdateRequest = 18463u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneBlockSplitClientLoginPush = 18577u16,
+    TeleportDataRequest = 18464u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdatePlayerSingleFightRoleNotify = 18580u16,
+    BoneVisibleChangeRequest = 18467u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeatherControlInfoRequest = 18581u16,
+    PhantomBattleCardGroupNameRequest = 18469u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SlashAndTowerResetResponse = 18583u16,
+    SolarSchoolSaveRequest = 18477u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueResultResponse = 18585u16,
+    SceneBlockChangePush = 18483u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnterViewDirectionRequest = 18587u16,
+    DangoMonopolyRewardNotify = 18485u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MaterialRequest = 18588u16,
+    SolarSchoolTaskProgressRewardResponse = 18486u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrackMoonIllustratedNotify = 18595u16,
+    GachaPoolDetailResponse = 18488u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestRedDotResponse = 18604u16,
+    RoguelikeQuitResponse = 18512u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ForgeItemInfoUpdateNotify = 18614u16,
+    TowerApplyFloorDataResponse = 18513u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QueryOnlinePlayersAreaResponse = 18627u16,
+    AchievementGroupProgressNotify = 18514u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseUseItemRequest = 18631u16,
+    PhantomBattleCardRewardInfoUpdateNotify = 18519u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeleportNotify = 18633u16,
+    PhantomBattleRoundOverResponse = 18522u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoSettlementRequest = 18635u16,
+    CalabashSkinUpdateNotify = 18523u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateFormationRequest = 18636u16,
+    AnimationGameplayTagResponse = 18524u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ApplyBuffS2cRequestNotify = 18641u16,
+    DiscardWeaponRequest = 18527u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapMarkRequest = 18642u16,
+    RoguelikeQuitRequest = 18528u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityInteractRequest = 18643u16,
+    TriggerExitSkillResponse = 18531u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ReviveRequest = 18644u16,
+    PartComponentInitRequest = 18536u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DarkTideMapMarkUpdateNotify = 18648u16,
+    RhythmSettleResponse = 18537u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneGroupDataAndCurFormationEntityRequest = 18649u16,
+    FuncOpenUpdateNotify = 18542u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VisionExploreSkillSetResponse = 18650u16,
+    FsmCustomBlackboardNotify = 18543u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ScratchCardRewardResponse = 18651u16,
+    TrapDefenseSystemInfoUpdateNotify = 18546u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PilotThrowOperationResponse = 18656u16,
+    RoverRogueGainDataUpdateNotify = 18551u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingSkillBaitResponse = 18662u16,
+    PayShopDirectBuyNotify = 18553u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomInteractionInfoUpdateNotify = 18664u16,
+    GetChapterRewardResponse = 18554u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerTitleResponse = 18669u16,
+    TrapDefenseQuickEquipRequest = 18555u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseAuxiliaryLevelUpResponse = 18673u16,
+    WuWuPackageRewardRequest = 18557u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityWalkingPatternFinishResponse = 18680u16,
+    RoleTowerRewardTaskReceiveResponse = 18563u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityBuffProducerRequest = 18682u16,
+    PbRoleScenePropsNotify = 18564u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CaptureBatchEntityResponse = 18685u16,
+    GiantResponseNotify = 18571u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorLockedTechUpdateNotify = 18686u16,
+    CancelMatchNotify = 18579u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateFightRoleResponse = 18693u16,
+    PhantomBattleBurnBuffNotify = 18581u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GachaInfoResponse = 18695u16,
+    PhantomBattleBackSlotCardLibraryRequest = 18589u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SummonResponse = 18705u16,
+    TrapDefenseBuildingResetRequest = 18594u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PortalReplaceNotify = 18706u16,
+    BuffEffectExecutePush = 18599u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ThroughTrainFinishViewRequest = 18707u16,
+    ConfirmResourceQuestNotify = 18602u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HookLockPointExitResponse = 18710u16,
+    ActivityDisableNotify = 18605u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SlashAndTowerSaveRecordResponse = 18715u16,
+    HonamiStoryScoreRewardInfoUpdateNotify = 18607u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GiantItemAccessProgressChangeNotify = 18717u16,
+    MotorFightScoreNotify = 18613u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TetrisFinishRequest = 18718u16,
+    ShopInfoNotify = 18614u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConsumptiveTotalScoreNotify = 18727u16,
+    MapMarkResponse = 18621u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoItemUnlockNotify = 18731u16,
+    FormationChangeResponse = 18622u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SecWorldSEndFlowResponse = 18732u16,
+    AiBlackboardCdPush = 18641u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerSeasonUpdateResponse = 18739u16,
+    PhantomBatchRefiningResponse = 18643u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleBuffTriggerInfoNotify = 18740u16,
+    DangoBrawlSettleNotify = 18644u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TraceMoonPhaseRewardResponse = 18742u16,
+    LoadCalabashSkinInfoResponse = 18646u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MoraleInfoNotify = 18749u16,
+    RhythmSubLevelUpdateNotify = 18647u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerRewardResponse = 18751u16,
+    RiskHarvestInstUpdateNotify = 18648u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeleportFlowEndResponse = 18758u16,
+    ArtemisNodeUpdateResponse = 18649u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueChooseDataResultResponse = 18760u16,
+    RoleFavorUnLockRequest = 18650u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FsmBlackboardNotify = 18761u16,
+    RoverRogueEventSelectResponse = 18651u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeTrialRoleInfoRequest = 18768u16,
+    HonamiStorySetFormationNotify = 18653u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightSelectBuffGateRequest = 18769u16,
+    DamageExecuteRequest = 18654u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FriendRecentlyTeamResponse = 18777u16,
+    OccupyRewardRequest = 18660u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleSexChangeResponse = 18787u16,
+    ExhibitionItemSaveResponse = 18661u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoItemUpdateNotify = 18788u16,
+    RoguelikeRoomInfoNotify = 18663u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsTaskRewardResponse = 18798u16,
+    FriendApplyDeletedNotify = 18666u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PreAiControlSwitchNotify = 18803u16,
+    GetFormationDataResponse = 18668u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RhythmRankListSelfDataRequest = 18805u16,
+    KurotatoReChallengeResponse = 18670u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InstSettleNotify = 18806u16,
+    SwitchBattleModeRequest = 18672u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MoveSplineStatusNotify = 18808u16,
+    FishingHandInResponse = 18677u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBatchOperResponse = 18810u16,
+    AiInformationRequest = 18681u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayRefreshShopResponse = 18811u16,
+    TeleportDungeonActionResponse = 18689u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HookLockPointRequest = 18814u16,
+    NewBieCourseRewardNotify = 18692u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomEquipGroupInfoNotify = 18815u16,
+    FishingSkinUnlockNotify = 18702u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleSkillQuickLevelUpResponse = 18822u16,
+    ScheduleRewardUpdateNotify = 18703u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoadBookFullRewardRequest = 18824u16,
+    LobbyListResponse = 18705u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SneakTimeResponse = 18825u16,
+    MotorFightOneKeyRewardResponse = 18713u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerMotionRequest = 18827u16,
+    SetPlayerYuXueModeRequest = 18715u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorLinkTaskRequest = 18830u16,
+    RoleChangeNotify = 18718u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LineCrossChallengeStartRequest = 18834u16,
+    TeamParkourTaskNotify = 18720u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueTowerTrialResultNotify = 18837u16,
+    TowerDefenceScoreRewardRequest = 18725u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleSkillLevelUpViewRequest = 18841u16,
+    MotorAnimReplaySampleUdpPush = 18728u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveSummonEntityRequest = 18845u16,
+    PhantomMusicCollectUpdateRequest = 18730u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActivityPayShopBuyResponse = 18847u16,
+    RoguelikeChooseDataResultRequest = 18731u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VehicleResponse = 18852u16,
+    ChangeEntityStateRequest = 18733u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CreatureDetailResponse = 18855u16,
+    RealmBetweenFullRewardResponse = 18737u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleReconstructCardNotify = 18858u16,
+    RenameFormationResponse = 18743u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PolluteGridCellRequest = 18862u16,
+    ForgeInfoResponse = 18747u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleDeployNotify = 18865u16,
+    GuideCondDoneNotify = 18752u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConsumptiveActivityInfoRequest = 18867u16,
+    CombatValNotify = 18757u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetMatchTeamMatchFlagRequest = 18868u16,
+    TrapDefenseGetSpecialRewardRequest = 18758u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FsmStateBehaviorResponse = 18875u16,
+    InstPlayDataNotify = 18768u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FollowerChairPresentationPush = 18876u16,
+    DangoMonopolyGridRewardResponse = 18776u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetBtObjYuXueModeRequest = 18881u16,
+    PhotoFightLevelInfoNotify = 18787u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MixDrinkRoleInviteRequest = 18883u16,
+    SignActivityResponse = 18799u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrackMoonIllustratedResponse = 18884u16,
+    InfrLevelUpRequest = 18803u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssChallengeResultNotify = 18887u16,
+    MotorSummonAndRidePush = 18805u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreProgressRewardIdsNotify = 18889u16,
+    JokerGuessUseSkillRequest = 18807u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlayGainRewardInfoNotify = 18892u16,
+    RoverRogueTalentInfoRequest = 18812u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateNodeStatusNotify = 18896u16,
+    SceneGamePlayScopeNotify = 18816u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdatePlayersFightRolesInfoNotify = 18899u16,
+    BabelActivityUseReviveCountNotify = 18819u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomUnlockNotify = 18900u16,
+    FloroRanchPlayGachaRefreshResponse = 18822u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyBlackFlowerRequest = 18903u16,
+    FormationModifyResponse = 18825u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShortMessageChatCharmChangeResponse = 18908u16,
+    UDPMovePackagePush = 18826u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerFormationRecommendResponse = 18909u16,
+    RogueWeeklyRoomInfoNotify = 18827u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchAnimationResponse = 18911u16,
+    RoguelikeSeasonDataResponse = 18829u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallInstSaveDataNotify = 18912u16,
+    PrivateChatRequest = 18832u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemLockResponse = 18915u16,
+    CheckUseSoundBoxSkillResponse = 18835u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChatMutePlayerListNotify = 18916u16,
+    RogueInstExtraInfoUpdateNotify = 18838u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallQuestActionRequest = 18918u16,
+    PlayerGameTokenRequest = 18839u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapTravelFullRewardResponse = 18919u16,
+    AbyssShowNameResponse = 18840u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleSkinUpdateNotify = 18921u16,
+    RoleFavorTalkScoreRequest = 18847u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TargetGearHitResponse = 18922u16,
+    RecallItemUseRequest = 18849u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DollGarbStartResponse = 18927u16,
+    ExploreScoreRewardResponse = 18852u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OnlineMotorUpdateNotify = 18930u16,
+    FloroRanchWeeklyRequest = 18853u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BeamCastHitPlayerResponse = 18932u16,
+    MovePackagePush = 18855u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCheckCardSkillUnlockResponse = 18934u16,
+    OnlineMotorActivityLevelResponse = 18856u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsLockRequest = 18939u16,
+    MotorFightSelectCollectionResponse = 18857u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeleportDataResponse = 18941u16,
+    TowerDefenceRoleReviveNotify = 18859u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseBuyShopProductResponse = 18945u16,
+    PhantomBattleStartRequest = 18864u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyCurrencyNotify = 18949u16,
+    DollGrabTimeBallResponse = 18865u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingPointInfoResponse = 18952u16,
+    AddPhantomEquipGroupRequest = 18869u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShortMessageReceivedResponse = 18956u16,
+    EnterInstRequest = 18872u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResChangeFormationResponse = 18969u16,
+    AttachEntityResponse = 18874u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeSceneRoadNotify = 18972u16,
+    RoleQuestAcceptResponse = 18875u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CalabashMsgNotify = 18974u16,
+    ChannelChatRequest = 18878u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LordGymReadResponse = 18978u16,
+    FarmGoldPointRepeatedResponse = 18879u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AdviceSettingNotify = 18981u16,
+    TowerDefenceInstanceInfoUpdateNotify = 18881u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerGuideActivityRewardResponse = 18982u16,
+    EntityBuffProducerRequest = 18892u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsWeaponInfoResponse = 18985u16,
+    ModifySignatureResponse = 18895u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InputSettingResponse = 18992u16,
+    PlayerAccessCasketResponse = 18900u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleQuestAcceptRequest = 18997u16,
+    RoguelikeChooseDataResultResponse = 18902u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoChestRewardSelectRequest = 19001u16,
+    ThemePersonalScoreResponse = 18903u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapTravelTaskRewardRequest = 19004u16,
+    RoverRogueShopUpdateNotify = 18904u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoWeaponUnlockNotify = 19005u16,
+    ChangePhantomEquipGroupNameRequest = 18907u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlFightOverResponse = 19008u16,
+    RoleConfigInfoNotify = 18911u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KickWorldTeamResponse = 19020u16,
+    FishingSkillTeleportResponse = 18913u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseBdUpdateNotify = 19038u16,
+    EntityBuffProducerResponse = 18914u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BuffItemNotify = 19044u16,
+    RoleFavorActiveNotify = 18931u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerAccessRangeNotify = 19051u16,
+    EnterInstResponse = 18932u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GetDetectionTargetResponse = 19055u16,
+    TimeScheduleIdleNotify = 18933u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GachaResponse = 19056u16,
+    AttributeInitResponse = 18934u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlStartFightRequest = 19061u16,
+    TimeCheckNotify = 18938u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OperationRestrictionNotify = 19069u16,
+    GameStatsShowResponse = 18943u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FsmConditionPassPush = 19070u16,
+    InfrArchiveTaskRewardRequest = 18945u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsGearRefundRequest = 19077u16,
+    FishingTechLevelUpRequest = 18947u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseChallengeResultNotify = 19080u16,
+    FishingEntrustAcceptResponse = 18952u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RhythmRankListSelfDataResponse = 19090u16,
+    PhantomBattleCardRoleSkillResponse = 18955u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrFireAddNotify = 19099u16,
+    ThrowDamageNotify = 18961u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WorldBlackboardRequest = 19106u16,
+    ShortMessageItemUpdateNotify = 18965u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssChallengeSubLevelNotify = 19107u16,
+    RemoveGuestNotify = 18978u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CombatMaxCaseMessageResponse = 19109u16,
+    RogueWeeklyStartResponse = 18980u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightRankListSelfDataRequest = 19112u16,
+    TemplateEntitySpawnerContentNotify = 18989u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResSwitchFormationResponse = 19117u16,
+    ElevatorStateChangeResponse = 19002u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightTalentUpResponse = 19118u16,
+    GatherClueInfoNotify = 19010u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleBvBSettleNotify = 19121u16,
+    NewPlayerSupportActivityTaskUpdateNotify = 19012u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ValidTimeItemUpdateNotify = 19123u16,
+    EntityPatrolStartResponse = 19013u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseBuildingResetRequest = 19127u16,
+    RoverRogueGiveUpGainResponse = 19016u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeeklyFrameworkInfoResponse = 19130u16,
+    AttributeChangedRequest = 19018u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FurnitureUnlockNotify = 19142u16,
+    PlayerBasicInfoGetResponse = 19022u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardRewardInfoUpdateNotify = 19146u16,
+    AddReviveRegionResponse = 19029u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomMusicSaveResponse = 19149u16,
+    SetInitTagRequest = 19030u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SwitchCharacterStatePush = 19156u16,
+    HarvestActivityResultResponse = 19031u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestFastReturnPosRequest = 19158u16,
+    ZitherPlayNoteNotify = 19034u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveBuffByIdS2cResponsePush = 19162u16,
+    RoleTowerChallengeSettleRequest = 19036u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCallCardResponse = 19169u16,
+    ClientCurrentRoleReportRequest = 19037u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyGotoNextRoomRequest = 19170u16,
+    KurotatoReChallengeCountNotify = 19047u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LineCrossActivityUpdateNotify = 19172u16,
+    UnlockHeadFrameNotify = 19052u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallQuestReadyForGiveUpResponse = 19174u16,
+    FloroRanchPlayWeeklyEndNotify = 19055u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeamParkourRewardRequest = 19176u16,
+    RogueTowerTrialReChallengeNotify = 19059u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoadBookInfoUpdateNotify = 19177u16,
+    PlayerAccessCasketRequest = 19061u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerHandFoundationCoreChangeNotify = 19181u16,
+    BlackSwordChallengeMarkItemPanelInfoResponse = 19063u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GameplayCuePush = 19183u16,
+    RacingBetMatchActionRequest = 19065u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlySkinWearAllRoleRequest = 19185u16,
+    LivenessRequest = 19066u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShortMessageChatThemeChangeResponse = 19186u16,
+    RecallItemUseResponse = 19067u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeatherControlRequest = 19192u16,
+    PlayerCreateXboxSessionRequest = 19073u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TemporaryTeleportChangeNotify = 19202u16,
+    AddOccupationInfoNotify = 19074u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AttributeInitNotify = 19205u16,
+    DollSmallMapInfoResponse = 19076u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BirthDayInfoNotify = 19209u16,
+    IllustratedReadRequest = 19077u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShortMessageUpdateNotify = 19211u16,
+    RacingBetsUpdateOddsResponse = 19078u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityRemoveDynamicInteractNotify = 19212u16,
+    FlagChallengeRewardRequest = 19079u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SingleInstRechallengeRequest = 19217u16,
+    RogueResIllustrationAwardRequest = 19081u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomAutoPutResponse = 19223u16,
+    BossRushChooseBuffResponse = 19084u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LeaveMatchTeamNotify = 19226u16,
+    DirectTrainInfoResponse = 19087u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityGravityUpdateNotify = 19228u16,
+    BatchSynthesisItemRequest = 19088u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlayStateRequest = 19230u16,
+    FuncOpenNotify = 19093u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrManualCancelTraceRoadRequest = 19233u16,
+    PhantomIdentifyResponse = 19102u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BoneVisibleChangePush = 19234u16,
+    FuncOpenConfirmNotify = 19104u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerEnterWorldTeamNotify = 19236u16,
+    MixDrinkSettleResponse = 19105u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreProgressRequest = 19237u16,
+    ChannelChatMessageNotify = 19107u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CircumFluenceTaskRewardResponse = 19238u16,
+    UsePhantomEquipGroupResponse = 19113u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FsmCustomBlackboardNotify = 19239u16,
+    ClientBasicInfoResponse = 19121u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomMusicInfoRequest = 19247u16,
+    RacingBetMatchRoundResponse = 19125u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingCabinPutResponse = 19250u16,
+    PhantomBattleBoardSettleNotify = 19126u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerHeadUpdateNotify = 19263u16,
+    RogueWeeklyResultNotify = 19127u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleUpdateDevelopTargetResponse = 19264u16,
+    HonamiStoryResidentTaskInfoUpdateNotify = 19128u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SeamlessTeleportResponse = 19267u16,
+    HitEndRequest = 19130u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseBuyShopProductRequest = 19270u16,
+    FishingActivityMileStoneNotify = 19138u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InteractiveUpdateRequest = 19271u16,
+    LeaveAoiNotify = 19141u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayGmInfoUpdateNotify = 19286u16,
+    ActivateBuffResponse = 19166u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlagChallengeInstNotify = 19288u16,
+    ChangeStateNotify = 19168u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseAuxiliaryBranchRequest = 19295u16,
+    NewbieCarnivalAwardResponse = 19176u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemovePreloadFlowsNotify = 19296u16,
+    QuestReadyForGiveUpResponse = 19178u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingShipFixRequest = 19300u16,
+    GivebackInfoResponse = 19180u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoLevelDataUpdateNotify = 19312u16,
+    AchievementFinishResponse = 19182u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerAccessRangeResponse = 19314u16,
+    MotorFightSettleResponse = 19184u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DressPlayerTitleUpdateNotify = 19326u16,
+    TeamRecommendRequest = 19191u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssChallengeUpdateNotify = 19331u16,
+    ActivityFirstReadResponse = 19193u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ThroughTrainForceRemindNotify = 19334u16,
+    FriendRemarkRequest = 19201u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetMatchRequest = 19337u16,
+    InstTeleportToResetPointRequest = 19204u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BirthdayShowSetResponse = 19338u16,
+    NewTowerClearRecordResponse = 19209u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VisionTriggerPush = 19341u16,
+    RogueTowerTrialResultResponse = 19217u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PassPortalResponse = 19351u16,
+    DangoMonopolyNextBoardRequest = 19220u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnterInstResponse = 19352u16,
+    AddSysBuffNotify = 19225u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConnectorCanConnectRequest = 19355u16,
+    MontagePlayNotify = 19227u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ServerConfigVersionInfoNotify = 19359u16,
+    NewPlayerSupportSetCurUseTrialRoleV2Response = 19230u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballTaskRewardRequest = 19362u16,
+    GachaRequest = 19232u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssReviveTimeNotify = 19368u16,
+    RecallQuestListNotify = 19235u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveInstanceTimerResponse = 19370u16,
+    WeaponLevelUpRequest = 19242u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoMonopolyTaskUpdateNotify = 19371u16,
+    MotorFightSelectCollectionRequest = 19245u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DropCatchLevelRewardResponse = 19373u16,
+    YuXueModeInfoNotify = 19246u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerDefenceRandListRequest = 19374u16,
+    RogueResMoodRangeUpdateNotify = 19251u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardGroupAddRequest = 19376u16,
+    FloroRanchPlaySelectCardGroupResponse = 19257u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryMascotRewardRequest = 19377u16,
+    GetLevelPlayRewardsResponse = 19260u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballSettleNotify = 19382u16,
+    RoguelikeTrialRoleInfoRequest = 19261u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssSelfPassRequest = 19384u16,
+    PhantomBattleRoundChangeNotify = 19265u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrialRoleSkinRewardRequest = 19389u16,
+    AtomicProcessRemoveBuffRequest = 19269u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LoadingLevelAreaResponse = 19391u16,
+    ActivityFirstReadRequest = 19271u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingSkillBaitRequest = 19403u16,
+    LevelPlayStateNotify = 19272u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerResetRequest = 19406u16,
+    PhantomMusicNotify = 19275u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TraceRecallQuestNotify = 19408u16,
+    PhantomBattleCardSelectResponse = 19276u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattlePhantomCardSkillRequest = 19409u16,
+    GmEntityFsmGroupInfoResponse = 19279u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RbBlockStateChangeNotify = 19426u16,
+    InstEntranceDetailRequest = 19282u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossPilingLevelInfoUpdateNotify = 19428u16,
+    PhantomBattleSelectReserveCardNotify = 19284u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    StopMoveSplineResponse = 19432u16,
+    QuestRedDotNotify = 19285u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExitViewDirectionPush = 19441u16,
+    ConsoleNotify = 19286u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UnlockCardNotify = 19442u16,
+    WorldBlackboardResponse = 19301u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseRefreshGainingGroupResponse = 19444u16,
+    ThroughTrainFinishViewResponse = 19302u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssPluginSynthesisResponse = 19445u16,
+    HardnessModeChangedRequest = 19311u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    Summon2Request = 19448u16,
+    EntityHeadInfoNotify = 19315u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneModeChangeFinishRequest = 19453u16,
+    BuffStackCountNotify = 19317u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballInGameSyncPayloadResponse = 19461u16,
+    FriendApplySendRequest = 19323u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PrivateChatDataResponse = 19466u16,
+    BtSetTimerInfoRequest = 19327u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorParkourLevelRewardResponse = 19468u16,
+    RecallQuestNpcMoveOverResponse = 19333u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CombatSendPackRequest = 19470u16,
+    NewbieAdventureChapterDropResponse = 19337u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RollBlockGamePlayReadyResponse = 19471u16,
+    PinballBonusFullWinRequest = 19347u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GetAdventureRewardResponse = 19480u16,
+    JokerGuessPlayCardResponse = 19352u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MainPhantomRecommendRequest = 19481u16,
+    AddForbidControlNotify = 19356u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveBuffByIdS2cRequestNotify = 19482u16,
+    TimeResetNotify = 19363u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResRoleBondUpdateNotify = 19491u16,
+    RollBlockInputRequest = 19364u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BtCancelRangeFailWarningNotify = 19492u16,
+    ExploreActivityTaskRewardResponse = 19374u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlaySwitchSportModeRequest = 19509u16,
+    LinkageCheckInRewardResponse = 19375u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityDressOrnamentChangeNotify = 19511u16,
+    RogueBlackFlowerResponse = 19376u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeamParkourTaskNotify = 19512u16,
+    FishingPointInfoResponse = 19378u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TreasureChestCountIncrementNotify = 19516u16,
+    CreateBulletResponse = 19384u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CreatureDetailRequest = 19517u16,
+    BattleStateChangePush = 19385u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoMonopolyBoardRewardResponse = 19522u16,
+    UpdateSceneItemBlackboardResponse = 19386u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeOrnamentResponse = 19523u16,
+    PhantomBattleCardGroupUpdateResponse = 19388u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnergyUpdateNotify = 19527u16,
+    PinballUpdateNotify = 19395u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveTemporaryTeleportNotify = 19531u16,
+    ChangeWeatherResponse = 19397u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SummonRandomResponse = 19533u16,
+    NewPlayerSupportSetCurUseTrialRoleV2Request = 19403u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsSettleNotify = 19536u16,
+    PhantomBattleCardUnlockRequest = 19404u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpecialItemEquipResponse = 19540u16,
+    FinishDownloadQuestResourceResponse = 19405u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LordGymUnlockNotify = 19541u16,
+    DangoMonopolyDiceRequest = 19414u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayEventChoiceResponse = 19545u16,
+    RoguelikeWriteCatBossRewardRequest = 19415u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DollGrabPauseStartRequest = 19546u16,
+    ShortMessageInfoRequest = 19425u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoDieNotify = 19556u16,
+    BuffItemNotify = 19426u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssChallengeRoomInfoNotify = 19560u16,
+    QuestNpcMoveOverRequest = 19428u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityCommonTagNotify = 19566u16,
+    SwitchBattleModeResponse = 19436u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AdviceDeleteRequest = 19569u16,
+    RogueResGainDataTotalNotify = 19437u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GachaAccumulateInfoNotify = 19571u16,
+    CalabashLevelsRewardNotify = 19440u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneItemSetPosSenderRequest = 19577u16,
+    QuestBranchSelectRequest = 19447u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomReturnRequest = 19584u16,
+    TrapDefenseCurChallengeInfoResponse = 19452u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PsnSettingUpdateRequest = 19585u16,
+    TrackMoonEntrustDataResponse = 19470u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AdviceCreateResponse = 19595u16,
+    DangoBrawlEventSelectRequest = 19472u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RollBlockCloseGamePlayNotify = 19604u16,
+    NewTrialRoleGetNightmarePhantomInstInfoResponse = 19481u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneBlockChangePush = 19606u16,
+    RoverRogueLootInfoRequest = 19483u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestReadyForGiveUpRequest = 19607u16,
+    RoverRogueResultNotify = 19486u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SynthesisInfoUpdateNotify = 19611u16,
+    ShortMessageUpdateResponse = 19489u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ModifySignatureResponse = 19625u16,
+    SystemMarkHideInfoNotify = 19492u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DetectionPreOpenNotify = 19627u16,
+    PhantomBattleBvBFightNotify = 19494u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetAlertUiVisibleResponse = 19633u16,
+    SurvivorsScoreAwardRequest = 19499u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerBasicInfoGetRequest = 19634u16,
+    FormationAttrRequest = 19501u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneItemStateResponse = 19635u16,
+    AbyssReviveCharacterRequest = 19506u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SlashAndTowerSaveRecordRequest = 19636u16,
+    PostAkEventNotify = 19508u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CombineEntitiesRequest = 19641u16,
+    TowerDefencePhantomInfoUpdateNotify = 19510u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RollBlockExitGamePlayResponse = 19646u16,
+    CdKeyVerifyResponse = 19513u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TestSpawnTemplateEntityPush = 19647u16,
+    KurotatoUpgradeRewardRefreshRequest = 19521u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AiControlSwitchResponse = 19656u16,
+    InfluenceRewardRequest = 19523u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattleStateChangeRequest = 19661u16,
+    NewTowerRewardRequest = 19524u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CalabashDevelopRewardUnlockNotify = 19666u16,
+    EntityBlackboardRequest = 19528u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShopInfoNotify = 19667u16,
+    PayShopBuyResponse = 19539u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsWeaponInfoRequest = 19675u16,
+    MonsterLevelArrayNotify = 19542u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AtomicProcessAddBuffResponse = 19678u16,
+    RogueWeeklyOptionSelectRequest = 19544u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DarkTidePoisonCircleStopShrinkNotify = 19681u16,
+    PlacementInfoChangeNotify = 19545u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DarkTideDiscardItemResponse = 19686u16,
+    TrapDefenseCurChallengeInfoRequest = 19548u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResInstResultRequest = 19690u16,
+    MotorOutlookCreatePresetRequest = 19553u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EdgeRunnerFunctionPreUnlockRequest = 19702u16,
+    DressPlayerTitleUpdateNotify = 19561u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AgreeJoinResultResponse = 19703u16,
+    RoleOperateSelfBgmRequest = 19564u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetBaoziStateResponse = 19707u16,
+    UiGamePlayResponse = 19566u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseGetSpecialRewardResponse = 19710u16,
+    ActivityResultRewardRequest = 19569u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomVicePolishRequest = 19711u16,
+    PrivateChatClearNotify = 19574u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrialRoleSkinRewardResponse = 19716u16,
+    BossRushSettlementRequest = 19575u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestNpcMoveOverResponse = 19722u16,
+    TrapDefenseMonsterConsecutiveKillsNotify = 19577u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleFavorListNotify = 19733u16,
+    MotorFightLastSaveDataResponse = 19578u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyOptionSelectResponse = 19745u16,
+    CommonTouchUiSettingUpdateResponse = 19580u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GravityFlipUpdateTypeNotify = 19748u16,
+    UpdateFightRoleResponse = 19583u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FriendApplySendResponse = 19754u16,
+    FishingBoatDieNotify = 19589u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GameStatsShowResponse = 19755u16,
+    SummonRandomRequest = 19590u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemovePlacementFromBoardNotify = 19759u16,
+    ItemRelateFoundationNotify = 19604u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SplineMoveNotify = 19766u16,
+    InfrArchiveReadResponse = 19607u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChannelChatRequest = 19772u16,
+    InspirationUnlockChoiceRequest = 19608u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeamChallengeResponse = 19774u16,
+    TowerGuideActivityInfoRequest = 19610u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeaponAllInfoNotify = 19780u16,
+    EntityPatrolStopResponse = 19611u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RolePropResponse = 19787u16,
+    SceneItemSetPosSenderResponse = 19612u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattlePassEnterPush = 19788u16,
+    MapMarkInfoResponse = 19613u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlayInfoNotify = 19789u16,
+    TrapDefenseTechUnlockResponse = 19615u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OutputDebugInfoNotify = 19792u16,
+    AreaTerminalInfoNotify = 19616u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CountryExploreScoreInfoResponse = 19799u16,
+    AddMarkInfoNotify = 19623u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MessageDecodeFailNotify = 19803u16,
+    ExploreProgressRequest = 19630u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GachaAccumulateRewardResponse = 19810u16,
+    SpringFestivalTaskRewardResponse = 19632u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InitRangeResponse = 19814u16,
+    VehicleFinishRequest = 19634u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SubmitNodeRequest = 19815u16,
+    BuffEffectExecuteRequest = 19635u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BuffStackCountRequest = 19820u16,
+    QuestBranchRequest = 19642u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryResidentTaskRewardResponse = 19821u16,
+    InfrManualSwitchTraceRoadResponse = 19643u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeGotoNextRoomRequest = 19829u16,
+    FarmGoldLevelDiffRequest = 19651u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HookLockBatchCollectResponse = 19834u16,
+    SummonEntityNotify = 19653u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeekCardInfoResponse = 19836u16,
+    RegressActivityTrialRoleUpdateNotify = 19657u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallQuestReadyForGiveUpRequest = 19845u16,
+    FloroRanchCloseTaskResponse = 19666u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestFastReturnPosResponse = 19847u16,
+    InfrV2TreeUpdateNotify = 19674u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleLevelUpViewRequest = 19849u16,
+    PressGameRequest = 19675u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveReviveRegionResponse = 19851u16,
+    MulRoguelikeWriteCatRewardResponse = 19677u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    H5ViewActivityReadResponse = 19853u16,
+    AddChapterResultResponse = 19681u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikePopularEntriesChangeRequest = 19865u16,
+    AdventureManualResponse = 19686u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayNextDayResponse = 19866u16,
+    RecallTeleportToMarkIdResponse = 19697u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LineCrossChallengeStartResponse = 19877u16,
+    ScheduleNpcUpdatePosResponse = 19698u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayTributeResponse = 19879u16,
+    KurotatoLimitTaskReceiveRequest = 19700u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseMonsterConsecutiveKillsNotify = 19882u16,
+    FishingEntrustHandInRequest = 19706u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveGameplayEffectRequest = 19884u16,
+    GravityFlipInteractResponse = 19707u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DailyAdventureTaskUpdateNotify = 19886u16,
+    MulMapTravelSoarRewardRequest = 19711u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SwitchLogicStateNotify = 19887u16,
+    ExploreSkillActionResponse = 19712u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsGainDataUpdateNotify = 19888u16,
+    MailBindInfoRequest = 19713u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueInfoNotify = 19891u16,
+    RoadBookLevelUpResponse = 19714u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerMedalInfoRequest = 19895u16,
+    CoopSpRewardResponse = 19720u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardSkillResponse = 19901u16,
+    ItemExchangeInfoResponse = 19721u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CaughtPush = 19906u16,
+    UpdateSceneGroupDataResponse = 19725u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueChooseDataResultRequest = 19909u16,
+    RogueBossLinkSettleNotify = 19729u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueTalentUnlockRequest = 19911u16,
+    EntityPosResetNotify = 19731u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VfxNpcPatrolFinishResponse = 19912u16,
+    EntityActiveResponse = 19734u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActivateBuffResponse = 19917u16,
+    GachaUsePoolResponse = 19735u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattlePassTakeAllRewardRequest = 19919u16,
+    PhantomBattleLeaveSlotRequest = 19738u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UnlockInstEntranceRequest = 19928u16,
+    FormationUpdateNotify = 19741u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InviteRechallengeNotify = 19929u16,
+    PassiveSkillAddPush = 19744u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueTowerTrialSelectBossNotify = 19931u16,
+    ActionResetPosPrePerformanceEndRequest = 19745u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetFanStateRequest = 19934u16,
+    SlashAndTowerSaveRecordRequest = 19751u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardUpdateNotify = 19936u16,
+    AddDecalResponse = 19752u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RegressQuestionOpenResponse = 19944u16,
+    AchievementInfoResponse = 19753u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ButtonIsEnableResponse = 19953u16,
+    RoleFlyEquipChangeNotify = 19754u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardTargetInfoRequest = 19967u16,
+    ValidTimeItemAddNotify = 19758u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryMascotInfoUpdateNotify = 19969u16,
+    HonamiStoryBagOperateRequest = 19759u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GetLevelPlayRewardsRequest = 19971u16,
+    MotorUseSkinRequest = 19760u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomMusicUnlockResponse = 19978u16,
+    AbyssRoleSelectUpdateNotify = 19763u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RTimeStopPush = 19986u16,
+    AdviceCreateResponse = 19764u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoStepAdvanceRequest = 19987u16,
+    HonamiStoryPickUpItemResponse = 19769u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CombatValDecayBeginNotify = 19990u16,
+    MulAchievementReceiveResponse = 19770u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoReChallengeCountNotify = 19995u16,
+    SetMatchTeamMatchFlagResponse = 19772u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MatchThreeStarResponse = 19999u16,
+    ANStartPush = 19776u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueLootInfoResponse = 20010u16,
+    ReadCardResponse = 19779u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoStepAdvanceResponse = 20011u16,
+    PolluteGridCellResponse = 19787u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TreasureBoxSlotAllInfoNotify = 20020u16,
+    OrderApplyBuffNotify = 19792u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveBuffS2cRequestNotify = 20022u16,
+    RacingBetsBulletScreenResponse = 19809u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LivenessTakeResponse = 20024u16,
+    MatchTeamStateNotify = 19812u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetNpcPerformStateNotify = 20027u16,
+    UseSkillNotify = 19813u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueLootChangeResponse = 20028u16,
+    MontagePlayResponse = 19825u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlySkinUnLoadRequest = 20032u16,
+    ElevatorMoveNotify = 19828u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerNetStateNotify = 20034u16,
+    RealmBetweenTaskRewardRequest = 19830u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueRefreshGainRequest = 20036u16,
+    IllustratedUnlockRequest = 19831u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SignActivityKeepTimeNotify = 20038u16,
+    PhantomBattleDealCardReplaceRequest = 19834u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeaponSkinUnLoadNotify = 20040u16,
+    TrackMoonTargetRewardRequest = 19837u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueTaskRewardTakeResponse = 20042u16,
+    SlowTimePush = 19838u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneLoadingFinishRequest = 20048u16,
+    MotorFightRoleUpdateNotify = 19840u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MatchChangePlayerUiStateNotify = 20049u16,
+    SynthesisInfoResponse = 19842u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MoraleTreasureBoxTraceResponse = 20050u16,
+    SpecialItemUnEquipRequest = 19843u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MixDrinkRoleRewardRequest = 20051u16,
+    NormalItemRemoveNotify = 19848u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResInstOptionsNotify = 20056u16,
+    BossRushFailResultNotify = 19850u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardGroupUpdateRequest = 20057u16,
+    HonamiStoryInstLeaveRequest = 19853u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FormationSwitchCurrentRequest = 20059u16,
+    SolarSchoolOneKeyGalleryRewardResponse = 19859u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FriendRemarkResponse = 20061u16,
+    RemoveReviveRegionResponse = 19862u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingQuickSellPreviewResponse = 20069u16,
+    BossPilingSettleRequest = 19863u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlayStateListResponse = 20073u16,
+    BossPilingBuffUpdateNotify = 19869u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DrownEndTeleportPush = 20074u16,
+    RoleTowerTimerDurationUpdateNotify = 19870u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestFinishActionEndRequest = 20075u16,
+    FishingInfoUpdateNotify = 19875u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityRemoveBubbleNotify = 20077u16,
+    BattleLogNotify = 19877u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyInteractionResultNotify = 20079u16,
+    RogueInstExtraInfoResponse = 19878u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntitySendEventRequest = 20081u16,
+    JSPatchNotify = 19879u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FarmGoldLevelPlayRepeatedRequest = 20085u16,
+    TrackMoonTokenCoinNotify = 19882u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FsmMontageDurationNotify = 20087u16,
+    RogueTowerTrialResultRequest = 19883u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MailFavoriteRequest = 20098u16,
+    RoleTowerRankRequest = 19891u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GameplayCueRequest = 20103u16,
+    SurvivorsWeaponInfoRequest = 19901u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapCustomMarkUpdateNotify = 20105u16,
+    MapUnlockFieldInfoResponse = 19902u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlTaskRewardRequest = 20110u16,
+    PhantomBattleCardSkillRequest = 19909u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RobotDestinationNotify = 20116u16,
+    BattlePassLevelUpResponse = 19912u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SneakFinishRequest = 20117u16,
+    SkillNotify = 19915u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    IllustratedUnlockRequest = 20120u16,
+    EnterViewDirectionPush = 19916u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RenjuResetRequest = 20123u16,
+    TopPhantomEquipGroupRequest = 19922u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BoneVisibleChangeRequest = 20124u16,
+    TowerStartRequest = 19933u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExecuteQteNotify = 20131u16,
+    WeaponItemRemoveNotify = 19935u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoMonopolyTaskRemoveNotify = 20133u16,
+    HonamiStoryTalentInfoUpdateNotify = 19936u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ClientBasicInfoRequest = 20137u16,
+    RoleGoDownNotify = 19940u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InstTeleportToResetPointRequest = 20140u16,
+    TeamParkourRewardRequest = 19943u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlEventSelectRequest = 20144u16,
+    DangoBrawlShopLockResponse = 19957u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RunTestRequest = 20152u16,
+    MatchThreeStarRequest = 19959u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerPsnInfoGetRequest = 20153u16,
+    PullingFoundationRequest = 19966u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SkillNotify = 20156u16,
+    ApplyBuffFailedNotify = 19969u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CreateBulletResponse = 20162u16,
+    HonamiStoryDiscardItemRequest = 19973u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ParkourChallengeRequest = 20163u16,
+    RoadBookMotorRewardRequest = 19974u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossRushClaimRewardResponse = 20167u16,
+    PsnSettingUpdateResponse = 19977u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RiskHarvestInstUpdateNotify = 20169u16,
+    SurvivorsLockRequest = 19978u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightSelectBuffGateResponse = 20172u16,
+    NpcTraceFailedResponse = 19981u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GetLevelPlayRewardsResponse = 20173u16,
+    BattleStateChangeRequest = 19982u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueShopInfoUpdateNotify = 20174u16,
+    FishingQuickSellRequest = 19986u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LifePointChallengeStartRequest = 20181u16,
+    AddPlacementNotify = 19989u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PassiveSkillAddResponse = 20187u16,
+    MapOpenPush = 19992u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BabelActivityDailyTaskInfoNotify = 20204u16,
+    DangoBrawlTaskRewardRequest = 19998u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoLevelRecordDeleteRequest = 20207u16,
+    PlayerNetStateBackServerPush = 19999u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ClientCurrentRoleReportPush = 20213u16,
+    ConfirmCompleteRefMp4QuestNotify = 20002u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AnimationGameplayTagPush = 20216u16,
+    RollBlockMovementFinishResponse = 20004u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CertificateLevelRewardResponse = 20218u16,
+    SkinRewardResponse = 20013u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EdgeRunnerUpdateNotify = 20220u16,
+    PinballFriendRankResponse = 20019u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneGamePlayStatusNotify = 20225u16,
+    NewTowerSeasonRewardResponse = 20020u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExitViewDirectionResponse = 20227u16,
+    WorldEnterPermissionsRequest = 20021u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerRewardResponse = 20230u16,
+    SceneModeChangeFinishResponse = 20026u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimeScheduleTriggerNotify = 20242u16,
+    BeControlledShowRequest = 20029u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    StartRecallRequest = 20244u16,
+    EntityCommonTagNotify = 20031u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BirthDayRewardRequest = 20245u16,
+    OnlineMotorStartNotify = 20033u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SunSpiritActionOperationEndPush = 20253u16,
+    RoguelikeSeasonRewardReceiveRequest = 20035u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayRefreshGachaRequest = 20257u16,
+    AiHateResponse = 20048u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssChallengeUnlockResponse = 20260u16,
+    ThemePersonalScoreRequest = 20050u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CheatInputResponse = 20265u16,
+    ChannelChatResponse = 20052u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayShopDirectBuyResponse = 20285u16,
+    BuffEffectResponse = 20053u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WorldLevelRegainRequest = 20287u16,
+    RoadBookInfoUpdateNotify = 20058u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneItemSequenceFrameEndResponse = 20290u16,
+    FloroRanchPlaySelectCardGroupRequest = 20063u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeleportToTargetRequest = 20294u16,
+    IllustratedUnlockResponse = 20078u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RobotDestinationPush = 20295u16,
+    DarkCoastInfoResponse = 20081u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerRecommendRequest = 20297u16,
+    InputSettingResponse = 20083u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleSkillViewResponse = 20300u16,
+    DissolveCombineRelationResponse = 20084u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneItemMoveTargetRequest = 20302u16,
+    GiantStableValueActivityRequest = 20090u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryItemCollectionInfoUpdateNotify = 20304u16,
+    RogueArchiveSaveRequest = 20091u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoNextWaveTypeNotify = 20306u16,
+    TrackMoonTargetUpdateNotify = 20094u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrackMoonBuildingDataResponse = 20309u16,
+    PhantomSkinAddNotify = 20095u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GiantDeliveryItemResponse = 20317u16,
+    LivenessUpdateNotify = 20096u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerFloorUpdateNotify = 20319u16,
+    EdgeRunnerScoreRewardResponse = 20097u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlSettleRequest = 20328u16,
+    JokerGuessRewardResponse = 20099u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CombatSendPackResponse = 20332u16,
+    ExecuteQteResponse = 20100u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BoneVisibleChangeResponse = 20334u16,
+    TurntableCompleteRequest = 20102u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AgreeJoinResultNotify = 20337u16,
+    Summon2Response = 20104u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveGameplayEffectPush = 20358u16,
+    MoveSceneItemResetPositionResponse = 20105u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShortMessageReplyResponse = 20362u16,
+    MutiplayerTeamRefreshNearListResponse = 20108u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapMarkInfoUpdateRequest = 20363u16,
+    EdgeRunnerFunctionPreUnlockResponse = 20110u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DailyQuestCancelNotify = 20367u16,
+    MatchChangePlayerUiStateResponse = 20111u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CommonTouchUiSettingUpdateRequest = 20368u16,
+    WeaponSkinUpdateNotify = 20115u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerRoleVoiceSetRequest = 20371u16,
+    PhantomBattleCardRoleTargetInfoResponse = 20116u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SlashAndTowerResetRequest = 20373u16,
+    MatchThreeEndResponse = 20119u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SignatureUpdateNotify = 20375u16,
+    KurotatoScoreTaskReceiveResponse = 20122u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestBranchSelectRequest = 20377u16,
+    SceneItemStopResponse = 20130u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BtForcedOccupationResponse = 20380u16,
+    RoverRogueChooseDataResultResponse = 20137u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TopPhantomEquipGroupRequest = 20387u16,
+    FormationResponse = 20142u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryDiscardItemRequest = 20391u16,
+    TrapDefenseRewardUpdateNotify = 20145u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MailDeleteResponse = 20393u16,
+    InfrManualSwitchTraceRoadRequest = 20148u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UnlockHeadFrameNotify = 20396u16,
+    EnterAoiNotify = 20155u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestReadyForGiveUpResponse = 20397u16,
+    LevelPlayRewardRequest = 20160u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateChildQuestNodeStatusNotify = 20398u16,
+    LevelSequenceFrameEventActionResponse = 20164u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattleScoreEnableNotify = 20406u16,
+    GetDebugInfoNotify = 20169u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RenjuExitMatchedActionRequest = 20413u16,
+    RemoteBatchCollectResponse = 20188u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TriggerExitSkillPush = 20414u16,
+    GachaAccumulateRewardResponse = 20196u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnterAoiNotify = 20418u16,
+    InfrRoadBuildRequest = 20207u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CookFormulaRequest = 20428u16,
+    OrderRemoveBuffByTagsRequest = 20210u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnableDamageRecordResponse = 20429u16,
+    PassPortalRequest = 20215u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoMonopolyGridRewardRequest = 20431u16,
+    TrackMoonRoleDataRequest = 20217u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeHeadPhotoResponse = 20433u16,
+    TurntableTaskUpdateNotify = 20220u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GameplayTagPush = 20435u16,
+    UpdatePlayerPassiveSkillRequest = 20221u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardTargetInfoResponse = 20438u16,
+    MailReadRequest = 20227u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExchangeRewardInfoNotify = 20442u16,
+    ExploreEntityTraceRequest = 20228u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RollBlockResetGamePlayRequest = 20443u16,
+    AchievementCountChangeNotify = 20230u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattlePassTaskRequest = 20446u16,
+    SurvivorsOpDataForceChangeNotify = 20232u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ValidTimeItemResponse = 20447u16,
+    NewTowerTaskDataUpdateNotify = 20235u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerRoundUpdateNotify = 20449u16,
+    QuestBranchResponse = 20238u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsChallengeInfoUpdateNotify = 20450u16,
+    RoguelikeResultRequest = 20242u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChapterResultRewardRequest = 20453u16,
+    UpdateWorldTeamPlayerFightInfoNotify = 20243u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DarkTideItemMarkUpdateNotify = 20455u16,
+    BtSetTimerInfoResponse = 20250u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerSkillInfoPbNotify = 20458u16,
+    PhantomBattleFourCTaskDealCardNotify = 20251u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueGainGetOrLoseNotify = 20460u16,
+    DestroyQuestsNotify = 20252u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResGridEventRequest = 20462u16,
+    PlayerTitleInfoUpdateNotify = 20253u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    StorageInfoResponse = 20464u16,
+    DangoBrawlTaskRewardResponse = 20255u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MatchChangeRoleResponse = 20466u16,
+    MultiMapInfoNotify = 20261u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleSkinTrialSettleNotify = 20469u16,
+    DeconstructTrapResponse = 20270u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FunPlayChallengeSettleNotify = 20471u16,
+    LeaveInstResponse = 20271u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimeCheckNotify = 20474u16,
+    OnlineMotorUpdateNotify = 20286u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightRefreshCollectionTimesChangeNotify = 20476u16,
+    VehicleRemovePassengerResponse = 20287u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MailBindResponse = 20479u16,
+    PhantomBattleBadgeRewardInfoUpdateNotify = 20290u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActorVisibleRequest = 20487u16,
+    EntityAddNotify = 20302u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BabelTowerDailyTaskRewardResponse = 20492u16,
+    TrapDefenseRefreshGainingGroupResponse = 20307u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AnimationStateChangedPush = 20495u16,
+    LevelSequenceFrameEventActionRequest = 20312u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SkillResponse = 20499u16,
+    SpringSignSkinRewardRequest = 20317u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryBagOperateRequest = 20504u16,
+    RoleChangeUnlockNotify = 20322u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardPosChangeNotify = 20505u16,
+    PhantomReturnResponse = 20325u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueResultRequest = 20506u16,
+    EndLessHistoryRequest = 20333u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LogicStateInitPush = 20507u16,
+    OrderRemoveBuffByTagsResponse = 20335u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RTimeStopInstPush = 20510u16,
+    PrivateChatHistoryRequest = 20338u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballStartNotify = 20511u16,
+    SquadPropChangedNotify = 20340u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    StartMatchResponse = 20517u16,
+    GetFormationDataRequest = 20343u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActionErrorCodeNotify = 20519u16,
+    InputSettingUpdateRequest = 20344u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewbieCarnivalTaskJumpUpdateNotify = 20522u16,
+    InspirationUpdateNotify = 20356u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingSellPreviewRequest = 20524u16,
+    DeconstructTrapRequest = 20360u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UseSkillNotify = 20528u16,
+    RogueTowerTrialGiveUpTempArchiveRequest = 20363u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleGiftRewardResponse = 20539u16,
+    PreheatSignSurveyInfoResponse = 20369u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingActivityMilestoneRewardRequest = 20542u16,
+    ReadDisplayInfoResponse = 20372u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssChallengeGotoNextRoomRequest = 20543u16,
+    RoleTowerUnlockTokenUpdateNotify = 20373u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoUpgradeRewardSelectRequest = 20545u16,
+    RogueTowerTrialResultNotify = 20375u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsTalentUnlockNotify = 20550u16,
+    SurvivorsOpDataUpdateNotify = 20390u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballTaskRewardResponse = 20552u16,
+    TrapDefenseSlotUpdateResponse = 20401u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FarmGoldLevelPlayRepeatedResponse = 20555u16,
+    LastBigSceneMiniMapInfoResponse = 20403u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyOptionSelectRequest = 20557u16,
+    PhantomBattleEvolveResponse = 20416u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UiGamePlayRequest = 20564u16,
+    TrapDefenseBuildingResetResponse = 20421u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AnimalCollectStateNotify = 20565u16,
+    MatchingNotify = 20424u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemExchangeInfoResponse = 20569u16,
+    WuWuTaskRewardResponse = 20425u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BtGiveUpRequest = 20571u16,
+    PinballRoleLevelUpRequest = 20427u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CalabashSkinTakeOnRequest = 20574u16,
+    PhantomBattleRoleInfoUpdateNotify = 20429u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingShipFixResponse = 20583u16,
+    AbyssPluginSynthesisResponse = 20432u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrArchiveTaskRewardResponse = 20584u16,
+    TowerDefenceInfoUpdateNotify = 20433u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerRoleEnergyResponse = 20585u16,
+    InfrThemeActivityTaskDataUpdateNotify = 20438u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateInstanceTimerNotify = 20590u16,
+    RoleSkinAddNotify = 20442u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PassiveSkillRemoveResponse = 20593u16,
+    TestCmdNotify = 20443u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueBlessGroupSelectResponse = 20594u16,
+    RoguelikeGotoNextRoomRequest = 20444u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CombatMessagePostInfoResponse = 20596u16,
+    QueryRecallItemBagRequest = 20446u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulAchievementReceiveRequest = 20609u16,
+    ApplySceneClientEntityIncIdResponse = 20448u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RollBlockGamePlayReadyRequest = 20611u16,
+    BlackSwordChallengeInfoResponse = 20453u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActivityPreOpenRequest = 20615u16,
+    RealmBetweenMotorRewardResponse = 20454u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlagChallengeSettleNotify = 20618u16,
+    MapTraceInfoResponse = 20456u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryLockItemRequest = 20634u16,
+    PreheatSignRewardRequest = 20458u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorSummonAndRideNotify = 20643u16,
+    SecGetReportData2FlowResponse = 20463u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OccupyRewardRequest = 20644u16,
+    DangoBrawlShopComposeRequest = 20473u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoLimitTaskUpdateNotify = 20647u16,
+    InfrThemeActivityAwardRequest = 20474u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleChallengeInfoUpdateNotify = 20648u16,
+    ChangeDataLayerFinishResponse = 20475u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DrownEndTeleportRequest = 20649u16,
+    TargetGearHitRequest = 20478u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityRandomInteractResponse = 20654u16,
+    BlackCoastThemeTaskRewardResponse = 20483u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ScenePlayerOfflineNotify = 20659u16,
+    GachaResultNotify = 20485u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BtRollbackInfoNotify = 20660u16,
+    FarmGoldResultRequest = 20486u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NormalItemUpdateNotify = 20661u16,
+    GetTraceQuestYuXueModeResponse = 20487u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewbieAdventureTaskRewardResponse = 20663u16,
+    GaSwitchCommonEnemyProCampResponse = 20488u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightEnterSubLevelResponse = 20665u16,
+    InfrV2TaskDataUpdateNotify = 20489u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryScoreRewardRequest = 20667u16,
+    RemoteBatchCollectRequest = 20492u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryPollutionUpdateNotify = 20668u16,
+    FriendAllResponse = 20502u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MoonPhaseRewardResponse = 20673u16,
+    FloroRanchPlayUnlimitedModeResponse = 20504u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomInteractionSkinChangeResponse = 20674u16,
+    PlayerAccessRangeRequest = 20505u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RTimeStopAnimResponse = 20676u16,
+    LoadingLevelAreaResponse = 20507u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BuildingUnLockRequest = 20679u16,
+    H5CircumFluenceActivityReadRequest = 20511u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GatherActivityRewardResponse = 20681u16,
+    BattlePassEnterPush = 20512u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MaterialReplaceResponse = 20685u16,
+    InfrV2InfoRequest = 20516u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeCardRequest = 20690u16,
+    PhBaPlanUpdatePlanResponse = 20521u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SneakResponse = 20692u16,
+    CalabashExpAddNotify = 20523u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhotoFightSettleResponse = 20695u16,
+    ChangeStateRequest = 20524u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VehicleChangePassengerResponse = 20697u16,
+    BirthDayInfoNotify = 20525u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    XboxSettingUpdateRequest = 20700u16,
+    EntityStaticHookMovePush = 20537u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrackMoonTokenCoinNotify = 20701u16,
+    MotorcycleTaskUpdateNotify = 20545u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ApplyerEnterSceneNotify = 20705u16,
+    OutputDebugInfoRequest = 20551u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BuffEffectPush = 20706u16,
+    FloroRanchCloseTaskRequest = 20552u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleElementChangeRequest = 20709u16,
+    MulCorniceMeetingRewardRequest = 20556u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RhythmSetRedDotRequest = 20712u16,
+    RoguelikePopularEntriesChangeResponse = 20560u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrV2LevelUpRequest = 20713u16,
+    FarmGoldResultNotify = 20566u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AnimationGameplayTagResponse = 20718u16,
+    PhotoMemoryUpdateNotify = 20573u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleFavorUnLockResponse = 20728u16,
+    DebugDrawPosNotify = 20580u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ModifyNameRequest = 20729u16,
+    DissolveCombineRelationRequest = 20585u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RiskHarvestBuffCountRewardResponse = 20737u16,
+    FlagChallengeRewardResponse = 20586u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleFlyEquipChangeNotify = 20739u16,
+    UpdateFormationNotify = 20593u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleSelectReserveCardRequest = 20746u16,
+    JoinSceneNotify = 20597u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DiscardWeaponPush = 20752u16,
+    AddTemporaryTeleportResponse = 20601u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RegressDisposableRewardResponse = 20754u16,
+    LowMemoryChangeSceneFinishRequest = 20606u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayShopInfoRequest = 20758u16,
+    TrackMoonRoleDataResponse = 20611u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BtForcedOccupationRequest = 20760u16,
+    MotorPositionStateNotify = 20614u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlShopSellResponse = 20763u16,
+    SneakNotify = 20617u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateSceneItemBlackboardRequest = 20774u16,
+    DrownEndTeleportResponse = 20620u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActionOperationScreenSuccessRequest = 20776u16,
+    PlayerRecallInfoNotify = 20622u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerAttrNotify = 20778u16,
+    TrapDefenseQuickEquipResponse = 20626u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlInstBaseNotify = 20779u16,
+    MixDrinkRoleInviteRequest = 20628u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DarkCoastInfoResponse = 20782u16,
+    FloroRanchPlayNextDayRequest = 20630u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardRewardResponse = 20785u16,
+    RogueWeeklyResultResponse = 20631u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BabelTowerShowNameResponse = 20786u16,
+    MailInfosNotify = 20632u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SwitchRoleRequest = 20789u16,
+    ThirdPartyShareResponse = 20634u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallQuestStatusUpdateNotify = 20791u16,
+    DarkCoastInfoRequest = 20643u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewbieAdventureChapterDropResponse = 20800u16,
+    SurvivorsVarRecordNotify = 20648u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WuWuPackageRewardResponse = 20803u16,
+    KurotatoReChallengeRequest = 20651u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LivenessCountUpdateNotify = 20808u16,
+    DiscardWeaponPush = 20653u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerSeasonRewardRequest = 20810u16,
+    HitNotify = 20656u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeStateConfirmNotify = 20811u16,
+    PhantomBattleBvBLoadingFinishRequest = 20661u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DebugDrawPosNotify = 20812u16,
+    RoleTowerTimerDataUpdateNotify = 20667u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RhythmTaskUpdateNotify = 20813u16,
+    StorageInfoRequest = 20672u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BlackSwordChallengeMarkItemPanelInfoResponse = 20814u16,
+    TowerDefenceInstanceRewardResponse = 20681u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MonthCardDailyRewardNotify = 20826u16,
+    SingleInstRechallengeRequest = 20682u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnterMatchInstResponse = 20833u16,
+    PhantomBattleSelectTargetRequest = 20698u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapMarkShowIdInfoUpdateNotify = 20835u16,
+    MotorTechTreeUnlockNotify = 20699u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerLastCycleInfoResponse = 20840u16,
+    ChangeSceneModeNotify = 20701u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GachaAccumulateInfoResponse = 20853u16,
+    RoverRogueResultResponse = 20710u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MutiplayerTeamRefreshNearListResponse = 20855u16,
+    MotorDecalUpdateNotify = 20711u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GivebackInfoUpdateNotify = 20857u16,
+    NewPlayerSupportV2GachaRoleUpdateNotify = 20716u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    JokerGuessDrawCardResponse = 20858u16,
+    PhantomBattleBadgeInfoUpdateNotify = 20719u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueGiveUpGainResponse = 20859u16,
+    SceneItemBlackboardNotify = 20724u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseSelectGainingGroupResponse = 20864u16,
+    MatchChangeReadyResponse = 20725u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleMotionFinishConditionNotify = 20870u16,
+    HandInMingSuRequest = 20726u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorLinkTaskResponse = 20877u16,
+    MapTraceInfoRequest = 20733u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AiInformationPush = 20879u16,
+    MoveSceneItemPush = 20741u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerRewardRequest = 20887u16,
+    WellStreamingFinisRequest = 20746u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BatchSynthesisItemResponse = 20888u16,
+    KurotatoUpgradeRewardSelectRequest = 20748u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OpenSystemBoardResultRequest = 20900u16,
+    MonsterDrownRequest = 20753u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResOpDoneResponse = 20903u16,
+    ItemDisuseRequest = 20767u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DirectTrainInfoUpdateNotify = 20905u16,
+    GivebackRewardResponse = 20769u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerRequest = 20908u16,
+    BrochureRewardRequest = 20771u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomSettingUpdateResponse = 20909u16,
+    RemoveHackingEntityNotify = 20772u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallExploreSkillRouletteSetRequest = 20923u16,
+    AnimationGameplayTagRequest = 20782u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueBlessGroupSelectRequest = 20925u16,
+    FlagChallengeTempRoleLevelNotify = 20785u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActivateBuffPush = 20926u16,
+    AbyssChallengeQuitRequest = 20789u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdatePlayerPassiveSkillResponse = 20928u16,
+    HonamiStoryActivityInfoRequest = 20790u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleDebugInfoResponse = 20930u16,
+    UpdatePlayerAllFightRoleNotify = 20791u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleTaskRewardResponse = 20933u16,
+    AutoQuestNotify = 20792u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorcycleTaskUpdateNotify = 20935u16,
+    FixToolResponse = 20809u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InvestRequest = 20937u16,
+    HonamiStoryDiscardItemResponse = 20810u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryItemCollectionRequest = 20939u16,
+    AbyssChallengeUpdateNotify = 20812u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseQuickEquipRequest = 20940u16,
+    HonamiStoryLimitTaskRewardResponse = 20813u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResRoomInfoNotify = 20943u16,
+    MailFavoriteRequest = 20816u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MatchConfirmRequest = 20944u16,
+    LoadCalabashSkinInfoRequest = 20817u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PilotThrowOperationRequest = 20946u16,
+    PilotThrowOperationRequest = 20827u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeRoomInfoNotify = 20950u16,
+    DangoMonopolyTaskRewardResponse = 20830u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleActivateSkillRequest = 20952u16,
+    BoneVisibleChangePush = 20838u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DarkTideDiscardItemRequest = 20955u16,
+    GetRewardTreasureBoxRequest = 20848u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulRoguelikeWriteCatRewardResponse = 20956u16,
+    SneakFinishRequest = 20851u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    IllustratedReadResponse = 20958u16,
+    GameplayCueRequest = 20852u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MatchChangePlayerUiStateResponse = 20959u16,
+    SceneItemSequenceFrameStartRequest = 20858u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemRelateFoundationNotify = 20976u16,
+    RoguelikeRefreshGainRequest = 20860u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerHeadResponse = 20990u16,
+    RogueResCurrencyUpdateNotify = 20861u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ResetBabelTowerLevelRequest = 20991u16,
+    WeaponAddNotify = 20872u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DropCatchLevelRewardRequest = 20994u16,
+    PhantomBattleEvolveRequest = 20873u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InstTeleportToResetPointResponse = 20995u16,
+    SpecialItemNotify = 20874u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerSeasonUpdateRequest = 20997u16,
+    VehiclePassengerUpdateNotify = 20875u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SheriffAnomalyInfoUpdateNotify = 20999u16,
+    FishingSailingResponse = 20883u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GivebackUnlockNotify = 21002u16,
+    MulExploreScoreRewardRequest = 20889u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UseSkillRequest = 21005u16,
+    BattlePassExpUpdateNotify = 20892u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemUseResponse = 21012u16,
+    KurotatoLevelRecordDeleteRequest = 20893u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ApplyRechallengeRequest = 21016u16,
+    InstEntityTeleportRequest = 20901u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DollSmallMapInfoRequest = 21017u16,
+    PhotoFightTaskRewardResponse = 20913u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RiskHarvestBuffUnlockRewardResponse = 21018u16,
+    InputSettingUpdateResponse = 20916u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlowSeqSetPlayerPosRequest = 21021u16,
+    SpringSignPhotoRewardResponse = 20917u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightPlayerDeadRequest = 21022u16,
+    SpringFestivalScoreRewardResponse = 20918u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayShopBuyResponse = 21023u16,
+    AiInformationResponse = 20922u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchSettleDataResponse = 21024u16,
+    AdviceSetResponse = 20925u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapMarkInfoResponse = 21025u16,
+    PinballInGameStateChangeNotify = 20926u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AttributeChangedResponse = 21027u16,
+    SurvivorsComboParamUpdateNotify = 20928u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlowerPollutionRequest = 21028u16,
+    KurotatoLimitTaskReceiveResponse = 20933u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlStartFightResponse = 21032u16,
+    RoleTowerScoreRewardReceiveRequest = 20934u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleBurnBuffNotify = 21033u16,
+    OrderRemoveBuffNotify = 20935u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomIdentifyResponse = 21034u16,
+    TrapDefenseAuxiliaryLevelUpRequest = 20936u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeTalentLevelUpResponse = 21035u16,
+    FlowTeleportToPlotPosRequest = 20939u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeWeatherResponse = 21042u16,
+    RacingBetsTaskRewardResponse = 20940u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MoveSceneItemPush = 21046u16,
+    KurotatoItemUnlockNotify = 20943u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ModifySignatureRequest = 21047u16,
+    FishingNetCabinUpdateNotify = 20945u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdatePlayerAllFightRoleNotify = 21051u16,
+    AnimalDieRequest = 20952u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetMatchRoundRequest = 21053u16,
+    GetDetectionTargetRequest = 20959u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrArchiveReadRequest = 21062u16,
+    RTimeStopInstPush = 20960u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BeforeHitPush = 21067u16,
+    DollSmallMapInfoRequest = 20965u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SingleInstRechallengeResponse = 21069u16,
+    SheriffZoneInfoRequest = 20973u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShopBuyNotify = 21076u16,
+    PassiveSkillRemoveRequest = 20977u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AchievementUpdateResponse = 21082u16,
+    LeaveQuestRecallNotify = 20978u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerDefenceRankShowNameResponse = 21093u16,
+    PlayerEnterPollutionResponse = 20980u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsSpawnMonsterWaveEndNotify = 21097u16,
+    MotorExpAddNotify = 20982u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ModifyBulletParamsResponse = 21100u16,
+    ValidTimeItemRemoveNotify = 20989u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleBreakThroughViewResponse = 21102u16,
+    DiscardWeaponResponse = 20992u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerMotionResponse = 21104u16,
+    WuWuTaskRewardRequest = 20996u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrManualCancelTraceRoadResponse = 21107u16,
+    FriendApplyHandleResponse = 20998u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewbieAdventureChapterDropRequest = 21108u16,
+    RoleFavorUnLockResponse = 21000u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    JokerGuessDrawCardRequest = 21109u16,
+    RogueWeeklyBlackFlowerRequest = 21004u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeSummonEntityStateResponse = 21132u16,
+    ParkourChallengeEndNotify = 21009u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrFireNoticeRequest = 21139u16,
+    PayShopItemUpdateRequest = 21015u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CombatMessagePrefixInfoRequest = 21140u16,
+    RogueResInstStartRequest = 21018u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BabelTowerRankListResponse = 21141u16,
+    PhantomBatchPolishResponse = 21024u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HitEndPush = 21148u16,
+    RoguelikeGiveUpGainResponse = 21026u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlowActionRequest = 21156u16,
+    PbFormationAutoAddRoleNotify = 21027u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeTalentInfoRequest = 21173u16,
+    LeaveInstRequest = 21028u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossRushBuffChooseResultResponse = 21177u16,
+    BattlePassTakeAllRewardRequest = 21032u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeChooseDataRequest = 21182u16,
+    PhantomBattleGuideRewardResponse = 21038u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetQuestFocusModeResponse = 21189u16,
+    PhantomSettingBatchUpdateRequest = 21039u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FirecrackerEntityCreatedNotify = 21194u16,
+    AbyssLittleRoleLevelUpRequest = 21041u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseBdGroupUnlockNotify = 21201u16,
+    UseSkillResponse = 21045u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RhythmSettleResponse = 21204u16,
+    TowerResponse = 21047u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrackMoonEntrustDataRequest = 21209u16,
+    FsmStateBehaviorResponse = 21048u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MonsterDrownRequest = 21217u16,
+    ItemUseResponse = 21049u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsNormalAwardResponse = 21229u16,
+    SelectDetectionTargetRequest = 21057u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimePointActivityRewardRequest = 21232u16,
+    CheckPublicResourceVersionResponse = 21060u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeleportFlowEndRequest = 21234u16,
+    InstSaveDataNotify = 21061u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryBagOperateResponse = 21239u16,
+    MapTravelFullRewardRequest = 21062u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueTowerTrialGiveUpTempArchiveRequest = 21241u16,
+    ConsumptiveActivityScoreRequest = 21065u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FarmGoldPointResponse = 21245u16,
+    LordGymReadResponse = 21070u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeWriteCatBossRewardResponse = 21248u16,
+    ParkourChallengeOpenNotify = 21077u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityAddBubbleNotify = 21249u16,
+    RTimeStopPush = 21080u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossPilingSettleNotify = 21250u16,
+    TrapDefenseDevelopResetRequest = 21084u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GameplayCueResponse = 21252u16,
+    GachaAccumulateRewardRequest = 21085u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryAreaSecretRewardRequest = 21261u16,
+    PlayerPsnInfoGetResponse = 21086u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BlackSwordChallengeInfoRequest = 21267u16,
+    InfrThemeActivityAwardResponse = 21087u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyRoomInfoNotify = 21270u16,
+    ResetLocationForZRangeNotify = 21097u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SynthesisInfoRequest = 21275u16,
+    FollowTrackResponse = 21101u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RollBlockOpenGamePlayNotify = 21277u16,
+    TrapDefenseTechUnlockRequest = 21102u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShopUnlockNotify = 21280u16,
+    RoverRogueRefreshGainResponse = 21110u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    XboxSettingRequest = 21284u16,
+    MatchChangeRoleResponse = 21111u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GatewayEchoResponse = 21290u16,
+    RoleFlyEquipNotify = 21114u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeResultRequest = 21292u16,
+    QingXiaoTaskRewardResponse = 21118u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueArchiveListResponse = 21294u16,
+    ActionOpenSystemBoardNotify = 21125u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrV2InfoRequest = 21305u16,
+    PayShopInfoRequest = 21126u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeChooseDataResponse = 21308u16,
+    InfluenceRewardResponse = 21130u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GravityGearRequest = 21311u16,
+    TowerDefenceEndNotify = 21135u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyRewardRequest = 21313u16,
+    BirthdayInitRequest = 21136u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VisionTriggerNotify = 21314u16,
+    ZitherPlayStateRequest = 21137u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DarkTideItemMarkRequest = 21315u16,
+    AttributeInitNotify = 21138u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchOutResponse = 21325u16,
+    MotorParkourLevelRewardResponse = 21142u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssChallengeUnlockRequest = 21327u16,
+    PhantomPutOnResponse = 21144u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerDefenceScoreRewardResponse = 21331u16,
+    ShortMessageChatThemeChangeResponse = 21146u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueBossLinkSettleNotify = 21333u16,
+    AbyssChallengeUnlockResponse = 21147u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlowShowEntityNotify = 21334u16,
+    MovePlacementNotify = 21148u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConstructTrapRequest = 21336u16,
+    FsmBlackboardNotify = 21151u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightRankListRequest = 21341u16,
+    TraceEntityPosRequest = 21153u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ReadDisplayInfoResponse = 21345u16,
+    AvignonTaskNotify = 21154u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ValidTimeItemAddNotify = 21350u16,
+    BeforeHitPush = 21161u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BabelTowerSelfPassResponse = 21358u16,
+    DangoBrawlStartFightNotify = 21162u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeaponSkinAddNotify = 21360u16,
+    FloroRanchPlayTributeRequest = 21163u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ForgeFormulaUnlockRequest = 21366u16,
+    UDPMovePackageNotify = 21168u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeStateNotify = 21371u16,
+    RoleLevelUpViewRequest = 21169u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AreaTerminalPinOperationResponse = 21372u16,
+    KurotatoResTaskReceiveResponse = 21172u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    StorageInfoUpdateRequest = 21380u16,
+    PhantomBattleCardOutLookUpRequest = 21176u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomReturnResponse = 21387u16,
+    MailBindInfoNotify = 21177u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResInstResultResponse = 21394u16,
+    RecallQuestFinishActionEndRequest = 21179u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BabelTowerSelfPassRequest = 21395u16,
+    AddReviveRegionRequest = 21181u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConnectorConnectEntityNotify = 21398u16,
+    EntityRemoveBubbleNotify = 21182u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewbieCourseV2RewardResponse = 21399u16,
+    PhantomCollectReceiveResponse = 21188u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RegressTaskRequest = 21404u16,
+    RecallQuestReadyForGiveUpResponse = 21194u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConsoleNotify = 21407u16,
+    RogueWeeklySubLevelNotify = 21204u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestActionRequest = 21411u16,
+    FoodProcessRequest = 21214u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VehicleChangePassengerRequest = 21416u16,
+    FlowServerSkipNotify = 21217u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoUpgradeRewardSelectResponse = 21419u16,
+    SolarSchoolSetFlowRequest = 21219u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueInsListResponse = 21420u16,
+    RollBlockCloseGamePlayNotify = 21222u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GetInstExchangeRewardResponse = 21421u16,
+    PhantomVicePolishRequest = 21223u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RiskHarvestScoreRewardRequest = 21426u16,
+    PullingFoundationResponse = 21229u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomEquipGroupInfosResponse = 21429u16,
+    FuncShowResponse = 21232u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BlockPlayerResponse = 21431u16,
+    EntityCameraAlertResponse = 21236u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryLimitTaskInfoUpdateNotify = 21435u16,
+    ReceiveRechallengeResponse = 21241u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SwitchRoleNotify = 21436u16,
+    DrownEndTeleportRequest = 21245u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleRoleRewardResponse = 21447u16,
+    PassiveSkillRemoveNotify = 21248u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShortMessageReadResponse = 21455u16,
+    ChangeSceneRoadNotify = 21251u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RunTestResponse = 21458u16,
+    PhantomRecommendRequest = 21254u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlowServerSkipNotify = 21461u16,
+    LevelPlayVarResponse = 21256u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleGoDownPush = 21463u16,
+    LifePointChallengeUpdateNotify = 21262u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapOpenPush = 21465u16,
+    GachaPoolDetailRequest = 21264u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseQuickEquipResponse = 21470u16,
+    PhantomReturnPreviewResponse = 21268u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneGamePlayOpenTimeNotify = 21473u16,
+    ActionErrorCodeNotify = 21270u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FoundationCoreOperateResponse = 21475u16,
+    MailAddNotify = 21273u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EncircleChallengeStartRequest = 21480u16,
+    SynthesisLevelRewardResponse = 21274u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SquadPropChangedNotify = 21485u16,
+    AbyssRankListRequest = 21276u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConnectorConnectEntityResponse = 21486u16,
+    SubmitNodeResponse = 21283u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimeResetNotify = 21493u16,
+    GetDetectionLabelInfoResponse = 21286u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomVicePolishAckRequest = 21501u16,
+    TeamChallengeResponse = 21288u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QingXiaoTaskUpdateNotify = 21503u16,
+    DangoBrawlFightActionNotify = 21289u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleDiscardCardRequest = 21509u16,
+    CircumFluenceTaskRewardResponse = 21293u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConditionGroupStateResponse = 21511u16,
+    OrderApplyBuffRequest = 21297u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DailyQuestGetRewardResponse = 21514u16,
+    LstBattleRecordResponse = 21300u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InstTimeoutNotify = 21516u16,
+    TrackMoonIllustratedRequest = 21304u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingSkillTeleportResponse = 21518u16,
+    GameplayCueNotify = 21307u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingCompleteResponse = 21524u16,
+    WeaponResonUpResponse = 21310u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DropInBagNotify = 21527u16,
+    SecRoleFightFlowRequest = 21319u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseGetRewardRequest = 21539u16,
+    RoverRogueShopRefreshRequest = 21321u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattlePassLevelUpResponse = 21544u16,
+    EdgeRunnerFunctionPreUnlockRequest = 21322u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlagChallengeRewardRequest = 21551u16,
+    HandInItemRequest = 21324u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DropCatchInfoRequest = 21559u16,
+    ShortMessageReceivedResponse = 21328u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnterMatchInstRequest = 21561u16,
+    DrownResponse = 21329u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballInGameSyncPayloadRequest = 21563u16,
+    InfrInfoRequest = 21330u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueShopUpdateNotify = 21564u16,
+    NpcPhantomBattleFightInfoNotify = 21331u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlayRewardResponse = 21572u16,
+    RemoveTreasureBoxSlotRequest = 21336u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapMarkInfoRequest = 21577u16,
+    PhantomBattleCardGroupUpdateRequest = 21338u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerTitleRequest = 21582u16,
+    GameplayCuePush = 21343u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorOutlookCreatePresetRequest = 21586u16,
+    TrapDefenseSpecialRewardUpdateNotify = 21344u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LeaveInstResponse = 21587u16,
+    RoadBookLevelUpRequest = 21349u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleBoardSettleNotify = 21589u16,
+    PhantomInteractionEquipRequest = 21354u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerDefenceSelfPassRequest = 21596u16,
+    EntitySendEventResponse = 21355u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AnimalDieRequest = 21599u16,
+    SecWorldInfoFlowResponse = 21356u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PressRequest = 21606u16,
+    PayGiftInfoRequest = 21361u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FurnitureDiySaveRequest = 21612u16,
+    CommonTouchUiSettingUpdateRequest = 21364u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimelineTraceStartResponse = 21613u16,
+    MoonPhaseRewardRequest = 21365u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CommonTouchUiSettingUpdateResponse = 21615u16,
+    RollBlockExitGamePlayResponse = 21367u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SelectBabelActivityDeTermResponse = 21621u16,
+    GuideFinishResponse = 21373u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DissolveCombineRelationRequest = 21623u16,
+    PhantomBattleEnterSlotRequest = 21374u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeekCardRewardResponse = 21630u16,
+    FishingCompleteRequest = 21375u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PrivateChatClearNotify = 21637u16,
+    PinballQuitResponse = 21377u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchFirstEnterResponse = 21638u16,
+    EquipTakeOnRequest = 21385u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryAreaInfoUpdateNotify = 21643u16,
+    FurnitureDiySaveRequest = 21389u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoSettlementResponse = 21645u16,
+    TrapDefenseBuildingLevelUpResponse = 21393u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UnlockMultiMapNotify = 21647u16,
+    SkinRewardRequest = 21395u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DragonPoolConfRequest = 21659u16,
+    PolluteGridCellRequest = 21401u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BuffStackCountPush = 21666u16,
+    HookLockPointInfoNotify = 21402u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ServerCommandNotify = 21667u16,
+    PlayerCreatePsnSessionRequest = 21404u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrackMoonSettleResponse = 21671u16,
+    TrapDefenseGainingGroupUpdateNotify = 21410u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorChangeOutlookResponse = 21672u16,
+    VehiclePlatformGetOnRequest = 21411u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssRewardsUpdateNotify = 21674u16,
+    EncircleChallengeUpdateNotify = 21412u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattlePassTaskResponse = 21675u16,
+    QueryOnlinePlayersAreaResponse = 21413u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardRoleTargetInfoRequest = 21677u16,
+    BabelActivityTaskInfoNotify = 21420u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleStartRequest = 21680u16,
+    KurotatoUpgradeRewardRefreshResponse = 21421u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VehiclePassengerUpdateNotify = 21681u16,
+    RiskHarvestArtifactNotify = 21422u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerXboxInfoGetRequest = 21683u16,
+    MulGetAdventureRewardRequest = 21424u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattlePassExpUpdateNotify = 21684u16,
+    GachaAccumulateInfoNotify = 21430u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SilenceNpcNotify = 21690u16,
+    BatchMaterialReplaceResponse = 21431u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActionGroupCreateNotify = 21691u16,
+    FloroRanchPlayEventChoiceResponse = 21433u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddChapterResultRequest = 21695u16,
+    EntityLoadCompleteNotify = 21435u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangePlayerTitleResponse = 21696u16,
+    MoraleInfoNotify = 21439u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardRewardRequest = 21697u16,
+    BabelActivityLevelInfoNotify = 21440u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AiHateNotify = 21698u16,
+    PhantomInteractionSkinChangeRequest = 21448u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleBvBLoadingFinishRequest = 21700u16,
+    ScheduleNpcUpdatePosRequest = 21451u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssRankListResponse = 21709u16,
+    SurvivorsSpawnMonsterWaveEndNotify = 21452u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MovePlacementRequest = 21717u16,
+    MixDrinkRoleRewardResponse = 21453u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssPluginItemRemoveNotify = 21718u16,
+    HonamiStoryAreaSecretRewardResponse = 21464u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoSellWeaponResponse = 21719u16,
+    AvoidBlockRoundInfoNotify = 21465u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InvestResponse = 21729u16,
+    FarmGoldLevelPlayRepeatedRequest = 21472u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CharacterMoveToPointEndPush = 21734u16,
+    LeaveMatchTeamNotify = 21476u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddEntityAoiNotify = 21738u16,
+    ResetSpecialBonusNotify = 21478u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchEventChoiceResponse = 21742u16,
+    ParkourChallengeRequest = 21481u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerDefenceEnterInstNotify = 21747u16,
+    EntityOnLandedRequest = 21482u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FunPlayChallengeInfoUpdateNotify = 21748u16,
+    InfluenceInfoResponse = 21485u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UsePhantomEquipGroupResponse = 21750u16,
+    UpdateNodeProgressNotify = 21488u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    StartMatchRequest = 21756u16,
+    MatchChangeRoleRequest = 21491u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapTravelSoarRewardRequest = 21758u16,
+    FishingActivityMilestoneRewardResponse = 21498u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreActivityTaskInfoNotify = 21764u16,
+    PhantomAutoPutResponse = 21508u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NetTestDataPush = 21765u16,
+    FishingTeleportToBoatResponse = 21519u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CaughtRequest = 21766u16,
+    RegressTrialRoleUnlockNotify = 21529u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FarmGoldResultNotify = 21768u16,
+    VehicleChangePassengerResponse = 21531u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FormationAttrRequest = 21778u16,
+    SceneGamePlayInfoNotify = 21532u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RTimeStopInstRequest = 21786u16,
+    TowerSeasonUpdateResponse = 21534u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerTitleUpdateNotify = 21787u16,
+    CombatSendPackResponse = 21536u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MatchThreeStarRequest = 21794u16,
+    RacingBetsPlayerInfoResponse = 21541u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OrnamentDressInfoUpdateNotify = 21795u16,
+    RoverRogueGotoNextRoomCommitRequest = 21542u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityBeamReceiveResponse = 21799u16,
+    MotorFightEnterSubLevelResponse = 21543u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OrderApplyBuffRequest = 21800u16,
+    PhantomBattleSelectTargetEffectNotify = 21545u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddSysBuffNotify = 21803u16,
+    MotorOnlineRankSnapshotNotify = 21549u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetPlayerYuXueModeRequest = 21804u16,
+    MonsterPatrolPointReachedResponse = 21552u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NormalMonsterManualInfoRequest = 21805u16,
+    SceneGamePlayFirstNotify = 21553u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueTowerTrialStartRequest = 21807u16,
+    BeamCastHitPlayerResponse = 21555u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PassiveSkillAddPush = 21813u16,
+    AceAntiDataPush = 21559u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueLevelPlayNotify = 21815u16,
+    AddEntityAoiNotify = 21567u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhotoFightTaskRewardRequest = 21817u16,
+    CreatureDetailRequest = 21574u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerDefenceRankShowNameRequest = 21818u16,
+    CommitBoardSuccessNotify = 21576u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DropCatchLevelFinishRequest = 21819u16,
+    BabelActivityBuffInfoNotify = 21577u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorParkourStartNotify = 21824u16,
+    PlayerLeaveWorldTeamNotify = 21585u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingActivityLimitTaskNotify = 21833u16,
+    HonamiStoryEquipRoleRequest = 21590u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AiBlackboardsPush = 21837u16,
+    KickMatchTeamPlayerResponse = 21595u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeatherSwitchInfoResponse = 21840u16,
+    BathChangeCameraResponse = 21598u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeaponLevelUpResponse = 21842u16,
+    MotorFightTalentTreeUpdateNotify = 21599u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BabelTowerTaskRewardResponse = 21846u16,
+    RogueResRoleBondUpdateNotify = 21609u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityPosAbnormalResponse = 21848u16,
+    BossPilingRewardRequest = 21613u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryInstSettleNotify = 21849u16,
+    PhotoMemoryCollectNotify = 21614u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RollBlockSyncInfoNotify = 21853u16,
+    DangoBrawlTaskUpdateNotify = 21615u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerCycleStartRequest = 21855u16,
+    FishingSailingRequest = 21616u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlowerPollutionSplinePush = 21867u16,
+    PlayerEnterWorldTeamNotify = 21617u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OnlineMotorEndNotify = 21868u16,
+    PhantomBattleBvBSettleNotify = 21619u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SunSpiritListNotify = 21877u16,
+    AcceptEntrustResponse = 21620u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GachaUsePoolRequest = 21879u16,
+    GachaAccumulateInfoResponse = 21629u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FuncShowResponse = 21886u16,
+    ExploreSkillPullGiantResponse = 21630u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleShowListUpdateResponse = 21892u16,
+    HonamiStoryPollutionUpdateNotify = 21640u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BirthDayRewardResponse = 21898u16,
+    PhantomBattleBuffTriggerInfoNotify = 21641u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewBieCourseRewardNotify = 21899u16,
+    ArtemisNodeUpdateNotify = 21651u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrLibraryTaskUpdateNotify = 21906u16,
+    PhantomBattleMasterInfoNotify = 21654u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimeLockInfoNotify = 21913u16,
+    RemoveTemporaryTeleportNotify = 21656u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AchievementFinishResponse = 21914u16,
+    BeControlledDestroyResponse = 21659u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActionFinishResponse = 21915u16,
+    SlashAndTowerInfoRequest = 21662u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActivityFirstReadRequest = 21916u16,
+    ParkourChallengeTakeResponse = 21667u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrV2TaskDataUpdateNotify = 21917u16,
+    FinishDownloadQuestResourceRequest = 21668u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FormationModifyRequest = 21924u16,
+    RoguelikeBossInstStartResponse = 21669u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PassiveSkillRemoveRequest = 21925u16,
+    RhythmSetRedDotResponse = 21670u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlowActionResponse = 21929u16,
+    DropCatchInfoRequest = 21673u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayGiftRequest = 21930u16,
+    PrivateChatResponse = 21677u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerVoxelEnvResponse = 21932u16,
+    RogueWeeklyBlackFlowerResponse = 21684u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemRewardNotify = 21938u16,
+    SceneItemAiDisableNotify = 21693u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TotalTopUpScoreInfoResponse = 21941u16,
+    BoneVisibleChangeResponse = 21695u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulPhantomBattleMasterLevelRewardResponse = 21948u16,
+    PassiveSkillRemovePush = 21698u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssRoleAddNotify = 21949u16,
+    EntityAccessCasketResponse = 21699u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ModifyBulletParamsPush = 21952u16,
+    AdviceUpdateNotify = 21702u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleMotionNewCanUnLockNotify = 21957u16,
+    AdviceCreateRequest = 21703u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TestCmdNotify = 21962u16,
+    MotorSummonAndRideNotify = 21704u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrV2TreeBuildRequest = 21969u16,
+    TetrisUpdateResponse = 21709u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TutorialUnlockResponse = 21973u16,
+    FishingEntrustTraceRequest = 21717u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GetChapterRewardRequest = 21975u16,
+    HonamiStoryLockItemResponse = 21718u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingEntrustAcceptRequest = 21980u16,
+    HostFogIdUnlockNotify = 21721u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerRewardRequest = 21982u16,
+    ModifyEntityCampNotify = 21724u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TreasureChestCountNotify = 21988u16,
+    TowerApplyFloorDataRequest = 21733u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightRankListResponse = 21992u16,
+    ResonantChainUnlockResponse = 21735u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneLoadingFinishNotify = 22001u16,
+    HandInItemResponse = 21737u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityBuffProducerResponse = 22006u16,
+    KurotatoEndSpecialWaveCombatResponse = 21746u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlayFirstNotify = 22014u16,
+    NewJourneyRequest = 21748u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallItemRewardNotify = 22016u16,
+    RoleTowerChallengeUpdateNotify = 21751u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RolePropRequest = 22020u16,
+    RobotDestinationNotify = 21753u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LongShanTaskRewardResponse = 22021u16,
+    RogueResTalentSkillLevelRequest = 21757u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DamageExecuteRequest = 22022u16,
+    SubmitNodeRequest = 21759u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingShipInfoUpdateNotify = 22031u16,
+    InfrV2TreeFinishCondUpdateNotify = 21763u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseTechPointUpdateNotify = 22033u16,
+    RacingBetsBulletScreenRequest = 21780u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PassiveSkillRemoveNotify = 22034u16,
+    AbyssLikeResponse = 21792u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GmEntityFsmGroupInfoRequest = 22037u16,
+    TransformBuffStackNotify = 21805u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MonsterDetectionInfoResponse = 22038u16,
+    DailyQuestGetRewardResponse = 21806u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerResultNotify = 22039u16,
+    ScenePlayerOfflineNotify = 21816u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchUpdatePlayerInfoNotify = 22040u16,
+    ChangeEntityStateResponse = 21818u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OrnamentUnlockNotify = 22041u16,
+    TimePointRewardActivityConditionNotify = 21826u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssSelfPassResponse = 22042u16,
+    PayInfoResponse = 21829u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DailyQuestStateNotify = 22047u16,
+    FsmConditionPassRequest = 21831u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrackMoonTargetUpdateNotify = 22048u16,
+    FlyEquipAddNotify = 21836u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LowMemoryChangeSceneFinishRequest = 22050u16,
+    PhantomBattleBvBLoadingNotify = 21837u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetClientGlobalVarResponse = 22056u16,
+    FragileChangeResponse = 21843u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActivityResultUpdateNotify = 22058u16,
+    AreaTerminalPinOperationRequest = 21848u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SheriffCriminalUpdateNotify = 22065u16,
+    ForgeItemRequest = 21849u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ControlInfoNotify = 22077u16,
+    TutorialUnlockRequest = 21852u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimePointActivityBatchRewardResponse = 22079u16,
+    TimelineTraceStartResponse = 21855u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlaySwitchSportModeResponse = 22082u16,
+    AccessPasserbyNpcSpawnerRequest = 21857u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GatherClueInfoNotify = 22089u16,
+    SceneSubLevelsNotify = 21860u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoShopRewardLockRequest = 22092u16,
+    UpdateEnableFunctionNotify = 21861u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SimpleCombatEntityBuffLayerCountNotify = 22102u16,
+    WeatherNotify = 21865u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleSkinTrialUiEndPush = 22109u16,
+    NewLinkNotify = 21875u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ApplyRechallengeResponse = 22112u16,
+    FeiXuePreheatInfoUpdateNotify = 21876u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchCloseTaskRequest = 22122u16,
+    AbyssRewardsUpdateNotify = 21881u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EdgeRunnerFunctionPreUnlockResponse = 22129u16,
+    FishingShipSkinChangeResponse = 21884u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryLockItemResponse = 22131u16,
+    QuestNpcMoveOverResponse = 21885u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UseSkillFailRequest = 22140u16,
+    PayGiftResponse = 21886u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattleStateChangeNotify = 22142u16,
+    TrackMoonBuildFlowRequest = 21892u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SlashAndTowerInfoResponse = 22143u16,
+    RacingBetsRankResponse = 21901u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrManualSwitchTraceRoadResponse = 22149u16,
+    SwitchSceneGroupNotify = 21909u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangePlayerTitleRequest = 22152u16,
+    BuffItemResponse = 21929u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorTechUnlockNotify = 22153u16,
+    FishingShipFixResponse = 21934u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AfterJoinSceneNotify = 22156u16,
+    SolarSchoolSaveResponse = 21936u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RhythmShipStartNotify = 22158u16,
+    InstSettleNotify = 21939u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayEntityMontagePush = 22159u16,
+    MixDrinkRoleRewardRequest = 21940u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorOutlookEditPresetRequest = 22163u16,
+    EntityPatrolAddTagResponse = 21942u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallQuestGiveUpNotify = 22166u16,
+    LeaveSceneNotify = 21944u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorPositionStatePush = 22169u16,
+    CharacterDeathRequest = 21948u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBatchRefiningResponse = 22170u16,
+    PrivateMessageNotify = 21956u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseDevelopResetRequest = 22176u16,
+    RoverRogueShopRefreshResponse = 21963u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseEntityDataChangeNotify = 22179u16,
+    RegressQuestionOpenRequest = 21964u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TriggerExitSkillResponse = 22190u16,
+    DeadeyeShootHitResponse = 21965u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SysInfoNotify = 22193u16,
+    AgreeJoinResultNotify = 21974u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingEntrustHandInRequest = 22195u16,
+    VehicleRequest = 21983u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomMusicSwitchResponse = 22198u16,
+    MiniWriteLetterLoginNotify = 21985u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueTalentInfoRequest = 22199u16,
+    KurotatoStepUpdateNotify = 21986u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleBadgeInfoUpdateNotify = 22202u16,
+    LineCrossChallengeStartResponse = 21987u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    JokerGuessRewardResponse = 22205u16,
+    BasicInfoNotify = 21993u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattlePassRecurringTakeResponse = 22206u16,
+    PhantomInteractionEquipResponse = 21997u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HostTeleportUnlockNotify = 22223u16,
+    RhythmMainLineInfoResponse = 21999u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DollDeliveryRequest = 22224u16,
+    RunTestResponse = 22000u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SubmitItemInfoNotify = 22231u16,
+    RiskHarvestStarRewardRequest = 22005u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlowEndNotify = 22237u16,
+    RogueResGotoNextRoomRequest = 22010u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeleportDataRequest = 22238u16,
+    RoleSkillViewRequest = 22013u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneTestNotify = 22242u16,
+    TotalTopUpRewardResponse = 22019u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RiskHarvestStarRewardResponse = 22246u16,
+    StorageInfoUpdateRequest = 22023u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MowTowerFirstScoreNotify = 22248u16,
+    HarvestActivityResultNotify = 22031u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CookingDataRequest = 22249u16,
+    HonamiStoryMascotInfoUpdateNotify = 22035u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssChallengeGotoNextRoomResponse = 22250u16,
+    RoleTrialSettleNotify = 22045u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetFocusModeDeterCondResponse = 22252u16,
+    AbyssLikeNotify = 22047u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleBackSlotCardLibraryResponse = 22253u16,
+    RoguelikeStartRequest = 22052u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PickUpDropItemResponse = 22257u16,
+    MobileButtonSettingUpdateResponse = 22058u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueQuitRequest = 22259u16,
+    LordGymReadRequest = 22064u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MaterialResponse = 22263u16,
+    PhantomBattleGamerStatusInfoNotify = 22067u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayUnlimitedModeResponse = 22265u16,
+    UpdateChildQuestNodeStatusNotify = 22070u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SettingNotify = 22267u16,
+    UnlockCardNotify = 22072u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleMotionUnLockRequest = 22268u16,
+    PassiveSkillRemoveResponse = 22073u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BrochureRewardResponse = 22272u16,
+    BattleStateChangeResponse = 22078u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseGetRewardResponse = 22279u16,
+    MailDeleteResponse = 22089u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewPlayerSupportSetCurUseTrialRoleResponse = 22287u16,
+    EffectiveWeekCardInfoNotify = 22090u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleFavorTalkScoreRequest = 22288u16,
+    PhantomBattlePhantomCardSkillResponse = 22092u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveEntityAoiNotify = 22294u16,
+    ItemRewardNotify = 22096u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightLastSaveDataRequest = 22296u16,
+    TraceRecallQuestNotify = 22097u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AreaTerminalInfoNotify = 22310u16,
+    RogueResSwitchFormationResponse = 22098u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleSkinResponse = 22316u16,
+    MotorFightRankListResponse = 22100u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrPhoneTaskRewardRequest = 22319u16,
+    RemoveTemporaryTeleportRequest = 22106u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WorldLevelRegainResponse = 22321u16,
+    SceneSubLevelsChangedNotify = 22107u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerClearRecordRequest = 22324u16,
+    StartRecallResponse = 22108u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerResetResponse = 22328u16,
+    BlackSwordChallengeInfoRequest = 22114u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueTowerTrialSelectBossResponse = 22338u16,
+    AchievementUpdateResponse = 22115u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssLittleRoleLevelUpRequest = 22340u16,
+    PinballInGameStarChangeNotify = 22124u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DollGarbInsertCoinRequest = 22346u16,
+    AiInformationPush = 22125u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TotalTopUpScoreInfoRequest = 22350u16,
+    FightDataCheckNotify = 22139u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CookingFormulaUpdateNotify = 22353u16,
+    SwitchLogicStateResponse = 22141u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BuffItemResponse = 22356u16,
+    PhantomBattleCheckCardSkillUnlockResponse = 22143u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FeiXuePreheatInfoRewardResponse = 22363u16,
+    HarvestActivityLevelNotify = 22145u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MatchFailNotify = 22367u16,
+    PhantomBattleSelectReserveCardRequest = 22146u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SubmitNodeResponse = 22370u16,
+    RoverRogueLootChangeRequest = 22152u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ForgeItemRequest = 22375u16,
+    MotorOutlookCreatePresetResponse = 22153u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeGotoNextRoomResponse = 22376u16,
+    PartUpdateRequest = 22158u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BlackCoastThemeTaskRewardRequest = 22379u16,
+    RecallMapMarkInfoNotify = 22163u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneSubLevelsNotify = 22380u16,
+    FloroRanchSettleDataResponse = 22164u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PbUpLevelSkillRequest = 22382u16,
+    PhantomBattleRoundOverRequest = 22166u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeleportVehicleNotify = 22384u16,
+    RegressQuestionOpenResponse = 22169u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ResetBabelTowerLevelResponse = 22385u16,
+    RoleBreakThroughViewRequest = 22171u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GachaAccumulateInfoRequest = 22393u16,
+    InfrRoadBuildResponse = 22175u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RealmBetweenMotorRewardRequest = 22394u16,
+    DangoMonopolyTaskUpdateNotify = 22180u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExchangeSharedInfoNotify = 22397u16,
+    ConsumptiveTaskInfoNotify = 22181u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AttributeInitRequest = 22401u16,
+    OtherJoinSceneNotify = 22182u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsTaskResponse = 22403u16,
+    MonsterDrownResponse = 22186u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActivityUpdateNotify = 22413u16,
+    SolarSchoolOneKeyRewardRequest = 22187u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueTalentUnlockNotify = 22418u16,
+    FishingPointInfoRequest = 22194u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConsumptiveTaskInfoNotify = 22419u16,
+    LordGymGroupInfoUpdateNotify = 22195u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryAreaTaskInfoUpdateNotify = 22423u16,
+    DangoMonopolyTaskRemoveNotify = 22199u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneItemSequenceFrameStartRequest = 22424u16,
+    VehicleChangePassengerRequest = 22200u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BabelActivityTaskInfoNotify = 22425u16,
+    LifePointChallengeStartResponse = 22206u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HarvestActivityPointResponse = 22430u16,
+    FloroRanchPlayEventChoiceRequest = 22212u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GetFormationDataResponse = 22433u16,
+    SunSpiritActionOperationEndPush = 22214u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ApplyBuffFailedNotify = 22435u16,
+    FishingEntrustRefreshRequest = 22223u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewbieAdventureTaskUpdateNotify = 22437u16,
+    RoverRogueLootChangeNotify = 22228u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NormalItemResponse = 22445u16,
+    MonthCardRequest = 22235u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewbieFetchScoreRewardResponse = 22454u16,
+    RollBlockSwitchControlBlockResponse = 22237u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EndLessHistoryResponse = 22456u16,
+    RemoveInstanceTimerResponse = 22241u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UseSkillFailPush = 22464u16,
+    NormalMonsterManualInfoRequest = 22245u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TurntableCompleteResponse = 22465u16,
+    BirthDayCardRoleResponse = 22249u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CombatMaxCaseMessageRequest = 22467u16,
+    AnimationStateInitPush = 22251u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CaptureEntityResponse = 22470u16,
+    GachaInfoResponse = 22256u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OnlineMotorActivityLevelResponse = 22472u16,
+    CoopSpRewardRequest = 22261u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SimpleTrackReportResponse = 22473u16,
+    H5ViewActivityReadRequest = 22263u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DestroyBulletResponse = 22475u16,
+    PhantomBattleBackLibraryRequest = 22264u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulMapTravelTaskRewardResponse = 22477u16,
+    BabelTowerSettlementResponse = 22271u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CalabashMsgRequest = 22482u16,
+    SetClientGlobalVarRequest = 22272u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomLevelUpResponse = 22489u16,
+    NewPlayerSupportTrialRoleLvUpResponse = 22280u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerLivingStatesNotify = 22492u16,
+    DropCatchLevelRewardUpdateNotify = 22284u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveHackingEntityNotify = 22506u16,
+    TrapDefenseRewardGainingGroupsNotify = 22298u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActorVisiblePush = 22507u16,
+    OutputDebugInfoResponse = 22307u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SunSpiritActionOperationNotify = 22508u16,
+    ControlInfoNotify = 22309u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoReChallengeRequest = 22515u16,
+    RacingBetsPlayerInfoRequest = 22312u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneBlockSplitHumanSwitchStateNotify = 22518u16,
+    AchievementInfoRequest = 22315u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VehiclePlatformGetOnRequest = 22526u16,
+    MotorFightItemUpdateNotify = 22316u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayGiftConditionFinishNotify = 22528u16,
+    MotorSliderRequest = 22317u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallQuestFinishActionEndResponse = 22532u16,
+    FormationSwitchCurrentResponse = 22323u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomAttrRecommendResponse = 22535u16,
+    HonamiStoryLimitTaskInfoUpdateNotify = 22327u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryLifeSupportUpResponse = 22538u16,
+    GravityHookLockPointChangeGravityResponse = 22328u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BuffEffectRequest = 22540u16,
+    UpdateSceneGroupDataNotify = 22332u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TestDamageRecordNotify = 22542u16,
+    EntityAddBubbleNotify = 22334u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HarvestActivityLevelNotify = 22544u16,
+    ElevatorStateChangeRequest = 22336u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightRefreshCollectionRequest = 22546u16,
+    AbyssLittleRoleLevelUpResponse = 22337u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerBasicInfoGetResponse = 22549u16,
+    SetMatchTeamMatchFlagRequest = 22339u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BeControlledDestroyRequest = 22559u16,
+    MotorTaskUpdateNotify = 22342u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreScoreRewardRequest = 22561u16,
+    FlySkinWearRequest = 22343u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BuildingUnLockResponse = 22569u16,
+    TrackMoonBuildFlowResponse = 22345u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityAccessRangeResponse = 22572u16,
+    GetDetectionLabelInfoRequest = 22348u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SelectDetectionTargetResponse = 22576u16,
+    DangoMonopolyGridRewardRequest = 22355u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingInfoUpdateNotify = 22579u16,
+    KurotatoPropertyUpdateNotify = 22357u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CharacterDeathResponse = 22581u16,
+    PlayerRoleVoiceSetResponse = 22358u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomMusicInfoResponse = 22582u16,
+    AddTemporaryTeleportInfoNotify = 22362u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneBlockSplitPopWindowNotify = 22587u16,
+    RoleTrainResponse = 22364u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingInfoResponse = 22596u16,
+    PhantomBattleCardTargetInfoRequest = 22368u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpecialItemUnEquipRequest = 22601u16,
+    RoguelikeWriteCatLevelPlayRewardResponse = 22369u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MixDrinkTopicSelectResponse = 22606u16,
+    QuickHackRamVerifyPush = 22375u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UnOpenedAreaPullbackRequest = 22608u16,
+    FlagChallengeBoxExpNotify = 22380u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssPluginSynthesisRequest = 22615u16,
+    RoleTowerFloorSettleNotify = 22389u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CorniceMeetingRewardResponse = 22628u16,
+    MulMapTravelTaskRewardRequest = 22390u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OnlineMotorSettleNotify = 22637u16,
+    PlayerRoleVoiceSetRequest = 22391u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VehicleRemovePassengerRequest = 22646u16,
+    MotorLinkTaskResponse = 22394u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballBonusFullWinResponse = 22647u16,
+    BirthDayRewardResponse = 22398u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhBaPlanFindPlanRequest = 22650u16,
+    PhantomSkinChangeRequest = 22400u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DollDeliveryNotify = 22651u16,
+    FlySkinUnLoadRequest = 22401u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleSlotCardSkillRequest = 22653u16,
+    BuffEffectRequest = 22402u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallQuestNpcMoveOverRequest = 22658u16,
+    RogueWeeklyBlackFlowerNotify = 22410u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardGroupInfoNotify = 22666u16,
+    SceneItemMoveTargetNotify = 22412u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleQuestStateNotify = 22674u16,
+    PlayerHeadResponse = 22413u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SlashAndTowerRecommendRequest = 22684u16,
+    TeamMatchAcceptInviteRequest = 22419u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorTaskInfoNotify = 22685u16,
+    PinballInGameKickBallRequest = 22423u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PassiveSkillAddNotify = 22690u16,
+    SolarSchoolTaskProgressRewardRequest = 22424u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhotoFightTaskRewardResponse = 22692u16,
+    MotorFightPlayerDeadRequest = 22425u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FastReturnDungeonResponse = 22693u16,
+    FallFinishNotify = 22427u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActionFinishImmediatelyNotify = 22694u16,
+    EntitySendEventRequest = 22433u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueTalentUnlockResponse = 22696u16,
+    PlayerVoiceLanguageRequest = 22437u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsOpDoneResponse = 22698u16,
+    MotorDecalTaskResponse = 22439u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoteBatchCollectRequest = 22702u16,
+    AiHatePush = 22440u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBatchPolishRequest = 22703u16,
+    UpdatePhantomEquipGroupRequest = 22464u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlEventSelectResponse = 22706u16,
+    BlockListRequest = 22469u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlShopRefreshResponse = 22722u16,
+    RecallInstSaveDataNotify = 22471u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityMotorOutlookChangeNotify = 22728u16,
+    EntityPatrolAddTagRequest = 22474u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PressGameResponse = 22730u16,
+    EntityAccessRangeRequest = 22475u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    Summon3Request = 22732u16,
+    MotorFightRefreshSubLevelNotify = 22478u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OrderRemoveBuffByTagsRequest = 22742u16,
+    BuildingLevelUpRequest = 22480u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapTraceInfoRequest = 22743u16,
+    RoleIllustratedInfoResponse = 22483u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeSeasonDataRequest = 22746u16,
+    ExchangeRewardInfoNotify = 22486u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LordGymBeginResponse = 22749u16,
+    MotorUseSkinResponse = 22488u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CameraSettingQueryResponse = 22753u16,
+    RemovePlacementFromBoardNotify = 22490u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EncircleChallengeUpdateNotify = 22754u16,
+    PlayerReviveNotify = 22493u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseRefreshShopRequest = 22766u16,
+    SceneSubLevelsResponse = 22498u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BuildingLevelUpResponse = 22769u16,
+    WeeklyFrameworkInfoResponse = 22499u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ANStartPush = 22773u16,
+    UseSoundBoxSkillResponse = 22512u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchCloseTaskResponse = 22776u16,
+    FloroRanchSettleRequest = 22514u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightOneKeyRewardRequest = 22785u16,
+    RogueResInstResultRequest = 22518u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorOutlookAddNotify = 22787u16,
+    WeaponItemAddNotify = 22519u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryActivityInfoRequest = 22792u16,
+    RecallQuestGiveUpNotify = 22535u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DamageExecuteResponse = 22796u16,
+    PayItemResponse = 22536u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DollSmallMapInfoResponse = 22797u16,
+    ReportPlayerResponse = 22547u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleQuestPointStateResponse = 22800u16,
+    MulCorniceMeetingRewardResponse = 22551u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleSlotInsteadRequest = 22801u16,
+    MailBindRequest = 22555u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayGachaRefreshResponse = 22802u16,
+    UseSkillFailResponse = 22556u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayShopUpdateResponse = 22804u16,
+    AiBlackboardsRequest = 22558u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardGroupDeleteRequest = 22811u16,
+    CaughtResponse = 22560u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OccupyRewardResponse = 22814u16,
+    PhantomBattleMasterLevelRewardResponse = 22561u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HandInItemRequest = 22822u16,
+    HonamiStoryLifeSupportNotify = 22572u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FsmPlayMontageResponse = 22825u16,
+    PinballWeaponWearRequest = 22578u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrRoadBuildResponse = 22831u16,
+    DeleteStoryCharacterRequest = 22583u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleSelectTargetEffectNotify = 22838u16,
+    SetQuestFocusModeResponse = 22593u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EdgeRunnerTaskRewardResponse = 22840u16,
+    InteractQuestSuspendEntityNotify = 22595u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AllDarkTideMapMarkNotify = 22844u16,
+    FormationRequest = 22596u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QueryRecallItemBagResponse = 22846u16,
+    GatherActivityRewardRequest = 22600u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RollBlockMovementFinishResponse = 22850u16,
+    PlaceItemOnBoardResponse = 22601u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RollBlockUpdateGamePlayNotify = 22853u16,
+    RollBlockResetGamePlayRequest = 22610u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PbRoleResonLockFinishNotify = 22856u16,
+    BtRangeFailWarningNotify = 22612u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleMotionActiveNotify = 22861u16,
+    QingXiaoTaskUpdateNotify = 22617u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OtherJoinSceneNotify = 22868u16,
+    RecallQuestActionResponse = 22619u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DollDeliveryResponse = 22869u16,
+    SetPlayerYuXueModeResponse = 22623u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchSettleDataRequest = 22870u16,
+    AccessPathConfigResponse = 22626u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoShopRewardRefreshResponse = 22871u16,
+    ChangeMonsterRoleNotify = 22631u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsCloseSettleMenuResponse = 22872u16,
+    BrochureRewardResponse = 22634u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DiscardWeaponResponse = 22877u16,
+    RoleFavorListRequest = 22639u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FsmConditionPassRequest = 22886u16,
+    JoinSceneNotifyConfirmRequest = 22643u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueInsListRequest = 22892u16,
+    BattlePassRequest = 22649u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneItemSequenceFrameStartResponse = 22907u16,
+    FloroRanchAnimationResponse = 22651u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AchievementReceiveResponse = 22908u16,
+    MotorFightRefreshCollectionRequest = 22653u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ApplyGameplayEffectResponse = 22915u16,
+    TrialRoleRewardRequest = 22659u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SelectBabelActivityDeTermRequest = 22917u16,
+    ChangeStateConfirmResponse = 22660u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomVicePolishAckResponse = 22926u16,
+    FormationSwitchRoleRequest = 22661u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeEntityStateRequest = 22928u16,
+    FarmGoldLevelPlayRequest = 22663u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SitChairResponse = 22930u16,
+    VacuumCleanerResponse = 22664u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AnimalDieResponse = 22932u16,
+    FishingInfoResponse = 22673u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DestroyBulletPush = 22933u16,
+    PressGameNotify = 22674u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AttachEntityRequest = 22935u16,
+    CommitBoardRequest = 22677u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FormationChangeResponse = 22944u16,
+    MingSuHandRewardResponse = 22679u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapTraceResponse = 22948u16,
+    SubmitItemInfoNotify = 22681u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FollowTrackResponse = 22950u16,
+    DollGarbStartResponse = 22696u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GiantResponseNotify = 22958u16,
+    WeatherControlUnlockNotify = 22697u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleTrainRequest = 22959u16,
+    PinballFixSpawnFinishNotify = 22699u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayRemoveUnitRequest = 22961u16,
+    ShowInvalidItemRequest = 22706u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ResonantChainOptionalLimitResponse = 22963u16,
+    FlowerPollutionRequest = 22707u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleAreaSkillRequest = 22966u16,
+    NormalMonsterManualInfoResponse = 22708u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewLinkBurstPush = 22970u16,
+    FriendRecentlyTeamRequest = 22709u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleAreaSkillCdNotify = 22971u16,
+    TeleportVehicleNotify = 22711u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ApplyGameplayEffectRequest = 22973u16,
+    DollGrabStopResponse = 22720u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MontagePlayRequest = 22974u16,
+    LongShanStageUpdateNotify = 22723u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateMonsterUnlockNotify = 22978u16,
+    ItemLockResponse = 22732u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DamageRecordNotify = 22979u16,
+    EnterAreaRequest = 22737u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GiantItemAccessUnlockNotify = 22982u16,
+    LanguageSettingUpdateRequest = 22740u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NormalItemRequest = 22983u16,
+    MotorFightRankListRequest = 22743u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetMatchInfoResponse = 22985u16,
+    AdviceSettingNotify = 22745u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrackMoonSettleRequest = 22986u16,
+    LivenessCountUpdateNotify = 22746u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlaceItemOnBoardNotify = 22990u16,
+    VacuumCleanerRequest = 22748u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FoundationCoreOperateRequest = 22998u16,
+    GuideFinishRequest = 22758u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorTaskUpdateNotify = 23000u16,
+    PhotoMemoryResponse = 22761u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ElevatorStateChangeRequest = 23005u16,
+    MapUnlockFieldNotify = 22762u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LordGymGroupInfoUpdateNotify = 23018u16,
+    NormalItemResponse = 22771u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RollBlockItemUpdateNotify = 23026u16,
+    RogueWeeklyArtifactSelectRequest = 22776u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorSummonAndRidePush = 23028u16,
+    CalabashSkinTakeOnNotify = 22784u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulFishingIllustratedRewardRequest = 23031u16,
+    RoleTrialSceneRollbackPush = 22790u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PartUpdateNotify = 23036u16,
+    BtGiveUpResponse = 22791u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyArtifactSelectRequest = 23037u16,
+    DangoBrawlItemUnlockNotify = 22794u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsTalentLevelUpResponse = 23041u16,
+    UpdatePlayerPassiveSkillResponse = 22796u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    JokerGuessUseSkillRequest = 23048u16,
+    KurotatoWeaponUpdateNotify = 22797u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BeControlledPosInFoundationNotify = 23053u16,
+    MotorTaskInfoNotify = 22808u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LivenessTaskTakeRequest = 23058u16,
+    SetFanNumberOfTurnsRequest = 22814u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ANStartRequest = 23064u16,
+    FishingItemAddNotify = 22817u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneItemStopResponse = 23071u16,
+    FragileChangeRequest = 22818u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsHandBooskUnlockNotify = 23073u16,
+    PlayInstShareFirstInfoNotify = 22822u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossPilingBuffUpdateNotify = 23086u16,
+    ConsumptiveTotalScoreNotify = 22825u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleSkinAddNotify = 23089u16,
+    ResetBabelTowerLevelRequest = 22844u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AtomicProcessRemoveBuffResponse = 23095u16,
+    HarvestActivityResultRequest = 22854u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VacuumCleanerResponse = 23100u16,
+    NewPlayerSupportSetCurUseTrialRoleRequest = 22855u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DissolveCombineRelationResponse = 23102u16,
+    H5CircumFluenceActivityReadResponse = 22858u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrialRoleRewardResponse = 23104u16,
+    QuestChangeTraceNotify = 22862u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchWeeklyRequest = 23105u16,
+    RollBlockItemUpdateNotify = 22864u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryWeaponDressRequest = 23107u16,
+    HardnessModeChangedNotify = 22866u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeleportUpdateNotify = 23109u16,
+    BanItemUseNotify = 22869u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerInfoUpdateNotify = 23114u16,
+    RogueTowerTrialSelectBossRequest = 22870u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GuideFinishRequest = 23117u16,
+    LoopTeleportVolumeActionRequest = 22884u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryBagSizeUpdateNotify = 23119u16,
+    ShortMessageUpdateRequest = 22887u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddReviveRegionRequest = 23120u16,
+    ShortMessageReplyRequest = 22894u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossRushBatchClaimRewardRequest = 23121u16,
+    KurotatoChestRewardSelectResponse = 22900u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrPhoneTaskRewardResponse = 23125u16,
+    TutorialInfoResponse = 22904u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayShopBuyRequest = 23126u16,
+    TowerGuideActivityRewardResponse = 22907u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SwitchSceneGroupNotify = 23134u16,
+    PhantomBattleTaskRewardRequest = 22908u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VehicleFinishResponse = 23136u16,
+    RacingBetsGearRefundRequest = 22909u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetMatchTeamMatchFlagResponse = 23137u16,
+    MotorFightSelectBuffGateResponse = 22911u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResOpDoneRequest = 23138u16,
+    RoguelikeWriteCatRewardResponse = 22912u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    IllustratedUnlockNotify = 23144u16,
+    RoguelikeGainDataUpdateNotify = 22913u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityAccessRangeRequest = 23148u16,
+    BtRollbackResponse = 22916u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchExecuteSkillPlayRequest = 23150u16,
+    MotorOutlookOwnedChangeNotify = 22922u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlBagUpdateNotify = 23151u16,
+    ReadDisplayInfoRequest = 22933u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    StartMatchNotify = 23153u16,
+    MotorInfoResponse = 22936u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    StorageInfoUpdateNotify = 23161u16,
+    ActivityResultUpdateNotify = 22938u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneSubLevelsChangedNotify = 23168u16,
+    PhantomVicePolishAckResponse = 22940u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MiniWriteLetterSaveContentResponse = 23170u16,
+    DangoBrawlChallengeUnlockNotify = 22943u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GivebackRewardRequest = 23177u16,
+    WorldBlackboardRequest = 22945u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayEventChoiceRequest = 23181u16,
+    BattlePassTaskRequest = 22950u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemDecomposeResponse = 23183u16,
+    FlowActionRequest = 22962u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallExploreSkillRouletteSetResponse = 23185u16,
+    FlagStrongholdInfoUpdateNotify = 22966u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityRandomInteractRequest = 23187u16,
+    AdventureUpdateNotify = 22975u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleRepeatedTaskRewardRequest = 23196u16,
+    MaxMessageIdPush = 22976u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleFavorLevelUpdateNotify = 23198u16,
+    EntityBuffProducerOperateResponse = 22978u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FormationRequest = 23200u16,
+    PhantomBattleRepeatedTaskRewardRequest = 22983u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerNetStateBackServerPush = 23205u16,
+    PhantomBattleBadgeRewardRequest = 22984u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AiBlackboardsResponse = 23212u16,
+    CommonOrganResetTimeRequest = 22989u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BuffItemRequest = 23217u16,
+    RoguelikeStartResponse = 22991u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrArchiveTaskRewardRequest = 23218u16,
+    EntityBeamReceiveRequest = 22992u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorSliderRequest = 23230u16,
+    PhantomBattleAddBuffInfoNotify = 22993u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ProgressBarFinishResponse = 23237u16,
+    RacingBetsRepeatedTaskRewardResponse = 22994u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConfirmCompleteRefMp4QuestNotify = 23244u16,
+    RoguelikeResultNotify = 22995u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FixToolResponse = 23245u16,
+    ConfirmQuestResourceRequest = 23000u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AchievementListProgressNotify = 23250u16,
+    EntityWalkingPatternFinishResponse = 23002u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityFoundationCoreChangeNotify = 23251u16,
+    FsmStateBehaviorRequest = 23005u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DarkTidePickUpItemRequest = 23254u16,
+    UpdateNodeStatusNotify = 23007u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulRogueWeeklyRewardResponse = 23258u16,
+    SetQuestResourceStateRequest = 23014u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RiskHarvestArtifactNotify = 23260u16,
+    HonamiStoryInstLeaveResponse = 23019u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SignActivitySignStateNotify = 23272u16,
+    RoleDevelopConfigResponse = 23021u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemExchangeResponse = 23286u16,
+    RacingBetMatchInfoResponse = 23023u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemDisuseRequest = 23288u16,
+    CookFormulaResponse = 23024u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CookFoodResponse = 23290u16,
+    FishingSellResponse = 23025u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AdventureManualResponse = 23292u16,
+    PayGiftConditionFinishNotify = 23030u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BatchMaterialReplaceRequest = 23293u16,
+    AcceptFocusWaitQuestResponse = 23033u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapUnlockFieldInfoRequest = 23298u16,
+    InfrRoadUpdateNotify = 23036u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerCreatePsnSessionResponse = 23299u16,
+    SceneItemStateRequest = 23046u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleReChallengeRequest = 23304u16,
+    NewHandInItemRequest = 23060u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrFireUpdateNotify = 23308u16,
+    GetInstExchangeRewardResponse = 23064u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RhythmTaskOneKeyRewardRequest = 23309u16,
+    DangoBrawlShopRefreshRequest = 23068u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BanChatNotify = 23311u16,
+    EntityBattleInfoResponse = 23069u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerUpdateRecordResponse = 23318u16,
+    TowerGuideActivityInfoResponse = 23078u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AchievementInfoRequest = 23322u16,
+    SurvivorsWeaponInfoResponse = 23080u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrLevelUpResponse = 23326u16,
+    ShortMessageUpdateNotify = 23082u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PartUpdateRequest = 23337u16,
+    MotorFightRefreshBossPush = 23084u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueGainDataUpdateNotify = 23339u16,
+    AbyssPluginItemInfoUpdateNotify = 23091u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingEntrustUpdateNotify = 23340u16,
+    RogueTowerTrialStartResponse = 23092u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActorVisibleNotify = 23346u16,
+    FishingActivityLimitRewardResponse = 23099u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimeStopPush = 23351u16,
+    GetRewardTreasureBoxResponse = 23102u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    StartRecallResponse = 23357u16,
+    RoleSkillBranchModifyResponse = 23107u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AvoidBlockSubmitOverNodeResponse = 23361u16,
+    StartMatchNotify = 23110u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PrivateChatHistoryRequest = 23362u16,
+    BathPhotoRequest = 23123u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyResultNotify = 23363u16,
+    PackAnimChangedNotify = 23124u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueTowerTrialReChallengeRequest = 23366u16,
+    FriendAddedNotify = 23136u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallQuestRollBackEndNotify = 23374u16,
+    UpdateFormationRequest = 23144u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateSceneGroupDataRequest = 23380u16,
+    RolePhantomPropUpdateNotify = 23146u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlFightActionNotify = 23382u16,
+    FloroRanchUnlockTechPointRequest = 23148u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResTotalShopItemUpdateNotify = 23383u16,
+    TreasureChestCountNotify = 23149u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MontagePlayResponse = 23384u16,
+    DecalRemoveNotify = 23152u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayUnlimitedModeRequest = 23389u16,
+    BossRushBuffChooseResultRequest = 23159u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FuncOpenNotify = 23390u16,
+    NewTowerRoundUpdateNotify = 23161u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RolePhantomPropUpdateNotify = 23392u16,
+    LevelPlaySwitchSportModeRequest = 23163u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityIsVisiblePush = 23399u16,
+    NewTowerRecommendRequest = 23165u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsMonsterConsecutiveKillsNotify = 23401u16,
+    HonamiStoryInstSettleNotify = 23167u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BabelActivityDeTermInfoNotify = 23405u16,
+    RoverRogueShopInfoUpdateNotify = 23170u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleSkinRequest = 23414u16,
+    PinballSetPayloadRequest = 23171u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LandingDamageRequest = 23415u16,
+    TriggerExitSkillRequest = 23172u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BtGiveUpResponse = 23416u16,
+    UnlockHeadPhotoNotify = 23177u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConsumptiveRewardResponse = 23419u16,
+    LivenessTaskTakeResponse = 23181u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossRushLevelScoreRewardRequest = 23421u16,
+    HonamiStoryBagInfoUpdateNotify = 23184u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ParkourChallengeTransRequest = 23432u16,
+    CalabashLevelRewardResponse = 23187u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssReviveNotify = 23441u16,
+    GivebackRewardRequest = 23197u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingSailingRequest = 23442u16,
+    RoleSexChangeResponse = 23208u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoMonopolyTaskAddNotify = 23445u16,
+    RoverRogueBlessGroupSelectNotify = 23210u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AgreeJoinResultRequest = 23449u16,
+    RollBlockGamePlayReadyResponse = 23212u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ParkourChallengeTakeResponse = 23450u16,
+    RacingBetMatchInfoRequest = 23216u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BirthdayInitResponse = 23451u16,
+    SysInfoNotify = 23221u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleGuideRewardResponse = 23453u16,
+    BtRollbackRequest = 23225u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestNpcMoveOverRequest = 23456u16,
+    RogueResPlayerStatusUpdateNotify = 23230u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerTaskDataUpdateNotify = 23458u16,
+    PhantomInteractionUnlockNotify = 23244u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseSelectGainingGroupRequest = 23459u16,
+    TrapDefensePreviewStartNotify = 23247u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleSkillEffectFailNotify = 23479u16,
+    PhantomCollectUpdateNotify = 23250u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PrivateChatRequest = 23483u16,
+    RemoveOccupationInfoNotify = 23251u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlEventRefreshResponse = 23486u16,
+    AbyssRoleAddNotify = 23255u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HookLockPointResponse = 23488u16,
+    TimelineTraceControlResponse = 23257u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResInstGlobalDataNotify = 23490u16,
+    FloroRanchOutRequest = 23261u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveBuffByServerIdS2cRequestNotify = 23494u16,
+    AdviceRequest = 23265u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorUseSceneResponse = 23495u16,
+    RoverRogueCurrencyNotify = 23276u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HandInMingSuRequest = 23496u16,
+    UnOpenedAreaPullbackResponse = 23277u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KickWorldTeamRequest = 23500u16,
+    RoleShowListUpdateResponse = 23280u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballSpawnFirstFinishNotify = 23508u16,
+    DieSwitchRoleNotify = 23281u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityStateReadyNotify = 23517u16,
+    ExchangeSharedInfoNotify = 23282u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestRedDotNotify = 23522u16,
+    HonamiStoryAddWeaponNotify = 23284u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapTraceNotify = 23529u16,
+    RoverRogueTaskUpdateNotify = 23286u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsPlayerInfoRequest = 23533u16,
+    AvoidBlockClientInitDoneResponse = 23288u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleSkinChangeResponse = 23541u16,
+    RoleTowerRewardTaskUpdateNotify = 23293u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerVarNotify = 23542u16,
+    RoleTowerItemUpdateNotify = 23300u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrFireNoticeResponse = 23545u16,
+    LinkageRewardResponse = 23303u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoRefineWeaponNotify = 23546u16,
+    HonamiStoryLockItemRequest = 23316u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GaSwitchCommonEnemyProCampResponse = 23547u16,
+    MatchFailNotify = 23326u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MonsterPatrolPointReachedResponse = 23552u16,
+    FoodProcessResponse = 23327u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RhythmSettleRequest = 23554u16,
+    KurotatoSyncEntityDealDamagePush = 23335u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorCreateRequest = 23555u16,
+    EntitySimplyMoveInfoPackagePush = 23337u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewHandInItemResponse = 23562u16,
+    TrackMoonConditionNotify = 23338u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeBossInstStartRequest = 23564u16,
+    DangoMonopolySceneGridInfoNotify = 23339u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HarvestActivityLevelRequest = 23568u16,
+    FloroRanchPlayShopBuyRequest = 23342u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VacuumCleanerRequest = 23579u16,
+    RacingBetMatchActionResponse = 23348u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MixDrinkSettleRequest = 23581u16,
+    BoardGridDynamicConfigChangeNotify = 23350u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapRemoveAllMarkResponse = 23583u16,
+    PayGiftSuccessNotify = 23351u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityEquipSkinChangeNotify = 23591u16,
+    DailyQuestChangePreferRequest = 23357u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HandInMingSuResponse = 23593u16,
+    RoadBookMotorRewardResponse = 23361u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlySkinUnLoadResponse = 23595u16,
+    PhantomBattleDebugInfoRequest = 23362u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryTopInfoNotify = 23604u16,
+    BeControlledPosInFoundationNotify = 23363u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FriendApplyHandleResponse = 23606u16,
+    RemoveSysBuffNotify = 23366u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ParkourChallengeTransResponse = 23607u16,
+    PlayerBasicInfoGetRequest = 23383u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchUnlockTechPointResponse = 23616u16,
+    CharacterDeathPush = 23389u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityPatrolStopResponse = 23618u16,
+    QuickHackSkillRequest = 23390u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NormalMonsterManualInfoResponse = 23619u16,
+    VisionSkillCallNotify = 23392u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LoadEquipInfoResponse = 23620u16,
+    PlayerGravityUpdateNotify = 23394u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ThirdPartySharedNotify = 23622u16,
+    ForgeFormulaUnlockRequest = 23395u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateFormationNotify = 23626u16,
+    PlayerTitleResponse = 23404u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomCollectReceiveResponse = 23631u16,
+    BanChatNotify = 23415u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VisionExploreSkillSetRequest = 23633u16,
+    PhantomMusicSwitchRequest = 23417u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayGiftSuccessNotify = 23642u16,
+    PayInfoRequest = 23421u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EncircleChallengeCompleteResponse = 23650u16,
+    RegressDisposableRewardResponse = 23423u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetInitTagRequest = 23652u16,
+    TrapDefenseStepUpdateNotify = 23425u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TemporaryTeleportAllInfoNotify = 23653u16,
+    ShopUnlockNotify = 23429u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeleportFinishRequest = 23654u16,
+    RoleSceneVoiceSwitchNotify = 23430u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWhiteCatRecordRequest = 23656u16,
+    KurotatoRefineWeaponResponse = 23434u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetFanStateResponse = 23657u16,
+    SimpleTrackReportResponse = 23444u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityPatrolStartResponse = 23660u16,
+    EnterMatchTeamNotify = 23456u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FormationSwitchRoleResponse = 23668u16,
+    ChangeCardRequest = 23459u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerGameTokenRequest = 23683u16,
+    NetTestDataResponse = 23468u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ParkourChallengeTakeRequest = 23686u16,
+    BossRushClaimRewardResponse = 23469u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AvignonRewardRequest = 23689u16,
+    WorldLevelRegainResponse = 23479u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WorldBlackboardResponse = 23698u16,
+    RoguelikeGotoNextRoomResponse = 23489u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MonsterBoomResponse = 23701u16,
+    OpenSystemBoardResultResponse = 23490u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssReviveCharacterResponse = 23705u16,
+    PhantomMusicUnlockResponse = 23502u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BlackCoastThemeActiveRewardRequest = 23707u16,
+    FishingPortUnlockNotify = 23503u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossRushBatchClaimRewardResponse = 23711u16,
+    FloroRanchSettleDataRequest = 23504u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FriendDeleteRequest = 23712u16,
+    SynthesisFormulaUnlockRequest = 23511u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KickMatchTeamPlayerResponse = 23716u16,
+    BlockListResponse = 23512u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrManualSwitchTraceRoadRequest = 23717u16,
+    MotorLinkTaskRequest = 23517u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeTalentInfoResponse = 23720u16,
+    PinballUpdateWaveNotify = 23526u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleDealCardReplaceResponse = 23721u16,
+    SubmitPhotoNodeResponse = 23527u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorOutlookRegionInfoNotify = 23727u16,
+    PhBaPlanUpdatePlanRequest = 23537u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStorySafeLeaveNotify = 23728u16,
+    BabelTowerDailyTaskRewardResponse = 23540u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GuideInfoResponse = 23730u16,
+    SecGetReportData2FlowRequest = 23542u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CalabashSkinUpdateNotify = 23736u16,
+    BossRushSelectBuffNotify = 23543u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LeaveLevelPlayNotify = 23737u16,
+    AbyssPluginPutResponse = 23547u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AvoidBlockSettlementNotify = 23738u16,
+    PhantomBattleCardUnlockResponse = 23550u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PassiveSkillAddRequest = 23740u16,
+    RhythmChangePartnerRoleRequest = 23553u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddUnlockedGuideNotify = 23741u16,
+    ExploreToolAllNotify = 23555u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SecRoleFightFlowRequest = 23744u16,
+    FoundationCoreOperateResponse = 23558u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RhythmSubLevelUpdateNotify = 23745u16,
+    RhythmChangePartnerRoleResponse = 23561u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FriendRemarkRequest = 23751u16,
+    RoleTowerStepAdvanceRequest = 23562u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestListNotify = 23759u16,
+    ActorVisibleResponse = 23563u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneGroupDataAndCurFormationEntityResponse = 23762u16,
+    ChangeSummonEntityStateRequest = 23569u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CancelQuestFocusModeRequest = 23764u16,
+    GmVoxelInfoNotify = 23572u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LastBigSceneMiniMapInfoResponse = 23770u16,
+    LevelPlayOpenRequest = 23577u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeStateConfirmResponse = 23779u16,
+    MapTravelInfoUpdateNotify = 23579u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityChangeDynamicInteractTextNotify = 23782u16,
+    MoraleTreasureBoxTraceResponse = 23584u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardRoleSkillResponse = 23783u16,
+    WorldBlackboardNotify = 23585u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemFuncValueUpdateNotify = 23784u16,
+    NewTowerSeasonRewardRequest = 23587u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlowStartNotify = 23786u16,
+    RoleMotionActiveNotify = 23591u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseItemUpdateNotify = 23792u16,
+    ClientBasicInfoRequest = 23592u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CalabashLevelRewardRequest = 23794u16,
+    EncircleChallengeCompleteRequest = 23593u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    H5CircumFluenceActivityReadRequest = 23797u16,
+    PlaceItemOnBoardRequest = 23598u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewBieCourseRewardResponse = 23806u16,
+    AnimationStateInitNotify = 23601u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CoopSpRewardRequest = 23809u16,
+    KurotatoEndShopStepResponse = 23609u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpringFestivalTaskRewardRequest = 23817u16,
+    InspirationUnlockChoiceResponse = 23610u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    XboxSettingResponse = 23818u16,
+    QuestReviewInfoRequest = 23616u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DeadeyeShootHitResponse = 23822u16,
+    SpringSignDrawRewardResponse = 23619u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RegressActivityTrialRoleUpdateNotify = 23826u16,
+    SlashAndTowerRecommendResponse = 23623u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DollGrabPauseEndRequest = 23827u16,
+    BeControlledShowNotify = 23631u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlagStrongholdInfoUpdateNotify = 23830u16,
+    ShortMessageChatCharmChangeRequest = 23634u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LobbyQueryPlayersResponse = 23831u16,
+    EncircleChallengeCompleteResponse = 23637u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewLinkNotify = 23833u16,
+    SetBtObjYuXueModeRequest = 23639u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightBossDropNotify = 23836u16,
+    UsePhantomEquipGroupRequest = 23641u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MaxMessageIdPush = 23839u16,
+    ScratchCardRewardRequest = 23653u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityPatrolChangeDirResponse = 23851u16,
+    FloroRanchStartPlayResponse = 23655u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnterAreaResponse = 23858u16,
+    NewTowerResultNotify = 23657u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewbieCourseV2RewardNotify = 23862u16,
+    RoguelikeWriteCatBossRewardResponse = 23662u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RollBlockUpdateAvailableInputsNotify = 23864u16,
+    ChangeOrnamentResponse = 23664u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneStepInfoNotify = 23865u16,
+    MailReadResponse = 23666u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerDefenceInstanceRewardResponse = 23869u16,
+    SurvivorsLastInfoRequest = 23667u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShortMessageInfoResponse = 23875u16,
+    EdgeRunnerUpdateNotify = 23668u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FsmPlayMontagePush = 23876u16,
+    PlayerDeadNotify = 23671u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VehicleUpdateNotify = 23879u16,
+    VehicleResponse = 23682u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleDealCardReplaceRequest = 23882u16,
+    CalabashMsgRequest = 23687u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SecWorldSEndFlowRequest = 23884u16,
+    ChangeSummonEntityStateResponse = 23698u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ForgeInfoRequest = 23896u16,
+    SurvivorsTalentLevelUpResponse = 23700u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DirectTrainPreOpenCloseNotify = 23904u16,
+    FloroRanchPlayRefreshGachaRequest = 23703u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SynthesisFormulaUnlockRequest = 23907u16,
+    MotorFightPlayerDeadResponse = 23704u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballBonusFullWinRequest = 23910u16,
+    PinballQuitRequest = 23709u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TotalTopUpRewardRequest = 23916u16,
+    RoguelikeRefreshGainResponse = 23711u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResIllustrationAwardResponse = 23918u16,
+    DailyAdventureTaskRewardRequest = 23720u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfluenceInfoUpdateNotify = 23919u16,
+    GatewayEchoResponse = 23722u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrV2ScoreRewardResponse = 23928u16,
+    SetBtObjYuXueModeResponse = 23727u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RTimeStopAnimPush = 23930u16,
+    InteractiveUpdateResponse = 23737u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingActivityMilestoneItemNumNotify = 23932u16,
+    MapRemoveAllMarkResponse = 23743u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ReportPlayerResponse = 23940u16,
+    FlowRestartResponse = 23746u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityLivingStatusNotify = 23945u16,
+    SetFocusModeDeterCondRequest = 23749u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ToughCalcExtraRatioChangeRequest = 23954u16,
+    BathChangeCameraRequest = 23750u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityEnterVehicleRequest = 23956u16,
+    BlackCoastThemeTaskRewardRequest = 23757u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VehicleRemovePassengerResponse = 23958u16,
+    NewTowerClearRecordRequest = 23758u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingQuickSellRequest = 23963u16,
+    AvoidBlockSettlementNotify = 23761u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GiantDeliveryItemRequest = 23968u16,
+    SynthesisFormulaUnlockResponse = 23763u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveBuffS2cResponsePush = 23971u16,
+    AdviceVoteRequest = 23765u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomDirectRefiningWeeklyResetNotify = 23980u16,
+    FishingSkillBombRequest = 23767u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossRushTaskUpdateNotify = 23983u16,
+    QuestFastReturnPosRequest = 23769u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossRushBuffChooseResultRequest = 23993u16,
+    TraceMoonPhaseRewardRequest = 23777u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoScoreTaskReceiveRequest = 23998u16,
+    BabelActivityDailyTaskInfoNotify = 23786u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityAccessRangeNotify = 24009u16,
+    FishingSellPreviewResponse = 23795u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballFriendRankResponse = 24014u16,
+    PbGetRoleListNotify = 23798u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SwitchCharacterStateResponse = 24015u16,
+    FishingCompleteResponse = 23801u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SynthesisItemResponse = 24016u16,
+    SingleInstRechallengeResponse = 23802u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BeControlledDestroyResponse = 24018u16,
+    RegressBonusResponse = 23806u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleSelectTargetRequest = 24025u16,
+    RoleTowerStageSettleRequest = 23809u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightGameOverNotify = 24027u16,
+    MotorLockedTechUpdateNotify = 23811u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreSkillRouletteSetResponse = 24039u16,
+    LanguageSettingUpdateResponse = 23816u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActivityResponse = 24041u16,
+    EntityStaticHookMoveRequest = 23825u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FinishDownloadQuestResourceResponse = 24046u16,
+    ChangePlayerTitleResponse = 23826u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneItemMoveSplineRequest = 24048u16,
+    RoleTowerRankRewardReceiveRequest = 23829u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CheckUseSoundBoxSkillRequest = 24052u16,
+    PhantomBattleDealCardReplaceNotify = 23835u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorOutlookInfoRequest = 24056u16,
+    RacingBetsCloseSettleMenuResponse = 23836u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HarvestActivityLevelDiffRequest = 24064u16,
+    PhantomBattleCardPosChangeNotify = 23839u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResGainDataTotalNotify = 24073u16,
+    EnterMatchInstRequest = 23840u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlaySelectCardGroupResponse = 24077u16,
+    HarvestActivityPointNotify = 23843u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FeiXuePreheatInfoUpdateNotify = 24082u16,
+    RogueResChangeFormationResponse = 23844u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueTalentInfoResponse = 24083u16,
+    UseDetectionSkillResponse = 23849u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyBlackFlowerNotify = 24088u16,
+    PinballInGameKickBallResponse = 23854u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrackMoonRolePropChangeNotify = 24089u16,
+    EntityInteractRequest = 23858u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewJourneyRequest = 24090u16,
+    InteractiveUpdateRequest = 23869u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SunSpiritUpdateNotify = 24091u16,
+    OrderRemoveBuffByTagsNotify = 23871u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EndLessHistoryRequest = 24101u16,
+    FlowerPollutionResponse = 23879u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleSkillTriggerInfoNotify = 24105u16,
+    ConstructTrapResponse = 23882u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MonsterDrownPush = 24106u16,
+    CookFoodResponse = 23883u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemExchangeRequest = 24108u16,
+    AddTreasureBoxSlotRequest = 23884u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewPlayerSupportActivityTrialRoleUpdateV2Notify = 24111u16,
+    HonamiStoryTotalRevenueNotify = 23885u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlFightOverRequest = 24115u16,
+    FoundationRequest = 23886u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityIsVisibleRequest = 24121u16,
+    PartUpdateResponse = 23891u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VehicleEnterSharingRequest = 24127u16,
+    ActivityPayShopBuyRequest = 23899u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LoadingLevelAreaRequest = 24141u16,
+    RogueWeeklyRewardResponse = 23902u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EdgeRunnerTaskRewardRequest = 24142u16,
+    ApplyGameplayEffectResponse = 23904u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MatchThreeEndRequest = 24146u16,
+    RoleSkillLevelUpViewResponse = 23907u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HookLockPointInfoNotify = 24148u16,
+    MotorOutlookEditPresetResponse = 23910u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SubmitWalkingPatternPointResponse = 24149u16,
+    FishingTeleportToBoatRequest = 23911u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AvoidBlockClientInitDoneRequest = 24150u16,
+    EntityAccessRangeNotify = 23916u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlayStateResponse = 24154u16,
+    SceneItemMoveTargetResponse = 23917u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FunPlayChallengeAwardRequest = 24156u16,
+    DrownEndTeleportPush = 23918u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchUnlockTechPointRequest = 24158u16,
+    GiantItemAccessUnlockNotify = 23920u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeaponBreachResponse = 24159u16,
+    RecallTeleportToMarkIdRequest = 23922u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoadNetworkEntityUpdateCurRoadPush = 24166u16,
+    DetectionPreOpenNotify = 23923u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapRemoveMarkResponse = 24173u16,
+    SurvivorsScoreAwardResponse = 23924u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityStaticHookMoveResponse = 24175u16,
+    UpdateSysBuffNotify = 23927u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RealmBetweenLevelUpRequest = 24178u16,
+    PsnSettingResponse = 23928u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapUnlockFieldInfoResponse = 24181u16,
+    EntityBattleInfoRequest = 23936u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballInGameStarChangeNotify = 24193u16,
+    AbyssChallengeUnlockRequest = 23937u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MailGetAttachmentRequest = 24199u16,
+    TowerDefenceInstanceRewardRequest = 23941u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayGachaRequest = 24204u16,
+    ExchangeRewardInfoResponse = 23945u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseAuxiliaryBranchResponse = 24209u16,
+    CorniceChallengeTransRequest = 23951u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeEntityRoleResponse = 24212u16,
+    NewTowerLevelUnlockNotify = 23956u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlayRewardRequest = 24224u16,
+    FloroRanchUpdatePlayerInfoNotify = 23957u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleGoDownNotify = 24225u16,
+    HarvestActivityLevelResponse = 23959u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SwitchBattleModeNotify = 24226u16,
+    MailDeleteRequest = 23960u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestBranchResponse = 24229u16,
+    SolarSchoolReachEndingResponse = 23961u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeEventGainNotify = 24233u16,
+    SurvivorsStepAdvanceResponse = 23962u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BabelTowerShowNameRequest = 24234u16,
+    PressGameResponse = 23963u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightLastSaveDataResponse = 24235u16,
+    StartMatchRequest = 23965u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SneakNotify = 24240u16,
+    WeeklyFrameworkScoreRewardResponse = 23966u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PreheatSignSurveyInfoResponse = 24249u16,
+    ExploreScoreRewardRequest = 23970u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrInfoResponse = 24251u16,
+    TrapDefenseSystemInfoNotify = 23974u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssRoleSelectUpdateNotify = 24255u16,
+    AnimationStateChangedResponse = 23977u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerAccessCasketRequest = 24257u16,
+    NewbieCarnivalTaskDataUpdateNotify = 23985u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AdviceRequest = 24258u16,
+    RogueWhiteCatRecordRequest = 23990u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveMarkInfoNotify = 24260u16,
+    RoleIllustratedInfoRequest = 23991u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorTechLevelUpRequest = 24261u16,
+    SecFBRoundStartFlowRequest = 23993u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BathChangeCameraResponse = 24262u16,
+    DropCatchLevelFinishRequest = 23994u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    JokerGuessRewardRequest = 24268u16,
+    FloroRanchPlayRemoveUnitRequest = 24002u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetLegMatchResultNotify = 24273u16,
+    KurotatoSettlementResponse = 24003u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityBattleInfoResponse = 24276u16,
+    FunPlayChallengeAwardResponse = 24010u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EdgeRunnerPreUnlockAvailableNotify = 24277u16,
+    InterruptSkillInDelayRequest = 24013u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PrivateMessageNotify = 24284u16,
+    UpdateEnterInfoNotify = 24015u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ClientCurrentRoleReportResponse = 24285u16,
+    PhantomBattleCardDurableEmptyNotify = 24020u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikePopularEntriesInfoResponse = 24291u16,
+    BattleScoreEnableNotify = 24023u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoShopRewardRefreshRequest = 24293u16,
+    PhantomSettingRequest = 24025u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MowTowerSettlementResponse = 24294u16,
+    TrapDefenseChallengeQuitRequest = 24031u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InspirationUnlockChoiceResponse = 24295u16,
+    MailBindRewardRequest = 24034u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleConfigInfoUpdateNotify = 24298u16,
+    NewTowerRoleEnergyRequest = 24038u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlEventRefreshRequest = 24299u16,
+    RenjuResetResponse = 24055u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchEventChoiceRequest = 24306u16,
+    HonamiStoryInstTopTowerSettleNotify = 24069u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryPickUpItemRequest = 24310u16,
+    TowerSeasonUpdateRequest = 24072u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryInstLeaveRequest = 24314u16,
+    WeaponItemResponse = 24074u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExecuteQtePush = 24316u16,
+    LivenessTakeRequest = 24082u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FormationAutoAddRoleNotify = 24318u16,
+    SynthesisItemRequest = 24085u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ToughCalcExtraRatioChangePush = 24319u16,
+    KurotatoSellWeaponResponse = 24086u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MatchChangePlayerUiStateRequest = 24320u16,
+    RoguelikeTalentLevelUpResponse = 24087u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    JokerGuessStartNewResponse = 24323u16,
+    SubmitPhotoNodeRequest = 24093u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QingXiaoTaskRewardResponse = 24325u16,
+    MotorOutlookAddNotify = 24099u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RegressBonusRequest = 24329u16,
+    RoleTowerRankRewardReceiveResponse = 24106u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossRushLevelInfoNotify = 24337u16,
+    RollBlockUpdateGamePlayNotify = 24110u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeaponItemAddNotify = 24339u16,
+    ExecuteQteNotify = 24112u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseTechUnlockResponse = 24341u16,
+    KurotatoChestRewardNotify = 24115u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MoveSceneItemNotify = 24344u16,
+    MatchChangeRoleNotify = 24116u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NavigationFindPathRequest = 24357u16,
+    DangoBrawlShopSellResponse = 24125u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoRoleRecordRequest = 24358u16,
+    SceneItemMoveTargetRequest = 24132u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GetDetectionLabelInfoResponse = 24360u16,
+    DangoBrawlScoreRewardResponse = 24133u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HarvestActivityResultResponse = 24362u16,
+    SplinePositionUpdateRequest = 24134u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResMoveRequest = 24363u16,
+    WuWuKujiGachaRequest = 24138u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddPhantomEquipGroupRequest = 24382u16,
+    NewPlayerSupportTrialRoleLvUpRequest = 24142u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomSkinAddNotify = 24383u16,
+    BossRushTaskRewardResponse = 24143u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardSelectResponse = 24389u16,
+    BuffStackCountRequest = 24150u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlowEndResponse = 24390u16,
+    RogueTowerTrialReChallengeRequest = 24158u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MoralePosRequest = 24392u16,
+    AdviceSetRequest = 24164u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattleAntiCheatingLogNotify = 24393u16,
+    ConfirmQuestResourceResponse = 24175u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryDiscardItemResponse = 24394u16,
+    LordGymInfoRequest = 24178u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RegressTaskResponse = 24403u16,
+    WuWuTaskUpdateNotify = 24180u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CommonOrganResetTimeResponse = 24405u16,
+    MotorFightTalentUpResponse = 24183u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FallFinishNotify = 24409u16,
+    QuestShowListNotify = 24184u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WorldEnterPermissionsRequest = 24417u16,
+    SpringFestivalAtmosphereRewardRequest = 24192u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhotoMemoryResponse = 24419u16,
+    ScratchCardActivityInfoResponse = 24195u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityPreloadNotify = 24436u16,
+    RhythmRankListSelfDataResponse = 24201u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleUpdateDevelopTargetNotify = 24438u16,
+    SceneBlockSplitPopWindowNotify = 24204u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueTowerTrialStartResponse = 24439u16,
+    RogueBlackFlowerNotify = 24206u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleStartResponse = 24441u16,
+    RemoveTreasureBoxSlotResponse = 24211u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GetRewardTreasureBoxRequest = 24443u16,
+    AdventureManualDataResponse = 24214u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EquipSkinTakeOnResponse = 24452u16,
+    MailBindInfoResponse = 24222u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrLevelUpRequest = 24462u16,
+    BabelTowerTaskRewardRequest = 24223u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SwitchBattleModeRequest = 24463u16,
+    LevelPlayRewardCountResetNotify = 24225u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleQuestAcceptResponse = 24464u16,
+    EntityPosAbnormalResponse = 24226u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoteBatchCollectResponse = 24465u16,
+    ItemDecomposeResponse = 24230u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossRushSettlementRequest = 24466u16,
+    EntityAdsorbRequest = 24232u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneStepGroupInfoNotify = 24473u16,
+    SurvivorsResultResponse = 24240u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GravityFlipInteractResponse = 24474u16,
+    ChangeStateConfirmPush = 24241u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    H5CircumFluenceActivityDataNotify = 24475u16,
+    FriendRecentlyTeamResponse = 24249u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DollGrabPauseStartResponse = 24478u16,
+    PhBaPlanSetPlanStatusRequest = 24251u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsTaskDataUpdateNotify = 24480u16,
+    AnimationStateChangedNotify = 24252u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerXboxBlockListResponse = 24484u16,
+    TeamMatchAcceptInviteNotify = 24254u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeaponResonUpResponse = 24490u16,
+    SpecialItemUnEquipResponse = 24255u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryResidentTaskInfoUpdateNotify = 24495u16,
+    KurotatoDieNotify = 24258u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AvoidBlockClientInitDoneResponse = 24499u16,
+    NewHandInItemResponse = 24260u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RhythmRoleUpdateNotify = 24501u16,
+    ApplyerEnterSceneNotify = 24262u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorPositionStateNotify = 24502u16,
+    EntityPatrolStopRequest = 24266u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapReplaceMarkResponse = 24504u16,
+    PhantomBattleBadgeRewardResponse = 24270u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateEnableFunctionNotify = 24510u16,
+    TrackMoonIllustratedResponse = 24278u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PsnSettingResponse = 24512u16,
+    FlowRestartRequest = 24285u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeWriteCatLevelPlayRewardRequest = 24513u16,
+    UpdateSceneDateResponse = 24289u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballWeaponDegradeRequest = 24517u16,
+    RoguelikeCurrencyUpdateNotify = 24300u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetInitTagResponse = 24518u16,
+    TrackMoonActivityRewardResponse = 24303u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OrderRemoveBuffByTagsNotify = 24520u16,
+    PhantomBattleCardRewardRequest = 24305u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CookingDataResponse = 24521u16,
+    ShortMessageReplyResponse = 24310u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AiBlackboardCdResponse = 24526u16,
+    InfrV2ManualSwitchTraceTreeRequest = 24316u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityPatrolAddTagRequest = 24527u16,
+    SceneGamePlayStatusNotify = 24317u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ApplyJoinWorldResponse = 24536u16,
+    CreatStoryCharacterResponse = 24319u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RenameFormationRequest = 24542u16,
+    CookingInfoUpdateNotify = 24324u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DragonPoolConfResponse = 24543u16,
+    RogueResTalentUnlockNotify = 24327u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueTaskUpdateNotify = 24544u16,
+    FsmConditionPassPush = 24334u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InspirationUpdateNotify = 24547u16,
+    BossRushLevelScoreRewardRequest = 24337u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeChooseDataNotify = 24553u16,
+    ProgressBarFinishRequest = 24347u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballTeamDieResponse = 24554u16,
+    DropCatchLevelFinishResponse = 24353u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TetrisUpdateResponse = 24555u16,
+    FsmMontageDurationNotify = 24356u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleBvBLoadingFinishResponse = 24562u16,
+    DangoBrawlShopLockRequest = 24357u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelSequenceFrameEventActionRequest = 24567u16,
+    RacingBetsPlayerInfoUpdateNotify = 24358u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryBagInfoUpdateNotify = 24569u16,
+    SetFanStateResponse = 24361u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GatherActivityRewardRequest = 24573u16,
+    KurotatoUpgradeRewardSelectResponse = 24364u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsOpDataForceChangeNotify = 24578u16,
+    RogueResChangeFormationRequest = 24365u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EndSkillRequest = 24580u16,
+    NewTowerSeasonTaskDataUpdateNotify = 24370u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeEntityRoleRequest = 24583u16,
+    BirthDayCardRoleRequest = 24371u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballTeamDieRequest = 24584u16,
+    MulGetAdventureRewardResponse = 24375u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LordGymBeginRequest = 24586u16,
+    OccupyRewardResponse = 24387u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NameModifyNotify = 24589u16,
+    MapTraceResponse = 24396u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PrivateChatHistoryNotify = 24594u16,
+    MonsterAttributeArrayNotify = 24398u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnergySyncRequest = 24596u16,
+    ParkourChallengeTakeRequest = 24399u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestReviewInfoRequest = 24599u16,
+    StartMatchResponse = 24408u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InstEntranceDetailRequest = 24602u16,
+    EntityDressOrnamentChangeNotify = 24410u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    IllustratedInfoResponse = 24603u16,
+    RogueResIllustrationAwardResponse = 24417u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleBoardInfoNotify = 24606u16,
+    PhantomItemResponse = 24418u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryActivityInfoResponse = 24610u16,
+    SeamlessTeleportVehicleResponse = 24419u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballSetPayloadResponse = 24616u16,
+    RoleMotionUnLockResponse = 24424u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LordGymInfoRequest = 24619u16,
+    BeamCastHitPlayerRequest = 24426u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestReadyListNotify = 24620u16,
+    RoverRogueTalentUnlockNotify = 24427u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleRoundOverRequest = 24624u16,
+    SurvivorsLockResponse = 24428u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BabelTowerSettlementResponse = 24625u16,
+    FarmGoldLevelNotify = 24429u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MonsterLevelNotify = 24635u16,
+    SurvivorsTalentLevelUpRequest = 24431u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WorldTeamPlayerInfoChangeNotify = 24636u16,
+    SimpleCombatEntitySyncAttributePush = 24434u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewHandInItemRequest = 24640u16,
+    ApplyRechallengeRequest = 24437u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MaterialPush = 24645u16,
+    PhotoFightTaskRewardRequest = 24443u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueGotoNextRoomCommitRequest = 24658u16,
+    TrapDefenseDevelopResetResponse = 24446u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomItemRequest = 24659u16,
+    MotorFightKillRequest = 24452u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ANStartNotify = 24660u16,
+    PinballWeaponDegradeResponse = 24456u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BabelActivityBuffInfoNotify = 24665u16,
+    FishingTechLevelUpResponse = 24459u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActivityRequest = 24675u16,
+    BulletPatternNotify = 24460u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewbieAdventureRoleRewardRequest = 24679u16,
+    SceneItemSequenceFrameEndResponse = 24461u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhBaPlanUsePlanResponse = 24680u16,
+    FollowerChairPresentationPush = 24462u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleSelectReserveCardNotify = 24681u16,
+    ReviveResponse = 24465u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SunSpiritCollectNotify = 24685u16,
+    EdgeRunnerLordGymLevelPlayResultNotify = 24470u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GiantMaxLevelDeliveryItemRequest = 24688u16,
+    WorldEnterPermissionsResponse = 24472u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InterruptSkillInDelayPush = 24695u16,
+    AwakeDynamicPortalRequest = 24473u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddTreasureBoxSlotRequest = 24696u16,
+    FishingQuickSellResponse = 24478u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewPlayerSupportTrialRoleLvUpResponse = 24698u16,
+    TrapDefenseGetRewardRequest = 24481u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PickUpDropItemRequest = 24705u16,
+    PartUpdateNotify = 24482u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleOperateSelfBgmRequest = 24710u16,
+    RogueWeeklyGotoNextRoomRequest = 24488u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetLegMatchSettleNotify = 24713u16,
+    DangoMonopolyDiceResponse = 24491u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PsnSettingRequest = 24714u16,
+    AbyssReviveNotify = 24492u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CreatStoryCharacterRequest = 24716u16,
+    MulRoguelikeWriteCatRewardRequest = 24493u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityWalkingPatternFinishRequest = 24720u16,
+    UpdateFightRoleRequest = 24496u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoEndSpecialWaveCombatRequest = 24724u16,
+    SurvivorsStepUpdateNotify = 24499u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShowPasserByNpcNotify = 24738u16,
+    MapCustomMarkUpdateNotify = 24503u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrV2TaskRewardRequest = 24745u16,
+    RogueBlackFlowerRequest = 24506u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseSpecialRewardUpdateNotify = 24748u16,
+    LordGymInfoResponse = 24508u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MovePackagePush = 24756u16,
+    DirectTrainPreOpenCloseNotify = 24510u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorOutlookEditPresetResponse = 24760u16,
+    HookLockPointResponse = 24512u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingPointInfoRequest = 24764u16,
+    PsnSettingUpdateRequest = 24513u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleSexChangeRequest = 24765u16,
+    EnergyUpdateNotify = 24514u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpringFestivalTaskRewardResponse = 24773u16,
+    ExhibitionItemSaveRequest = 24520u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FuncOpenConfirmNotify = 24775u16,
+    PhantomBattleBackSlotCardLibraryResponse = 24521u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LogicStateInitNotify = 24779u16,
+    RoadBookTaskRewardResponse = 24523u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActionNotify = 24784u16,
+    WillSwitchSceneGroupNotify = 24534u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallItemBagObtainNotify = 24789u16,
+    GmEntityFsmGroupInfoRequest = 24535u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryAddWeaponNotify = 24790u16,
+    FloroRanchRewardMilestoneResponse = 24536u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeSubLevelNotify = 24792u16,
+    UpdateFormationResponse = 24546u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShopInfoResponse = 24794u16,
+    BeControlledResponse = 24551u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FriendApplyHandleRequest = 24797u16,
+    FastReturnDungeonResponse = 24553u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerDefencePhantomInfoUpdateNotify = 24798u16,
+    PinballInGameSyncPayloadResponse = 24557u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleBvBLoadingNotify = 24799u16,
+    PlayerNetStatePush = 24558u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    StorageInfoNotify = 24801u16,
+    ChannelChatHistoryNotify = 24562u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveTemporaryTeleportResponse = 24806u16,
+    SimpleCombatEntityDieRequest = 24565u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LongShanStageUpdateNotify = 24809u16,
+    TeleportFinishResponse = 24577u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimelineTraceExitRequest = 24811u16,
+    FarmGoldResultResponse = 24579u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoadBookLevelUpRequest = 24814u16,
+    CookingDataRequest = 24585u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomMusicCollectUpdateRequest = 24815u16,
+    PlayerAccessRangeNotify = 24586u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorUseSceneRequest = 24816u16,
+    PlayEntityMontagePush = 24591u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveSysBuffNotify = 24831u16,
+    Summon2Request = 24593u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RiskHarvestStarRewardRequest = 24832u16,
+    ChapterResultRewardRequest = 24597u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TotalTopUpRewardResponse = 24834u16,
+    ApplySceneClientEntityIncIdRequest = 24599u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DarkTidePoisonCircleStartShrinkNotify = 24836u16,
+    TeleportTransferRequest = 24606u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExhibitionItemSaveResponse = 24838u16,
+    TeleportDataResponse = 24608u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeTokenReceiveRequest = 24840u16,
+    ActionFinishImmediatelyNotify = 24609u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConsumptiveActivityInfoResponse = 24847u16,
+    FriendApplyHandleRequest = 24610u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewPlayerSupportTrialRoleLvUpV2Request = 24861u16,
+    PinballSettleNotify = 24613u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CreatStoryCharacterResponse = 24862u16,
+    NewTowerSeasonScoreRewardResponse = 24617u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossRushChooseBuffRequest = 24869u16,
+    BabelActivityDeTermInfoNotify = 24618u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HardnessModeChangedNotify = 24870u16,
+    ActivityRecommendNotify = 24619u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResEndingRewardResponse = 24880u16,
+    ChangeEntityRoleRequest = 24621u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DollGrabTimeBallResponse = 24886u16,
+    GiantMaxLevelDeliveryItemRequest = 24629u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeamMatchInviteNotify = 24891u16,
+    StorageInfoUpdateResponse = 24640u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorOutlookFullChangeNotify = 24893u16,
+    PhantomBattleCallCardNotify = 24644u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleRoundChangeNotify = 24896u16,
+    ItemExchangeResponse = 24645u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BeControlledRequest = 24899u16,
+    ExploreLevelNotify = 24649u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerHeadAddNotify = 24903u16,
+    RogueResTaskUpdateNotify = 24660u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleFavorListResponse = 24905u16,
+    TeamMatchInviteNotify = 24663u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrThemeActivityTaskDataUpdateNotify = 24908u16,
+    LevelPlayStateListResponse = 24664u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoShopRewardSelectRequest = 24909u16,
+    WeeklyFrameworkInfoUpdateNotify = 24665u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayGachaRefreshRequest = 24913u16,
+    AttributeChangedResponse = 24670u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    JoinWorldTeamNotify = 24920u16,
+    StopMoveSplineResponse = 24675u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeleportTransferResponse = 24923u16,
+    BuffDurationNotify = 24676u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DestroyRecallQuestsNotify = 24930u16,
+    RogueResIllustrationUpdateNotify = 24683u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AccessPathConfigResponse = 24933u16,
+    RacingBetMatchRoundActionResponse = 24685u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlowRestartRequest = 24934u16,
+    AnimalDieNotify = 24686u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SecWorldInfoFlowResponse = 24938u16,
+    PhantomBattleSelectTargetResponse = 24690u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LeaveAoiNotify = 24943u16,
+    RemovePreloadFlowsNotify = 24692u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ScheduleRewardUpdateNotify = 24945u16,
+    DangoBrawlBagUpdateNotify = 24695u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlacementInfoChangeNotify = 24946u16,
+    FloroRanchRewardTaskResponse = 24696u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityBlackboardResponse = 24947u16,
+    NormalItemAddNotify = 24714u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResTaskAwardResponse = 24954u16,
+    AddCombineEntitiesRelationNotify = 24720u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightTaskUpdateNotify = 24956u16,
+    AgreeJoinResultResponse = 24721u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleDebugInfoRequest = 24959u16,
+    SceneItemMoveSplineResponse = 24723u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FoundationRequest = 24967u16,
+    RogueTowerTrialStartRequest = 24725u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SneakTimeRequest = 24968u16,
+    PickUpDropItemResponse = 24726u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UDPMovePackagePush = 24978u16,
+    ToughCalcExtraRatioChangePush = 24735u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallQuestChangeTraceNotify = 24980u16,
+    UnlockInstEntranceResponse = 24736u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorDecalMotorIpResponse = 24987u16,
+    TotalTopUpActivityInfoNotify = 24740u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResTaskAwardRequest = 24996u16,
+    BtForcedOccupationResponse = 24742u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseChallengeQuitResponse = 24998u16,
+    GameplayTagPush = 24743u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingNoticeUpdateNotify = 25001u16,
+    UiGamePlayRequest = 24744u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewbieAdventureRoleRewardResponse = 25004u16,
+    RoguelikePopularEntriesChangeRequest = 24745u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerApplyFloorDataRequest = 25005u16,
+    HonamiStoryBagSizeUpdateNotify = 24747u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    JSPatchNotify = 25006u16,
+    TowerDifficultyUpdateNotify = 24752u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ReorderFormationResponse = 25008u16,
+    AceAntiDataNotify = 24754u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeTalentUnlockNotify = 25010u16,
+    ScheduleRewardResponse = 24763u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RhythmRankListRequest = 25012u16,
+    RoleTowerScoreTaskUpdateNotify = 24764u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossPilingRewardResponse = 25013u16,
+    MapTraceRequest = 24772u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorLevelOneKeyRewardRequest = 25015u16,
+    SynthesisItemResponse = 24774u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResEndingRewardRequest = 25016u16,
+    EntityFoundationCoreChangeNotify = 24775u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightSettleRequest = 25017u16,
+    ActionRelatedEntityInfoNotify = 24779u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayRefreshShopRequest = 25019u16,
+    BossRushBuffChooseResultResponse = 24781u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MailInfosNotify = 25021u16,
+    SecWorldInfoFlowRequest = 24782u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResGridEventResponse = 25023u16,
+    ConsumptiveActivityInfoRequest = 24785u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AceAntiDataPush = 25028u16,
+    RhythmShipStartNotify = 24795u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleLeaveSlotResponse = 25036u16,
+    OnlineMotorActivityLevelRequest = 24796u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerBattleStateChangeNotify = 25044u16,
+    CharacterLookAtNotify = 24799u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrThemeActivityAwardRequest = 25047u16,
+    AtomicProcessTeleportRequest = 24800u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateEnableSystemNotify = 25057u16,
+    WellStreamingFinisResponse = 24801u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorDataNotify = 25061u16,
+    RemoveInstanceTimerRequest = 24804u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VehicleUpdateEntityNotify = 25063u16,
+    TriggerExitSkillPush = 24805u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddOccupationInfoNotify = 25073u16,
+    RoleFavorNewCanUnLockNotify = 24807u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntranceStateNotify = 25077u16,
+    StorageInfoUpdateNotify = 24810u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneSubLevelsRequest = 25079u16,
+    SceneBlockSplitClientLoginPush = 24812u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityPosResetNotify = 25086u16,
+    RTimeStopResponse = 24814u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RiskHarvestEndNotify = 25092u16,
+    MapTravelSoarRewardResponse = 24818u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyResultRequest = 25097u16,
+    VisionTriggerNotify = 24819u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballWeaponWearResponse = 25098u16,
+    TopPhantomEquipGroupResponse = 24824u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RegressQuestionOpenRequest = 25100u16,
+    RogueResTaskAwardRequest = 24834u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GridCellUpdateNotify = 25103u16,
+    KurotatoSettlementNotify = 24835u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomSkinChangeRequest = 25116u16,
+    DailyAdventurePtRewardRequest = 24837u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorTaskOneKeyRewardRequest = 25118u16,
+    SwitchBattleModeNotify = 24840u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoShopRewardNotify = 25121u16,
+    PhantomCollectReceiveRequest = 24841u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EndSkillNotify = 25131u16,
+    PhBaPlanSetFiveStarSwitchResponse = 24842u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoRoleRecordResponse = 25139u16,
+    RobotDestinationPush = 24844u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuickHackRamVerifyPush = 25141u16,
+    RoleQuestPointStateResponse = 24846u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreSkillActionRequest = 25144u16,
+    RoleSkillNodeNotify = 24848u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsVarRecordNotify = 25152u16,
+    GetDetectionTargetResponse = 24853u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeleportDungeonActionRequest = 25153u16,
+    HeadIdUpdateNotify = 24865u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ParkourChallengeOpenNotify = 25157u16,
+    SlashAndTowerResultNotify = 24868u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapTravelLevelUpRequest = 25161u16,
+    QuestTreeInfoNotify = 24869u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MailBindRequest = 25162u16,
+    SceneItemSequenceFrameEndRequest = 24870u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleBackLibraryRequest = 25172u16,
+    PbUpLevelRoleResponse = 24873u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CharacterLookAtNotify = 25173u16,
+    HoldWeaponPush = 24879u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AdviceUpdateNotify = 25178u16,
+    AtomicProcessRemoveBuffResponse = 24883u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AdventureUpdateNotify = 25180u16,
+    FishingActivityMilestoneItemNumNotify = 24887u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemObtainNotify = 25181u16,
+    GravityFlipInteractRequest = 24889u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FarmGoldPointRepeatedResponse = 25184u16,
+    PlayerTitleUpdateNotify = 24894u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityAddNotify = 25185u16,
+    DangoBrawlShopBuyRequest = 24895u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FriendApplyDeletedNotify = 25186u16,
+    NetTestDataPush = 24898u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeWriteCatBossRewardRequest = 25187u16,
+    RhythmSetRedDotRequest = 24911u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AiHatePush = 25194u16,
+    EntityLivingStatusNotify = 24917u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FoodProcessResponse = 25197u16,
+    RoleSkillQuickLevelUpResponse = 24928u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeamParkourSettleNotify = 25201u16,
+    EndSkillResponse = 24932u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ReportPlayerRequest = 25202u16,
+    OpenSystemBoardResultRequest = 24936u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleBadgeRewardInfoUpdateNotify = 25204u16,
+    MapTravelTaskRewardRequest = 24943u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeaponRemoveNotify = 25207u16,
+    ReportPlayerRequest = 24953u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PartComponentInitResponse = 25211u16,
+    PhantomItemRequest = 24954u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeWeatherRequest = 25213u16,
+    SurvivorsNormalAwardResponse = 24955u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BabelTowerSettlementRequest = 25214u16,
+    PrivateChatHistoryResponse = 24958u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallQuestActionResponse = 25218u16,
+    HonamiStoryActivityInfoResponse = 24959u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlagChallengeTempRoleLevelNotify = 25219u16,
+    KickMatchTeamPlayerRequest = 24963u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GmIsOverlapNotify = 25221u16,
+    AnimationStateChangedPush = 24970u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBatchDirectRefiningRequest = 25223u16,
+    MapTravelLevelUpRequest = 24973u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrArchiveReadResponse = 25225u16,
+    HonamiStoryLifeSupportUpRequest = 24974u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseSystemInfoNotify = 25227u16,
+    SyncPlayerLocationNotify = 24978u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapCancelTraceNotify = 25230u16,
+    DangoBrawlSettleResponse = 24979u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResTalentUnlockNotify = 25233u16,
+    TrapDefenseAuxiliaryLevelUpResponse = 24981u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightKillResponse = 25235u16,
+    RefreshBuffDurationPush = 24982u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LogicStateInitResponse = 25241u16,
+    CountryExploreScoreInfoResponse = 24983u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueInstExtraInfoRequest = 25243u16,
+    PhantomBattleAreaSkillCdNotify = 24988u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    XboxSettingUpdateResponse = 25251u16,
+    ForgeItemResponse = 24992u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerRebackSceneNotify = 25253u16,
+    RoguelikeLastInfoResponse = 24998u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveReviveRegionRequest = 25255u16,
+    MulFishingIllustratedRewardRequest = 25002u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerLastCycleInfoRequest = 25259u16,
+    TetrisUpdateRequest = 25007u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LoadEquipInfoRequest = 25260u16,
+    EquipSkinUnLoadRequest = 25017u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SheriffZoneInfoResponse = 25267u16,
+    PassiveSkillAddNotify = 25025u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetMatchActionResponse = 25269u16,
+    AbyssPluginItemRemoveNotify = 25037u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GachaRequest = 25270u16,
+    FlowStartNotify = 25049u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddCombineEntitiesRelationNotify = 25278u16,
+    RealmBetweenInfoUpdateNotify = 25055u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoScoreTaskReceiveResponse = 25285u16,
+    BlockPlayerResponse = 25057u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreSkillRouletteUpdateNotify = 25292u16,
+    HardnessModeChangedResponse = 25063u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BirthdayInitRequest = 25294u16,
+    EnterAreaNotify = 25064u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetQuestResourceStateResponse = 25299u16,
+    PlayerNetStateNotify = 25067u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FormationModifyResponse = 25309u16,
+    PhantomEquipGroupInfosRequest = 25068u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FarmGoldPointRepeatedRequest = 25310u16,
+    GachaInfoRequest = 25069u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleSelectTargetResponse = 25311u16,
+    HostTeleportUnlockNotify = 25070u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GatherTaskRecordNotify = 25315u16,
+    EntityChangeDynamicInteractTextNotify = 25073u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SelfPortraitStateRequest = 25316u16,
+    TrialRoleSkinRewardResponse = 25081u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityAdsorbResponse = 25318u16,
+    LordGymBeginResponse = 25090u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RollBlockExitGamePlayRequest = 25320u16,
+    SneakFinishResponse = 25091u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomMusicSaveRequest = 25322u16,
+    BeControlledThrowRequest = 25094u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsInstGlobalDataNotify = 25324u16,
+    HandInInfoUpdateNotify = 25098u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ReadCardResponse = 25329u16,
+    RoleDevelopConfigUpdateNotify = 25103u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoChestRewardNotify = 25333u16,
+    ResetQuestFocusModeNotify = 25104u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MonsterDrownResponse = 25334u16,
+    QuestReviewInfoResponse = 25121u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchSettleResponse = 25335u16,
+    InstEntityTeleportResponse = 25123u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WillSwitchSceneGroupNotify = 25350u16,
+    PhantomBattleAreaSkillRequest = 25124u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlySkinWearAllRoleResponse = 25354u16,
+    FuncShowRequest = 25127u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FireShopCoinNotify = 25358u16,
+    PhantomAutoPutRequest = 25130u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RollBlockInputRequest = 25360u16,
+    ShortMessageReadRequest = 25131u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleDevelopConfigUpdateNotify = 25367u16,
+    ProgressBarFinishResponse = 25134u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattlePhantomCardSkillResponse = 25369u16,
+    NewbieFetchScoreRewardRequest = 25135u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BeamCastHitPlayerRequest = 25375u16,
+    VehicleEnterSharingResponse = 25137u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssPluginItemInfoUpdateNotify = 25376u16,
+    FsmPlayMontageResponse = 25141u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayShopBuyResponse = 25381u16,
+    AttachEntityRequest = 25142u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryTotalRevenueNotify = 25388u16,
+    PhantomMusicUnlockRequest = 25144u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SelfPortraitStateResponse = 25392u16,
+    SurvivorsNormalAwardRequest = 25147u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleSkinChangeRequest = 25393u16,
+    FlySkinAllUnLoadResponse = 25150u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TraceEntityPosResponse = 25394u16,
+    EnterViewDirectionRequest = 25151u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeamMatchInviteRetToHostNotify = 25396u16,
+    InputSettingUpdateNotify = 25153u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhBaPlanBatchOperResponse = 25404u16,
+    MotorTechTreeSwitchRequest = 25166u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleBreakThroughViewRequest = 25405u16,
+    RoleTowerRankResponse = 25174u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GravityGearResponse = 25409u16,
+    FlySkinWearResponse = 25179u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AiBlackboardCdPush = 25416u16,
+    BtForcedOccupationRequest = 25189u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightAddCollectionNotify = 25419u16,
+    MatchTeamNotify = 25195u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RollBlockMovementFinishRequest = 25423u16,
+    VisionSkillChangeNotify = 25196u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreSkillCustomRequest = 25431u16,
+    AdventureManualDataRequest = 25198u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UDPMovePackageNotify = 25437u16,
+    QuestStateUpdateNotify = 25205u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MowTowerSettlementRequest = 25440u16,
+    ExecuteQteRequest = 25206u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueInstExtraInfoUpdateNotify = 25441u16,
+    QuestReviewInfoNotify = 25208u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoChestRewardSelectResponse = 25445u16,
+    ZitherPlayStateResponse = 25209u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FsmPlayMontageRequest = 25452u16,
+    RoleTowerScoreRewardReceiveResponse = 25210u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeaponItemRequest = 25468u16,
+    TestDamageRecordNotify = 25211u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResGotoNextRoomResponse = 25469u16,
+    BossRushTaskRewardRequest = 25214u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoadBookFullRewardResponse = 25470u16,
+    EntityEnterVehicleResponse = 25217u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlayStateListRequest = 25471u16,
+    FloroRanchAnimationRequest = 25219u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleAreaSkillNotify = 25473u16,
+    PhotoMemoryRequest = 25225u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MowTowerLevelsRewardResponse = 25477u16,
+    PhantomBattleCardGroupDeleteResponse = 25229u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BtRollbackResponse = 25479u16,
+    ChapterUpdateNotify = 25234u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResIllustrationUpdateNotify = 25481u16,
+    MonsterBoomPush = 25242u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueShopRefreshResponse = 25485u16,
+    PhantomBattleCardRewardResponse = 25254u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InvalidItemResponse = 25487u16,
+    AcceptFocusWaitQuestRequest = 25258u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExitViewDirectionRequest = 25488u16,
+    EntityBuffProducerOperateRequest = 25261u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueEventSelectRequest = 25491u16,
+    KurotatoShopRewardSelectRequest = 25262u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TutorialReceiveRequest = 25497u16,
+    RacingBetsRepeatedTaskRewardRequest = 25268u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LinkageRewardResponse = 25500u16,
+    LeaveLevelPlayNotify = 25269u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleBadgeRewardRequest = 25505u16,
+    PhantomBatchOperResponse = 25271u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleReChallengeResponse = 25507u16,
+    MotorDataNotify = 25272u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuickHackSkillResponse = 25512u16,
+    ConsumptiveRewardResponse = 25276u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewbieCarnivalAwardResponse = 25525u16,
+    RoverRogueBlessGroupSelectRequest = 25277u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleTrialSettleNotify = 25527u16,
+    VehicleEnterSharingRequest = 25279u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfluenceInfoRequest = 25529u16,
+    RogueWeeklyCurrencyNotify = 25282u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityOnLandedRequest = 25532u16,
+    RemoveBuffByIdS2cRequestNotify = 25284u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingTechLevelUpResponse = 25533u16,
+    TeleportUpdateNotify = 25294u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreActivityTaskRewardResponse = 25543u16,
+    RogueTowerTrialGiveUpTempArchiveResponse = 25299u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomRefiningRequest = 25546u16,
+    EncircleChallengeStartResponse = 25305u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HitEndRequest = 25554u16,
+    RecallInfoNotify = 25321u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PbGetRoleListResponse = 25557u16,
+    TutorialUnlockNotify = 25322u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SimpleCombatEntityDieRequest = 25559u16,
+    RiskHarvestInstRewardResponse = 25323u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnableDamageRecordRequest = 25565u16,
+    RogueResInstGlobalDataNotify = 25331u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DetectionTargetChangeNotify = 25568u16,
+    RiskHarvestSettleResponse = 25343u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityOnLandedNotify = 25577u16,
+    GetAdventureRewardResponse = 25347u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeGiveUpGainResponse = 25582u16,
+    UpdateSceneDateRequest = 25350u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CalabashLevelRewardResponse = 25587u16,
+    SheriffZoneInfoResponse = 25351u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallQuestListNotify = 25593u16,
+    CoopRoleRewardResponse = 25354u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GuideFinishResponse = 25597u16,
+    LevelPlayGainRewardInfoNotify = 25358u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorAnimReplaySampleUdpNotify = 25598u16,
+    GiantItemAccessProgressChangeNotify = 25359u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeWriteCatRewardRequest = 25605u16,
+    AbyssChallengeQuitResponse = 25360u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateSceneGroupDataResponse = 25607u16,
+    TeleportDungeonActionNotify = 25362u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStorySellItemRequest = 25624u16,
+    SurvivorsHandBooskUnlockNotify = 25363u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomInteractionEquipResponse = 25626u16,
+    RegressBuyBonusLvRequest = 25368u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NavigationFindPathResponse = 25627u16,
+    HonamiStoryAreaTaskInfoUpdateNotify = 25370u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryLifeSupportNotify = 25628u16,
+    NewPlayerSupportTrialRoleLvUpV2Response = 25380u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AdviceVoteResponse = 25631u16,
+    AbyssChallengeGotoNextRoomRequest = 25389u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SitChairRequest = 25632u16,
+    KurotatoScoreTaskReceiveRequest = 25395u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RollBlockToggleHintResponse = 25640u16,
+    GolemCrackUpdateResponse = 25396u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWhiteCatLimitedRewardResponse = 25642u16,
+    PhantomBattleCallCardRequest = 25399u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingEntrustRefreshRequest = 25644u16,
+    ItemGiftUseRequest = 25405u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GetInstExchangeRewardRequest = 25650u16,
+    AchievementReceiveResponse = 25408u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateFormationResponse = 25651u16,
+    HonamiStoryAreaSecretRewardRequest = 25409u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimeScheduleIdleNotify = 25662u16,
+    RoleOperateSelfBgmResponse = 25411u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShopBuyResponse = 25673u16,
+    ExploreSkillCustomResponse = 25414u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuickHackSkillRequest = 25674u16,
+    PhantomBattleLeaveSlotResponse = 25415u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KickMatchTeamPlayerRequest = 25677u16,
+    PlayerTitleRequest = 25420u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemLockRequest = 25683u16,
+    FlagChallengePerRoleLevelNotify = 25423u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CombatReceivePackNotify = 25706u16,
+    WeatherControlInfoRequest = 25430u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreProgressRewardResponse = 25710u16,
+    InterruptSkillInDelayPush = 25432u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneItemSetPosSenderResponse = 25717u16,
+    RoleTowerPhantomAddAttrsResponse = 25433u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingSkillBombResponse = 25718u16,
+    ExploreProgressRewardIdsNotify = 25441u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhBaPlanSetFiveStarSwitchRequest = 25722u16,
+    MotorParkourResultNotify = 25444u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeRefreshGainResponse = 25725u16,
+    ToughCalcExtraRatioChangeRequest = 25451u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlShopComposeResponse = 25732u16,
+    QueryRecallItemBagResponse = 25460u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FriendDeletedNotify = 25733u16,
+    PhantomPolishResponse = 25461u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BirthDayCardRoleRequest = 25746u16,
+    RecallExploreSkillRouletteSetResponse = 25464u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AnimalDropResponse = 25751u16,
+    PhantomSettingUpdateResponse = 25467u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SwitchLogicStateResponse = 25754u16,
+    ItemFuncValueUpdateNotify = 25472u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoMonopolyTaskRewardRequest = 25756u16,
+    SlashAndTowerScoreRewardRequest = 25485u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EdgeRunnerLordGymLevelPlayResultNotify = 25758u16,
+    AddTemporaryTeleportRequest = 25491u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewPlayerSupportV2GachaRoleUpdateNotify = 25759u16,
+    RegressBuyBonusLvResponse = 25492u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CharacterBattleStateChangeNotify = 25768u16,
+    PhantomMusicSaveResponse = 25499u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleHandCardInfoUpdateNotify = 25772u16,
+    RhythmRankListSelfDataRequest = 25501u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewPlayerSupportSetCurUseTrialRoleV2Request = 25773u16,
+    FloroRanchRewardMilestoneRequest = 25505u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GiftPackPreviewResponse = 25776u16,
+    PhantomBattleDiscardCardResponse = 25508u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingCageInfoResponse = 25777u16,
+    ANStartRequest = 25509u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueArchiveSaveRequest = 25782u16,
+    FishingSceneFishCageInfoUpdateNotify = 25515u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballInGameKickBallRequest = 25787u16,
+    PartComponentInitNotify = 25520u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntitySendEventResponse = 25789u16,
+    SceneTestNotify = 25522u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DarkTideBagUpdateNotify = 25791u16,
+    FishingActivityMilestoneRewardRequest = 25523u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SubmitPhotoNodeRequest = 25793u16,
+    ChangePlayerFightRoleNotify = 25527u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomSettingBatchUpdateResponse = 25796u16,
+    BlackCoastThemeStageUpdateNotify = 25531u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapTravelFullRewardRequest = 25797u16,
+    SynthesisInfoRequest = 25534u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LeaveWorldTeamRequest = 25798u16,
+    NewTowerRoleEnergyResponse = 25538u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeStateRequest = 25799u16,
+    SceneDateNotify = 25540u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ThemePersonalScoreRequest = 25800u16,
+    DangoBrawlActivityLimitCoinUpdateNotify = 25541u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AdviceVoteUpdateNotify = 25803u16,
+    PhantomVicePolishResponse = 25546u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OutputDebugInfoResponse = 25805u16,
+    MapReplaceMarkResponse = 25551u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneLoadingFinishResponse = 25807u16,
+    NewTowerMonsterHpInfoNotify = 25553u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardUnlockRequest = 25809u16,
+    RoguelikeChooseDataRequest = 25554u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InvalidItemRequest = 25813u16,
+    KurotatoGoldAddResponse = 25569u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayInfoResponse = 25815u16,
+    BabelTowerDailyTaskRewardRequest = 25570u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RhythmMainLineInfoResponse = 25817u16,
+    TeleportNotify = 25575u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneGamePlayScopeNotify = 25818u16,
+    UnblockPlayerRequest = 25581u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActionGroupCompleteNotify = 25820u16,
+    FloroRanchPlayUnlimitedModeRequest = 25585u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GuideTriggerResponse = 25821u16,
+    TreasureChestCountIncrementNotify = 25587u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlItemEffectShowNotify = 25822u16,
+    AbyssSelfPassRequest = 25588u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueTaskRewardTakeRequest = 25823u16,
+    RoguelikeWriteCatLevelPlayRewardRequest = 25589u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ApplyGameplayEffectNotify = 25830u16,
+    CircumFluenceTaskRewardRequest = 25593u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AchievementProgressNotify = 25834u16,
+    WeatherControlRequest = 25604u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    H5ViewActivityDataNotify = 25838u16,
+    ExchangeRewardInfoRequest = 25606u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseStepUpdateNotify = 25839u16,
+    MessageDecodeFailNotify = 25607u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GameplayTagRequest = 25844u16,
+    PhantomPutOnRequest = 25608u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PullingFoundationRequest = 25845u16,
+    RoleFavorFinishConditionNotify = 25609u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CookFormulaResponse = 25849u16,
+    PayItemSuccessNotify = 25610u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlFighterAttrChangeNotify = 25853u16,
+    EntranceStateNotify = 25612u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CountryExploreScoreInfoRequest = 25855u16,
+    RoadBookFullRewardRequest = 25619u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpringSignPhotoRewardRequest = 25857u16,
+    EntityTimeFlowPush = 25621u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingCabinPutRequest = 25860u16,
+    PhantomPolishRequest = 25622u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AnimationGameplayTagRequest = 25863u16,
+    RogueWeeklyInteractionResultNotify = 25625u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingEntrustHandInResponse = 25865u16,
+    PhantomBattleDeployNotify = 25628u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreSkillRouletteSetRequest = 25875u16,
+    FarmGoldPointRequest = 25630u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpecialItemEquipRequest = 25881u16,
+    TimePointActivityRewardRequest = 25635u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SubmitWalkingPatternPointRequest = 25883u16,
+    SetAlertUiVisibleRequest = 25636u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewPlayerSupportRewardTaskRequest = 25884u16,
+    CameraSettingQueryResponse = 25637u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardGroupNameRequest = 25885u16,
+    ItemGiftUseResponse = 25639u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerRoleEnergyRequest = 25896u16,
+    LongShanTaskRewardResponse = 25642u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AccessPasserbyNpcSpawnerResponse = 25897u16,
+    AlertAreaNotify = 25643u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoUpgradeRewardRefreshRequest = 25898u16,
+    FloroRanchEventChoiceRequest = 25648u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LongShanTaskRewardRequest = 25899u16,
+    RenjuExitMatchedActionRequest = 25656u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeWriteCatLevelPlayRewardResponse = 25902u16,
+    PhantomItemAddNotify = 25657u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InstEntranceDetailResponse = 25904u16,
+    PhantomBattleMasterLevelRewardRequest = 25661u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LivenessRequest = 25906u16,
+    PhantomBattleReChallengeResponse = 25662u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsLockResponse = 25907u16,
+    GatherTaskRecordNotify = 25663u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WellStreamingFinisRequest = 25917u16,
+    PhantomLevelUpRequest = 25666u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MiniWriteLetterSaveContentRequest = 25919u16,
+    SubmitWalkingPatternPointResponse = 25667u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    StorageInfoRequest = 25920u16,
+    CaptureBatchEntityResponse = 25668u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsTaskRequest = 25921u16,
+    RiskHarvestBuffCountRewardResponse = 25669u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryMascotRewardResponse = 25929u16,
+    TrapDefenseRefreshGainingGroupRequest = 25671u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AwakeDynamicPortalRequest = 25931u16,
+    PhantomFetterRecommendResponse = 25672u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SlashAndTowerOverNotify = 25940u16,
+    ANStartResponse = 25684u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    IllustratedRedDotRequest = 25943u16,
+    CoopRoleRewardRequest = 25686u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VehicleShareNotify = 25947u16,
+    BatchMaterialReplaceRequest = 25690u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LinkageCheckInRewardRequest = 25948u16,
+    TeamTeleportStartNotify = 25696u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GachaUsePoolResponse = 25952u16,
+    FormationSwitchCurrentRequest = 25699u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayShopInfoResponse = 25954u16,
+    RoleTowerStepUpdateNotify = 25704u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActivityFirstReadResponse = 25958u16,
+    AbyssShowNameRequest = 25707u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseAuxiliaryLevelUpRequest = 25960u16,
+    ExploreSkillRouletteUpdateNotify = 25728u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleRoundOverResponse = 25961u16,
+    CertificateLevelRewardResponse = 25731u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AdviceModifyResponse = 25965u16,
+    SimpleCombatEntitySubTypeChangeNotify = 25732u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerDefenceSelfPassResponse = 25970u16,
+    DollGarbStartRequest = 25749u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorAnimReplaySampleUdpPush = 25977u16,
+    LordGymUnlockNotify = 25755u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayItemSuccessNotify = 25980u16,
+    ActiveDragonPoolResponse = 25761u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CheckUseSoundBoxSkillResponse = 25981u16,
+    TrapDefenseSyncGainingGroupsNotify = 25763u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightEnterSubLevelRequest = 25986u16,
+    SwitchLogicStateNotify = 25764u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightRefreshNextWaveGroupResponse = 25991u16,
+    RoverRogueRoomInfoNotify = 25772u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SummonRandomNotify = 25992u16,
+    RollBlockMovementFinishRequest = 25774u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikePopularEntriesChangeResponse = 25998u16,
+    PartUpdatePush = 25777u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityTimeFlowPush = 25999u16,
+    DrownRequest = 25778u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExchangeRewardInfoRequest = 26002u16,
+    LinkageRewardRequest = 25785u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LoadCalabashSkinInfoRequest = 26014u16,
+    RoverRogueEventSelectRequest = 25790u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpringFestivalScoreRewardResponse = 26022u16,
+    EntityCalabashSkinChangeNotify = 25793u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleTrainResponse = 26024u16,
+    CharacterDeathResponse = 25795u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewbieFetchScoreRewardRequest = 26025u16,
+    QuickHackOpenPush = 25808u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LowMemoryChangeSceneStartNotify = 26026u16,
+    ExploreSkillPullGiantRequest = 25809u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBatchPolishResponse = 26035u16,
+    ConditionGroupStateRequest = 25810u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerRecallInfoNotify = 26036u16,
+    BossPilingSettleNotify = 25811u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SkinRewardResponse = 26041u16,
+    FsmPlayMontageRequest = 25815u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneFishPointInfoUpdateNotify = 26043u16,
+    RogueWhiteCatLimitedRewardResponse = 25823u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchFirstEnterRequest = 26054u16,
+    PressResponse = 25825u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AtomicProcessTeleportRequest = 26055u16,
+    KurotatoRoleRecordRequest = 25830u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreEntityTraceResponse = 26058u16,
+    NewPlayerSupportRewardTaskResponse = 25832u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AdviceContentUpdateNotify = 26061u16,
+    BtVarUpdateNotify = 25834u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SwitchBattleModeResponse = 26064u16,
+    GuideTriggerResponse = 25835u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MailFavoriteResponse = 26065u16,
+    BossRushSettlementResponse = 25837u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyStartRequest = 26066u16,
+    FunPlayChallengeAwardRequest = 25841u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoResTaskReceiveResponse = 26068u16,
+    InfrManualCancelTraceRoadResponse = 25842u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FastReturnDungeonRequest = 26075u16,
+    AbyssRankListResponse = 25849u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SlashAndTowerInfoRequest = 26076u16,
+    NewTowerUpdateRecordResponse = 25854u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NpcTraceFailedResponse = 26082u16,
+    FloroRanchStartPlayRequest = 25857u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomRecommendRequest = 26086u16,
+    SpringSignDrawRoleResponse = 25860u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MowTowerResultNotify = 26088u16,
+    SneakGameStateNotify = 25864u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShopInfoUpdateNotify = 26089u16,
+    TrapDefenseSelectGainingGroupResponse = 25867u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BuffEffectExecuteRequest = 26094u16,
+    PbUpLevelSkillRequest = 25868u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GameStatsShowRequest = 26099u16,
+    TraceRecallQuestRequest = 25878u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleNpcShowOverRequest = 26102u16,
+    RiskHarvestEndNotify = 25888u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssRankListRequest = 26103u16,
+    ActionGroupCreateNotify = 25896u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefensePreviewFinishRequest = 26107u16,
+    LoopTeleportVolumeActionResponse = 25898u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RegressTrialRoleUnlockNotify = 26108u16,
+    GetInstExchangeRewardRequest = 25904u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefensePreviewFinishResponse = 26110u16,
+    CommonOrganActionListNotify = 25907u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhotoFightResultNotify = 26116u16,
+    SitChairRequest = 25917u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GivebackRewardResponse = 26121u16,
+    EntityRandomInteractResponse = 25922u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MiniWriteLetterLoginNotify = 26135u16,
+    MonsterAttributeNotify = 25923u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleTrialUiEndPush = 26138u16,
+    ButtonIsEnableResponse = 25924u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TutorialReceiveResponse = 26141u16,
+    FishingSellPreviewRequest = 25932u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleChangeNameNotify = 26144u16,
+    FishingQuickSellPreviewResponse = 25935u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ResetLocationForZRangeNotify = 26153u16,
+    ThrowDamageRequest = 25936u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpecialItemNotify = 26157u16,
+    LevelPlayRewardNotify = 25939u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleChallengeUpdateNotify = 26160u16,
+    ReceiveRechallengeRequest = 25942u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayShopInfoNotify = 26161u16,
+    UnlockMarkNotify = 25945u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleRoleRewardRequest = 26163u16,
+    Summon3Response = 25946u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QingXiaoTaskRewardRequest = 26165u16,
+    MobileButtonSettingUpdateRequest = 25947u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SkinRewardInfoUpdateNotify = 26166u16,
+    DangoBrawlShopBuyResponse = 25948u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BlackCoastThemeStageUpdateNotify = 26169u16,
+    EquipTakeOnNotify = 25950u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrThemeActivityAwardResponse = 26171u16,
+    RoleMotionFinishConditionNotify = 25957u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LogicStateInitRequest = 26172u16,
+    FollowTrackRequest = 25969u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ThrowDamageRecoveryNotify = 26175u16,
+    LowMemoryChangeSceneStartNotify = 25971u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HandInItemResponse = 26177u16,
+    GiantItemUnlockNotify = 25972u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DetectionRequest = 26178u16,
+    RemoveForbidControlNotify = 25975u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseBuildingLevelUpRequest = 26196u16,
+    InfrV2ManualCancelTraceTreeRequest = 25977u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TraceQuestNotify = 26198u16,
+    FloroRanchOutResponse = 25979u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrV2FireUpdateNotify = 26200u16,
+    InvalidItemResponse = 25982u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyRewardResponse = 26201u16,
+    HandInMingSuResponse = 25984u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleMasterLevelRewardResponse = 26202u16,
+    PbOverRoleResponse = 25986u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EquipSkinTakeOnRequest = 26203u16,
+    RoleSkinTrialSettleNotify = 25987u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MoraleTreasureBoxTraceRequest = 26205u16,
+    BattleScoreNotify = 25993u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfluenceRewardResponse = 26210u16,
+    TraceQuestNotify = 25995u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnterViewDirectionResponse = 26211u16,
+    FurnitureDiySaveResponse = 25998u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UseSoundBoxSkillRequest = 26214u16,
+    LobbyQueryPlayersResponse = 25999u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleQuestNewUnlockNotify = 26215u16,
+    MaterialNotify = 26008u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DestroyBulletRequest = 26218u16,
+    RollBlockGamePlayReadyRequest = 26018u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LinkExitNotify = 26223u16,
+    AiBlackboardCdNotify = 26019u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeaponSkinUpdateNotify = 26225u16,
+    PhantomVicePolishAckRequest = 26021u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DirectTrainInfoRequest = 26229u16,
+    PhantomBattleCardInfoUpdateNotify = 26022u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrRoadBuildRequest = 26235u16,
+    PbUpLevelSkillResponse = 26023u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ThroughTrainFinishViewResponse = 26237u16,
+    PhantomBattleReconstructCardRequest = 26025u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AdventureManualRequest = 26238u16,
+    AppGradeNotify = 26027u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SynthesisLevelRewardResponse = 26239u16,
+    TimelineTraceControlRequest = 26029u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ReceiveRechallengeResponse = 26240u16,
+    MapMarkInfoUpdateResponse = 26030u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActivityPreOpenResponse = 26244u16,
+    LivenessResponse = 26035u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoGoldAddResponse = 26245u16,
+    ApplyGameplayEffectNotify = 26040u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryActivateTalentRequest = 26246u16,
+    PhBaPlanSetPlanStatusResponse = 26043u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BuffStackCountResponse = 26251u16,
+    InfrV2ManualSwitchTraceTreeResponse = 26046u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityPatrolAddTagResponse = 26261u16,
+    InfrArchiveReadRequest = 26051u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QueryRecallItemBagRequest = 26265u16,
+    RoleSkinUpdateNotify = 26056u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardGroupNameResponse = 26266u16,
+    BossPilingRewardResponse = 26058u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeRoleRoomSelectRequest = 26267u16,
+    MowTowerSettlementRequest = 26061u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchStartPlayResponse = 26272u16,
+    BabelTowerSettlementRequest = 26063u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeChooseDataResultRequest = 26274u16,
+    TeamMatchAcceptInviteResponse = 26064u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomItemResponse = 26275u16,
+    KurotatoEndShopStepRequest = 26067u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattlePassTaskUpdateNotify = 26276u16,
+    ActionFinishResponse = 26069u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoResTaskUpdateNotify = 26283u16,
+    BtRollbackStartNotify = 26088u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorTaskOneKeyRewardResponse = 26287u16,
+    BtRollbackInfoNotify = 26092u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryAreaSecretRewardResponse = 26290u16,
+    DangoBrawlStartFightRequest = 26094u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConfirmQuestResourceResponse = 26295u16,
+    BossRushBatchClaimRewardResponse = 26097u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DarkTideSwitchVisionResponse = 26299u16,
+    TrapDefensePreviewFinishResponse = 26099u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PbGetRoleListRequest = 26301u16,
+    SolarSchoolBatchSyncResponse = 26100u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrV2TaskRewardResponse = 26303u16,
+    BeControlledDestroyRequest = 26102u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ClientPullResourcePackageResponse = 26304u16,
+    RoguelikeRoleRoomNotify = 26103u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorLevelOneKeyRewardResponse = 26315u16,
+    PhBaPlanFindPlanResponse = 26108u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchOutRequest = 26316u16,
+    PayShopUpdateResponse = 26133u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardGroupUpdateResponse = 26320u16,
+    RoguelikeWriteCatRewardRequest = 26136u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeamMatchAcceptInviteRequest = 26322u16,
+    PhantomBattleCardGroupNameResponse = 26141u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ScheduleRewardResponse = 26326u16,
+    VehicleRemovePassengerRequest = 26143u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerAccessCasketResponse = 26332u16,
+    SceneItemAiEnableNotify = 26148u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimelineTraceExitResponse = 26335u16,
+    InfrV2InfoResponse = 26149u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleTaskInfoNotify = 26339u16,
+    AnimalDestroyResponse = 26151u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoResTaskReceiveRequest = 26341u16,
+    EntityStaticHookMoveNotify = 26154u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleGiftRewardRequest = 26345u16,
+    SurvivorsTalentUnlockNotify = 26156u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RiskHarvestActivityUpdateNotify = 26346u16,
+    EntityActiveRequest = 26157u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityAddDynamicInteractNotify = 26347u16,
+    CookingDataResponse = 26168u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChatMutePlayerResponse = 26353u16,
+    GmIsOverlapNotify = 26170u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MailBindInfoRequest = 26354u16,
+    EntityPosAbnormalRequest = 26177u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleChangeUnlockNotify = 26358u16,
+    ActivityPreOpenResponse = 26181u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayWeeklyEndNotify = 26360u16,
+    RoleTowerDieNotify = 26184u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BtSetTimerInfoResponse = 26365u16,
+    BlockPlayerRequest = 26186u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeSeasonRewardReceiveResponse = 26366u16,
+    RoguelikePopularEntriesInfoRequest = 26192u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeamChallengeRequest = 26370u16,
+    JokerGuessRewardRequest = 26198u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueResultNotify = 26373u16,
+    SecFBRoundStartFlowResponse = 26201u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallItemUseRequest = 26379u16,
+    LongShanTaskRewardRequest = 26202u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityPatrolChangeDirRequest = 26382u16,
+    PhantomIdentifyRequest = 26204u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PassiveSkillNotify = 26386u16,
+    VfxNpcPatrolFinishRequest = 26210u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MonsterBoomPush = 26387u16,
+    MapMarkInfoUpdateRequest = 26212u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimeOccupationNotify = 26393u16,
+    PlayerGameTokenResponse = 26225u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomSettingBatchUpdateRequest = 26395u16,
+    AvignonRewardResponse = 26226u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueTowerTrialReChallengeResponse = 26407u16,
+    DropCatchLevelRewardRequest = 26230u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomAutoPutRequest = 26414u16,
+    FishingIllustratedRewardInfoUpdateNotify = 26235u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TurntableTaskUpdateNotify = 26417u16,
+    SwitchCharacterStateResponse = 26238u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateEnterInfoNotify = 26418u16,
+    GetAdventureRewardRequest = 26242u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CheckGearRequest = 26428u16,
+    NewTowerSeasonScoreRewardRequest = 26245u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FollowDetectionTargetUpdateNotify = 26429u16,
+    SolarSchoolOneKeyGalleryRewardRequest = 26247u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MailBindInfoResponse = 26430u16,
+    PbRoleExpNotify = 26249u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleEvolveResponse = 26438u16,
+    RoguelikeChooseDataNotify = 26262u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelSequenceFrameEventActionResponse = 26441u16,
+    HonamiStoryUnlockSlotRequest = 26265u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleSlotCardSkillResponse = 26443u16,
+    PinballSetPayloadResponse = 26267u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CombatMessagePrefixInfoResponse = 26444u16,
+    HookLockBatchCollectRequest = 26268u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoMonopolyNextBoardRequest = 26450u16,
+    HonamiStoryAreaTaskInfoRefreshNotify = 26269u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RegressRepeatedTaskResponse = 26458u16,
+    PlayerRebackSceneNotify = 26270u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleGamerStatusInfoNotify = 26461u16,
+    TutorialUnlockResponse = 26280u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AdviceVoteRequest = 26463u16,
+    MapCancelTraceResponse = 26282u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleDealCardNotify = 26464u16,
+    MonthCardResponse = 26286u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SimpleTrackReportRequest = 26465u16,
+    TrackMoonBuildingDataRequest = 26292u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PassPortalRequest = 26467u16,
+    HonamiStoryLimitTaskRewardRequest = 26293u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingEntrustTraceRequest = 26469u16,
+    RoleFavorNewQuestUpdateNotify = 26296u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OrderApplyBuffNotify = 26471u16,
+    NewbieCarnivalTaskJumpUpdateNotify = 26302u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreProgressResponse = 26475u16,
+    QuestGiveUpNotify = 26304u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RunTurntableActivityResponse = 26481u16,
+    PassiveSkillAddResponse = 26311u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayGachaResponse = 26482u16,
+    ItemLockRequest = 26312u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeControlRoleNotify = 26484u16,
+    RenameFormationRequest = 26314u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballUpdateNotify = 26492u16,
+    RoleSkillBranchModifyRequest = 26316u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RealmBetweenTaskRewardRequest = 26496u16,
+    RogueResMoodUpdateNotify = 26318u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BoardCanMovePlacementNotify = 26498u16,
+    ForgeFormulaUnlockResponse = 26326u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneBlockSplitHumanChangleNotify = 26500u16,
+    EntityBlackboardResponse = 26328u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityBuffProducerOperateRequest = 26503u16,
+    RollBlockResetGamePlayNotify = 26331u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomSettingUpdateRequest = 26506u16,
+    FishingIllustratedRewardRequest = 26334u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DetectionInvisibleNotify = 26507u16,
+    ConsumptiveRewardRequest = 26335u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MailBindRewardRequest = 26509u16,
+    FloroRanchPlayNextDayResponse = 26348u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeLastInfoRequest = 26510u16,
+    KurotatoRefineWeaponNotify = 26350u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DrownNotify = 26523u16,
+    ArtemisNodeUpdateRequest = 26355u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerPsnBlockListResponse = 26528u16,
+    SwitchCharacterStateRequest = 26359u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlBagOperateResponse = 26530u16,
+    AnimalDestroyRequest = 26360u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlSaveMatchBriefNotify = 26533u16,
+    MapRemoveAllMarkRequest = 26361u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchExecuteSkillPlayResponse = 26537u16,
+    RacingBetsTaskRequest = 26366u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GachaPoolDetailResponse = 26540u16,
+    InfrV2LevelUpRequest = 26367u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsBulletScreenResponse = 26542u16,
+    MixDrinkTopicSelectResponse = 26371u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestFinishActionResponse = 26546u16,
+    MotorFightRoundInfoNotify = 26380u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattlePassRecurringTakeRequest = 26547u16,
+    FloroRanchPlayGachaResponse = 26388u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoSellWeaponRequest = 26554u16,
+    MiniWriteLetterSaveContentRequest = 26392u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveInstanceTimerRequest = 26557u16,
+    PhBaPlanBatchOperRequest = 26395u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerHeadRequest = 26575u16,
+    RoleSkinChangeRequest = 26398u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    IllustratedReadRequest = 26576u16,
+    RhythmRankListRequest = 26399u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleOperateSelfBgmResponse = 26577u16,
+    ThrowDamageResponse = 26400u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardAttrInfoNotify = 26580u16,
+    TowerRequest = 26406u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryScoreRewardResponse = 26582u16,
+    FloroRanchPlayGmInfoUpdateNotify = 26408u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ButtonIsEnableRequest = 26588u16,
+    PlayerLivingStatesNotify = 26412u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShieldUpdateNotify = 26592u16,
+    FarmGoldLevelPlayResponse = 26415u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingSkillTeleportRequest = 26598u16,
+    SpringSignSkinRewardResponse = 26418u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AlertAreaNotify = 26602u16,
+    RelationIdNotify = 26419u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpringSignPhotoRewardResponse = 26603u16,
+    MaterialReplaceRequest = 26427u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomInteractionSkinChangeRequest = 26605u16,
+    TrapDefenseItemUpdateNotify = 26436u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityPosAbnormalRequest = 26606u16,
+    ChangeHeadPhotoRequest = 26439u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UnlockMarkNotify = 26611u16,
+    LineCrossChallengeStartRequest = 26440u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeGainDataUpdateNotify = 26618u16,
+    EquipSkinTakeOnResponse = 26442u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrackMoonTargetRewardResponse = 26623u16,
+    EntityPatrolChangeDirResponse = 26449u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateFightRoleRequest = 26624u16,
+    RecallQuestFinishListNotify = 26450u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveInstanceTimerNotify = 26626u16,
+    PhBaPlanSaveUsePlanResponse = 26457u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AiBlackboardCdNotify = 26627u16,
+    MoveSceneItemNotify = 26459u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ApplyJoinWorldRequest = 26630u16,
+    ExploreToolUpdateNotify = 26462u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimePointRewardActivityConditionNotify = 26647u16,
+    SpringSignPhotoRewardRequest = 26463u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AchievementInfoResponse = 26649u16,
+    RenjuExitMatchedActionResponse = 26468u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TotalTopUpRewardNotify = 26650u16,
+    SetAlertUiVisibleResponse = 26471u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleRoleInfoUpdateNotify = 26654u16,
+    BeControlledShowResponse = 26477u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrackMoonActivityRewardRequest = 26656u16,
+    PhantomBattleCardSkillResponse = 26492u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FormationAttrNotify = 26658u16,
+    FishingActivityLimitRewardRequest = 26494u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HoldWeaponPush = 26659u16,
+    CombatSendPackRequest = 26497u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AvignonTaskNotify = 26663u16,
+    PhantomBattleFourCTaskInfoUpdateNotify = 26498u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyInstInfoNotify = 26665u16,
+    EntityIsVisibleRequest = 26500u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossPilingSettleResponse = 26669u16,
+    PhantomBattleCallCardResponse = 26502u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlowerPollutionResponse = 26670u16,
+    TrapDefenseAuxiliaryResetRequest = 26508u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorDecalTaskResponse = 26679u16,
+    AiInformationNotify = 26510u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SyncSceneTimeNotify = 26685u16,
+    SurvivorsTaskDataUpdateNotify = 26512u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWhiteCatDataUpdateNotify = 26688u16,
+    DropCatchInfoResponse = 26513u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AnimalDestroyResponse = 26691u16,
+    WeaponBreachResponse = 26514u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreLevelNotify = 26692u16,
+    RoleTowerAttributeQueryRequest = 26515u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BabelTowerDailyTaskRewardRequest = 26699u16,
+    ChatMutePlayerRequest = 26518u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GachaResultNotify = 26700u16,
+    GiantDeliveryItemRequest = 26525u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityActiveResponse = 26702u16,
+    InstEntranceDetailResponse = 26537u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleIllustratedInfoRequest = 26704u16,
+    MaterialResponse = 26538u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DeletePhantomEquipGroupResponse = 26711u16,
+    WeatherControlInfoResponse = 26543u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerAccessRangeRequest = 26712u16,
+    FoundationResponse = 26544u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LongShanScoreRewardResponse = 26718u16,
+    SurvivorsMonsterConsecutiveKillsNotify = 26546u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestFinishActionRequest = 26719u16,
+    PhantomBattleStartResponse = 26552u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpringSignDrawRoleRequest = 26720u16,
+    RhythmRankListResponse = 26553u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsGearResponse = 26722u16,
+    HonamiStoryTopInfoNotify = 26555u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BeControlledShowResponse = 26724u16,
+    BattlePassResponse = 26557u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CorniceMeetingRewardRequest = 26725u16,
+    NameModifyNotify = 26559u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleSkillViewRequest = 26728u16,
+    RegressSetCurUseTrialRoleResponse = 26566u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WorldEnterPermissionsResponse = 26732u16,
+    PhotoFightSettleResponse = 26567u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ThroughTrainResponse = 26744u16,
+    RoleSkinTrialUiEndPush = 26571u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerSeasonScoreRewardRequest = 26749u16,
+    UnblockPlayerResponse = 26572u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MonsterAttributeNotify = 26755u16,
+    ItemDecomposePreviewRequest = 26576u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoSyncEntityDealDamagePush = 26756u16,
+    RiskHarvestScoreRewardRequest = 26581u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeSummonEntityStateRequest = 26759u16,
+    RollBlockUpdateAvailableInputsNotify = 26586u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomSettingRequest = 26762u16,
+    ThroughTrainRequest = 26589u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerUpdateRecordRequest = 26763u16,
+    AbyssRewardResponse = 26593u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlChallengeUnlockNotify = 26771u16,
+    TowerFormationRecommendResponse = 26594u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayShopUnlockNotify = 26780u16,
+    SummonRequest = 26598u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GiantActivityNodeActiveNotify = 26790u16,
+    RoleSkinRequest = 26601u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayGiftInfoRequest = 26799u16,
+    RecallQuestNpcMoveOverRequest = 26604u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CommonOrganActionListNotify = 26803u16,
+    SpringFestivalAtmosphereUpdateNotify = 26608u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HoldHandResponse = 26804u16,
+    MotorFightLevelUpdateNotify = 26610u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    JokerGuessUseSkillResponse = 26805u16,
+    GuideInfoResponse = 26611u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CorniceChallengeTransResponse = 26808u16,
+    SplineMoveRequest = 26613u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AnimationStateChangedRequest = 26812u16,
+    RogueResMoveRequest = 26615u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrV2InfoNotify = 26813u16,
+    PinballTeamReviveRequest = 26619u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingQuickSellResponse = 26816u16,
+    MapTravelLevelUpResponse = 26622u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattlePassResponse = 26818u16,
+    MoraleTreasureBoxTraceRequest = 26624u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsOpDoneRequest = 26819u16,
+    MotorUseSceneResponse = 26625u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BathPhotoRequest = 26824u16,
+    WorldLevelRegainRequest = 26635u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SimpleCombatEntitySubTypeChangeNotify = 26830u16,
+    RollBlockResetGamePlayResponse = 26645u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SubmitAwakeAndLoadEntityNodeRequest = 26833u16,
+    DangoBrawlItemGiveCoinNotify = 26647u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityAccessCasketRequest = 26836u16,
+    GetYuXueModeInfoRequest = 26654u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddGuestNotify = 26842u16,
+    EndSkillRequest = 26657u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GachaDiscountNotify = 26843u16,
+    HarvestActivityPointResponse = 26658u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneItemAiEnableNotify = 26846u16,
+    RegressRepeatedTaskRequest = 26659u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    StopMoveSplineRequest = 26851u16,
+    ChatResponse = 26663u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BabelActivityInstInfoNotify = 26859u16,
+    PhantomSkinChangeResponse = 26665u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneItemStopRequest = 26861u16,
+    FlowEndRequest = 26672u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ThrowDamageResponse = 26863u16,
+    HoldHandResponse = 26676u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BatchSynthesisItemRequest = 26865u16,
+    BuffEffectPush = 26677u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PressResponse = 26869u16,
+    FeiXuePreheatInfoRewardResponse = 26680u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FarmGoldLevelNotify = 26870u16,
+    KickWorldTeamResponse = 26682u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CheatInputRequest = 26873u16,
+    RoadBookFullRewardResponse = 26687u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GmVoxelInfoNotify = 26875u16,
+    SimpleCombatBeginNotify = 26690u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RhythmRankListResponse = 26876u16,
+    InstResultNotify = 26696u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorUseSkinRequest = 26877u16,
+    GmLevelActionResponse = 26699u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayInstShareFirstInfoNotify = 26879u16,
+    PhantomBattleSlotCardSkillResponse = 26700u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseAuxiliaryResetResponse = 26880u16,
+    SolarSchoolOneKeyRewardResponse = 26713u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeTalentLevelUpRequest = 26893u16,
+    EntityPatrolStartRequest = 26715u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ArtemisNodeUpdateResponse = 26895u16,
+    PhantomBattleSlotCardSkillRequest = 26717u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HoldHandRequest = 26904u16,
+    PhantomBattleGuideRewardRequest = 26718u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhotographPush = 26905u16,
+    BatchSynthesisItemResponse = 26720u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TutorialUnlockRequest = 26906u16,
+    CameraSettingModifyResponse = 26725u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BookItemUpdateNotify = 26909u16,
+    PhantomRecommendResponse = 26730u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulPhantomBattleMasterLevelRewardRequest = 26911u16,
+    MainPhantomRecommendResponse = 26732u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrInfoRequest = 26916u16,
+    PlayerXboxBlockListResponse = 26733u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DropCatchInfoResponse = 26922u16,
+    RacingBetsLegMatchInfoRequest = 26734u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleFavorActiveNotify = 26927u16,
+    MapTraceNotify = 26739u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CancelMatchRequest = 26931u16,
+    OutputDebugInfoNotify = 26742u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityStaticHookMoveNotify = 26938u16,
+    BlackCoastThemeActiveRewardRequest = 26746u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingBoatDieNotify = 26943u16,
+    MailGetAttachmentResponse = 26747u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyGotoNextRoomResponse = 26948u16,
+    RogueArchiveListResponse = 26762u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueChooseDataNotify = 26956u16,
+    TrapDefenseGetRewardResponse = 26764u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballWeaponWearRequest = 26957u16,
+    SplineMoveResponse = 26766u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ClientPullResourcePackageRequest = 26961u16,
+    RoleTowerPhantomAddAttrsUpdateNotify = 26773u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballInGameKickBallResponse = 26970u16,
+    TraceQuestRequest = 26774u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DeletePhantomEquipGroupRequest = 26973u16,
+    SimpleCombatEndNotify = 26778u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TutorialInfoResponse = 26976u16,
+    FriendRecentlyTeamUpdateNotify = 26784u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingHandInRequest = 26983u16,
+    BattlePassLevelUpRequest = 26786u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorDecalUpdateNotify = 26984u16,
+    PrivateChatOperateResponse = 26788u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrampleGearTransitionNotify = 26985u16,
+    TowerResetResponse = 26793u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExecuteQteResponse = 26990u16,
+    EntityGravityUpdateNotify = 26798u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrV2LevelUpResponse = 26991u16,
+    MovePlacementRequest = 26801u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreSkillPullGiantRequest = 26996u16,
+    FastReturnDungeonRequest = 26812u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FormationAttrResponse = 26997u16,
+    TrapDefenseSpawnMonsterWaveEndNotify = 26815u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightOneKeyRewardResponse = 26998u16,
+    EntityAttachChangeNotify = 26817u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryResidentTaskRewardRequest = 27008u16,
+    GetChapterRewardRequest = 26818u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleBvBFightNotify = 27009u16,
+    WeekCardInfoRequest = 26823u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ClientVersionNoMatchNotify = 27011u16,
+    TrialRoleRewardResponse = 26824u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseUseItemResponse = 27014u16,
+    MotorOutlookEditPresetRequest = 26832u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleFourCTaskInfoUpdateNotify = 27016u16,
+    SwitchRoleNotify = 26835u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MixDrinkSettleResponse = 27018u16,
+    RegressRepeatedTaskResponse = 26837u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DarkTideSwitchVisionRequest = 27020u16,
+    HookLockBatchCollectNotify = 26841u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerXboxInfoGetResponse = 27026u16,
+    SplineMoveNotify = 26842u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulCalabashLevelRewardRequest = 27027u16,
+    AbyssReviveTimeNotify = 26847u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsStepUpdateNotify = 27029u16,
+    PlayerHeadUpdateNotify = 26848u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryEquipRoleRequest = 27034u16,
+    ChatMutePlayerResponse = 26851u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoadBookTaskRewardResponse = 27039u16,
+    MatchChangeReadyRequest = 26852u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShortMessageChatThemeChangeRequest = 27042u16,
+    RoverRogueGainGetOrLoseNotify = 26853u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    YuXueModeInfoNotify = 27043u16,
+    FarmGoldLevelDiffResponse = 26855u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchRewardMilestoneResponse = 27049u16,
+    MonsterDrownPush = 26858u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PbRoleActiveNotify = 27050u16,
+    AttributeChangedNotify = 26859u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeStateConfirmRequest = 27052u16,
+    RealmBetweenTaskRewardResponse = 26868u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetFocusModeDeterCondRequest = 27054u16,
+    PinballSpawnFirstFinishNotify = 26869u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleFavorNewQuestUpdateNotify = 27058u16,
+    HookLockBatchCollectResponse = 26873u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryLimitTaskRewardResponse = 27065u16,
+    SceneItemSetPosSenderRequest = 26876u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RealmBetweenTaskRewardResponse = 27072u16,
+    CreateBulletPush = 26882u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RhythmSetRedDotResponse = 27076u16,
+    FlagChallengeSettleNotify = 26883u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WorldLevelDownResponse = 27079u16,
+    DangoMonopolyBoardRewardResponse = 26889u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RegressRepeatedTaskRequest = 27083u16,
+    HonamiStoryWeaponDressResponse = 26893u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeaponItemResponse = 27089u16,
+    OrderRemoveBuffRequest = 26903u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingItemAddNotify = 27090u16,
+    MotorChangeOutlookResponse = 26904u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LobbyListRequest = 27091u16,
+    EnableNearbyTrackingNotify = 26906u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AiInformationRequest = 27094u16,
+    SynthesisInfoUpdateNotify = 26909u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeStateResponse = 27097u16,
+    CheckGearResponse = 26915u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlRoundSwitchNotify = 27098u16,
+    CameraSettingQueryRequest = 26920u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreSkillPullGiantResponse = 27102u16,
+    DailyQuestStateNotify = 26923u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorDevelopTaskRewardRequest = 27103u16,
+    NewbieCarnivalSwitchRoleRequest = 26924u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallQuestFinishActionRequest = 27112u16,
+    BuildingLevelUpResponse = 26925u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResFovUpdateNotify = 27113u16,
+    DangoBrawlLoseCountUpdateNotify = 26926u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DarkTideBagSortResponse = 27116u16,
+    PbRoleResonLockFinishNotify = 26928u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    JoinSceneNotifyConfirmRequest = 27120u16,
+    InfluenceInfoUpdateNotify = 26930u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RiskHarvestScoreRewardResponse = 27124u16,
+    FishingCageInfoRequest = 26932u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreToolAllNotify = 27129u16,
+    NewTowerMedalInfoRequest = 26935u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MovePlacementResponse = 27133u16,
+    IllustratedRedDotResponse = 26946u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerStartRequest = 27135u16,
+    TimeScheduleTriggerNotify = 26967u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActionFinishRequest = 27144u16,
+    SceneGroupDataAndCurFormationEntityRequest = 26969u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DailyQuestChangePreferResponse = 27145u16,
+    QuestBranchUpdateNotify = 26971u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetBtObjYuXueModeResponse = 27148u16,
+    PhantomBattleRoleRewardResponse = 26978u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattleStateChangeResponse = 27150u16,
+    BuildingUnLockRequest = 26985u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneSubLevelsResponse = 27152u16,
+    MotorTaskOneKeyRewardResponse = 26986u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueQuitResponse = 27155u16,
+    RemoveMarkInfoNotify = 26990u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpecialItemUnEquipResponse = 27162u16,
+    ApplyGameplayEffectRequest = 26992u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CharacterDeathRequest = 27163u16,
+    NewTowerMedalInfoResponse = 27000u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoMonopolyTaskRewardResponse = 27164u16,
+    RoverRogueInsListResponse = 27005u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlScoreRewardResponse = 27166u16,
+    AtomicProcessTeleportResponse = 27008u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OccupationInfoNotify = 27173u16,
+    PhantomUnlockNotify = 27009u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossRushTaskRewardRequest = 27175u16,
+    AiControlSwitchRequest = 27014u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ResetQuestFocusModeNotify = 27177u16,
+    MotorFightAddCollectionNotify = 27020u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RefreshBuffDurationPush = 27178u16,
+    EntityStateReadyNotify = 27022u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimerEndResponse = 27179u16,
+    GiantTotalStableValueUpdateNotify = 27023u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomMusicSwitchRequest = 27185u16,
+    KurotatoNextWaveTypeNotify = 27025u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DeleteStoryCharacterRequest = 27194u16,
+    FishingSkillBaitResponse = 27026u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewPlayerSupportTrialRoleLvUpRequest = 27199u16,
+    QuestReadyForGiveUpRequest = 27030u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityBuffProducerOperateResponse = 27203u16,
+    RogueResSwitchFormationRequest = 27031u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityBeamReceiveRequest = 27206u16,
+    InfrV2ScoreRewardResponse = 27040u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeaponResonUpRequest = 27212u16,
+    RogueWeeklyArtifactInfoRequest = 27043u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InviteRechallengeRequest = 27217u16,
+    TrapDefenseChallengeResultNotify = 27045u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RhythmChangePartnerRoleRequest = 27219u16,
+    WeatherSwitchInfoResponse = 27053u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpringSignSkinRewardResponse = 27228u16,
+    KickWorldTeamRequest = 27061u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayShopDirectBuyNotify = 27230u16,
+    NewbieCarnivalSwitchRoleResponse = 27062u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BtSuspendNotify = 27231u16,
+    ChatNotify = 27064u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhotoFightSettleRequest = 27242u16,
+    AnimalDropRequest = 27068u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ZitherPlayNotePush = 27243u16,
+    PhantomBattleSelectReserveCardResponse = 27073u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleBackSlotCardLibraryRequest = 27245u16,
+    RecallItemRewardNotify = 27085u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerCycleStartResponse = 27252u16,
+    ActionResetPosPrePerformanceNotify = 27087u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DeadeyeShootHitRequest = 27253u16,
+    SneakTimeRequest = 27089u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InstFightEndPush = 27255u16,
+    TemporaryTeleportAllInfoNotify = 27094u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ScheduleNpcUpdatePosResponse = 27257u16,
+    DangoBrawlEventRefreshResponse = 27098u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorOutlookDeletePresetRequest = 27258u16,
+    NewbieCourseV2RewardRequest = 27099u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueArchiveSaveResponse = 27259u16,
+    DestroyBulletRequest = 27103u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OrderApplyBuffResponse = 27266u16,
+    InviteRechallengeRequest = 27109u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseRefreshGainingGroupRequest = 27268u16,
+    LevelPlayOpenTimeNotify = 27112u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PrivateChatOperateRequest = 27275u16,
+    TrapDefenseGetSpecialRewardResponse = 27113u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ClientCurrentRoleReportRequest = 27281u16,
+    RogueWeeklyLastInfoRequest = 27120u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardRoleTargetInfoResponse = 27282u16,
+    RogueResElementUpdateNotify = 27121u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallTeleportToMarkIdRequest = 27287u16,
+    NewPlayerSupportActivityTrialRoleUpdateNotify = 27128u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CompleteMarkNotify = 27290u16,
+    RemoveInstanceTimerNotify = 27135u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LobbyQueryPlayersRequest = 27293u16,
+    PhantomBattleChallengeUpdateNotify = 27137u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomVicePolishResponse = 27294u16,
+    HitEndResponse = 27143u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssRoleInfoUpdateNotify = 27295u16,
+    GravityGearResponse = 27144u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TraceRecallQuestResponse = 27297u16,
+    ScratchCardActivityInfoRequest = 27153u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SecGetReportData2FlowResponse = 27302u16,
+    MailBindRewardResponse = 27161u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FormationSwitchRoleRequest = 27304u16,
+    IllustratedReadResponse = 27163u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OrnamentInfoNotify = 27306u16,
+    ActiveDragonPoolRequest = 27171u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightAddBuffNotify = 27308u16,
+    MotorChangeOutlookRequest = 27172u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhBaPlanSaveUsePlanRequest = 27330u16,
+    RecallExploreSkillRouletteNotify = 27174u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SecGetReportData2FlowRequest = 27333u16,
+    PlayerVoxelEnvRequest = 27177u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CdKeyVerifyRequest = 27335u16,
+    NewbieAdventureTaskUpdateNotify = 27178u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NpcTraceFailedRequest = 27353u16,
+    ExploreSkillRouletteSetResponse = 27182u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CharacterMoveToPointNotify = 27358u16,
+    SetQuestResourceStateResponse = 27184u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DailyQuestUnlockAreaNotify = 27366u16,
+    PlayerVarNotify = 27186u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LanguageSettingUpdateResponse = 27367u16,
+    InfrFireNoticeResponse = 27191u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EdgeRunnerScoreRewardResponse = 27370u16,
+    SceneLoadingFinishRequest = 27192u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorTechLevelUpResponse = 27374u16,
+    DropCatchLevelRewardResponse = 27201u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryPickUpItemResponse = 27375u16,
+    PhantomBatchRefiningRequest = 27203u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SimpleCombatBeginNotify = 27378u16,
+    RogueWhiteCatRecordResponse = 27210u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SummonRequest = 27379u16,
+    CookFormulaRequest = 27218u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightRefreshSubLevelNotify = 27381u16,
+    TowerInfoUpdateNotify = 27219u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlShopRefreshRequest = 27387u16,
+    FarmGoldPointResponse = 27220u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlowRestartResponse = 27398u16,
+    DangoBrawlInstPrepareNotify = 27221u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MailGetAttachmentResponse = 27409u16,
+    ThemeWorldScoreRequest = 27224u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerDefenceInstanceInfoUpdateNotify = 27413u16,
+    NavigationFindPathRequest = 27225u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PackAnimChangedNotify = 27418u16,
+    HookLockPointFinishResponse = 27227u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShortMessageShowChangeRequest = 27422u16,
+    RoleSkinChangeResponse = 27229u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MoonPhaseRandomResponse = 27423u16,
+    RealmBetweenLevelUpResponse = 27232u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CiacconaActivityStateUnlockUpdateNotify = 27426u16,
+    SignActivitySignStateNotify = 27234u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoMonopolyBoardRewardRequest = 27429u16,
+    AbyssChallengeGotoNextRoomResponse = 27237u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseCurChallengeInfoRequest = 27431u16,
+    RegressSetCurUseTrialRoleRequest = 27245u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsLegMatchInfoRequest = 27433u16,
+    SpringFestivalTaskRewardRequest = 27247u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerXboxSessionNotify = 27434u16,
+    PlayerFollowerNotify = 27250u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PartComponentInitNotify = 27435u16,
+    PhantomSettingUpdateRequest = 27251u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleDealCardReplaceNotify = 27437u16,
+    CheatInputResponse = 27253u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AdviceSetResponse = 27439u16,
+    AbyssChallengeResultNotify = 27258u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WaitQuestConfirmResourceNotify = 27440u16,
+    BattlePassTakeAllRewardResponse = 27259u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MobileButtonSettingUpdateResponse = 27442u16,
+    LineCrossActivityUpdateNotify = 27261u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlowTeleportToPlotPosResponse = 27445u16,
+    HonamiStoryItemCollectionRequest = 27262u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AtomicProcessTeleportResponse = 27447u16,
+    NormalItemUpdateNotify = 27265u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MonsterAttributeArrayNotify = 27454u16,
+    RealmBetweenMotorRewardRequest = 27266u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleSkillBranchModifyRequest = 27456u16,
+    AccessForceClosedAreaNotify = 27267u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingPortUpdateNotify = 27457u16,
+    TutorialReceiveRequest = 27270u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConsumptiveActivityScoreRequest = 27461u16,
+    BattlePassRecurringTakeResponse = 27272u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsComboParamUpdateNotify = 27463u16,
+    TowerRewardRequest = 27282u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerClearRecordResponse = 27464u16,
+    FlagChallengeUnlockTeleporterNotify = 27289u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityPatrolStopRequest = 27475u16,
+    FishingCabinPutRequest = 27290u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeeklyFrameworkInfoUpdateNotify = 27476u16,
+    ShopUpdateResponse = 27292u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattlePassTaskTakeRequest = 27478u16,
+    ShopBuyResponse = 27294u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerNetStateS2cNotify = 27482u16,
+    HonamiStoryResidentTaskRewardRequest = 27298u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConfirmQuestResourceRequest = 27492u16,
+    MotorFightOneKeyRewardRequest = 27302u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityStaticHookMovePush = 27494u16,
+    PhotographPush = 27304u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryLimitShopConsumeNumNotify = 27498u16,
+    FishingIllustratedRewardResponse = 27309u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerTeleportStateNotify = 27500u16,
+    PlayerVoiceLanguageResponse = 27315u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CalabashSkinTakeOnNotify = 27504u16,
+    SlashAndTowerResetRequest = 27317u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayRemoveUnitResponse = 27510u16,
+    TrapDefenseAuxiliaryBranchResponse = 27327u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingSellRequest = 27511u16,
+    BeControlledEntityHoverResponse = 27351u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleShowListUpdateNotify = 27519u16,
+    CombatValDecayBeginNotify = 27363u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MonsterPatrolPointReachedRequest = 27527u16,
+    BattlePassTakeRewardRequest = 27378u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetFanNumberOfTurnsResponse = 27529u16,
+    MotorParkourStartNotify = 27385u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TopPhantomEquipGroupResponse = 27536u16,
+    MixDrinkTopicSelectRequest = 27388u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityCameraAlertRequest = 27538u16,
+    EntityIsVisibleNotify = 27390u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddChapterResultResponse = 27547u16,
+    RoverRogueQuitRequest = 27391u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayRefreshGachaResponse = 27548u16,
+    PhantomBattleCardAttrInfoNotify = 27398u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeDataLayerFinishRequest = 27553u16,
+    CombatDataMaxNotify = 27399u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InstDataNotify = 27555u16,
+    EntityOnLandedResponse = 27404u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SignActivityRequest = 27564u16,
+    SolarSchoolReachEndingRequest = 27408u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AtomicProcessRemoveBuffRequest = 27565u16,
+    GiantStableValueActivityResponse = 27413u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RollBlockResetGamePlayNotify = 27566u16,
+    PrivateChatDataResponse = 27414u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SwitchCharacterStateRequest = 27567u16,
+    ActivateBuffRequest = 27416u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseBuildingBranchRequest = 27569u16,
+    ServerCommandNotify = 27430u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RiskHarvestInstRewardRequest = 27572u16,
+    BossRushBatchClaimRewardRequest = 27431u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightRankListSelfDataResponse = 27580u16,
+    FloroRanchRewardTaskRequest = 27434u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ThirdPartyShareRequest = 27585u16,
+    RiskHarvestScoreRewardResponse = 27437u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BirthdayShowSetRequest = 27587u16,
+    ResonantChainOptionalLimitResponse = 27438u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballUpdateWaveNotify = 27589u16,
+    RacingBetsMatchInfoResponse = 27440u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingIllustratedRewardInfoUpdateNotify = 27592u16,
+    BattleAntiCheatingLogNotify = 27447u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MowTowerLevelsRewardRequest = 27598u16,
+    SwitchRoleRequest = 27457u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BlackSwordChallengeMarkItemPanelInfoRequest = 27609u16,
+    CheckGearRequest = 27460u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ThemeWorldScoreRequest = 27613u16,
+    FishingCabinPutResponse = 27464u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballInGameStateChangeNotify = 27614u16,
+    EntityBeamReceiveResponse = 27467u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerReviveNotify = 27617u16,
+    PhotoMemoryRewardRequest = 27468u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssPluginItemAddNotify = 27619u16,
+    LinkingStateNotify = 27470u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingIllustratedRewardResponse = 27625u16,
+    WeeklyFrameworkScoreRewardRequest = 27471u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnableNearbyTrackingNotify = 27628u16,
+    EntityAdsorbResponse = 27477u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpringSignDrawRoleResponse = 27629u16,
+    RacingBetMatchRequest = 27478u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangePlayerFightRoleNotify = 27633u16,
+    RealmBetweenLevelUpRequest = 27479u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GetAdventureRewardRequest = 27637u16,
+    SneakResponse = 27480u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConfirmResourceQuestNotify = 27650u16,
+    CharacterMoveToPointEndPush = 27483u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AnimationStateInitNotify = 27651u16,
+    SunSpiritCollectNotify = 27484u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SignActivityFreeDropResponse = 27652u16,
+    MulExploreScoreRewardResponse = 27486u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    H5CircumFluenceActivityReadResponse = 27658u16,
+    FloroRanchFirstEnterRequest = 27487u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsLastInfoRequest = 27662u16,
+    CalabashSkinTakeOnRequest = 27489u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FurnitureDiySaveResponse = 27663u16,
+    MowTowerSettlementResponse = 27490u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MonsterBoomRequest = 27664u16,
+    RecallItemBagDeltaNotify = 27494u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MonsterLevelArrayNotify = 27665u16,
+    LevelPlayFastReturnPosRequest = 27495u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerDeadNotify = 27670u16,
+    HonamiStoryScoreRewardResponse = 27500u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTrialRoleGetNightmarePhantomInstInfoResponse = 27671u16,
+    RbBlockStateChangeNotify = 27504u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeatherControlResponse = 27673u16,
+    LandingDamageRequest = 27510u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResMoveResponse = 27678u16,
+    SurvivorsOpDoneRequest = 27513u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayShopItemUpdateResponse = 27686u16,
+    RoleFavorAcceptQuestRequest = 27516u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LordGymInfoResponse = 27687u16,
+    LandingDamageResponse = 27519u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SecWorldStartFlowResponse = 27691u16,
+    MotorDecalMotorIpResponse = 27523u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateOwnerMingSuGenNotify = 27693u16,
+    RoleTowerStageRetryResponse = 27529u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayWeeklyNotify = 27695u16,
+    TowerStartResponse = 27533u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStorySetFormationNotify = 27708u16,
+    TrapDefenseChallengeQuitResponse = 27534u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemDecomposePreviewRequest = 27713u16,
+    WorldTeamPlayerInfoChangeNotify = 27539u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GetTraceQuestYuXueModeRequest = 27714u16,
+    EntityEnterVehicleRequest = 27542u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityCameraAlertResponse = 27719u16,
+    BabelTowerSelfPassRequest = 27544u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeResultNotify = 27722u16,
+    ChangeStateConfirmNotify = 27547u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingGhostStateNotify = 27726u16,
+    GravityHookLockPointChangeGravityRequest = 27548u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayTributeRequest = 27731u16,
+    MotorDecalMotorIpRequest = 27551u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulRoguelikeWriteCatRewardRequest = 27734u16,
+    MaterialPush = 27552u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HardnessModeChangedResponse = 27736u16,
+    EnableDamageRecordRequest = 27554u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResEndingUpdateNotify = 27739u16,
+    TrackMoonRolePropChangeNotify = 27561u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomReturnPreviewResponse = 27740u16,
+    ConnectorCanConnectRequest = 27563u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TotalTopUpActivityInfoNotify = 27743u16,
+    ReorderFormationRequest = 27566u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeSceneModeEndNotify = 27746u16,
+    MotorTaskOneKeyRewardRequest = 27567u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WorldBlackboardNotify = 27748u16,
+    NewbieCarnivalAwardRequest = 27569u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorInfoResponse = 27754u16,
+    CoopRoleInfoUpdateNotify = 27573u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorCreateResponse = 27756u16,
+    ActionFinishRequest = 27577u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TemplateEntitySpawnerContentNotify = 27757u16,
+    EndSkillNotify = 27580u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoEndShopStepResponse = 27759u16,
+    HonamiStoryMascotRewardRequest = 27581u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerMonsterHpInfoNotify = 27762u16,
+    PhantomBattleReChallengeRequest = 27585u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveForbidControlNotify = 27763u16,
+    PhantomBattleDiscardCardNotify = 27588u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CommonOrganResetTimeRequest = 27765u16,
+    MotorFightMonsterDropNotify = 27596u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MoonPhaseRewardRequest = 27767u16,
+    AiBlackboardsResponse = 27598u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseRefreshShopResponse = 27769u16,
+    TrackMoonSettleResponse = 27600u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GiantSystemInfoNotify = 27770u16,
+    HarvestActivityLevelRequest = 27602u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VisionSkillCallNotify = 27773u16,
+    GetTraceQuestYuXueModeRequest = 27604u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HitNotify = 27776u16,
+    AiHateRequest = 27610u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerLevelUnlockNotify = 27780u16,
+    FloroRanchPlayWeeklyNotify = 27614u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ForgeItemResponse = 27784u16,
+    AreaTerminalPinOperationResponse = 27615u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SwitchLogicStatePush = 27786u16,
+    HonamiStoryEquipRoleResponse = 27622u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChatRequest = 27797u16,
+    BookItemUpdateNotify = 27626u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GiantEcoUnlockNotify = 27800u16,
+    FormationSwitchRoleResponse = 27628u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseCurChallengeInfoResponse = 27808u16,
+    MotorOutlookDeletePresetRequest = 27629u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerCreateXboxSessionRequest = 27825u16,
+    ActionNotify = 27631u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AttributeChangedNotify = 27832u16,
+    MotorFightRefreshNextWaveGroupResponse = 27635u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TetrisFinishResponse = 27836u16,
+    RogueWhiteCatDataUpdateNotify = 27640u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingActivityMilestoneRewardResponse = 27837u16,
+    AnimationStateInitResponse = 27644u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveTreasureBoxSlotResponse = 27840u16,
+    NewbieMainTaskUpdateNotify = 27645u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BatchMaterialReplaceResponse = 27844u16,
+    CompleteMarkNotify = 27647u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BehaviorTreeDeleteNotify = 27847u16,
+    MoveSceneItemResetPositionRequest = 27648u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RealmBetweenInfoUpdateNotify = 27851u16,
+    EnrichmentAreaResponse = 27649u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActionResetPosPrePerformanceEndResponse = 27855u16,
+    TowerResetRequest = 27650u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BulletPatternPush = 27859u16,
+    PhantomRefiningResponse = 27651u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreToolUpdateNotify = 27860u16,
+    ShortMessageShowChangeResponse = 27652u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingExitRequest = 27861u16,
+    RoguelikeRoleInstStartRequest = 27659u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AiInformationNotify = 27868u16,
+    PlayerEnterPollutionRequest = 27660u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchRewardMilestoneRequest = 27873u16,
+    BattlePassTaskResponse = 27662u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssPluginPutResponse = 27879u16,
+    EntityEquipChangeNotify = 27672u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrV2ManualSwitchTraceTreeRequest = 27880u16,
+    MotorDevelopTaskUpdateNotify = 27674u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleSlotInsteadResponse = 27889u16,
+    AtomicProcessAddBuffRequest = 27678u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SimpleCombatEndNotify = 27894u16,
+    RiskHarvestBuffUnlockRewardResponse = 27680u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RegressTrialRoleLvUpRequest = 27895u16,
+    LeaveMatchTeamRequest = 27683u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LivenessRefreshNotify = 27908u16,
+    InstFightEndPush = 27687u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MutiplayerTeamRefreshNearListRequest = 27911u16,
+    FriendDeleteRequest = 27693u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseDevelopInfoUpdateNotify = 27912u16,
+    PinballFriendRankRequest = 27697u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryUnlockSlotResponse = 27913u16,
+    PhBaPlanUsePlanRequest = 27699u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneAreaStateNotify = 27914u16,
+    PhantomBattleTaskRewardResponse = 27700u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerFollowerNotify = 27918u16,
+    NavigationFindPathResponse = 27703u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapMarkResponse = 27926u16,
+    SignActivityFreeDropRequest = 27704u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UnblockPlayerResponse = 27927u16,
+    RogueResOpDataNotify = 27709u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlSettleResponse = 27928u16,
+    TowerDefenceChallengeQuitRequest = 27718u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RealmBetweenFullRewardRequest = 27929u16,
+    MapMarkInfoNotify = 27725u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewPlayerSupportActivityTaskUpdateNotify = 27935u16,
+    KurotatoResTaskUpdateNotify = 27726u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BtRollbackRequest = 27940u16,
+    MotorTechLevelUpRequest = 27727u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhBaPlanFindPlanResponse = 27942u16,
+    InstTimeoutNotify = 27732u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AiHateRequest = 27946u16,
+    RhythmTaskOneKeyRewardRequest = 27736u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateNodeProgressNotify = 27949u16,
+    KurotatoLevelRecordDeleteResponse = 27741u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityIsVisibleResponse = 27951u16,
+    RacingBetsMatchInfoRequest = 27743u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeamTeleportStartNotify = 27952u16,
+    PhantomRefiningRequest = 27747u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeOrnamentRequest = 27956u16,
+    FirecrackerEntityCreatedNotify = 27748u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoRefineWeaponRequest = 27957u16,
+    ParkourChallengeTransRequest = 27756u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeDataLayerFinishResponse = 27963u16,
+    EnableDamageRecordResponse = 27761u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerDefenceEndNotify = 27964u16,
+    BoardCanMovePlacementNotify = 27769u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeGiveUpGainRequest = 27974u16,
+    KurotatoShopRewardRefreshRequest = 27770u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FsmConditionPassResponse = 27979u16,
+    RhythmRoleUpdateNotify = 27775u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeRoleRoomSelectResponse = 27983u16,
+    FloroRanchFirstEnterResponse = 27776u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BehaviorTreeInfoNotify = 27985u16,
+    MonsterPatrolPointReachedRequest = 27779u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TransformBuffStackNotify = 27991u16,
+    AwakeItemVehicleRequest = 27784u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PbRoleExpNotify = 27992u16,
+    RoleChangeNameNotify = 27785u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneLoadingTimeOutNotify = 27994u16,
+    TreasureBoxSlotAllInfoNotify = 27789u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlActivityLimitCoinUpdateNotify = 27996u16,
+    PreheatSignRewardResponse = 27792u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeeklyFrameworkScoreRewardRequest = 28000u16,
+    ApplyJoinWorldNotify = 27800u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhBaPlanUpdatePlanRequest = 28006u16,
+    SecWorldStartFlowRequest = 27803u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnterViewDirectionPush = 28007u16,
+    AvoidBlockSubmitOverNodeResponse = 27806u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DecalRemoveNotify = 28009u16,
+    SolarSchoolSetFlowResponse = 27809u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpringFestivalAtmosphereRewardResponse = 28012u16,
+    SlashAndTowerSaveRecordResponse = 27817u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SimpleCombatEntityDieResponse = 28019u16,
+    GuideTriggerRequest = 27818u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchRewardTaskResponse = 28020u16,
+    FoundationCoreOperateRequest = 27836u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerGuideActivityRewardRequest = 28023u16,
+    TrialRoleSkinRewardRequest = 27840u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExchangeRewardInfoResponse = 28025u16,
+    ResetBabelTowerLevelResponse = 27850u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SlashAndTowerScoreRewardRequest = 28028u16,
+    KurotatoShopRewardLockRequest = 27851u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlScoreRewardRequest = 28029u16,
+    ShortMessageShowChangeRequest = 27855u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateTimerInfoNotify = 28030u16,
+    RoleShowListUpdateNotify = 27858u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeEntityStateResponse = 28032u16,
+    UpdateTimerInfoNotify = 27863u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeWriteCatRewardResponse = 28034u16,
+    PlayerTeleportStateNotify = 27864u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetMatchInfoRequest = 28035u16,
+    ShieldUpdateNotify = 27866u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShowInvalidItemRequest = 28036u16,
+    UpdatePhantomEquipGroupResponse = 27868u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballRoleLevelUpResponse = 28040u16,
+    EnrichmentAreaRequest = 27870u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemGiftUseNotify = 28048u16,
+    RoleShowListUpdateRequest = 27889u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SecFBRoundEndFlowReportResponse = 28053u16,
+    LobbyQueryPlayersRequest = 27890u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    Summon2Response = 28056u16,
+    TeleportFlowNotify = 27892u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeStartResponse = 28058u16,
+    RogueResOpDoneRequest = 27894u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HitEndResponse = 28059u16,
+    LevelPlayerRewardHintNotify = 27910u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddMarkInfoNotify = 28060u16,
+    SetFanNumberOfTurnsResponse = 27911u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeMonsterRoleNotify = 28069u16,
+    AchievementFinishRequest = 27912u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrV2ManualSwitchTraceTreeResponse = 28071u16,
+    AbyssRewardRequest = 27914u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveGameplayEffectResponse = 28077u16,
+    ExploreActivityTaskRewardRequest = 27918u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MonsterDetectionInfoRequest = 28081u16,
+    BuffEffectExecuteResponse = 27923u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleReconstructCardRequest = 28082u16,
+    WeatherSwitchInfoRequest = 27924u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTowerSeasonRewardResponse = 28087u16,
+    QuestRollBackEndNotify = 27925u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GuideTriggerRequest = 28091u16,
+    RecallQuestRollBackEndNotify = 27936u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SneakRequest = 28095u16,
+    TotalTopUpRewardRequest = 27942u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HostFogIdUnlockNotify = 28107u16,
+    RegressBonusRequest = 27943u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LeaveMatchTeamRequest = 28110u16,
+    EntityIsVisibleResponse = 27947u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CombatValNotify = 28115u16,
+    FloroRanchPlayTributeResponse = 27951u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomCollectUpdateNotify = 28121u16,
+    FlagChallengeLevelInfoUpdateNotify = 27954u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneBlockSplitHumanFullNotify = 28122u16,
+    SysErrorNotify = 27956u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MingSuHandRewardRequest = 28128u16,
+    RoverRogueResourcesUpdateNotify = 27960u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PartUpdateResponse = 28131u16,
+    PassPortalResponse = 27969u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorExpAddNotify = 28144u16,
+    MontagePlayRequest = 27974u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleMotionUnLockResponse = 28146u16,
+    JokerGuessDrawCardResponse = 27976u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HookLockPointExitRequest = 28147u16,
+    AbyssPluginPutRequest = 27978u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TraceRecallQuestRequest = 28149u16,
+    BirthdayShowSetRequest = 27980u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorCycleCruiseStatePush = 28153u16,
+    DangoBrawlBagOperateRequest = 27984u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeaponLevelUpRequest = 28155u16,
+    OrnamentUnlockNotify = 27985u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomItemUpdateNotify = 28162u16,
+    RacingBetLegMatchSettleNotify = 27991u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ThrowDamageRequest = 28170u16,
+    GivebackInfoUpdateNotify = 27995u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActionOpenSystemBoardNotify = 28172u16,
+    HitResponse = 27996u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SplinePositionUpdateRequest = 28181u16,
+    FishingShipForceBackNotify = 28002u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EquipTakeOnResponse = 28184u16,
+    RogueResEndingRewardRequest = 28009u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseBuildingLevelUpResponse = 28185u16,
+    RogueWeeklyStartRequest = 28012u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingShipForceBackNotify = 28191u16,
+    RecallQuestChangeTraceNotify = 28015u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleBadgeRewardResponse = 28194u16,
+    VehicleUpdateNotify = 28018u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnterMatchTeamNotify = 28195u16,
+    DangoBrawlEventRefreshRequest = 28024u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleChangeNotify = 28197u16,
+    WeatherControlResponse = 28028u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BuildingLevelUpRequest = 28202u16,
+    TrampleGearTransitionNotify = 28029u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    H5ViewActivityReadRequest = 28203u16,
+    TimeCheckResponse = 28031u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RTimeStopAnimRequest = 28204u16,
+    InterruptSkillInDelayResponse = 28034u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulRogueWeeklyRewardRequest = 28205u16,
+    MapTravelTaskRewardResponse = 28036u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RiskHarvestBuffUnlockRewardRequest = 28209u16,
+    BlackCoastThemeActiveRewardResponse = 28050u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeTrialRoleInfoResponse = 28212u16,
+    MailBindResponse = 28055u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActivateBuffNotify = 28221u16,
+    ExploreSkillCustomRequest = 28056u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CookFoodRequest = 28222u16,
+    RoadBookTaskRewardRequest = 28058u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewPlayerSupportSetCurUseTrialRoleV2Response = 28224u16,
+    RoguelikeBossInstStartRequest = 28063u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MixDrinkRoleInviteResponse = 28226u16,
+    RacingBetsTaskResponse = 28070u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BeControlledNotify = 28228u16,
+    RoleSkillLevelUpViewRequest = 28071u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GetDetectionTargetRequest = 28235u16,
+    RacingBetsRankRequest = 28072u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueLootInfoRequest = 28236u16,
+    AdviceModifyRequest = 28074u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UseSkillResponse = 28239u16,
+    ShopBuyRequest = 28078u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FarmGoldResultResponse = 28241u16,
+    TotalTopUpScoreInfoResponse = 28081u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulMapTravelSoarRewardResponse = 28256u16,
+    BabelActivityItemNumUpdateNotify = 28082u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleFavorListRequest = 28257u16,
+    LevelPlayFirstNotify = 28089u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ModifyEntityCampNotify = 28258u16,
+    ExploreProgressRewardResponse = 28094u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ScheduleNpcUpdatePosRequest = 28259u16,
+    PhantomBattlePhantomCardSkillRequest = 28104u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryTalentInfoUpdateNotify = 28280u16,
+    TrapDefenseSlotUpdateRequest = 28106u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetMatchRoundActionRequest = 28283u16,
+    TimelineTraceExitRequest = 28107u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetFanNumberOfTurnsRequest = 28291u16,
+    MotorFightTaskUpdateNotify = 28108u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ForgeInfoResponse = 28293u16,
+    RogueResRoomInfoNotify = 28115u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConstructTrapResponse = 28302u16,
+    FlagChallengeTaskInfoUpdateNotify = 28118u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattlePassLevelUpRequest = 28304u16,
+    MixDrinkSettleRequest = 28130u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimeCheckRequest = 28306u16,
+    RacingBetsSettleNotify = 28131u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SelectDetectionTargetRequest = 28315u16,
+    BossRushLevelInfoNotify = 28132u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PressNotify = 28317u16,
+    BossRushTaskUpdateNotify = 28139u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MailReadResponse = 28318u16,
+    MulAchievementReceiveRequest = 28143u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapTraceInfoResponse = 28319u16,
+    RogueWeeklyResultRequest = 28144u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RegressSetCurUseTrialRoleRequest = 28325u16,
+    PhantomBattleSlotInsteadRequest = 28150u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimelineTraceControlResponse = 28330u16,
+    DangoMonopolyTaskRewardRequest = 28152u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AnimationStateInitResponse = 28333u16,
+    SurvivorsStepAdvanceRequest = 28159u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseTechUpdateNotify = 28334u16,
+    MonsterDetectionInfoRequest = 28163u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveOccupationInfoNotify = 28337u16,
+    TestSpawnTemplateEntityPush = 28168u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattlePassRequest = 28338u16,
+    MotorFightRankListSelfDataRequest = 28172u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActivityResultRewardResponse = 28339u16,
+    TimePointActivityBatchRewardRequest = 28173u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GetRewardTreasureBoxResponse = 28349u16,
+    PbGetRoleListResponse = 28176u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TutorialUnlockNotify = 28355u16,
+    MulFishingIllustratedRewardResponse = 28177u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneGamePlayFirstNotify = 28356u16,
+    TowerEndNotify = 28183u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossRushLevelScoreRewardResponse = 28357u16,
+    MonsterBoomResponse = 28184u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LivenessResponse = 28359u16,
+    RoverRogueLootChangeResponse = 28188u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EncircleChallengeStartResponse = 28360u16,
+    WorldLevelDownResponse = 28190u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LeaveSceneNotify = 28361u16,
+    InfrArchiveTaskRewardResponse = 28194u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreActivityTaskRewardRequest = 28364u16,
+    NewbieCourseV2RewardNotify = 28195u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LeaveInstRequest = 28370u16,
+    MulRogueWeeklyRewardResponse = 28198u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomRecommendResponse = 28376u16,
+    FunPlayChallengeInfoUpdateNotify = 28208u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestStateUpdateNotify = 28378u16,
+    ShopInfoUpdateNotify = 28209u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GachaPoolDetailRequest = 28380u16,
+    ChangePlayerTitleRequest = 28211u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AnimalDieNotify = 28384u16,
+    KurotatoSellWeaponRequest = 28213u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BrochureRewardRequest = 28387u16,
+    FloroRanchWeeklyResponse = 28219u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GameplayTagChangedNotify = 28388u16,
+    RiskHarvestBuffUpdateNotify = 28221u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsRankResponse = 28404u16,
+    PhantomBattleHandCardInfoUpdateNotify = 28224u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FormationChangeRequest = 28405u16,
+    DailyAdventureTaskUpdateNotify = 28227u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossRushResultNotify = 28412u16,
+    InputSettingRequest = 28228u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VehiclePlatformGetOnResponse = 28415u16,
+    RogueResGridEventResponse = 28230u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChapterUpdateNotify = 28416u16,
+    JokerGuessUseSkillResponse = 28232u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FarmGoldLevelPlayRequest = 28418u16,
+    FlowShowEntityNotify = 28233u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeTokenReceiveResponse = 28422u16,
+    OnlineMotorEndNotify = 28235u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomPolishRequest = 28425u16,
+    PayShopDirectBuyRequest = 28237u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomUpdateNotify = 28427u16,
+    FishingIllustratedInfoUpdateNotify = 28244u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DieSwitchRoleNotify = 28430u16,
+    FlowTeleportToPlotPosResponse = 28245u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardOutLookUpRequest = 28432u16,
+    CancelQuestFocusModeResponse = 28253u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsRepeatedTaskRewardRequest = 28433u16,
+    MapReplaceMarkRequest = 28254u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BabelActivityLevelInfoNotify = 28436u16,
+    EdgeRunnerTaskRewardRequest = 28256u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetClientGlobalVarRequest = 28443u16,
+    GravityGearRequest = 28261u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AiHateResponse = 28446u16,
+    FlagChallengeInstNotify = 28262u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorDevelopTaskRewardResponse = 28453u16,
+    GachaResponse = 28271u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightRoleUpdateNotify = 28456u16,
+    QuestRedDotRequest = 28280u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrialRoleRewardRequest = 28460u16,
+    SurvivorsInstGlobalDataNotify = 28285u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AdviceDeleteResponse = 28461u16,
+    HarvestActivityLevelDiffResponse = 28299u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueRefreshGainResponse = 28469u16,
+    ClientPullResourcePackageRequest = 28300u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayItemRequest = 28472u16,
+    RogueTowerTrialSelectBossResponse = 28302u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneItemBlackboardNotify = 28473u16,
+    AddHackingEntityNotify = 28303u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AchievementCountChangeNotify = 28476u16,
+    PhantomBattleCardOutLookUpResponse = 28304u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityActiveRequest = 28481u16,
+    FishingEntrustHandInResponse = 28305u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleFavorExpTipsNotify = 28482u16,
+    CookingFormulaUpdateNotify = 28308u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResChangeFormationRequest = 28484u16,
+    RoverRogueGiveUpGainRequest = 28315u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BlackCoastThemeTaskRewardResponse = 28490u16,
+    SceneLoadingFinishNotify = 28319u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorOnlineRankRuleIdsNotify = 28493u16,
+    RoverRogueResultRequest = 28320u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnterAreaRequest = 28495u16,
+    RogueArchiveListRequest = 28324u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ScratchCardRewardRequest = 28502u16,
+    NewBieCourseRewardRequest = 28328u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoadNetworkEntityStartNavNotify = 28503u16,
+    DangoBrawlSettleRequest = 28335u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BeControlledThrowResponse = 28508u16,
+    NewTowerSeasonTaskDataUpdateResponse = 28342u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefensePreviewStartNotify = 28509u16,
+    RhythmTaskOneKeyRewardResponse = 28347u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingSellPreviewResponse = 28511u16,
+    ParkourChallengeResponse = 28350u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DirectTrainInfoResponse = 28515u16,
+    AddUnlockedGuideNotify = 28351u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PayShopDirectBuyRequest = 28521u16,
+    RogueResInstResultResponse = 28357u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SplinePositionNotify = 28528u16,
+    RollBlockExitGamePlayRequest = 28361u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DirectTrainInfoNotify = 28529u16,
+    FsmResetNotify = 28366u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhBaPlanBatchOperRequest = 28530u16,
+    MingSuHandRewardRequest = 28370u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GatewayEchoRequest = 28532u16,
+    EnterViewDirectionResponse = 28371u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PbRolePropsNotify = 28533u16,
+    SceneBlockSplitHumanChangleNotify = 28372u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryAreaTaskInfoRefreshNotify = 28536u16,
+    SetBaoziStateRequest = 28381u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorOnlineRankSnapshotNotify = 28537u16,
+    RoleTowerStageRetryRequest = 28382u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CheckPublicResourceVersionRequest = 28539u16,
+    RogueResGridDataUpdateNotify = 28389u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoSystemInfoNotify = 28540u16,
+    RemoveBuffS2cRequestNotify = 28392u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CdKeyVerifyResponse = 28544u16,
+    ActionOperationScreenSuccessResponse = 28397u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlTaskUpdateNotify = 28545u16,
+    LobbyListRequest = 28398u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConsumptiveRewardRequest = 28551u16,
+    ExitViewDirectionResponse = 28401u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulMapTravelSoarRewardRequest = 28556u16,
+    TrapDefenseBdGroupUnlockNotify = 28407u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResSwitchFormationRequest = 28562u16,
+    TrackMoonIllustratedNotify = 28408u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightSettleResponse = 28563u16,
+    GachaAccumulateInfoRequest = 28411u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RollBlockSwitchControlBlockResponse = 28564u16,
+    BabelTowerShowNameResponse = 28419u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoMonopolySceneGridInfoNotify = 28572u16,
+    KurotatoRefineWeaponRequest = 28420u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsGearRequest = 28576u16,
+    BuildingUnLockResponse = 28422u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsUpdateOddsRequest = 28583u16,
+    PhBaPlanBatchOperResponse = 28424u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseChallengeUpdateNotify = 28586u16,
+    SplinePositionNotify = 28425u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseGainingGroupUpdateNotify = 28590u16,
+    EdgeRunnerScoreRewardRequest = 28427u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResOpDataNotify = 28593u16,
+    ReceivedSilentFirstAwardResponse = 28437u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhotoMemoryUpdateNotify = 28595u16,
+    VisionTriggerPush = 28446u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsPlayerInfoResponse = 28603u16,
+    NewLinkBurstPush = 28450u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ScratchCardActivityInfoRequest = 28606u16,
+    ClientPullResourcePackageResponse = 28454u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResIllustrationAwardRequest = 28613u16,
+    RogueResFormationUpdateNotify = 28455u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OutputDebugInfoRequest = 28615u16,
+    HookLockPointExitResponse = 28458u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoMonopolyDiceRequest = 28626u16,
+    DropInBagNotify = 28463u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrV2ManualCancelTraceTreeResponse = 28628u16,
+    CalabashSkinTakeOnResponse = 28468u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueRoomInfoNotify = 28630u16,
+    MotorFightTalentUpRequest = 28481u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WeeklyFrameworkScoreRewardResponse = 28631u16,
+    MatchThreeStarResponse = 28482u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AllApplyJoinNotify = 28635u16,
+    AfterJoinSceneNotify = 28489u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TimePointActivityRewardResponse = 28642u16,
+    ChangeEntityRoleResponse = 28494u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestReviewInfoNotify = 28644u16,
+    FloroRanchPlayRefreshShopRequest = 28500u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossRushFailResultNotify = 28650u16,
+    AccessPathConfigRequest = 28506u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomFormationChangeNotify = 28651u16,
+    RogueResInstOptionsUpdateNotify = 28509u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SecFBRoundEndFlowReportRequest = 28654u16,
+    RoleTowerScoreUpdateNotify = 28517u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerXboxBlockListRequest = 28660u16,
+    ChangeStateResponse = 28519u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleMasterLevelRewardRequest = 28662u16,
+    LevelPlayInfoNotify = 28525u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingEntrustRefreshResponse = 28664u16,
+    AvoidBlockSubmitOverNodeRequest = 28527u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InstEntityTeleportResponse = 28666u16,
+    CombatMaxCaseMessageRequest = 28528u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchSettleRequest = 28679u16,
+    PbGetRoleListRequest = 28529u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WellStreamingFinisResponse = 28686u16,
+    MotorCycleCruiseStatePush = 28534u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    JokerGuessStartNewRequest = 28688u16,
+    TrackMoonEntrustDataRequest = 28535u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlagChallengeUnlockTeleporterNotify = 28693u16,
+    FormationAttrResponse = 28542u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingTeleportToBoatRequest = 28699u16,
+    SurvivorsLastInfoResponse = 28545u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BlackCoastThemeActiveRewardResponse = 28700u16,
+    SelfPortraitStateResponse = 28546u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RegressBuyBonusLvResponse = 28709u16,
+    SceneGroupDataAndCurFormationEntityResponse = 28552u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AceAntiDataNotify = 28711u16,
+    ServerConfigVersionInfoNotify = 28553u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InteractQuestSuspendEntityNotify = 28715u16,
+    ForgeItemInfoUpdateNotify = 28572u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallItemUseResponse = 28729u16,
+    AnimalCollectStateNotify = 28587u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulCorniceMeetingRewardRequest = 28733u16,
+    ReorderFormationResponse = 28600u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChapterResultRewardResponse = 28736u16,
+    IllustratedInfoResponse = 28603u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerGravityUpdateNotify = 28738u16,
+    PortalReplaceNotify = 28606u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SpringSignDrawRewardResponse = 28746u16,
+    DollGarbInsertCoinRequest = 28609u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HarvestActivityResultNotify = 28748u16,
+    EnterLevelPlayNotify = 28613u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PbRoleScenePropsNotify = 28749u16,
+    TeleportFinishRequest = 28614u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightTalentTreeUpdateNotify = 28750u16,
+    TeleportToTargetRequest = 28616u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryActivateTalentResponse = 28751u16,
+    H5ViewActivityDataNotify = 28624u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityEnterVehicleResponse = 28752u16,
+    DebugFightErrInfoNotify = 28626u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeResultResponse = 28757u16,
+    ChatRequest = 28634u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EquipTakeOnNotify = 28760u16,
+    PhantomBattleCheckCardSkillUnlockRequest = 28636u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleFavorUnLockRequest = 28764u16,
+    MonsterLevelNotify = 28638u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AiBlackboardCdRequest = 28767u16,
+    FishingActivityLimitTaskNotify = 28644u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorOutlookDeletePresetResponse = 28770u16,
+    FishingSkillBaitRequest = 28647u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecallQuestFinishActionResponse = 28795u16,
+    FishingEntrustAcceptRequest = 28651u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AbyssShowNameRequest = 28814u16,
+    DangoBrawlStartFightResponse = 28659u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballQuitRequest = 28824u16,
+    PilotThrowOperationResponse = 28660u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorIsEnablePush = 28828u16,
+    DestroyBulletPush = 28662u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorTechTreeSwitchRequest = 28833u16,
+    PayShopInfoResponse = 28666u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SlowTimePush = 28835u16,
+    ElementalAbilityUpdateNotify = 28668u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsPlayerInfoUpdateNotify = 28840u16,
+    GiantMaxLevelDeliveryItemResponse = 28669u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LinkingStateNotify = 28844u16,
+    RTimeStopAnimRequest = 28674u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SheriffZoneItemUpdateNotify = 28846u16,
+    GridCellUpdateNotify = 28675u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeCardResponse = 28852u16,
+    TimerEndRequest = 28680u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RiskHarvestSettleResponse = 28863u16,
+    KurotatoShopRewardSelectResponse = 28684u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattlePassTakeAllRewardResponse = 28865u16,
+    ModifyBulletParamsNotify = 28690u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SeamlessTeleportRequest = 28869u16,
+    StopMoveSplineRequest = 28704u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddReviveRegionResponse = 28871u16,
+    LastBigSceneMiniMapInfoRequest = 28705u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingEntrustAcceptResponse = 28877u16,
+    FishingEntrustUpdateNotify = 28710u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnterLevelPlayNotify = 28880u16,
+    MowTowerFirstScoreNotify = 28712u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GachaInfoRequest = 28888u16,
+    OnlineMotorSettleNotify = 28720u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfrV2TreeBuildResponse = 28890u16,
+    RTimeStopAnimPush = 28729u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueBlessGroupSelectNotify = 28895u16,
+    SkillRequest = 28732u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BuffItemUpdateNotify = 28896u16,
+    DollGarbInsertCoinResponse = 28733u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlayRewardNotify = 28898u16,
+    RogueWhiteCatLimitedUpdateNotify = 28734u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FriendAddedNotify = 28906u16,
+    RemoveTemporaryTeleportResponse = 28735u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InstanceTimerNotify = 28918u16,
+    RoleFavorListResponse = 28736u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseTechUnlockRequest = 28920u16,
+    LevelPlaySwitchSportModeResponse = 28737u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerDefenceInstanceRewardRequest = 28922u16,
+    TemporaryTeleportChangeNotify = 28744u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RegressSetCurUseTrialRoleResponse = 28925u16,
+    FloroRanchExecuteSkillPlayResponse = 28746u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SecFBRoundStartFlowRequest = 28936u16,
+    EncircleChallengeStartRequest = 28751u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryEquipRoleResponse = 28938u16,
+    RoleGiftRewardResponse = 28753u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GameplayTagResponse = 28943u16,
+    PhantomBatchDirectRefiningResponse = 28755u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CombatDataMaxNotify = 28947u16,
+    SurvivorsGainDataUpdateNotify = 28759u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerGameTokenResponse = 28955u16,
+    CorniceChallengeTransResponse = 28762u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MatchThreeEndResponse = 28958u16,
+    RecallQuestActionRequest = 28770u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DamageExecuteNotify = 28964u16,
+    RogueInstExtraInfoRequest = 28775u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FarmGoldLevelDiffRequest = 28967u16,
+    PayShopBuyRequest = 28780u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CoopRoleInfoUpdateNotify = 28969u16,
+    SceneItemAiPatrolPointNotify = 28782u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BabelActivityItemNumUpdateNotify = 28972u16,
+    SceneLoadingFinishResponse = 28792u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TraceQuestRequest = 28978u16,
+    CombatMessagePrefixInfoRequest = 28795u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShopUpdateResponse = 28984u16,
+    SunSpiritUpdateNotify = 28796u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UseSkillFailResponse = 28988u16,
+    QuestFastReturnPosResponse = 28798u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RenjuResetResponse = 28995u16,
+    TimeCheckRequest = 28799u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PbOverRoleResponse = 29016u16,
+    TraceRecallQuestResponse = 28806u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    JoinSceneNotifyConfirmResponse = 29017u16,
+    AddChapterResultRequest = 28807u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PolluteGridCellResponse = 29018u16,
+    UpdateOwnerMingSuGenNotify = 28808u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewbieMainTaskUpdateNotify = 29029u16,
+    ChangeHeadPhotoResponse = 28817u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DarkTideItemMarkResponse = 29034u16,
+    TrapDefenseUseItemResponse = 28819u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ScratchCardCountInfoNotify = 29035u16,
+    LoadEquipInfoRequest = 28824u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulFishingIllustratedRewardResponse = 29037u16,
+    TowerDefenceSelfPassResponse = 28825u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PartUpdatePush = 29042u16,
+    DamageExecuteNotify = 28829u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreSkillCustomResponse = 29046u16,
+    TeleportDungeonForbidNotify = 28830u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InitRangeRequest = 29050u16,
+    BehaviorTreeDeleteNotify = 28831u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityHonamiStoryEnhanceLevelNotify = 29068u16,
+    TrackMoonActivityRewardRequest = 28834u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomReturnPreviewRequest = 29070u16,
+    SceneItemMoveSplineRequest = 28835u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattleLogNotify = 29071u16,
+    DirectTrainInfoNotify = 28851u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShortMessageShowChangeResponse = 29072u16,
+    TeamParkourRewardResponse = 28854u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AttributeInitResponse = 29079u16,
+    InfrV2TreeBuildResponse = 28858u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ModifyNameResponse = 29083u16,
+    FormationAutoAddRoleNotify = 28861u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ParkourChallengeResponse = 29088u16,
+    DeletePhantomEquipGroupRequest = 28863u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DailyQuestGetRewardRequest = 29092u16,
+    ItemDisuseResponse = 28866u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InputSettingUpdateResponse = 29097u16,
+    EntityPreloadNotify = 28870u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RemoveTemporaryTeleportRequest = 29103u16,
+    StartSetQuestFocusNotify = 28873u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BathChangeCameraRequest = 29105u16,
+    MotorPositionStatePush = 28875u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AnimalDropRequest = 29107u16,
+    NewTowerUpdateRecordNotify = 28883u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BulletPatternNotify = 29108u16,
+    SignatureUpdateNotify = 28884u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LordGymLevelPlayResultNotify = 29109u16,
+    DangoBrawlRoundSwitchNotify = 28886u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SimpleCombatEntitySyncAttributePush = 29113u16,
+    SummonRandomNotify = 28895u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBatchOperRequest = 29114u16,
+    PhantomDirectRefiningWeeklyResetNotify = 28896u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HarvestActivityPointNotify = 29118u16,
+    WeaponItemRequest = 28901u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConnectorConnectEntityRequest = 29122u16,
+    CombineEntitiesRequest = 28910u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewBieCourseRewardRequest = 29127u16,
+    SolarSchoolBatchSyncRequest = 28917u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    StopHoldHandNotify = 29128u16,
+    DangoBrawlFightOverRequest = 28918u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActiveDragonPoolResponse = 29130u16,
+    UpdatePlayerSingleFightRoleNotify = 28925u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingCompleteRequest = 29131u16,
+    ShopInfoResponse = 28926u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikePopularEntriesInfoRequest = 29132u16,
+    RemoveSummonEntityResponse = 28927u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ClientBasicInfoResponse = 29135u16,
+    RoleTowerStepAdvanceResponse = 28939u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InputSettingUpdateRequest = 29143u16,
+    RoadNetworkEntityStartNavNotify = 28943u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityLoadCompleteNotify = 29145u16,
+    InviteRechallengeNotify = 28944u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsTalentLevelUpRequest = 29153u16,
+    CaptureBatchEntityRequest = 28951u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EndSkillResponse = 29159u16,
+    KurotatoAllItemUpdateNotify = 28952u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SurvivorsNormalAwardRequest = 29160u16,
+    CameraSettingModifyRequest = 28953u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyBlackFlowerResponse = 29161u16,
+    AdviceResponse = 28955u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestBranchRequest = 29163u16,
+    ReplaceVehicleEntityNotify = 28957u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExploreEntityTraceRequest = 29165u16,
+    PhantomSettingBatchUpdateResponse = 28959u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballSetPayloadRequest = 29166u16,
+    HonamiStoryMascotRewardResponse = 28960u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlItemUnlockNotify = 29171u16,
+    AdviceDeleteResponse = 28966u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UnlockInstEntranceResponse = 29172u16,
+    RecallQuestFinishActionRequest = 28969u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NormalItemRemoveNotify = 29178u16,
+    EntityVarUpdateNotify = 28972u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DarkTideExtraBagSyncNotify = 29192u16,
+    SyncSceneTimeNotify = 28973u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RTimeStopResponse = 29193u16,
+    AchievementUpdateRequest = 28975u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateSceneItemBlackboardResponse = 29196u16,
+    FsmPlayMontagePush = 28981u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShortMessageItemUpdateNotify = 29198u16,
+    CalabashLevelRewardRequest = 28983u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoGoldAddRequest = 29200u16,
+    PlayerXboxSessionNotify = 28993u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CommonUiSettingNotify = 29215u16,
+    MonthCardDailyRewardNotify = 28994u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SubmitAwakeAndLoadEntityNodeResponse = 29216u16,
+    MotorFightEnterSubLevelRequest = 28999u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightRefreshCollectionResponse = 29219u16,
+    HonamiStoryLifeSupportUpResponse = 29000u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FlowSeqSetPlayerPosResponse = 29220u16,
+    ActorVisibleNotify = 29002u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NetTestDataResponse = 29222u16,
+    ResetPointEntityNotify = 29014u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightTalentUpRequest = 29225u16,
+    RiskHarvestSettleRequest = 29019u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ResetSpecialBonusNotify = 29227u16,
+    PhantomBattleTaskInfoNotify = 29022u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActivityPayShopBuyRequest = 29230u16,
+    EntityDynamicInteractResponse = 29039u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerDefenceChallengeQuitRequest = 29237u16,
+    ChangeCardResponse = 29040u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LifePointChallengeStartResponse = 29239u16,
+    EntityWalkingPatternFinishRequest = 29045u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SplinePositionUpdateResponse = 29241u16,
+    TrapDefenseTechUpdateNotify = 29048u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklySubLevelNotify = 29246u16,
+    MotorOnlineRankRuleIdsNotify = 29052u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulAchievementReceiveResponse = 29250u16,
+    QuestFinishActionEndRequest = 29054u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrackMoonConditionNotify = 29252u16,
+    DrownPush = 29058u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    OrderRemoveBuffRequest = 29255u16,
+    DestroyBulletResponse = 29062u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GuideGroupResetNotify = 29256u16,
+    ReceiveRechallengePlayerIdsNotify = 29063u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MovePlacementNotify = 29257u16,
+    EdgeRunnerPreUnlockAvailableNotify = 29069u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomMusicCollectUpdateResponse = 29261u16,
+    RoleUpdateDevelopTargetNotify = 29070u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlaceItemOnBoardRequest = 29265u16,
+    ActivityPayShopBuyResponse = 29072u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ExecuteQteRequest = 29269u16,
+    RacingBetsLegMatchInfoResponse = 29075u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LivenessTakeRequest = 29270u16,
+    ShowPasserByNpcNotify = 29077u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingSellResponse = 29274u16,
+    FishingTechInfoUpdateNotify = 29078u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneDateNotify = 29275u16,
+    MailDeleteNotify = 29079u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HarvestActivityPointRequest = 29278u16,
+    ConnectorConnectEntityNotify = 29082u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PreheatSignRewardRequest = 29281u16,
+    KurotatoLimitTaskUpdateNotify = 29083u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingNetCabinUpdateNotify = 29286u16,
+    ShortMessageChatThemeChangeRequest = 29084u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueTowerTrialGiveUpTempArchiveResponse = 29294u16,
+    EntityIsVisiblePush = 29093u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoadBookTaskRewardRequest = 29300u16,
+    RogueResInstStartResponse = 29103u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AwakeDynamicPortalResponse = 29309u16,
+    PickUpDropItemRequest = 29110u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingPortUnlockNotify = 29311u16,
+    AchievementListProgressNotify = 29111u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GivebackInfoResponse = 29313u16,
+    PsnSettingRequest = 29119u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleFavorAcceptQuestResponse = 29317u16,
+    GiantSystemInfoNotify = 29120u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomPutOnRequest = 29319u16,
+    PlayerXboxInfoGetResponse = 29123u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBatchDirectRefiningResponse = 29320u16,
+    RunTestRequest = 29128u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CancelQuestFocusModeResponse = 29321u16,
+    DailyQuestCancelNotify = 29129u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InfluenceInfoResponse = 29322u16,
+    RoleMotionUnLockRequest = 29130u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetsBulletScreenRequest = 29326u16,
+    RoguelikeSubLevelNotify = 29131u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SeamlessTeleportVehicleResponse = 29328u16,
+    PayShopInfoNotify = 29139u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeCurrencyUpdateNotify = 29332u16,
+    InfrV2ScoreRewardRequest = 29142u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GolemCrackUpdateRequest = 29338u16,
+    CharacterMoveToPointNotify = 29143u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorFightItemUpdateNotify = 29340u16,
+    LstBattleRecordRequest = 29144u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleUpdateDevelopTargetRequest = 29361u16,
+    TimelineTraceStartRequest = 29145u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorTechTreeSwitchResponse = 29362u16,
+    LoadEquipInfoResponse = 29155u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BuffStackCountNotify = 29363u16,
+    MotorCreateRequest = 29157u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomSettingResponse = 29364u16,
+    GachaUsePoolRequest = 29160u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerCreatePsnSessionRequest = 29372u16,
+    RoleTowerSaveDeleteRequest = 29169u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResFormationUpdateNotify = 29375u16,
+    BtSuspendNotify = 29172u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DropCatchLevelRewardUpdateNotify = 29378u16,
+    PlayerMotionResponse = 29174u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddForbidControlNotify = 29379u16,
+    RoguelikeTalentLevelUpRequest = 29178u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetQuestResourceStateRequest = 29385u16,
+    SimpleCombatEntityBuffLayerCountNotify = 29187u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AchievementUpdateRequest = 29393u16,
+    LongShanScoreRewardResponse = 29191u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RollBlockInputResponse = 29397u16,
+    RogueLevelPlayNotify = 29192u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PullingFoundationResponse = 29401u16,
+    PhantomInteractionInfoUpdateNotify = 29193u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoMonopolyDiceResponse = 29407u16,
+    InfluenceInfoRequest = 29194u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChangeSceneModeNotify = 29411u16,
+    GatewayEchoRequest = 29209u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResPlayerStatusUpdateNotify = 29412u16,
+    MapRemoveMarkResponse = 29212u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerDefenceChallengeQuitResponse = 29413u16,
+    PlayerHeadAddNotify = 29216u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneRoadSyncNotify = 29415u16,
+    NewbieFetchScoreRewardResponse = 29217u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnrichmentAreaRequest = 29419u16,
+    ClientCurrentRoleReportPush = 29219u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleTrialCloseNotify = 29420u16,
+    DangoBrawlFighterAttrChangeNotify = 29224u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapCancelTraceRequest = 29421u16,
+    GatherActivityRewardResponse = 29225u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemPkgOpenNotify = 29428u16,
+    FlowActionResponse = 29226u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleFavorFinishConditionNotify = 29435u16,
+    PhantomBattleDealCardReplaceResponse = 29228u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BattleStateChangePush = 29436u16,
+    FurnitureUnlockNotify = 29232u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LandingDamageResponse = 29437u16,
+    RoverRogueGotoNextRoomCommitResponse = 29236u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapTravelLevelUpResponse = 29440u16,
+    HonamiStoryActivateTalentRequest = 29239u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MailReadRequest = 29441u16,
+    PhantomBattleSkillEffectFailNotify = 29240u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhBaPlanUpdatePlanResponse = 29442u16,
+    RoleBreakThroughViewResponse = 29247u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddDecalResponse = 29445u16,
+    RoleTowerPhantomAddAttrsRequest = 29253u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ResonantChainUnlockResponse = 29448u16,
+    FloroRanchExecuteSkillPlayRequest = 29254u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeamMatchInviteResponse = 29449u16,
+    MatchThreeEndRequest = 29259u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BabelActivitySettleInfoNotify = 29450u16,
+    RiskHarvestBuffUnlockRewardRequest = 29264u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseRewardUpdateNotify = 29453u16,
+    AddDecalRequest = 29268u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RecoverPropChangedNotify = 29454u16,
+    SetBaoziStateResponse = 29269u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerEnterPollutionResponse = 29461u16,
+    DirectTrainInfoRequest = 29272u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GiantModelEnableNotify = 29470u16,
+    ThroughTrainResponse = 29273u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ReviveResponse = 29474u16,
+    RolePropRequest = 29283u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddTemporaryTeleportRequest = 29476u16,
+    RegressTaskResponse = 29284u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneItemStateRequest = 29477u16,
+    FireShopCoinNotify = 29285u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HonamiStoryWeaponDressResponse = 29480u16,
+    InfrFireNoticeRequest = 29298u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActorVisibleResponse = 29481u16,
+    RogueResOpDataUpdateNotify = 29300u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    Summon3Response = 29484u16,
+    ToughCalcExtraRatioChangeResponse = 29306u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ApplyGameplayEffectPush = 29488u16,
+    PlayerSkillInfoPbNotify = 29311u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LevelPlayerRewardHintNotify = 29490u16,
+    LevelPlayStateResponse = 29313u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GiantTotalStableValueUpdateNotify = 29495u16,
+    DangoMonopolyBoardRewardRequest = 29315u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetMatchResponse = 29502u16,
+    ShortMessageReceivedRequest = 29328u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoRefineWeaponResponse = 29507u16,
+    TrapDefenseRefreshShopResponse = 29329u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MoveSceneItemResetPositionResponse = 29511u16,
+    MotorBattleContextNotify = 29330u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SignActivityFreeDropRequest = 29512u16,
+    AcceptEntrustRequest = 29331u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleTaskRewardRequest = 29515u16,
+    RoleGiftRewardRequest = 29332u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueSubLevelNotify = 29516u16,
+    QingXiaoTaskRewardRequest = 29336u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SkillRequest = 29518u16,
+    RoleMotionNewCanUnLockNotify = 29340u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MonthCardResponse = 29522u16,
+    PhantomBattleBvBLoadingFinishResponse = 29345u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseSpawnMonsterWaveEndNotify = 29527u16,
+    PhantomBattleCardRoleTargetInfoRequest = 29346u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewTrialRoleGetNightmarePhantomInstInfoRequest = 29530u16,
+    CreatStoryCharacterRequest = 29348u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SplineMoveResponse = 29534u16,
+    TrapDefenseBuyShopProductResponse = 29351u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleRepeatedTaskRewardResponse = 29535u16,
+    ActionResetPosPrePerformanceEndResponse = 29352u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeSeasonDataResponse = 29540u16,
+    BirthdayInitResponse = 29356u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FloroRanchPlayNextDayRequest = 29541u16,
+    QuestReadyListNotify = 29359u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ElementalAbilityUpdateNotify = 29547u16,
+    AiControlSwitchResponse = 29374u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityHeadInfoNotify = 29559u16,
+    NewbieAdventureTaskRewardRequest = 29376u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapTravelTaskRewardResponse = 29561u16,
+    OrnamentDressInfoUpdateNotify = 29379u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DangoBrawlInstPrepareNotify = 29564u16,
+    MovePlacementResponse = 29380u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EnterAreaNotify = 29588u16,
+    RoleFavorListNotify = 29381u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EquipTakeOnRequest = 29592u16,
+    SignActivityRequest = 29384u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DarkCoastInfoRequest = 29597u16,
+    PayShopDirectBuyResponse = 29388u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResLastInstInfoResponse = 29600u16,
+    BossRushChooseBuffRequest = 29389u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FishingActivityLimitRewardRequest = 29602u16,
+    BossPilingLevelInfoUpdateNotify = 29397u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeRefreshGainRequest = 29603u16,
+    FlowSeqSetPlayerPosRequest = 29398u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BtRollbackStartNotify = 29608u16,
+    RoguelikeGiveUpGainRequest = 29402u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResGainDataUpdateNotify = 29611u16,
+    GiftPackPreviewRequest = 29403u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VehicleEnterSharingResponse = 29612u16,
+    RogueResGainDataUpdateNotify = 29404u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AiControlSwitchNotify = 29617u16,
+    BabelTowerRankListRequest = 29408u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueBlackFlowerRequest = 29618u16,
+    RoleTowerRewardTaskReceiveRequest = 29411u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RollBlockResetGamePlayResponse = 29620u16,
+    ModifyBulletParamsRequest = 29414u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AdventureManualDataRequest = 29621u16,
+    RogueWhiteCatLimitedRewardRequest = 29426u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TowerApplyFloorDataResponse = 29629u16,
+    PhantomEquipInfoNotify = 29430u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomSkinChangeResponse = 29630u16,
+    CombatMessagePostInfoResponse = 29434u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BoardGridDynamicConfigChangeNotify = 29632u16,
+    RoleSkillQuickLevelUpRequest = 29438u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResMoodRangeUpdateNotify = 29633u16,
+    MotorDevelopTaskRewardResponse = 29442u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrapDefenseSlotUpdateRequest = 29634u16,
+    EntityMotorOutlookChangeNotify = 29444u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MaterialNotify = 29636u16,
+    CaughtNotify = 29446u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MailAddNotify = 29640u16,
+    ExploreProgressRewardRequest = 29451u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueShopBuyResponse = 29643u16,
+    FloroRanchPlayRefreshGachaResponse = 29452u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    NewbieCarnivalTaskDataUpdateNotify = 29644u16,
+    PhantomBatchDirectRefiningRequest = 29456u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LordGymReadRequest = 29647u16,
+    WaitQuestConfirmResourceNotify = 29463u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MultiMapInfoNotify = 29652u16,
+    SlashAndTowerResetResponse = 29466u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UpdateSysBuffNotify = 29655u16,
+    FriendRemarkResponse = 29476u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GachaAccumulateRewardRequest = 29657u16,
+    ExploreEntityTraceResponse = 29477u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueInstExtraInfoResponse = 29662u16,
+    FriendAllRequest = 29479u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoLimitTaskReceiveRequest = 29669u16,
+    GiftPackPreviewResponse = 29486u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AreaTerminalPinOperationRequest = 29677u16,
+    TowerDefencePlayerReviveNotify = 29503u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WuWuPackageRewardRequest = 29680u16,
+    ThroughTrainForceRemindNotify = 29505u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResInstOptionsUpdateNotify = 29683u16,
+    TowerDefenceRandListResponse = 29510u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UseDetectionSkillResponse = 29685u16,
+    WeeklyFrameworkInfoRequest = 29511u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TraceQuestResponse = 29698u16,
+    RoleTrialUiEndPush = 29512u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FragileChangeRequest = 29703u16,
+    RoverRogueShopBuyResponse = 29518u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    LeaveMatchTeamResponse = 29714u16,
+    PhantomBattleNpcShowOverRequest = 29519u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GameplayCueNotify = 29715u16,
+    UnlockMultiMapNotify = 29531u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SubmitPhotoNodeResponse = 29717u16,
+    ShopInfoRequest = 29540u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PrivateChatHistoryResponse = 29725u16,
+    RemoveGameplayEffectPush = 29542u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueResourcesUpdateNotify = 29726u16,
+    BlackSwordChallengeMarkItemPanelInfoRequest = 29544u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    HoldWeaponNotify = 29731u16,
+    RacingBetLegMatchResultNotify = 29552u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResCurrencyNotify = 29732u16,
+    GiantEcoUnlockNotify = 29556u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ThirdPartyShareResponse = 29740u16,
+    EndLessHistoryResponse = 29560u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeamMatchFlagNotify = 29741u16,
+    InfrV2LevelUpResponse = 29561u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FriendDeleteResponse = 29748u16,
+    ChangeControlRoleNotify = 29562u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RacingBetMatchRoundResponse = 29752u16,
+    QuestRedDotResponse = 29563u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AccessPasserbyNpcSpawnerRequest = 29764u16,
+    PinballRoleLevelUpResponse = 29568u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AvignonRewardResponse = 29765u16,
+    PayShopUpdateRequest = 29578u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AddTreasureBoxSlotResponse = 29769u16,
+    SceneBlockSplitPlayerNeedBlockPush = 29579u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueArchiveListRequest = 29771u16,
+    CookFoodRequest = 29582u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemDisuseResponse = 29774u16,
+    RollBlockSyncInfoNotify = 29588u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomItemRemoveNotify = 29775u16,
+    PhantomAttrRecommendResponse = 29590u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DodgeInfoPush = 29777u16,
+    SheriffCriminalUpdateNotify = 29606u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleSkillQuickLevelUpRequest = 29779u16,
+    TrapDefenseAuxiliaryResetResponse = 29607u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UseSoundBoxSkillResponse = 29780u16,
+    RacingBetsGearResponse = 29611u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DeleteStoryCharacterResponse = 29781u16,
+    ThemeCeleWuWuTaskNotify = 29613u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TrackMoonRoleDataResponse = 29783u16,
+    RoleUpdateDevelopTargetRequest = 29614u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoguelikeStartRequest = 29795u16,
+    QuestBranchSelectResponse = 29618u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossPilingTaskInfoUpdateNotify = 29797u16,
+    GravityFlipUpdateTypeNotify = 29623u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RTimeStopInstResponse = 29799u16,
+    FishingEntrustTraceResponse = 29628u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BossRushClaimRewardRequest = 29802u16,
+    RogueArchiveSaveResponse = 29633u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ItemPkgFullNotify = 29804u16,
+    GuideGroupResetNotify = 29638u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueResTeamLevelUpdateNotify = 29805u16,
+    RoleElementChangeRequest = 29639u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FarmGoldResultRequest = 29811u16,
+    PhantomFetterRecommendRequest = 29643u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerTitleInfoUpdateNotify = 29816u16,
+    EntityOnLandedNotify = 29646u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyLastInfoRequest = 29824u16,
+    PhantomLevelUpResponse = 29647u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    QuestGiveUpNotify = 29826u16,
+    DangoBrawlCoinUpdateNotify = 29648u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MotorOutlookOwnedChangeNotify = 29827u16,
+    JokerGuessDrawCardRequest = 29650u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CorniceChallengeTransRequest = 29837u16,
+    BattlePassTaskTakeRequest = 29651u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SetQuestFocusModeRequest = 29838u16,
+    PinballStartNotify = 29654u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomRefiningResponse = 29840u16,
+    FollowerChairPresentationChangeNotify = 29665u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AcceptFocusWaitQuestRequest = 29846u16,
+    TimerEndResponse = 29668u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PinballTeamReviveRequest = 29847u16,
+    PlayerAccessRangeResponse = 29671u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    DollGrabPauseEndResponse = 29848u16,
+    BirthdayShowSetResponse = 29672u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneItemMoveSplineResponse = 29851u16,
+    BtCancelRangeFailWarningNotify = 29677u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    FinishDownloadQuestResourceRequest = 29854u16,
+    BattlePassRecurringTakeRequest = 29679u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoadBookMotorRewardRequest = 29858u16,
+    KurotatoSettlementRequest = 29686u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RiskHarvestInstRewardResponse = 29859u16,
+    UpdateInstanceOwnerInfoNotify = 29689u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ActiveDragonPoolRequest = 29864u16,
+    RoleQuestPointStateRequest = 29691u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomAttrRecommendRequest = 29865u16,
+    FlowEndNotify = 29697u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    GiantStableValueActivityResponse = 29866u16,
+    SlashAndTowerInfoResponse = 29704u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CreateBulletNotify = 29868u16,
+    DangoBrawlEventSelectResponse = 29706u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoleFlyEquipNotify = 29874u16,
+    RoleTowerAttributeQueryResponse = 29708u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleBackLibraryResponse = 29876u16,
+    BoneVisibleChangeNotify = 29713u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ReceivedSilentFirstAwardRequest = 29881u16,
+    MatchChangePlayerUiStateRequest = 29714u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ThrowDamageNotify = 29882u16,
+    PlayerHandFoundationCoreChangeNotify = 29717u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    WuWuTaskRewardResponse = 29886u16,
+    ActivateBuffNotify = 29719u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    UnlockHeadPhotoNotify = 29887u16,
+    FishingQuickSellPreviewRequest = 29724u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    KurotatoLevelRecordDeleteResponse = 29888u16,
+    RecallExploreSkillRouletteSetRequest = 29727u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TriggerExitSkillRequest = 29898u16,
+    MoralePosResponse = 29731u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityPatrolStartRequest = 29907u16,
+    RogueResTaskAwardResponse = 29739u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityInteractResponse = 29908u16,
+    ConnectorConnectEntityRequest = 29745u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MonthCardUseNotify = 29912u16,
+    PhantomBattleRoleRewardRequest = 29748u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    TeleportTransferRequest = 29918u16,
+    Summon3Request = 29752u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MapCancelTraceResponse = 29919u16,
+    AchievementProgressNotify = 29757u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PlayerVoiceLanguageRequest = 29926u16,
+    PhantomSettingResponse = 29760u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleCardGroupDeleteResponse = 29932u16,
+    PhantomBattleAreaSkillResponse = 29761u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AnimationStateInitPush = 29933u16,
+    FarmGoldPointRepeatedRequest = 29763u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RogueWeeklyArtifactInfoRequest = 29939u16,
+    BattlePassTakeRewardResponse = 29764u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    EntityInteractingNotify = 29944u16,
+    TowerDefenceEnterInstNotify = 29765u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InstSaveDataNotify = 29945u16,
+    ReceiveRechallengeNotify = 29770u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    RoverRogueEventSelectResponse = 29946u16,
+    SceneBlockSplitSwitchStatePush = 29772u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ConnectorCanConnectResponse = 29950u16,
+    MapMarkInfoRequest = 29776u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChannelChatMessageNotify = 29952u16,
+    RogueWeeklyGotoNextRoomResponse = 29783u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ShortMessageChatCharmChangeRequest = 29957u16,
+    RogueResLastInstInfoRequest = 29790u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    SceneItemAiDisableNotify = 29959u16,
+    RoverRogueInsListRequest = 29791u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    BtRollbackNotify = 29964u16,
+    ApplyRechallengeResponse = 29801u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    ChatNotify = 29969u16,
+    GmLevelActionRequest = 29805u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    VehicleRequest = 29971u16,
+    ChatMutePlayerListNotify = 29806u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    PhantomBattleFourCTaskDealCardNotify = 29973u16,
+    AiBlackboardCdResponse = 29807u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    MulMapTravelTaskRewardRequest = 29978u16,
+    PhBaPlanFindPlanRequest = 29810u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    InspirationUnlockChoiceRequest = 29979u16,
+    RegressTrialRoleLvUpResponse = 29813u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    AcceptEntrustResponse = 29986u16,
+    RoguelikeTalentInfoResponse = 29814u16,
     #[allow(non_camel_case_types, non_upper_case_globals)]
-    CalabashSkinTakeOnResponse = 29991u16,
+    FloroRanchSettleResponse = 29820u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    IllustratedUnlockNotify = 29822u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    KurotatoRoleRecordNotify = 29827u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    RTimeStopAnimResponse = 29834u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    SlashAndTowerRecommendRequest = 29840u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    MatchConfirmNotify = 29850u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    ExploreProgressResponse = 29853u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    InfrInfoResponse = 29855u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    RoguelikeCurrencyNotify = 29861u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    LivenessTaskTakeRequest = 29864u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    FlowEndResponse = 29872u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    NewPlayerSupportSetCurUseTrialRoleResponse = 29875u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    RoleDevelopConfigRequest = 29877u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    AnimalDropResponse = 29883u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    PhantomBattleSkillTriggerInfoNotify = 29886u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    ChangeWeatherRequest = 29890u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    FlySkinUnLoadResponse = 29892u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    DangoBrawlShopSellRequest = 29894u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    RogueResTotalShopItemUpdateNotify = 29902u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    RoverRogueRefreshGainRequest = 29906u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    RegressDisposableRewardRequest = 29911u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    FloroRanchEventChoiceResponse = 29916u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    SceneItemStopRequest = 29926u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    CalabashMsgNotify = 29927u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    RogueResCurrencyNotify = 29934u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    NpcTraceFailedRequest = 29936u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    PreAiControlSwitchNotify = 29939u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    RoverRogueChooseDataResultRequest = 29940u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    RoverRogueTaskRewardTakeRequest = 29942u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    TeleportTransferResponse = 29947u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    RemoveGameplayEffectResponse = 29948u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    PlayerPsnInfoGetRequest = 29956u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    ThrowDamageRecoveryNotify = 29960u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    EntityRewardItemNotify = 29972u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    CombatReceivePackNotify = 29973u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    SecRoleFightFlowResponse = 29975u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    SplinePositionUpdateResponse = 29976u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    UseDetectionSkillRequest = 29977u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    EntityInteractResponse = 29979u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    EquipTakeOnResponse = 29980u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    LogicStateInitResponse = 29984u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    RoguelikePopularEntriesInfoResponse = 29994u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    ThemeWorldScoreResponse = 29997u16,
+    #[allow(non_camel_case_types, non_upper_case_globals)]
+    AnimationStateInitRequest = 29999u16,
 }

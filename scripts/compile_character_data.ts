@@ -17,6 +17,7 @@ import {
 	indexBy,
 	loadJson,
 } from "./lib/compile-data-util";
+import { dataLog } from "./lib/data-log";
 
 const SCRIPTS_DIR = import.meta.dirname;
 const REPO_ROOT = join(SCRIPTS_DIR, "..");
@@ -231,7 +232,7 @@ function getElementIcons(
 }
 
 async function compileCharacterData(): Promise<void> {
-	console.log("Loading JSON files...");
+	dataLog.detail("Loading JSON files...");
 
 	const multitextData = await loadJson<MultiTextEntry[]>(MULTITEXT_PATH);
 	const roleInfoData = await loadJson<RoleInfo[]>(ROLE_INFO_PATH);
@@ -241,11 +242,10 @@ async function compileCharacterData(): Promise<void> {
 		await loadJson<ResonantChainNode[]>(RESONANT_CHAIN_PATH);
 
 	if (!multitextData || !roleInfoData || !propertyData || !elementInfoData) {
-		console.log("Error: Failed to load one or more required files");
-		return;
+		throw new Error("Failed to load one or more required character tables");
 	}
 
-	console.log(`Found ${roleInfoData.length} role entries`);
+	dataLog.detail(`Found ${roleInfoData.length} role entries`);
 
 	const textById = indexBy(multitextData, (entry) => entry.Id);
 	const chains = buildChainData(resonantChainData ?? []);
@@ -304,19 +304,18 @@ async function compileCharacterData(): Promise<void> {
 		});
 		processed += 1;
 
-		console.log(
+		dataLog.detail(
 			`Processed: ${characterName} (ID: ${roleId}) - ${element} - ${weaponType}`,
 		);
 	}
 
-	console.log(`\nWriting ${processed} characters to ${OUTPUT_PATH}...`);
+	dataLog.detail(`Writing ${processed} characters to ${OUTPUT_PATH}...`);
 	await Bun.write(
 		OUTPUT_PATH,
 		`${JSON.stringify(prepareCatalog(characterList), null, "\t")}\n`,
 	);
 
-	console.log(`✓ Successfully compiled character data to ${OUTPUT_PATH}`);
-	console.log(`  Total characters: ${processed}`);
+	dataLog.info(`${processed} characters`);
 }
 
 if (import.meta.main) {

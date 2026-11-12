@@ -9,6 +9,7 @@
  * the network and follows the site's own update schedule.
  *
  * Run: bun scripts/compile_all_data.ts
+ * Add --verbose to show per-item/compiler diagnostics.
  */
 
 import { join } from "node:path";
@@ -26,120 +27,82 @@ import { compilePreviewData } from "./compile-preview-data.ts";
 import { compileProgressionData } from "./compile-progression-data.ts";
 import { compileRotationDamage } from "./compile-rotation-damage.ts";
 import { copyAssets } from "./copy_assets.ts";
+import { type DataStage, dataLog, runDataStages } from "./lib/data-log.ts";
 import { updateVersionField } from "./version_manifest.ts";
 
 const SCRIPTS_DIR = import.meta.dirname;
 const REPO_ROOT = join(SCRIPTS_DIR, "..");
-// The wuwa-data checkout states the versions it was cut from in its README.
-const WUWA_DATA_README = join(REPO_ROOT, "data", "wuwa-data", "README.md");
-
 /** Point this repository's manifest at the wuwa-data release being compiled. */
-async function syncDataVersion(): Promise<void> {
-	const readme = await Bun.file(WUWA_DATA_README)
+async function syncDataVersion(repoRoot = REPO_ROOT): Promise<void> {
+	const readmePath = join(repoRoot, "data/wuwa-data/README.md");
+	const manifestPath = join(repoRoot, "data/VERSION.json");
+	const readme = await Bun.file(readmePath)
 		.text()
 		.catch(() => null);
-	// The README line is "> Resource Version: 3.7.8</br>", so match the version
-	// shape rather than \S+, which would swallow the tag.
-	const version = readme?.match(/^> Resource Version: (\d+(?:\.\d+)+)/m)?.[1];
+	// Game releases and resource revisions are separate upstream values. Match
+	// version numbers without swallowing the README's trailing </br> markup.
+	const game = readme?.match(/^> Game Version: (\d+(?:\.\d+)+)/m)?.[1];
+	const resources = readme?.match(/^> Resource Version: (\d+(?:\.\d+)+)/m)?.[1];
 
-	if (!version) {
-		console.warn(
-			`warning: no "Resource Version" in ${WUWA_DATA_README}; VERSION.json left unchanged.`,
+	if (!game || !resources) {
+		dataLog.warn(
+			`Missing game/resource versions in ${readmePath}; VERSION.json left unchanged.`,
 		);
 		return;
 	}
 
-	await updateVersionField("data", version, WUWA_DATA_README);
+	await updateVersionField("game", game, readmePath, manifestPath);
+	await updateVersionField("data", resources, readmePath, manifestPath);
+	const assetVersion: { game?: string } | null = await Bun.file(
+		join(repoRoot, "data/wuwa-assets/VERSION.json"),
+	)
+		.json()
+		.catch(() => null);
+	if (!assetVersion?.game) {
+		dataLog.warn(
+			"Asset game release is unavailable; could not compare data and artwork versions.",
+		);
+		return;
+	}
+	dataLog.info(`Asset game release: ${assetVersion.game}`);
+	const release = (version: string) => version.split(".").slice(0, 2).join(".");
+	if (release(game) !== release(assetVersion.game))
+		dataLog.warn(
+			`Game data targets ${game}, but assets target ${assetVersion.game}. Upstream sources may still be updating; run bun run update:data again when both sources are current.`,
+		);
 }
 
-async function main(): Promise<void> {
-	console.log("=".repeat(60));
-	console.log("Compile All Game Data");
-	console.log("=".repeat(60));
-	console.log();
+export function gameDataStages(): DataStage[] {
+	return [
+		{ name: "Source versions", run: () => syncDataVersion() },
+		{ name: "Echo upgrades", run: compileEchoUpgrade },
+		{ name: "Inventory", run: compileInventoryData },
+		{ name: "Echoes", run: compileEchoData },
+		{ name: "Characters", run: compileCharacterData },
+		{ name: "Echo properties", run: compileEchoProps },
+		{ name: "Weapons", run: compileWeaponData },
+		{
+			name: "Build guides · tethys.gg",
+			run: compileBuildGuides,
+			onFailure: "Build guides not updated; keeping bundled guides.",
+		},
+		{ name: "Map", run: compileMapData },
+		{ name: "Progression", run: compileProgressionData },
+		{ name: "Profile portraits", run: compileProfileData },
+		{ name: "Rotation damage", run: compileRotationDamage },
+		{
+			name: "Preview data · Nanoka",
+			run: compilePreviewData,
+			onFailure: "Preview data not updated; keeping bundled previews.",
+		},
+		{ name: "Publish assets", run: copyAssets },
+	];
+}
 
-	await syncDataVersion();
-	await compileEchoUpgrade();
-	await compileInventoryData();
-	console.log();
-
-	try {
-		console.log("Starting Echo Data Compilation...");
-		console.log("-".repeat(60));
-		await compileEchoData();
-		console.log();
-	} catch (error) {
-		console.log(`Error compiling echo data: ${error}`);
-		process.exit(1);
-	}
-
-	try {
-		console.log("Starting Character Data Compilation...");
-		console.log("-".repeat(60));
-		await compileCharacterData();
-		console.log();
-	} catch (error) {
-		console.log(`Error compiling character data: ${error}`);
-		process.exit(1);
-	}
-
-	try {
-		console.log("Starting Echo Props Compilation...");
-		console.log("-".repeat(60));
-		await compileEchoProps();
-		console.log();
-	} catch (error) {
-		console.log(`Error compiling echo props: ${error}`);
-		process.exit(1);
-	}
-
-	try {
-		console.log("Starting Weapon Data Compilation...");
-		console.log("-".repeat(60));
-		await compileWeaponData();
-		console.log();
-	} catch (error) {
-		console.log(`Error compiling weapon data: ${error}`);
-		process.exit(1);
-	}
-
-	try {
-		console.log("Starting Build Guide Compilation...");
-		console.log("-".repeat(60));
-		await compileBuildGuides();
-		console.log();
-	} catch (error) {
-		// tethys.gg is a third party on its own schedule, so an outage or a
-		// changed page there must not discard the configs and assets that have
-		// already been rebuilt from the checkouts.
-		console.warn(`warning: build guides not updated: ${error}`);
-	}
-
-	await compileMapData();
-	await compileProgressionData();
-	await compileProfileData();
-	await compileRotationDamage();
-	try {
-		await compilePreviewData();
-	} catch (error) {
-		console.warn(
-			`warning: preview data not updated; keeping bundled previews: ${error}`,
-		);
-	}
-
-	try {
-		console.log("Copying Assets to Public Folder...");
-		console.log("-".repeat(60));
-		await copyAssets();
-		console.log();
-	} catch (error) {
-		console.log(`Error copying assets: ${error}`);
-		process.exit(1);
-	}
-
-	console.log("=".repeat(60));
-	console.log("✓ All data compilation and asset copying complete!");
-	console.log("=".repeat(60));
+async function main({
+	verbose = Bun.argv.includes("--verbose"),
+} = {}): Promise<void> {
+	await runDataStages(gameDataStages(), { verbose });
 }
 
 if (import.meta.main) await main();

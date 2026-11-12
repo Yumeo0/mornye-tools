@@ -1,4 +1,5 @@
 //! Active transport, separate from Spectrum's passive KCP mirror.
+use crate::message_id as id;
 use aes::{
     cipher::{block_padding::Pkcs7, BlockDecrypt, BlockEncrypt, KeyInit},
     Aes256,
@@ -101,7 +102,7 @@ pub fn encode(
         "unsupported outgoing packet type"
     );
     let mut payload = payload.to_vec();
-    if !matches!(message, 111 | 112) {
+    if !matches!(message, id::ProtoKeyRequest | id::ProtoKeyResponse) {
         let key = key.context("cannot send encrypted request before key exchange")?;
         if !payload.is_empty() {
             crypt_byte(sequence, key, &mut payload);
@@ -172,7 +173,7 @@ pub fn decode(bytes: &[u8], key: Option<&[u8; 32]>) -> Result<Packet> {
         "game frame CRC mismatch"
     );
     let mut payload = bytes[header..].to_vec();
-    if !matches!(message, 111 | 112) {
+    if !matches!(message, id::ProtoKeyRequest | id::ProtoKeyResponse) {
         let key = key.context("received encrypted frame before session key")?;
         if !payload.is_empty() {
             payload = Aes256::new_from_slice(key)

@@ -10,6 +10,7 @@ pub mod keys;
 pub mod live;
 pub mod position;
 pub mod progression;
+pub mod recording;
 pub mod teams;
 mod transport;
 pub mod world;
@@ -20,6 +21,7 @@ use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
+use mornye_game_client::compatibility::GameVersionStatus;
 use parking_lot::Mutex;
 use serde::Serialize;
 use tauri::{AppHandle, Manager, State};
@@ -125,6 +127,8 @@ pub struct SnifferState {
     pub position: Mutex<position::PositionTracker>,
     pub progression: Mutex<progression::ProgressionCapture>,
     pub teams: Mutex<teams::TeamCapture>,
+    recording: Mutex<recording::Recording>,
+    game_version: Mutex<GameVersionStatus>,
 }
 
 impl SnifferState {
@@ -169,6 +173,8 @@ impl SnifferState {
             position: Mutex::new(position::PositionTracker::default()),
             progression: Mutex::new(progression::ProgressionCapture::default()),
             teams: Mutex::new(teams::TeamCapture::default()),
+            recording: Mutex::new(recording::Recording::default()),
+            game_version: Mutex::new(GameVersionStatus::default()),
         }
     }
 
@@ -431,6 +437,8 @@ pub struct SnifferStatus {
     pub stream_stalled: bool,
     pub last_error: Option<String>,
     pub log: Vec<String>,
+    pub recording: recording::RecordingStatus,
+    pub game_version: GameVersionStatus,
 }
 
 /// Start the always-on supervisor and the account-update debouncer.
@@ -439,6 +447,26 @@ pub fn start(app: &AppHandle) {
         .log("listener armed; waiting for the game and login");
     spawn_supervisor(app.clone());
     spawn_debouncer(app.clone());
+    // Independent of capture privileges and login: warn even before the game opens.
+    std::thread::spawn({
+        let app = app.clone();
+        move || loop {
+            let processes = live::game_processes();
+            let client = live::pick_process(&processes)
+                .filter(|process| process.is_client)
+                .and_then(|process| live::client_directory(process.pid));
+            let version = GameVersionStatus::detect(client.as_deref());
+            let state = app.state::<SnifferState>();
+            let mut previous = state.game_version.lock();
+            let changed = *previous != version;
+            *previous = version.clone();
+            drop(previous);
+            if changed && version.too_new {
+                state.log(format!("installed game {} is newer than supported {}; update Mornye Tools for compatible game data and packet decoding", version.installed.as_deref().unwrap_or("unknown"), version.supported));
+            }
+            std::thread::sleep(Duration::from_secs(30));
+        }
+    });
 }
 
 fn spawn_supervisor(app: AppHandle) {
@@ -556,14 +584,23 @@ fn spawn_debouncer(app: AppHandle) {
 /// Feed one raw frame through the sniffer and extract account deltas. Every
 /// failure class is counted and logged (deduped); none of them may panic or
 /// stall the capture loop.
-pub(crate) fn process_frame(
+fn process_frame(
     app: &AppHandle,
     sniffer: &mut crate::sniffer::transport::Sniffer,
     frame: Vec<u8>,
+    source: recording::CaptureSource,
 ) {
     let state = app.state::<SnifferState>();
     state.note_frame();
-    let result = sniffer.receive_packet(frame);
+    let timestamp = recording::timestamp();
+    let result = sniffer.receive_packet(&frame);
+    let limit_reached = state
+        .recording
+        .lock()
+        .record(timestamp, source, &frame, &result);
+    if limit_reached {
+        state.log("packet recording limit reached; export and clear the recording to start again");
+    }
     if !state
         .waiting_for_login
         .swap(sniffer.waiting_for_login, Ordering::SeqCst)
@@ -718,6 +755,8 @@ pub fn sniffer_get_status(state: State<SnifferState>) -> SnifferStatus {
         stream_stalled: state.stream_stalled.load(Ordering::SeqCst),
         last_error: state.last_error.lock().clone(),
         log: state.log.lock().iter().cloned().collect(),
+        recording: state.recording.lock().status(),
+        game_version: state.game_version.lock().clone(),
     }
 }
 
@@ -737,7 +776,7 @@ pub fn sniffer_import_pcap(
     let mut decoded = 0usize;
     for frame in frames {
         let before = state.packets_seen.load(Ordering::Relaxed);
-        process_frame(&app, &mut sniffer, frame);
+        process_frame(&app, &mut sniffer, frame, recording::CaptureSource::Offline);
         if state.packets_seen.load(Ordering::Relaxed) > before {
             decoded += 1;
         }

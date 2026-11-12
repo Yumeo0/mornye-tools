@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.3.5] - 2026-11-12
+
 ### Added
 
 - **Packet capture exports.** Record game traffic from Settings and export raw PCAP captures or parsed JSON with message names and decoded fields.

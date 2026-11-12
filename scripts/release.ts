@@ -145,28 +145,25 @@ gitInherit("tag", tag);
 
 console.log(`\nReleased ${tag} (was ${current}).`);
 if (push) {
-	// Push GitHub first: pushing origin starts the Forgejo mirror, which can
-	// race our direct push or copy the tag before it can trigger the workflow.
+	// Publish both refs to the mirror's source first. A GitHub-only tag would
+	// otherwise be pruned by the branch mirror and recreated by the tag mirror,
+	// starting a second release run. Atomic pushes never expose that gap.
 	const github = githubRemote();
-	if (github) {
-		gitInherit("push", github, "HEAD");
-		gitInherit("push", github, tag);
-	}
-
-	gitInherit("push", "origin", "HEAD");
-	gitInherit("push", "origin", tag);
+	gitInherit("push", "--atomic", "origin", "HEAD", tag);
+	if (github && github !== "origin")
+		gitInherit("push", "--atomic", github, "HEAD", tag);
 
 	if (github) {
 		console.log(
-			`Pushed ${tag} to origin and ${github} — the release workflow is running.`,
+			`Pushed ${tag} to ${github === "origin" ? "origin" : `origin and ${github}`} — the release workflow is running.`,
 		);
 	} else {
 		console.log(
-			`Pushed ${tag} to origin.\n\nThe release workflow runs on GitHub, where a mirror push does not start it.\nEither add a remote and push, or start it by hand in Actions:\n\n  git remote add github https://github.com/Yumeo0/mornye-tools.git\n  git push github HEAD\n  git push github ${tag}\n`,
+			`Pushed ${tag} to origin.\n\nThe release workflow runs on GitHub. If origin does not mirror there, add a remote and push, or start it by hand in Actions:\n\n  git remote add github https://github.com/Yumeo0/mornye-tools.git\n  git push --atomic github HEAD ${tag}\n`,
 		);
 	}
 } else {
 	console.log(
-		`Push it to trigger the release workflow:\n\n  git push origin HEAD\n  git push origin ${tag}\n`,
+		`Push it to trigger the release workflow:\n\n  git push --atomic origin HEAD ${tag}\n`,
 	);
 }

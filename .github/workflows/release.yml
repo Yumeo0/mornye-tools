@@ -1,8 +1,8 @@
 name: Build and Release
 
-# Tag a release with `bun release patch|minor|major` (it commits, tags and
-# pushes) or by hand with `git tag vX.Y.Z && git push origin vX.Y.Z`. The tag
-# builds the desktop bundles, signs them for the Tauri updater and publishes
+# Create a release with `bun release patch|minor|major` (it commits, tags and
+# pushes). Push an existing local release with `git push --atomic origin HEAD vX.Y.Z`.
+# The tag builds the desktop bundles, signs them for the Tauri updater and publishes
 # them to a GitHub release. The same release carries the `latest.json` manifest
 # the app polls for self-updates:
 #
@@ -30,8 +30,7 @@ on:
   push:
     tags:
       - "v*"
-  # A Forgejo push mirror updates the refs without creating a workflow run, so
-  # a release can also be started by hand: Actions -> Build and Release ->
+  # Retry an existing tag without changing refs: Actions -> Build and Release ->
   # Run workflow, with the tag to build.
   workflow_dispatch:
     inputs:

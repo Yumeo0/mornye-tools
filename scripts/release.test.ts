@@ -66,36 +66,65 @@ function createFixture() {
 	return { root, repo };
 }
 
-test("pushes the GitHub branch and tag before starting the origin mirror", () => {
-	const { root, repo } = createFixture();
-	const origin = join(root, "origin.git");
-	// The local path also exercises discovery of the GitHub remote by URL.
-	const github = join(root, "github.com", "Yumeo0", "mornye-tools.git");
-	git(root, "init", "--bare", origin);
-	git(root, "init", "--bare", github);
-	git(repo, "remote", "add", "origin", origin);
-	git(repo, "remote", "add", "github", github.replaceAll("\\", "/"));
-	git(origin, "config", "release.githubPath", github.replaceAll("\\", "/"));
-	// Reject origin pushes unless both release refs have already reached GitHub.
-	writeFileSync(
-		join(origin, "hooks", "pre-receive"),
-		'#!/bin/sh\ngithub=$(git config release.githubPath)\ngit --git-dir="$github" show-ref --verify --quiet refs/heads/main &&\ngit --git-dir="$github" show-ref --verify --quiet refs/tags/v0.2.0\n',
-		{ mode: 0o755 },
-	);
-	const result = spawnSync(process.execPath, ["scripts/release.ts", "minor"], {
-		cwd: repo,
-		encoding: "utf8",
-		timeout: 20_000,
-	});
-	expect(result.error).toBeUndefined();
-	expect(result.status, `${result.stdout}\n${result.stderr}`).toBe(0);
-	const head = git(repo, "rev-parse", "HEAD");
-	for (const remote of [origin, github]) {
-		expect(git(remote, "rev-parse", "refs/heads/main")).toBe(head);
-		expect(git(remote, "rev-parse", "refs/tags/v0.2.0")).toBe(head);
-	}
-	expect(git(repo, "status", "--porcelain")).toBe("");
-}, 30_000);
+test.each([
+	["mirrored", true],
+	["independent", false],
+] as const)(
+	"publishes one release tag across %s remotes",
+	(_name, mirrored) => {
+		const { root, repo } = createFixture();
+		const origin = join(root, "origin.git");
+		// The local path also exercises discovery of the GitHub remote by URL.
+		const github = join(root, "github.com", "Yumeo0", "mornye-tools.git");
+		git(root, "init", "--bare", origin);
+		git(root, "init", "--bare", github);
+		git(repo, "remote", "add", "origin", origin);
+		git(repo, "remote", "add", "github", github.replaceAll("\\", "/"));
+		git(origin, "config", "release.githubPath", github.replaceAll("\\", "/"));
+		const tagUpdates = join(root, "tag-updates.log");
+		git(
+			github,
+			"config",
+			"release.tagUpdates",
+			tagUpdates.replaceAll("\\", "/"),
+		);
+		// Track tag creation/deletion as GitHub would when starting a tag workflow.
+		writeFileSync(
+			join(github, "hooks", "post-receive"),
+			'#!/bin/sh\nupdates=$(git config release.tagUpdates)\nwhile read before after ref; do\n  if [ "$ref" = refs/tags/v0.2.0 ]; then\n    printf "%s %s\\n" "$before" "$after" >> "$updates"\n  fi\ndone\n',
+			{ mode: 0o755 },
+		);
+		// Mirror every push, including pruning tags absent from origin. Pushing the
+		// branch and tag separately used to delete and recreate the GitHub tag.
+		if (mirrored)
+			writeFileSync(
+				join(origin, "hooks", "post-receive"),
+				'#!/bin/sh\ngithub=$(git config release.githubPath)\ngit push --mirror "$github"\n',
+				{ mode: 0o755 },
+			);
+		const result = spawnSync(
+			process.execPath,
+			["scripts/release.ts", "minor"],
+			{
+				cwd: repo,
+				encoding: "utf8",
+				timeout: 20_000,
+			},
+		);
+		expect(result.error).toBeUndefined();
+		expect(result.status, `${result.stdout}\n${result.stderr}`).toBe(0);
+		const head = git(repo, "rev-parse", "HEAD");
+		for (const remote of [origin, github]) {
+			expect(git(remote, "rev-parse", "refs/heads/main")).toBe(head);
+			expect(git(remote, "rev-parse", "refs/tags/v0.2.0")).toBe(head);
+		}
+		expect(readFileSync(tagUpdates, "utf8").trim().split(/\r?\n/)).toEqual([
+			`${"0".repeat(40)} ${head}`,
+		]);
+		expect(git(repo, "status", "--porcelain")).toBe("");
+	},
+	30_000,
+);
 
 test("--no-push creates the version commit and tag without remotes", () => {
 	const { repo } = createFixture();

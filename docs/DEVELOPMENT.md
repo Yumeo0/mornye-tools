@@ -72,9 +72,12 @@ versions by hand.
 
 Builds run on **GitHub**, in `.github/workflows/release.yml`. The `v*` tag must
 reach [Yumeo0/mornye-tools](https://github.com/Yumeo0/mornye-tools).
-Forgejo's push mirror does not trigger Actions: push directly to a GitHub remote,
-or run **Actions → Build and Release → Run workflow** with the tag.
-The release script pushes a configured GitHub remote before origin.
+The release script pushes the branch and tag atomically to origin first, then
+syncs a configured GitHub remote. This keeps the Forgejo mirror from deleting
+and recreating a tag that only exists on GitHub, which would start duplicate
+release builds. If the mirror already copied the tag, the direct GitHub push
+does nothing. To retry an existing tag, use **Actions → Build and Release →
+Run workflow** with the tag.
 
 The updater reads `releases/latest/download/latest.json` from that repository.
 Its public key is in `src-tauri/tauri.conf.json`; the private key is the GitHub

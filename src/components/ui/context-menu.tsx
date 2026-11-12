@@ -41,13 +41,19 @@ function ContextMenuContent({
 
 function ContextMenuItem({
 	className,
+	variant = "default",
 	...props
-}: ContextMenuPrimitive.Item.Props) {
+}: ContextMenuPrimitive.Item.Props & {
+	variant?: "default" | "destructive";
+}) {
 	return (
 		<ContextMenuPrimitive.Item
 			data-slot="context-menu-item"
+			data-variant={variant}
 			className={cn(
 				"data-highlighted:bg-accent data-highlighted:text-accent-foreground gap-2 rounded-none py-1.5 pr-6 pl-2 text-xs relative flex w-full cursor-default items-center outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+				variant === "destructive" &&
+					"text-destructive data-highlighted:bg-destructive/10 data-highlighted:text-destructive",
 				className,
 			)}
 			{...props}

@@ -1,8 +1,13 @@
 import { expect, test } from "bun:test";
-import type { OptResultEntry } from "@/lib/calc/types";
+import type {
+	OptResultEntry,
+	SearchUpdate,
+	SimulationResult,
+} from "@/lib/calc/types";
 import {
 	optimizerEchoDifference,
 	optimizerResultRows,
+	optimizerUpdateForEquipped,
 } from "./optimizerResults";
 
 const result = (uids: string[], damage: number): OptResultEntry => ({
@@ -93,4 +98,80 @@ test("equal damage and a different main echo remain distinct results", () => {
 	expect(optimizerResultRows([differentMain], null)).toEqual([
 		{ kind: "result", result: differentMain, index: 0, rank: 0 },
 	]);
+});
+
+function updateFixture(): SearchUpdate {
+	return {
+		results: [
+			result(["f", "b", "c", "d", "e"], 120),
+			result(current, 100),
+			result(["g", "b", "c", "d", "e"], 80),
+		],
+		baseline: result(current, 100),
+		baselineEvaluation: null,
+		baselineError: null,
+		progress: {
+			processed: 3,
+			total: 3,
+			elapsedMs: 1,
+			remainingMs: 0,
+			progress: 1,
+			speed: 3000,
+		},
+		status: "complete",
+	};
+}
+
+test("equipping a ranked build retains results and moves the current reference to it", () => {
+	const saved = updateFixture();
+	const best = saved.results[0];
+	const update = optimizerUpdateForEquipped(
+		saved,
+		[best.uids[0], ...best.uids.slice(1).reverse()],
+		1406,
+		"damage",
+		null,
+	);
+	expect(update.results).toBe(saved.results);
+	expect(update.baseline).toBe(best);
+	expect(saved.baseline?.uids).toEqual(current);
+	expect(optimizerResultRows(update.results, update.baseline)).toEqual([
+		{ kind: "baseline", rank: 0 },
+		{ kind: "result", result: saved.results[1], index: 1, rank: 1 },
+		{ kind: "result", result: saved.results[2], index: 2, rank: 2 },
+	]);
+});
+
+test("an unranked equipped build gets a fresh baseline without removing ranked builds", () => {
+	const saved = updateFixture();
+	const uids = ["h", "b", "c", "d", "e"];
+	const pending = optimizerUpdateForEquipped(saved, uids, 1406, "damage", null);
+	expect(pending.results).toBe(saved.results);
+	expect(pending.baseline).toBeNull();
+	expect(pending.baselineEvaluation).toBeNull();
+	const evaluation: SimulationResult = {
+		feasible: true,
+		damageByMember: { 1406: 95 },
+		teamDamage: 300,
+		duration: 1,
+		energy: [],
+		diagnostics: [],
+		stats: {},
+	};
+	expect(
+		optimizerUpdateForEquipped(saved, uids, 1406, "damage", evaluation).baseline
+			?.damage,
+	).toBe(95);
+	expect(
+		optimizerUpdateForEquipped(saved, uids, 1406, "team", evaluation).baseline
+			?.damage,
+	).toBe(300);
+	const infeasible = optimizerUpdateForEquipped(saved, uids, 1406, "team", {
+		...evaluation,
+		feasible: false,
+		diagnostics: ["Not enough Energy Regen"],
+	});
+	expect(infeasible.results).toBe(saved.results);
+	expect(infeasible.baseline).toBeNull();
+	expect(infeasible.baselineError).toBe("Not enough Energy Regen");
 });

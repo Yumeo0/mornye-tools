@@ -43,13 +43,13 @@ export function SubStatRollBar({
 							"h-full flex-1 rounded-[1px]",
 							filled
 								? dimmed
-									? "bg-zinc-500/50"
+									? "bg-muted-foreground/30"
 									: revealOnHover
 										? "bg-muted-foreground/40 transition-colors group-hover/card:bg-[var(--roll-color)] group-focus-within/card:bg-[var(--roll-color)]"
 										: ""
 								: dimmed
-									? "bg-zinc-500/15"
-									: "bg-black/30",
+									? "bg-muted-foreground/10"
+									: "bg-foreground/5",
 						)}
 						style={
 							filled && !dimmed

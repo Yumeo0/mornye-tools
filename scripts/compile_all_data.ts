@@ -22,6 +22,7 @@ import { compileEchoUpgrade } from "./compile_echo_upgrade.ts";
 import { compileInventoryData } from "./compile_inventory_data.ts";
 import { compileProfileData } from "./compile_profile_data.ts";
 import { compileWeaponData } from "./compile_weapon_data.ts";
+import { compileCharacterPanel } from "./compile-character-panel.ts";
 import { compileMapData } from "./compile-map-data.ts";
 import { compilePreviewData } from "./compile-preview-data.ts";
 import { compileProgressionData } from "./compile-progression-data.ts";
@@ -79,6 +80,7 @@ export function gameDataStages(): DataStage[] {
 		{ name: "Inventory", run: compileInventoryData },
 		{ name: "Echoes", run: compileEchoData },
 		{ name: "Characters", run: compileCharacterData },
+		{ name: "Character panel stats", run: compileCharacterPanel },
 		{ name: "Echo properties", run: compileEchoProps },
 		{ name: "Weapons", run: compileWeaponData },
 		{

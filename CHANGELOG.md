@@ -2,6 +2,21 @@
 
 ## [Unreleased]
 
+### Added
+
+- **Resonator build stats.** View attributes, damage bonuses, and healing stats below equipped Echoes in Resonator details, with recommended stats highlighted for the selected build guide.
+- **Total build RV.** Resonator details and optimizer results show total Roll Value alongside the theoretical maximum with perfect substat rolls, keeping the build's main stats and weapon while meeting its Energy Regen requirement.
+- **Unequip Echoes from inventory.** Unequip captured Echoes directly from the Echoes tab while connected to the game through an active session.
+
+### Improved
+
+- **More useful optimizer stats.** Result rows include HP and DEF alongside ATK, crit stats, Energy Regen, and total RV. Expanded details below the Echo cards show damage, elemental, and healing bonuses, with 0% stats hidden.
+- **Cleaner Echo cards.** A compact layout gives substats more room and groups equipment, lock, and discard controls together. Lock and discard icons stay visible, with inactive states dimmed, and only substats counted toward the displayed RV are highlighted.
+
+### Fixed
+
+- Optimizer results stay visible after equipping a build, with the current build and damage comparisons updated to match.
+
 ## [0.3.5] - 2026-11-12
 
 ### Added

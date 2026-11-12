@@ -180,6 +180,7 @@ struct EchoCommand {
     reply: std::sync::mpsc::Sender<Result<EchoResult, String>>,
 }
 enum EchoOperation {
+    Unequip(mornye_game_client::echo_equip::UnequipEcho),
     Equip {
         role_id: i32,
         echoes: Vec<mornye_game_client::echo_equip::EquipEcho>,
@@ -207,10 +208,12 @@ impl EchoOperation {
             } | Self::Discard(_)
                 | Self::Mark { .. }
                 | Self::Equip { .. }
+                | Self::Unequip(_)
         )
     }
 }
 enum EchoResult {
+    Unequip,
     Equip(Vec<i32>),
     Upgrade(mornye_game_client::echo_upgrade::UpgradePlan),
     Discard(mornye_game_client::echo_upgrade::DiscardResult),
@@ -1033,6 +1036,23 @@ pub fn dangerous_connect(
                                 }
                             }
                             match &command.operation {
+                                EchoOperation::Unequip(expected) => {
+                                    {
+                                        let account = app.state::<AccountState>();
+                                        let profiles = account.store.lock().map_err(|_| "Account store is unavailable.")?;
+                                        let snapshot = profiles.snapshot();
+                                        if !snapshot.resonators.iter().any(|role| role.id == i64::from(expected.role_id))
+                                            || !snapshot.echoes.iter().any(|echo|
+                                                echo.incr_id == i64::from(expected.incr_id)
+                                                && echo.item_id == i64::from(expected.item_id)
+                                                && echo.equipped_by == Some(i64::from(expected.role_id))
+                                                && echo.slot.map(i32::from) == Some(expected.slot)
+                                                && echo.source == crate::account::model::EchoSource::Sniffer) {
+                                            return Err("Choose an equipped captured echo from the connected profile.".into());
+                                        }
+                                    }
+                                    session.unequip_echo(expected).map(|()| EchoResult::Unequip).map_err(|e| format!("{e:#}"))
+                                }
                                 EchoOperation::Equip { role_id, echoes } => {
                                     {
                                         let account = app.state::<AccountState>();
@@ -1199,6 +1219,21 @@ pub async fn dangerous_echo_equip(
     .await?
     {
         EchoResult::Equip(ids) => Ok(ids),
+        _ => Err("Unexpected echo operation result.".into()),
+    }
+}
+
+#[tauri::command]
+pub async fn dangerous_echo_unequip(
+    window: WebviewWindow,
+    state: State<'_, DangerousState>,
+    profile_id: String,
+    expected: mornye_game_client::echo_equip::UnequipEcho,
+) -> Result<(), String> {
+    main_window(&window)?;
+    expected.validate().map_err(|error| error.to_string())?;
+    match queue_echo_operation(state.inner(), profile_id, EchoOperation::Unequip(expected)).await? {
+        EchoResult::Unequip => Ok(()),
         _ => Err("Unexpected echo operation result.".into()),
     }
 }

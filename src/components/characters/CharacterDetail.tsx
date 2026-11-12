@@ -1,6 +1,7 @@
 import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useMemo, useState } from "react";
+import { BuildRollValue, BuildStats } from "@/components/characters/BuildStats";
 import { ChainNodes } from "@/components/characters/ChainNodes";
 import { EchoSetsCard } from "@/components/characters/EchoSetsCard";
 import { SubstatsCard } from "@/components/characters/SubstatsCard";
@@ -23,7 +24,14 @@ import {
 	SelectTrigger,
 } from "@/components/ui/select";
 import { weaponIconUrl } from "@/components/weapon/WeaponCard";
-import { type Echo, statPropLines } from "@/lib/account";
+import { useCharacterPanel } from "@/hooks/useCharacterPanel";
+import {
+	type AccountSnapshot,
+	type Echo,
+	statPropLines,
+	weaponForResonator,
+} from "@/lib/account";
+import { buildRating } from "@/lib/buildRating";
 import {
 	buildByCharacterId,
 	type CardAccount,
@@ -42,14 +50,27 @@ export function CharacterDetail({
 	character,
 	account,
 	echoes,
+	snapshot,
 	onBack,
 }: {
 	character: CharacterEntry;
 	account: CardAccount | undefined;
 	echoes: Echo[];
+	snapshot?: AccountSnapshot;
 	onBack: () => void;
 }) {
 	const [selectedRole, setSelectedRole] = useState<string | null>(null);
+	const panelInput = useMemo(() => {
+		const resonator = snapshot?.resonators.find((r) => r.id === character.id);
+		return resonator && snapshot
+			? {
+					resonator,
+					weapon: weaponForResonator(snapshot, character.id),
+					echoes,
+				}
+			: null;
+	}, [snapshot, character.id, echoes]);
+	const panel = useCharacterPanel(panelInput);
 
 	const build = buildByCharacterId.get(character.id);
 	const roleNames = Object.keys(build?.roles ?? {});
@@ -75,6 +96,10 @@ export function CharacterDetail({
 					}
 				: null,
 		[guide, firstRolePriority, character],
+	);
+	const rating = useMemo(
+		() => buildRating(ratingCharacter, echoes, panel.value?.stats.er),
+		[ratingCharacter, echoes, panel.value],
 	);
 
 	const echoRollValue = (echo: Echo): number | null =>
@@ -245,11 +270,11 @@ export function CharacterDetail({
 				</div>
 			</section>
 
-			{(guide || echoes.length > 0) && (
+			{(account || guide || echoes.length > 0) && (
 				<div className="relative -mt-9 mx-3 flex flex-col gap-5 @min-[640px]/character-detail:mx-5">
 					{echoes.length > 0 && (
 						<Card>
-							<CardHeader>
+							<CardHeader className="flex flex-wrap items-center justify-between gap-3">
 								<CardTitle>
 									<span className="flex items-center gap-2">
 										<img
@@ -258,10 +283,12 @@ export function CharacterDetail({
 											className="size-5 object-contain"
 										/>
 										Equipped echoes
-										<Badge variant="outline">{echoes.length}/5</Badge>
 									</span>
 								</CardTitle>
-								<CardAction>{rolePicker}</CardAction>
+								<CardAction className="ml-auto flex max-w-full flex-wrap items-center justify-end gap-x-5 gap-y-3">
+									{rolePicker}
+									<BuildRollValue rating={rating} />
+								</CardAction>
 							</CardHeader>
 							<CardContent>
 								<div className="grid gap-2 @min-[480px]/character-detail:grid-cols-2 @min-[800px]/character-detail:grid-cols-3 @min-[1200px]/character-detail:grid-cols-5">
@@ -279,6 +306,38 @@ export function CharacterDetail({
 						</Card>
 					)}
 
+					{account && (
+						<Card>
+							<CardHeader>
+								<CardTitle>Character stats</CardTitle>
+							</CardHeader>
+							<CardContent className="@container/build-stats">
+								{panel.value ? (
+									<>
+										<BuildStats
+											stats={panel.value.stats}
+											preferredStats={ratingCharacter?.stats}
+										/>
+										{panel.value.notes.map((note) => (
+											<p
+												key={note}
+												className="mt-3 text-xs text-muted-foreground"
+											>
+												{note}
+											</p>
+										))}
+									</>
+								) : (
+									<p className="text-xs text-muted-foreground">
+										{panel.error ??
+											(panelInput
+												? "Calculating stats…"
+												: "Capture this Resonator's level and equipment to show stats.")}
+									</p>
+								)}
+							</CardContent>
+						</Card>
+					)}
 					{guide && (
 						<section
 							aria-label="Build recommendations"

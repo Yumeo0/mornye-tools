@@ -20,6 +20,26 @@ const result = await Bun.build({
 if (!result.success)
 	throw new AggregateError(result.logs, "Calculator bundle failed");
 console.log("Built pinned wuwa_calc simulation adapter");
+// Public contracts for the generated JavaScript module.
+await Bun.write(
+	join(root, "src/lib/calc/riley/engine.generated.d.ts"),
+	`import type {
+	CharacterPanelRequest,
+	CharacterPanelResult,
+} from "../../characterPanel";
+import type { CalculatorCatalog, Scenario, SimulationResult } from "../types";
+export function getCatalog(): CalculatorCatalog;
+export function evaluate(scenario: Scenario): SimulationResult;
+export function evaluateFast(scenario: Scenario): SimulationResult;
+export function resolveRotationStats(
+	scenario: Scenario,
+	targetId?: number,
+): Scenario;
+export function characterPanel(
+	input: CharacterPanelRequest,
+): CharacterPanelResult;
+`,
+);
 
 // Stable across checkout line endings. Reference-score caches also depend on
 // the app's scoring assumptions, not just the pinned upstream revision.

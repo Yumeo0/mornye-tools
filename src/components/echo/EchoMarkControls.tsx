@@ -1,7 +1,9 @@
+import { Loading03Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { EchoMarkIcon } from "@/components/echo/EchoMarkStatus";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import type { Echo } from "@/lib/account";
-import { ECHO_MARK_ICONS, type EchoMark, echoMark } from "@/lib/echoMark";
-import { cn } from "@/lib/utils";
+import { type EchoMark, echoMark } from "@/lib/echoMark";
 
 export function EchoMarkControls({
 	echo,
@@ -21,11 +23,13 @@ export function EchoMarkControls({
 	return (
 		<ToggleGroup
 			className="shrink-0"
+			variant="ghost"
 			aria-label="Echo marks"
 			aria-busy={pending}
 			multiple={false}
 			value={mark === "none" ? [] : [mark]}
-			disabled={disabled}
+			disabled={disabled || pending}
+			size="icon-sm"
 			spacing={1}
 			onValueChange={(value) => {
 				const next = value[0];
@@ -37,7 +41,6 @@ export function EchoMarkControls({
 		>
 			<ToggleGroupItem
 				value="locked"
-				size="icon-sm"
 				aria-label={locked ? "Unlock echo" : "Lock echo"}
 				title={
 					pending
@@ -45,15 +48,17 @@ export function EchoMarkControls({
 						: `${locked ? "Unlock echo" : "Lock echo"}${stack}`
 				}
 			>
-				<img
-					src={locked ? ECHO_MARK_ICONS.locked : ECHO_MARK_ICONS.unlocked}
-					alt=""
-					className="size-5 object-contain"
-				/>
+				{pending ? (
+					<HugeiconsIcon
+						icon={Loading03Icon}
+						className="motion-safe:animate-spin"
+					/>
+				) : (
+					<EchoMarkIcon mark={locked ? "locked" : "none"} className="size-5" />
+				)}
 			</ToggleGroupItem>
 			<ToggleGroupItem
 				value="discarded"
-				size="icon-sm"
 				aria-label={discarded ? "Remove discard mark" : "Mark as discard"}
 				title={
 					pending
@@ -61,11 +66,7 @@ export function EchoMarkControls({
 						: `${discarded ? "Remove discard mark" : "Mark as discard"}${stack}`
 				}
 			>
-				<img
-					src={ECHO_MARK_ICONS.discarded}
-					alt=""
-					className={cn("size-5 object-contain", !discarded && "opacity-40")}
-				/>
+				<EchoMarkIcon mark="discarded" dimmed={!discarded} className="size-5" />
 			</ToggleGroupItem>
 		</ToggleGroup>
 	);

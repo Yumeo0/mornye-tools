@@ -6,7 +6,15 @@ import {
 import type { AccountSnapshot } from "@/lib/account";
 import { evaluateScenario, startSearch } from "@/lib/calc/core";
 import { selectCandidates } from "@/lib/calc/optimizer";
-import { aliasRoleId, inventoryRevision } from "@/lib/calc/translate";
+import {
+	optimizerBuildKey,
+	optimizerUpdateForEquipped,
+} from "@/lib/calc/optimizerResults";
+import {
+	aliasRoleId,
+	inventoryRevision,
+	optimizerInventoryRevision,
+} from "@/lib/calc/translate";
 import type {
 	OptResultEntry,
 	Scenario,
@@ -46,6 +54,10 @@ export function useOptimizerRun(
 		savedOptimizerRunSchema,
 	);
 	const revision = useMemo(() => inventoryRevision(snapshot), [snapshot]);
+	const resultRevision = useMemo(
+		() => optimizerInventoryRevision(snapshot),
+		[snapshot],
+	);
 	const scenario = useMemo<Scenario | null>(
 		() =>
 			team.profile && team.targetId
@@ -62,7 +74,7 @@ export function useOptimizerRun(
 	);
 	const selectionKey = optimizerRunSelectionKey({
 		catalogRevision: team.catalogRevision,
-		revision,
+		revision: resultRevision,
 		scenario,
 		targetId: team.targetId,
 		mode,
@@ -73,8 +85,15 @@ export function useOptimizerRun(
 	latestKey.current = selectionKey;
 	const [running, setRunning] = useState(false);
 	const [liveUpdate, setUpdate] = useState<SearchUpdate | null>(null);
-	const [evaluation, setEvaluation] = useState<SimulationResult | null>(null);
-	const [evaluationError, setEvaluationError] = useState<string | null>(null);
+	const evaluationKey = JSON.stringify([scenario, team.targetId]);
+	const [evaluated, setEvaluation] = useState<{
+		key: string;
+		value: SimulationResult | null;
+		error: string | null;
+	} | null>(null);
+	const evaluation = evaluated?.key === evaluationKey ? evaluated.value : null;
+	const evaluationError =
+		evaluated?.key === evaluationKey ? evaluated.error : null;
 	const [liveRunError, setRunError] = useState<string | null>(null);
 	const [liveExpandedIndex, setLiveExpandedIndex] =
 		useState<ExpandedOptimizerResult>(null);
@@ -90,11 +109,39 @@ export function useOptimizerRun(
 			? matchingOptimizerRun(savedRun, { key: selectionKey, profileId, roleId })
 			: null;
 	const hasLiveContext = context?.key === selectionKey;
-	const update = hasLiveContext ? liveUpdate : (restored?.update ?? null);
+	const selectedUpdate = hasLiveContext
+		? liveUpdate
+		: (restored?.update ?? null);
+	const update = useMemo(
+		() =>
+			selectedUpdate && scenario
+				? optimizerUpdateForEquipped(
+						selectedUpdate,
+						scenario.members
+							.find((member) => member.characterId === team.targetId)
+							?.echoes.map((echo) => echo.uid) ?? [],
+						team.targetId,
+						mode,
+						evaluation,
+					)
+				: selectedUpdate,
+		[selectedUpdate, scenario, team.targetId, mode, evaluation],
+	);
 	const runError = hasLiveContext ? liveRunError : (restored?.error ?? null);
-	const expandedIndex = hasLiveContext
+	const selectedExpandedIndex = hasLiveContext
 		? liveExpandedIndex
 		: (restored?.expandedIndex ?? null);
+	const expandedResult =
+		typeof selectedExpandedIndex === "number"
+			? update?.results[selectedExpandedIndex]
+			: null;
+	const expandedIndex =
+		expandedResult &&
+		update?.baseline &&
+		optimizerBuildKey(expandedResult.uids) ===
+			optimizerBuildKey(update.baseline.uids)
+			? "baseline"
+			: selectedExpandedIndex;
 	const latestExpanded = useRef(expandedIndex);
 	latestExpanded.current = expandedIndex;
 	const setExpandedIndex = (index: ExpandedOptimizerResult) => {
@@ -147,7 +194,6 @@ export function useOptimizerRun(
 	// Preview and search resolve the same fixed teammate rotation stats.
 	useEffect(() => {
 		setEvaluation(null);
-		setEvaluationError(null);
 		if (!scenario || team.errors.length) return;
 		// There is no equipped baseline for an unowned target (or an unequipped
 		// owned target). Candidate simulations supply their stats and ER after search.
@@ -161,8 +207,7 @@ export function useOptimizerRun(
 			scenario,
 			(value, error) => {
 				if (live) {
-					setEvaluation(value);
-					setEvaluationError(error);
+					setEvaluation({ key: evaluationKey, value, error });
 				}
 			},
 			team.targetId,
@@ -171,7 +216,7 @@ export function useOptimizerRun(
 			live = false;
 			stop();
 		};
-	}, [scenario, team.errors.length, team.targetId]);
+	}, [scenario, team.errors.length, team.targetId, evaluationKey]);
 	const handleCancel = useCallback(() => {
 		generation.current++;
 		cancel.current?.();
@@ -267,7 +312,7 @@ export function useOptimizerRun(
 		expandedIndex,
 		setExpandedIndex,
 		resultContext: hasLiveContext
-			? context
+			? { ...context, revision }
 			: restored
 				? {
 						profileId: restored.profileId,

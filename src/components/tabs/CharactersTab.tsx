@@ -98,6 +98,7 @@ export function CharactersTab() {
 			<div className="min-h-0 flex-1 overflow-y-auto">
 				<CharacterDetail
 					character={selectedCharacter}
+					snapshot={snapshot}
 					account={accountByCharacterId.get(selectedCharacter.id)}
 					echoes={echoesForResonator(snapshot, selectedCharacter.id)}
 					onBack={() => setSelectedCharacterId(null)}

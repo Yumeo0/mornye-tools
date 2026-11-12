@@ -1,5 +1,6 @@
 // The sole upstream integration. Bundled by scripts/build-calculator.ts.
 
+import panelData from "../src/configs/character_panel.json";
 import echoData from "../src/configs/echo_data.json";
 import type {
 	CalcEcho,
@@ -11,6 +12,12 @@ import type {
 	SimulationResult,
 	TeamProfile,
 } from "../src/lib/calc/types";
+import type {
+	CharacterPanelData,
+	CharacterPanelRequest,
+	CharacterPanelResult,
+	PanelProp,
+} from "../src/lib/characterPanel";
 import {
 	customRotationProfile,
 	flattenRotation,
@@ -24,7 +31,6 @@ import {
 	addStat,
 	equip,
 	equipEnemy,
-	menuStats,
 	panelEntry,
 	panelStats,
 	setTracing,
@@ -37,12 +43,16 @@ import {
 } from "../wuwa_calc/src/engine/evaluate";
 import {
 	Gear,
+	Inherent,
 	type Loadout,
 	Mainslot,
+	Resonator,
 	Sonata,
 	Sonata1pc,
 	Sonata2pc,
 	Sonata3pc,
+	type StatLine,
+	Talent,
 	Weapon,
 } from "../wuwa_calc/src/engine/gear";
 import {
@@ -55,14 +65,19 @@ import {
 	SWAP,
 	waitFor,
 } from "../wuwa_calc/src/engine/rotation";
+import { ctx } from "../wuwa_calc/src/engine/runtime";
 import { State } from "../wuwa_calc/src/engine/state";
 import {
 	Attribute,
 	CAST_NAME,
 	Cast,
 	Stat,
+	Subtype,
+	splitStat,
 	type Tag,
 	Type,
+	tagBand,
+	WeaponType,
 } from "../wuwa_calc/src/engine/stats";
 import { ALL_TEAMS } from "../wuwa_calc/src/resonators/teams";
 import {
@@ -168,6 +183,263 @@ const STAT: Record<string, [Stat, Tag?]> = {
 	spectro: [Stat.DmgBonus, Attribute.Spectro],
 	havoc: [Stat.DmgBonus, Attribute.Havoc],
 };
+
+/** Read every constant panel bonus without mixing element and attack scopes. */
+function readPanelStats(items: Gear[]): SimulationResult["stats"][number] {
+	// Upstream menuStats traces scoped additions on every pass. Keep each
+	// addition only on the pass matching its scope, including repeated lines
+	// from one piece. The adapter owns this correction; upstream stays untouched.
+	const state = new State(["Panel"]);
+	const slot = state.slots[0]!;
+	const saved = { ...ctx };
+	const constant: { stat: number; value: number }[] = [];
+	const attributes = [
+		Attribute.Aero,
+		Attribute.Electro,
+		Attribute.Fusion,
+		Attribute.Glacio,
+		Attribute.Spectro,
+		Attribute.Havoc,
+		Attribute.Physical,
+	];
+	const types = [
+		Type.Basic,
+		Type.Heavy,
+		Type.Skill,
+		Type.Liberation,
+		Type.Intro,
+		Type.Outro,
+		Type.Echo,
+		Type.Status,
+		Type.Break,
+		Type.Rupture,
+		Type.Hack,
+		Type.Utility,
+	];
+	const subtypes = [
+		Subtype.Coordinated,
+		Subtype.SpectroFrazzle,
+		Subtype.AeroErosion,
+		Subtype.FusionBurst,
+		Subtype.GlacioChafe,
+		Subtype.ElectroFlare,
+	];
+	try {
+		Object.assign(ctx, {
+			slot,
+			state,
+			stacks: 1,
+			tracing: true,
+			inConst: true,
+			recording: false,
+			panelGroup: null,
+		});
+		slot.resonator =
+			items.find((g): g is Resonator => g instanceof Resonator) ?? null;
+		for (const gear of items) {
+			if (gear instanceof Resonator || gear instanceof Weapon) {
+				const base = gear instanceof Weapon ? slot.weaponBase : slot.charBase;
+				for (const [stat, value] of gear.decl.stats)
+					if (stat <= Stat.BaseDef) base[stat] = base[stat]! + value;
+			}
+		}
+		for (const gear of items) {
+			ctx.buff = gear;
+			for (let i = 0; i < types.length; i++) {
+				ctx.tagWord = (attributes[i] ?? 0) | types[i]! | (subtypes[i] ?? 0);
+				const from = slot.entries.length;
+				gear.constantStatsFn?.();
+				for (const entry of slot.entries.slice(from)) {
+					const [, tag] = splitStat(entry.stat);
+					if (tag === null ? i === 0 : (ctx.tagWord & tagBand(tag)) === tag)
+						constant.push(entry);
+				}
+			}
+		}
+	} finally {
+		Object.assign(ctx, saved);
+	}
+	const sum = (stat: Stat, tag?: Tag) =>
+		constant
+			.filter((e) => e.stat === (stat | (tag ?? 0)))
+			.reduce((total, e) => total + e.value, 0);
+	return {
+		...panelStats(items),
+		er: sum(Stat.ER),
+		cr: sum(Stat.CritRate),
+		cd: sum(Stat.CritDmg),
+		bonuses: {
+			...Object.fromEntries(
+				Object.entries(STAT)
+					.filter(
+						([, [stat]]) =>
+							stat === Stat.DmgBonus || stat === Stat.HealingBonus,
+					)
+					.map(([key, [stat, tag]]) => [key, sum(stat, tag)]),
+			),
+			physical: sum(Stat.DmgBonus, Attribute.Physical),
+			damage: sum(Stat.DmgBonus),
+			intro: sum(Stat.DmgBonus, Type.Intro),
+			outro: sum(Stat.DmgBonus, Type.Outro),
+			echo: sum(Stat.DmgBonus, Type.Echo),
+			tuneBreak: sum(Stat.TBB),
+		},
+	};
+}
+
+/** Captured levels and unlocked stat nodes; no rotation or five-piece requirement. */
+export function characterPanel(
+	input: CharacterPanelRequest,
+): CharacterPanelResult {
+	const data = panelData as CharacterPanelData;
+	const { resonator, weapon, echoes } = input;
+	const role = data.roles[resonator.id];
+	const growth =
+		data.roleGrowth[`${resonator.level}:${resonator.breakthrough}`];
+	if (!role || !growth)
+		throw new Error("Panel data is unavailable for this resonator or level.");
+	const notes: string[] = [];
+	const lines = (props: PanelProp[]): StatLine[] =>
+		props.map(([key, value]) => {
+			const [stat, tag] = STAT[key]!;
+			return tag === undefined ? [stat, value] : [stat, value, tag];
+		});
+	const elements = [
+		Attribute.Physical,
+		Attribute.Glacio,
+		Attribute.Fusion,
+		Attribute.Electro,
+		Attribute.Aero,
+		Attribute.Spectro,
+		Attribute.Havoc,
+	];
+	const weaponTypes = [
+		WeaponType.Sword,
+		WeaponType.Broadblade,
+		WeaponType.Sword,
+		WeaponType.Pistols,
+		WeaponType.Gauntlets,
+		WeaponType.Rectifier,
+	];
+	const character = new Resonator({
+		id: resonator.id,
+		name: resonator.name,
+		color: "",
+		element: elements[role.element]!,
+		weapon: weaponTypes[role.weapon]!,
+		talent: new Talent({ name: "Stat nodes" }),
+		inherent1: new Inherent({ name: "Inherent 1" }),
+		inherent2: new Inherent({ name: "Inherent 2" }),
+		stats: role.base.map(
+			(base, i) =>
+				[
+					([Stat.BaseAtk, Stat.BaseHp, Stat.BaseDef] as const)[i]!,
+					base * growth[i]!,
+				] as StatLine,
+		),
+	});
+	const items: Gear[] = [character];
+	for (const node of resonator.skills) {
+		if (node.level > 0 && role.nodes[node.id])
+			items.push(
+				new Gear({
+					name: `Node ${node.id}`,
+					stats: lines(role.nodes[node.id]!),
+				}),
+			);
+	}
+	const loadout = [...loadouts.values()].find(
+		(l) => l.resonator.id === resonator.id,
+	);
+	if (loadout) {
+		for (const [node, inherent] of [
+			[7, loadout.resonator.inherent1],
+			[8, loadout.resonator.inherent2],
+		] as const)
+			if (
+				inherent &&
+				resonator.skills.some((n) => n.id === node && n.level > 0)
+			)
+				items.push(inherent);
+		items.push(...loadout.sequences.slice(0, resonator.chain));
+	}
+	if (weapon) {
+		const def = data.weapons[weapon.itemId];
+		if (!def)
+			throw new Error("Panel data is unavailable for the equipped weapon.");
+		const scaled = [def.first, def.second].map((prop, i): PanelProp => {
+			const curve =
+				data.weaponGrowth[`${def.curves[i]}:${weapon.level}:${weapon.breach}`];
+			if (curve === undefined || !prop)
+				throw new Error("Panel data is unavailable for the weapon level.");
+			return [prop[0], prop[1] * curve];
+		});
+		const known = weapons.get(`${weapon.itemId}:${weapon.rank}`);
+		const base = scaled[0]!;
+		items.push(
+			new Weapon({
+				name: "Equipped weapon",
+				weaponType: character.weapon,
+				stats: [
+					[Stat.BaseAtk, base[1]],
+					...lines([scaled[1]!]),
+					...(known?.decl.stats.slice(2) ?? []),
+				],
+				constantStats: known?.decl.constantStats,
+			}),
+		);
+		if (!known)
+			notes.push(
+				"This weapon's passive is not modeled; its level stats are included.",
+			);
+	}
+	const distinct = new Map<number, Set<number>>();
+	for (const echo of echoes) {
+		const types = distinct.get(echo.setId) ?? new Set<number>();
+		types.add(speciesById.get(echo.monsterId)?.typeId ?? echo.monsterId);
+		distinct.set(echo.setId, types);
+	}
+	for (const [setId, types] of distinct)
+		for (const bonus of data.sets[setId] ?? [])
+			if (types.size >= bonus.count)
+				items.push(
+					new Gear({ name: `Sonata ${setId}`, stats: lines(bonus.props) }),
+				);
+	for (const echo of echoes) {
+		const main =
+			echo.slot === 0
+				? (mains.get(echo.monsterId) ??
+					[...mains.values()].find(
+						(m) =>
+							speciesForMain(m)?.typeId ===
+							speciesById.get(echo.monsterId)?.typeId,
+					))
+				: undefined;
+		items.push(
+			new Gear({
+				name: `Echo ${echo.incrId}`,
+				constantStats: () =>
+					panelEntry(() => {
+						for (const prop of [...echo.mainProps, ...echo.subProps]) {
+							const [stat, tag] = STAT[prop.key]!;
+							addStat(stat, prop.value, tag);
+						}
+						main?.echoStatsFn?.();
+					}),
+			}),
+		);
+		if (
+			echo.slot === 0 &&
+			!main &&
+			speciesById.get(echo.monsterId) &&
+			echoData.find((e) => e.monster_id === echo.monsterId)?.echo_cost === 4
+		)
+			notes.push(
+				"This main echo's passive is not modeled; its rolled stats are included.",
+			);
+	}
+	return { stats: readPanelStats(items), notes };
+}
 
 let catalog: CalculatorCatalog | undefined;
 const profiles = new Map<string, { loadouts: Loadout[]; mains: Mainslot[] }>();
@@ -733,15 +1005,7 @@ export function evaluate(scenario: Scenario, trace = true): SimulationResult {
 		)
 			throw new Error("The rotation stat template does not fit this team.");
 		gear.push(items);
-		const constant = menuStats(items);
-		const sum = (stat: Stat) =>
-			constant.filter((e) => e.stat === stat).reduce((n, e) => n + e.value, 0);
-		stats[builds[i]!.characterId] = {
-			...panelStats(items),
-			er: sum(Stat.ER),
-			cr: sum(Stat.CritRate),
-			cd: sum(Stat.CritDmg),
-		};
+		stats[builds[i]!.characterId] = readPanelStats(items);
 		if (prepared.size > 2048) prepared.clear();
 		prepared.set(key, { gear: items, stats: stats[build.characterId]! });
 	}

@@ -1,4 +1,8 @@
-import type { OptResultEntry } from "@/lib/calc/types";
+import type {
+	OptResultEntry,
+	SearchUpdate,
+	SimulationResult,
+} from "@/lib/calc/types";
 
 export interface EquippedOptimizerEchoes {
 	uids: string[];
@@ -30,6 +34,47 @@ export function optimizerEchoDifference(
 /** Main echo matters; the four passive slots can be permuted freely. */
 export function optimizerBuildKey(uids: string[]): string {
 	return JSON.stringify([uids[0] ?? "", ...uids.slice(1).sort()]);
+}
+
+/** Keep ranked candidates while the equipped reference changes independently. */
+export function optimizerUpdateForEquipped(
+	update: SearchUpdate,
+	uids: string[],
+	targetId: number,
+	mode: "damage" | "team",
+	evaluation: SimulationResult | null,
+): SearchUpdate {
+	const currentKey = optimizerBuildKey(uids);
+	if (update.baseline && optimizerBuildKey(update.baseline.uids) === currentKey)
+		return update;
+	const ranked = update.results.find(
+		(result) => optimizerBuildKey(result.uids) === currentKey,
+	);
+	const baseline =
+		uids.length !== 5
+			? null
+			: (ranked ??
+				(evaluation?.feasible
+					? {
+							uids,
+							damage:
+								mode === "team"
+									? evaluation.teamDamage
+									: (evaluation.damageByMember[targetId] ?? 0),
+							stats: evaluation.stats[targetId] ?? null,
+							energy: evaluation.energy,
+						}
+					: null));
+	return {
+		...update,
+		baseline,
+		baselineEvaluation: evaluation,
+		baselineError:
+			evaluation && !evaluation.feasible
+				? evaluation.diagnostics.join(" ") ||
+					"Equipped baseline cannot execute this rotation."
+				: null,
+	};
 }
 
 export type OptimizerResultRow =

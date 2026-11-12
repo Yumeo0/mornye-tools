@@ -1,5 +1,5 @@
 // Serializable application contracts. Upstream engine objects stay in the worker.
-import type { EchoProp } from "@/lib/account";
+import type { EchoProp, StatKey } from "@/lib/account";
 
 export interface CalcEcho {
 	uid: string;
@@ -110,6 +110,19 @@ export interface OptResultStats {
 	er: number;
 	cr: number;
 	cd: number;
+	/** Constant panel bonuses, in percent units. Optional for older saved scores. */
+	bonuses?: Partial<
+		Record<
+			| StatKey
+			| "physical"
+			| "damage"
+			| "intro"
+			| "outro"
+			| "echo"
+			| "tuneBreak",
+			number
+		>
+	>;
 }
 export interface SimulationResult {
 	feasible: boolean;

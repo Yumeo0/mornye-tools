@@ -80,13 +80,21 @@ export function OptimizerResultsPanel({
 			{rows.length > 0 && (
 				<div
 					aria-hidden="true"
-					className="hidden items-center gap-3 overflow-y-auto [scrollbar-gutter:stable] border-b py-2 pl-3 pr-4 text-xs text-muted-foreground @min-[840px]/results:flex"
+					className="hidden items-center gap-3 overflow-y-auto [scrollbar-gutter:stable] border-b py-2 pl-3 pr-4 text-xs text-muted-foreground @min-[1040px]/results:flex"
 				>
 					<span className="w-8 shrink-0">#</span>
 					<span className="w-24 shrink-0">Damage</span>
 					<span className="w-16 shrink-0">Change</span>
-					<div className="grid min-w-0 flex-1 grid-cols-4 gap-3 text-right">
-						{["ATK", "Crit. Rate", "Crit. DMG", "ER"].map((label) => (
+					<div className="grid min-w-0 flex-1 grid-cols-7 gap-3 text-right">
+						{[
+							"HP",
+							"ATK",
+							"DEF",
+							"Crit. Rate",
+							"Crit. DMG",
+							"ER",
+							"Total RV",
+						].map((label) => (
 							<span key={label}>{label}</span>
 						))}
 					</div>

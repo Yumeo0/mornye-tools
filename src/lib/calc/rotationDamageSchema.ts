@@ -15,6 +15,7 @@ export const rotationDamageSchema: z.ZodType<RotationDamage> = z.object({
 				er: z.number().finite(),
 				cr: z.number().finite(),
 				cd: z.number().finite(),
+				bonuses: z.record(z.string(), z.number().finite()).optional(),
 			}),
 		)
 		.optional(),

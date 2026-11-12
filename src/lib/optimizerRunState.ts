@@ -30,7 +30,14 @@ export function optimizerRunSelectionKey(input: {
 	return JSON.stringify([
 		input.catalogRevision,
 		input.revision,
-		input.scenario,
+		input.scenario && {
+			...input.scenario,
+			members: input.scenario.members.map((member) =>
+				member.characterId === input.targetId
+					? { ...member, echoes: [] }
+					: member,
+			),
+		},
 		input.targetId,
 		input.mode,
 		input.filters,
@@ -45,6 +52,7 @@ const statsSchema = z.object({
 	er: z.number(),
 	cr: z.number(),
 	cd: z.number(),
+	bonuses: z.record(z.string(), z.number().finite()).optional(),
 });
 const energySchema = z.array(
 	z.object({
@@ -71,9 +79,52 @@ const resultSchema = z.object({
 	energy: energySchema.optional(),
 });
 
+// Older runs included Echo assignments and the target's equipped build in their
+// key. Canonicalize those fields on restore without changing scored inputs.
+const selectionKeySchema = z.tuple([
+	z.unknown(),
+	z.string(),
+	z
+		.looseObject({
+			members: z.array(z.looseObject({ characterId: z.number() })),
+		})
+		.nullable(),
+	z.number(),
+	z.unknown(),
+	z.unknown(),
+	z.unknown(),
+]);
+const inventoryKeySchema = z.tuple([
+	z.unknown(),
+	z.unknown(),
+	z.unknown(),
+	z.array(z.looseObject({ incrId: z.number() })),
+]);
+
+function restoreSelectionKey(key: string): string {
+	try {
+		const parts: z.infer<typeof selectionKeySchema> = JSON.parse(key);
+		selectionKeySchema.parse(parts);
+		const inventory: z.infer<typeof inventoryKeySchema> = JSON.parse(parts[1]);
+		inventoryKeySchema.parse(inventory);
+		// Validate without replacing objects: JSON keys retain their field order.
+		inventory[3] = inventory[3]
+			.map(({ equippedBy: _equippedBy, slot: _slot, ...echo }) => echo)
+			.sort((left, right) => left.incrId - right.incrId);
+		parts[1] = JSON.stringify(inventory);
+		if (parts[2])
+			parts[2].members = parts[2].members.map((member) =>
+				member.characterId === parts[3] ? { ...member, echoes: [] } : member,
+			);
+		return JSON.stringify(parts);
+	} catch {
+		return key;
+	}
+}
+
 export const savedOptimizerRunSchema: z.ZodType<SavedOptimizerRun | null> = z
 	.object({
-		key: z.string(),
+		key: z.string().transform(restoreSelectionKey),
 		profileId: z.string().nullable(),
 		roleId: z.number().int().positive(),
 		update: z.object({

@@ -1,9 +1,12 @@
 import { ChevronDown } from "lucide-react";
+import { useMemo } from "react";
+import { BuildRollValue, BuildStats } from "@/components/characters/BuildStats";
 import { EchoCard, echoImage, echoName } from "@/components/echo/EchoCard";
 import { formatDamage, statPercent } from "@/components/optimizer/display";
 import { Badge, CardBadge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { type Echo, statPropLines } from "@/lib/account";
+import { buildRating } from "@/lib/buildRating";
 import {
 	type EquippedOptimizerEchoes,
 	type OptimizerEchoChange,
@@ -17,45 +20,33 @@ import {
 } from "@/lib/rating";
 import { cn } from "@/lib/utils";
 
-function StatChips({ stats }: { stats: OptResultStats }) {
+function StatChips({
+	stats,
+	totalRv,
+}: {
+	stats: OptResultStats;
+	totalRv?: number;
+}) {
 	const entries: Array<[string, string]> = [
+		["HP", Math.round(stats.hp).toLocaleString()],
 		["ATK", Math.round(stats.atk).toLocaleString()],
+		["DEF", Math.round(stats.def).toLocaleString()],
 		["CR", statPercent(stats.cr)],
 		["CD", statPercent(stats.cd)],
 		["ER", statPercent(stats.er)],
+		["RV", totalRv === undefined ? "—" : `${totalRv}%`],
 	];
 	return (
-		<dl className="grid grid-cols-4 gap-3 text-xs text-muted-foreground">
+		<dl className="grid grid-cols-3 gap-x-3 gap-y-1 text-xs text-muted-foreground @min-[480px]/results:grid-cols-4 @min-[1040px]/results:grid-cols-7">
 			{entries.map(([label, value]) => (
 				<div
 					key={label}
 					className="flex min-w-0 items-baseline justify-end gap-1.5 whitespace-nowrap"
 				>
-					<dt className="@min-[840px]/results:sr-only">{label}</dt>
+					<dt className="@min-[1040px]/results:sr-only">{label}</dt>
 					<dd className="font-semibold tabular-nums text-foreground">
 						{value}
 					</dd>
-				</div>
-			))}
-		</dl>
-	);
-}
-
-function FullStats({ stats }: { stats: OptResultStats }) {
-	const entries: Array<[string, string]> = [
-		["ATK", stats.atk.toFixed(0)],
-		["HP", stats.hp.toFixed(0)],
-		["DEF", stats.def.toFixed(0)],
-		["Energy Regen", statPercent(stats.er)],
-		["Crit. Rate", statPercent(stats.cr)],
-		["Crit. DMG", statPercent(stats.cd)],
-	];
-	return (
-		<dl className="grid grid-cols-3 gap-x-5 gap-y-2 text-xs sm:grid-cols-6">
-			{entries.map(([label, value]) => (
-				<div key={label} className="flex flex-col gap-0.5 whitespace-nowrap">
-					<dt className="text-muted-foreground">{label}</dt>
-					<dd className="font-semibold tabular-nums">{value}</dd>
 				</div>
 			))}
 		</dl>
@@ -179,6 +170,19 @@ export function ResultRow({
 	};
 }) {
 	const echoes = result.uids.map((uid) => echoByUid.get(uid));
+	const rating = useMemo(() => {
+		const pieces = result.uids.flatMap((uid) => echoByUid.get(uid) ?? []);
+		if (pieces.length !== result.uids.length) return null;
+		const energy = result.energy?.find(
+			(e) => e.characterId === ratingCharacter?.character_id,
+		);
+		return buildRating(
+			ratingCharacter,
+			pieces,
+			result.stats?.er,
+			energy ? Math.max(energy.required, energy.kitMinimum) : undefined,
+		);
+	}, [result, echoByUid, ratingCharacter]);
 	const difference = optimizerEchoDifference(result.uids, equippedEchoes);
 	const hasChanges =
 		difference &&
@@ -238,11 +242,11 @@ export function ResultRow({
 						<span className="w-16 shrink-0" />
 					)}
 					{result.stats && (
-						<span className="order-last basis-full min-w-0 @min-[840px]/results:order-none @min-[840px]/results:flex-1 @min-[840px]/results:basis-0">
-							<StatChips stats={result.stats} />
+						<span className="order-last basis-full min-w-0 @min-[1040px]/results:order-none @min-[1040px]/results:flex-1 @min-[1040px]/results:basis-0">
+							<StatChips stats={result.stats} totalRv={rating?.total} />
 						</span>
 					)}
-					<span className="ml-auto flex shrink-0 items-center justify-end gap-1 @min-[840px]/results:w-60">
+					<span className="ml-auto flex shrink-0 items-center justify-end gap-1 @min-[1040px]/results:w-60">
 						{!current && hasChanges && (
 							<Badge
 								variant="outline"
@@ -273,11 +277,7 @@ export function ResultRow({
 			{expanded && (
 				<div className="flex flex-col gap-2 border-t border-border/60 bg-muted/20 px-3 py-2">
 					<div className="flex flex-wrap items-center gap-3">
-						{result.stats && (
-							<div className="min-w-0 flex-1 basis-96">
-								<FullStats stats={result.stats} />
-							</div>
-						)}
+						<BuildRollValue rating={rating} />
 						<div className="ml-auto flex max-w-full flex-wrap items-center justify-end gap-3">
 							{hasChanges && (
 								<figure
@@ -389,6 +389,16 @@ export function ResultRow({
 							) : null,
 						)}
 					</div>
+					{result.stats && (
+						<div className="@container/build-stats py-3 empty:hidden">
+							<BuildStats
+								stats={result.stats}
+								preferredStats={ratingCharacter?.stats}
+								showAttributes={false}
+								hideZeroBonuses
+							/>
+						</div>
+					)}
 				</div>
 			)}
 		</div>

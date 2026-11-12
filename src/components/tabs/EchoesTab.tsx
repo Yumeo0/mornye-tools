@@ -32,6 +32,7 @@ import {
 	useAccount,
 } from "@/lib/account";
 import { useDangerousFeatures } from "@/lib/dangerous";
+import { echoUnequipError, requestEchoUnequip } from "@/lib/echoEquip";
 import { canMarkEcho, type EchoMark, requestEchoMark } from "@/lib/echoMark";
 import { useEchoUpgradeBatch } from "@/lib/echoUpgradeBatch";
 import { echoFiltersSchema, echoSortSchema } from "@/lib/filterSchemas";
@@ -61,6 +62,8 @@ export function EchoesTab() {
 	const batchRunning = batch.phase === "running" || batch.phase === "stopping";
 	const [pendingMark, setPendingMark] = useState<number | null>(null);
 	const marking = useRef(false);
+	const [pendingUnequip, setPendingUnequip] = useState<number | null>(null);
+	const unequipping = useRef(false);
 	const echoes = snapshot.echoes;
 	const [actionError, setActionError] = useState<string | null>(null);
 	const [toast, setToast] = useState<string | null>(null);
@@ -177,6 +180,7 @@ export function EchoesTab() {
 		async (echo: Echo, mark: EchoMark) => {
 			if (
 				marking.current ||
+				unequipping.current ||
 				batchRunning ||
 				!snapshot.profile ||
 				!canMarkEcho(snapshot, connection, echo)
@@ -205,6 +209,31 @@ export function EchoesTab() {
 		},
 		[snapshot, connection, batchRunning],
 	);
+	const unequip = useCallback(
+		async (echo: Echo) => {
+			if (
+				unequipping.current ||
+				marking.current ||
+				batchRunning ||
+				!snapshot.profile ||
+				echoUnequipError(snapshot, connection, echo)
+			)
+				return;
+			unequipping.current = true;
+			setPendingUnequip(echo.incrId);
+			try {
+				await requestEchoUnequip(snapshot.profile.id, echo);
+				notify.success("Echo unequipped");
+			} catch (cause) {
+				notify.error("Could not unequip echo", { description: String(cause) });
+			} finally {
+				await refreshAccount();
+				unequipping.current = false;
+				setPendingUnequip(null);
+			}
+		},
+		[snapshot, connection, batchRunning],
+	);
 
 	const renderEcho = useCallback(
 		(echo: Echo, index: number) => (
@@ -216,10 +245,19 @@ export function EchoesTab() {
 				onChangeEquipped={changeEquippedBy}
 				onCopyInfo={copyEchoInfo}
 				onRemove={removeEcho}
+				onUnequip={unequip}
+				unequipPending={pendingUnequip === echo.incrId}
+				unequipDisabledReason={
+					pendingUnequip !== null || pendingMark !== null || batchRunning
+						? "Wait for the current echo operation to finish."
+						: echoUnequipError(snapshot, connection, echo)
+				}
 				onChangeMark={
 					canMarkEcho(snapshot, connection, echo) ? changeMark : undefined
 				}
-				markDisabled={pendingMark !== null || batchRunning}
+				markDisabled={
+					pendingMark !== null || pendingUnequip !== null || batchRunning
+				}
 				markPending={pendingMark === echo.incrId}
 			/>
 		),
@@ -233,6 +271,8 @@ export function EchoesTab() {
 			connection,
 			changeMark,
 			pendingMark,
+			pendingUnequip,
+			unequip,
 			batchRunning,
 		],
 	);

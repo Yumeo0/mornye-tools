@@ -136,3 +136,13 @@ export function inventoryRevision(snapshot: AccountSnapshot): string {
 		snapshot.echoes,
 	]);
 }
+
+/** Echo assignments affect the equipped reference, not a candidate's damage. */
+export function optimizerInventoryRevision(snapshot: AccountSnapshot): string {
+	return inventoryRevision({
+		...snapshot,
+		echoes: snapshot.echoes
+			.map(({ equippedBy: _equippedBy, slot: _slot, ...echo }) => echo)
+			.sort((left, right) => left.incrId - right.incrId),
+	});
+}

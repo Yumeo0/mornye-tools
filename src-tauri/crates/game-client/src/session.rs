@@ -427,6 +427,57 @@ impl Session {
         Ok(confirmed)
     }
 
+    /// Clear one live slot, then accept only the server's equipment confirmation.
+    pub fn unequip_echo(&mut self, expected: &crate::echo_equip::UnequipEcho) -> Result<()> {
+        expected.validate()?;
+        self.synchronize_echo_inventory()?;
+        let current = self.cached_echo(expected.incr_id)?;
+        ensure!(
+            current.item_id == expected.item_id && current.equipped,
+            "The echo changed or is no longer equipped; refresh the inventory"
+        );
+        let before = crate::echo_equip::equipment_ids(
+            self.inventory
+                .echoes
+                .as_ref()
+                .context("Missing echo snapshot")?,
+            "EquipInfo",
+            expected.role_id,
+        )?;
+        ensure!(
+            before.get(expected.slot as usize) == Some(&expected.incr_id),
+            "The echo's equipped slot changed; refresh the inventory"
+        );
+        let response = self.request(
+            "PhantomPutOnRequest",
+            "PhantomPutOnResponse",
+            &self.schema.message(
+                "PhantomPutOnRequest",
+                &json!({
+                    "RoleId": expected.role_id, "Pos": expected.slot, "IncId": 0
+                }),
+            )?,
+        )?;
+        let after = crate::echo_equip::equipment_ids(&response, "EquipInfoList", expected.role_id)?;
+        ensure!(
+            !after.contains(&expected.incr_id),
+            "The server did not confirm echo removal"
+        );
+        let remaining: HashSet<_> = before
+            .into_iter()
+            .filter(|id| *id > 0 && *id != expected.incr_id)
+            .collect();
+        ensure!(
+            after
+                .into_iter()
+                .filter(|id| *id > 0)
+                .collect::<HashSet<_>>()
+                == remaining,
+            "The server changed other equipped echoes; check the refreshed inventory"
+        );
+        Ok(())
+    }
+
     /// Mark a failed target only after checking its current state and equipment.
     pub fn discard_echo(
         &mut self,
@@ -814,6 +865,13 @@ mod tests {
             respond: bool,
             split: bool,
         },
+        Unequip {
+            slot: i32,
+            error: bool,
+            respond: bool,
+            stale: bool,
+            confirm: bool,
+        },
         ManualMark {
             from: i32,
             to: i32,
@@ -848,6 +906,7 @@ mod tests {
                     | Self::StaleDiscard
                     | Self::AlreadyDiscard
                     | Self::Equip { .. }
+                    | Self::Unequip { .. }
                     | Self::ManualMark { .. }
             )
         }
@@ -1066,6 +1125,38 @@ mod tests {
                 })]} else {vec![]}
             })));
         }
+        if let Scenario::Unequip {
+            slot,
+            error,
+            stale,
+            confirm,
+            ..
+        } = scenario
+        {
+            steps.truncate(3);
+            let mut ids = vec![1, 2, 3, 4, 5];
+            if stale {
+                ids.swap(slot as usize, (slot as usize + 1) % 5);
+            }
+            steps.push(("PhantomItemRequest", "PhantomItemResponse", json!({
+                "PhantomItemList": (1..=5).map(|id| json!({"Id":60000015,"IncrId":id,"StackCount":1})).collect::<Vec<_>>(),
+                "EquipInfo": [{"RoleId":1503,"PhantomItemIncrId":ids}]
+            })));
+            steps.push(("NormalItemRequest", "NormalItemResponse", json!({})));
+            if !stale {
+                if confirm {
+                    ids[slot as usize] = 0;
+                }
+                steps.push((
+                    "PhantomPutOnRequest",
+                    "PhantomPutOnResponse",
+                    json!({
+                        "ErrorCode": if error {200099} else {0},
+                        "EquipInfoList": [{"RoleId":1503,"PhantomItemIncrId":ids}]
+                    }),
+                ));
+            }
+        }
         let mut index = 0;
         let mut heartbeat_count = 0;
         let mut inventory_requests = HashSet::new();
@@ -1256,6 +1347,24 @@ mod tests {
                     "equip must preserve all five slots and the main echo"
                 );
                 if matches!(scenario, Scenario::Equip { respond: true, .. }) {
+                    connection.send(
+                        2,
+                        rpc,
+                        schema.id(response)?,
+                        &schema.message(response, json)?.encode_to_vec(),
+                    )?;
+                }
+            } else if *name == "PhantomPutOnRequest" {
+                let Scenario::Unequip { slot, respond, .. } = scenario else {
+                    bail!("unexpected unequip");
+                };
+                ensure!(
+                    integer(&request, "RoleId")? == 1503
+                        && integer(&request, "Pos")? == slot
+                        && integer(&request, "IncId")? == 0,
+                    "unequip must clear only the requested slot"
+                );
+                if respond {
                     connection.send(
                         2,
                         rpc,
@@ -1537,6 +1646,62 @@ mod tests {
                 assert_eq!(session.cached_echo(21).unwrap().func_value, to);
             }
             drop(session);
+            server.join().unwrap().unwrap();
+        }
+    }
+
+    #[test]
+    fn unequip_revalidates_slots_confirms_removal_and_never_retries() {
+        for (slot, error, respond, stale, confirm) in [
+            (0, false, true, false, true),
+            (2, false, true, false, true),
+            (4, false, true, false, true),
+            (2, true, true, false, false),
+            (2, false, false, false, false),
+            (2, false, true, true, false),
+            (2, false, true, false, false),
+        ] {
+            let socket = UdpSocket::bind("127.0.0.1:0").unwrap();
+            let config = fixture(socket.local_addr().unwrap().to_string());
+            let server = thread::spawn(move || {
+                serve(
+                    socket,
+                    Scenario::Unequip {
+                        slot,
+                        error,
+                        respond,
+                        stale,
+                        confirm,
+                    },
+                )
+            });
+            let mut session = connect(
+                &config,
+                &Schema::load().unwrap(),
+                Arc::new(AtomicBool::new(false)),
+            )
+            .unwrap();
+            let result = session.unequip_echo(&crate::echo_equip::UnequipEcho {
+                incr_id: slot + 1,
+                item_id: 60000015,
+                role_id: 1503,
+                slot,
+            });
+            if stale {
+                assert!(result.unwrap_err().to_string().contains("slot changed"));
+            } else if error {
+                assert!(result.unwrap_err().to_string().contains("code 200099"));
+            } else if !respond {
+                assert!(result.unwrap_err().to_string().contains("timed out"));
+            } else if !confirm {
+                assert!(result.unwrap_err().to_string().contains("did not confirm"));
+            } else {
+                result.unwrap();
+                for id in 1..=5 {
+                    assert_eq!(session.cached_echo(id).unwrap().equipped, id != slot + 1);
+                }
+            }
+            session.disconnect();
             server.join().unwrap().unwrap();
         }
     }

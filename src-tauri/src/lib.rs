@@ -78,6 +78,7 @@ pub fn run() {
             dangerous::dangerous_echo_discard,
             dangerous::dangerous_echo_mark,
             dangerous::dangerous_echo_equip,
+            dangerous::dangerous_echo_unequip,
             dangerous::dangerous_disconnect,
             dangerous::dangerous_sign_out,
         ])

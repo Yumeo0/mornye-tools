@@ -1,4 +1,6 @@
+import type { CharacterPanelRequest } from "../characterPanel";
 import {
+	characterPanel,
 	evaluate,
 	evaluateFast,
 	getCatalog,
@@ -12,14 +14,24 @@ import type { Scenario, SearchRequest, TeamProfile } from "./types";
 // terminates this worker, so a newly started run always has an isolated engine.
 self.onmessage = async (
 	event: MessageEvent<{
-		kind: "catalog" | "evaluate" | "search" | "rotation-damage";
-		input?: Scenario | SearchRequest;
+		kind:
+			| "catalog"
+			| "evaluate"
+			| "search"
+			| "rotation-damage"
+			| "character-panel";
+		input?: Scenario | SearchRequest | CharacterPanelRequest;
 		targetId?: number;
 		profiles?: TeamProfile[];
 	}>,
 ) => {
 	try {
-		if (event.data.kind === "catalog")
+		if (event.data.kind === "character-panel")
+			self.postMessage({
+				kind: "character-panel",
+				value: characterPanel(event.data.input as CharacterPanelRequest),
+			});
+		else if (event.data.kind === "catalog")
 			self.postMessage({ kind: "catalog", value: getCatalog() });
 		else if (event.data.kind === "evaluate")
 			self.postMessage({

@@ -62,3 +62,47 @@ export function requestOptimizerEquip(
 		})),
 	});
 }
+
+export function echoUnequipError(
+	snapshot: AccountSnapshot,
+	status: DangerousStatus | null,
+	echo: Echo,
+): string | null {
+	if (!canUpgradeEcho(snapshot, status))
+		return "Connect to this profile's game account in Settings to unequip echoes.";
+	if (echo.source !== "sniffer" || echo.incrId <= 0)
+		return "Choose a captured echo.";
+	if (
+		echo.equippedBy == null ||
+		echo.slot == null ||
+		!Number.isInteger(echo.slot) ||
+		echo.slot < 0 ||
+		echo.slot > 4
+	)
+		return "This echo's equipped slot is unknown. Refresh the inventory.";
+	if (
+		!snapshot.resonators.some((r) => r.id === echo.equippedBy) ||
+		!snapshot.echoes.some(
+			(e) =>
+				e.incrId === echo.incrId &&
+				e.itemId === echo.itemId &&
+				e.equippedBy === echo.equippedBy &&
+				e.slot === echo.slot &&
+				e.source === "sniffer",
+		)
+	)
+		return "This echo's equipment changed. Refresh the inventory.";
+	return null;
+}
+
+export function requestEchoUnequip(profileId: string, echo: Echo) {
+	return invoke<void>("dangerous_echo_unequip", {
+		profileId,
+		expected: {
+			incr_id: echo.incrId,
+			item_id: echo.itemId,
+			role_id: echo.equippedBy,
+			slot: echo.slot,
+		},
+	});
+}

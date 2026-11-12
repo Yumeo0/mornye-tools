@@ -13,6 +13,29 @@ pub struct EquipEcho {
     pub item_id: i32,
 }
 
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct UnequipEcho {
+    pub incr_id: i32,
+    pub item_id: i32,
+    pub role_id: i32,
+    pub slot: i32,
+}
+
+impl UnequipEcho {
+    pub fn validate(&self) -> Result<()> {
+        ensure!(
+            self.incr_id > 0 && self.item_id > 0 && self.role_id > 0,
+            "Choose an equipped captured echo"
+        );
+        ensure!(
+            (0..5).contains(&self.slot),
+            "The echo's equipped slot is unknown"
+        );
+        Ok(())
+    }
+}
+
 pub fn validate(role_id: i32, echoes: &[EquipEcho]) -> Result<()> {
     ensure!(role_id > 0, "Choose an owned resonator");
     ensure!(echoes.len() == 5, "Choose a complete five-echo build");
@@ -29,8 +52,22 @@ pub fn validate(role_id: i32, echoes: &[EquipEcho]) -> Result<()> {
 /// The server may split a stack and return new instance IDs. Its slot order
 /// is authoritative; do not predict equipment by mutating a local profile.
 pub(crate) fn confirmed_ids(response: &DynamicMessage, role_id: i32) -> Result<Vec<i32>> {
+    let ids = equipment_ids(response, "EquipInfoList", role_id)?;
+    let mut distinct = HashSet::new();
+    ensure!(
+        ids.len() == 5 && ids.iter().all(|id| *id > 0 && distinct.insert(*id)),
+        "The server did not confirm five distinct equipped echoes"
+    );
+    Ok(ids)
+}
+
+pub(crate) fn equipment_ids(
+    response: &DynamicMessage,
+    field: &str,
+    role_id: i32,
+) -> Result<Vec<i32>> {
     let info = response
-        .get_field_by_name("EquipInfoList")
+        .get_field_by_name(field)
         .context("Missing equipment confirmation")?;
     let role = info
         .as_list()
@@ -50,8 +87,11 @@ pub(crate) fn confirmed_ids(response: &DynamicMessage, role_id: i32) -> Result<V
         .collect::<Result<Vec<_>>>()?;
     let mut distinct = HashSet::new();
     ensure!(
-        ids.len() == 5 && ids.iter().all(|id| *id > 0 && distinct.insert(*id)),
-        "The server did not confirm five distinct equipped echoes"
+        ids.len() <= 5
+            && ids
+                .iter()
+                .all(|id| *id >= 0 && (*id == 0 || distinct.insert(*id))),
+        "Invalid equipped echo slots"
     );
     Ok(ids)
 }
@@ -77,6 +117,31 @@ mod tests {
         assert!(validate(1503, &echoes).is_err());
         echoes[4].incr_id = -1;
         assert!(validate(1503, &echoes).is_err());
+    }
+
+    #[test]
+    fn unequip_requires_a_captured_instance_and_a_valid_slot() {
+        let expected = UnequipEcho {
+            incr_id: 1,
+            item_id: 60000015,
+            role_id: 1503,
+            slot: 0,
+        };
+        assert!(expected.validate().is_ok());
+        for slot in [-1, 5] {
+            assert!(UnequipEcho {
+                slot,
+                ..expected.clone()
+            }
+            .validate()
+            .is_err());
+        }
+        assert!(UnequipEcho {
+            incr_id: 0,
+            ..expected
+        }
+        .validate()
+        .is_err());
     }
 
     #[test]

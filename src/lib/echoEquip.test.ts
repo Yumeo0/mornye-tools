@@ -2,7 +2,11 @@ import { expect, test } from "bun:test";
 import type { AccountSnapshot, Echo } from "./account";
 import { echoesByMonsterId } from "./catalog";
 import type { DangerousStatus } from "./dangerous";
-import { isOptimizerBuildEquipped, optimizerEquipError } from "./echoEquip";
+import {
+	echoUnequipError,
+	isOptimizerBuildEquipped,
+	optimizerEquipError,
+} from "./echoEquip";
 
 const monster = [...echoesByMonsterId.values()].find(
 	(echo) => echo.echo_cost === 1,
@@ -47,6 +51,30 @@ const status: DangerousStatus = {
 	profile_accounts: {},
 };
 const uids = echoes.map((echo) => `incr:${echo.incrId}`);
+
+test("unequipping requires the connected profile and the captured echo's current slot", () => {
+	const echo = echoes[0]!;
+	expect(echoUnequipError(snapshot, status, echo)).toBeNull();
+	for (const connection of [
+		null,
+		{ ...status, player_id: 456 },
+		{ ...status, server_id: "asia" },
+	])
+		expect(echoUnequipError(snapshot, connection, echo)).not.toBeNull();
+	for (const changed of [
+		{ ...echo, source: "manual" as const },
+		{ ...echo, equippedBy: null },
+		{ ...echo, slot: null },
+		{ ...echo, slot: 5 },
+		{ ...echo, slot: 0.5 },
+		{ ...echo, slot: 1 },
+		{ ...echo, equippedBy: 1504 },
+	])
+		expect(echoUnequipError(snapshot, status, changed)).not.toBeNull();
+	expect(
+		echoUnequipError({ ...snapshot, echoes: [] }, status, echo),
+	).not.toBeNull();
+});
 
 test("equipping requires the connected profile, owned character and available captured pieces", () => {
 	expect(optimizerEquipError(snapshot, status, 1503, uids)).toBeNull();

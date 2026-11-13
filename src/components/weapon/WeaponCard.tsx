@@ -61,7 +61,7 @@ export function WeaponCard({
 				src={qualityGradient(entry?.rarity)}
 				alt=""
 				aria-hidden
-				className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+				className="pointer-events-none absolute inset-0 size-full  object-cover"
 			/>
 			<div className="absolute inset-x-0 bottom-0 h-2/5 bg-linear-to-t from-black/85 via-black/40 to-transparent" />
 

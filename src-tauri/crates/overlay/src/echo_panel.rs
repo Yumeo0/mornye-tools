@@ -321,7 +321,7 @@ pub(crate) fn scan_from_screenshot(
         let memo = scan_memo.lock().map_err(|e| e.to_string())?;
         (
             memo.upgrade_flow_at
-                .map_or(false, |at| flow_now.duration_since(at) < UPGRADE_FLOW_GRACE),
+                .is_some_and(|at| flow_now.duration_since(at) < UPGRADE_FLOW_GRACE),
             memo.notice_visible,
         )
     };

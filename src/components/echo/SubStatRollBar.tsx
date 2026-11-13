@@ -45,7 +45,7 @@ export function SubStatRollBar({
 								? dimmed
 									? "bg-muted-foreground/30"
 									: revealOnHover
-										? "bg-muted-foreground/40 transition-colors group-hover/card:bg-[var(--roll-color)] group-focus-within/card:bg-[var(--roll-color)]"
+										? "bg-muted-foreground/40 transition-colors group-hover/card:bg-(--roll-color) group-focus-within/card:bg-(--roll-color)"
 										: ""
 								: dimmed
 									? "bg-muted-foreground/10"

@@ -80,7 +80,7 @@ export function OptimizerResultsPanel({
 			{rows.length > 0 && (
 				<div
 					aria-hidden="true"
-					className="hidden items-center gap-3 overflow-y-auto [scrollbar-gutter:stable] border-b py-2 pl-3 pr-4 text-xs text-muted-foreground @min-[1040px]/results:flex"
+					className="hidden items-center gap-3 overflow-y-auto scrollbar-gutter-stable border-b py-2 pl-3 pr-4 text-xs text-muted-foreground @min-[1040px]/results:flex"
 				>
 					<span className="w-8 shrink-0">#</span>
 					<span className="w-24 shrink-0">Damage</span>

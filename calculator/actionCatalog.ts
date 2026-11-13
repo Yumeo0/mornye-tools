@@ -22,8 +22,9 @@ export function groupIntroPaletteActions(
 		const action = registry.get(descriptor.id);
 		if (!(action instanceof IntroEntry)) continue;
 		const choices = action.intros.map((intro) => {
-			if (!identities.has(intro)) identities.set(intro, identities.size);
-			return identities.get(intro)!;
+			const id = identities.get(intro) ?? identities.size;
+			identities.set(intro, id);
+			return id;
 		});
 		// IntroEntry resolves by membership in this set. Its chain kind is used
 		// by preset scheduling, not by the custom editor's explicit action flow.
@@ -39,16 +40,17 @@ export function groupIntroPaletteActions(
 /** Add editable forms after authored IDs are assigned, preserving existing saved rotations. */
 export function addActionEndings(
 	actions: RotationAction[],
-	refs: Map<Action, string>,
+	refs: Map<Action, RotationAction>,
 	registry: Map<string, Action>,
-	register: (action: Action) => string,
+	register: (action: Action) => RotationAction,
 ) {
 	const signatures = new Map<string, Action>();
 	const roots = new Map<Action, Action>();
 	const identity = new Map<Action, number>();
 	const keyOf = (action: Action) => {
-		if (!identity.has(action)) identity.set(action, identity.size);
-		return identity.get(action)!;
+		const id = identity.get(action) ?? identity.size;
+		identity.set(action, id);
+		return id;
 	};
 	const baseOf = (action: Action): Action => {
 		const known = roots.get(action);
@@ -63,7 +65,7 @@ export function addActionEndings(
 			const children = action.actions
 				.filter((a) => !(a instanceof DashMarker))
 				.map(baseOf);
-			if (children.length === 1) base = children[0]!;
+			if (children.length === 1) base = children[0];
 			else {
 				const signature = JSON.stringify([action.name, children.map(keyOf)]);
 				base =
@@ -80,14 +82,13 @@ export function addActionEndings(
 			([action]) => !processed.has(action),
 		);
 		for (const [action] of originals) processed.add(action);
-		const bases = new Map<string, Action>();
-		for (const [action, id] of originals) {
+		const bases = new Map<Action, RotationAction>();
+		for (const [action, descriptor] of originals) {
 			if (action instanceof DashMarker) continue;
 			const base = baseOf(action);
-			const baseId = register(base);
-			const descriptor = actions.find((a) => a.id === id)!;
-			descriptor.baseId = baseId;
-			bases.set(baseId, base);
+			const baseDescriptor = register(base);
+			descriptor.baseId = baseDescriptor.id;
+			bases.set(base, baseDescriptor);
 		}
 		const forms: [string, (action: Action) => Action][] = [
 			["cancel", (a) => a.cancel()],
@@ -105,11 +106,11 @@ export function addActionEndings(
 			["instant swap", (a) => a.instaSwap()],
 			["mash swap", (a) => a.mashSwap()],
 		];
-		for (const [baseId, base] of bases) {
-			const descriptor = actions.find((a) => a.id === baseId)!;
+		for (const [base, descriptor] of bases) {
+			const baseId = descriptor.id;
 			descriptor.baseId = baseId;
 			descriptor.variant = "";
-			const first = base instanceof ActionGroup ? base.actions[0]! : base;
+			const first = base instanceof ActionGroup ? base.actions[0] : base;
 			const kind = first.mainslot
 				? "Echo"
 				: first.cast === null

@@ -83,7 +83,7 @@ export function RewardDetails({
 							<span>Collected</span>
 							<kbd
 								title="Change in Settings → Shortcuts"
-								className="max-w-full break-words border px-1.5 py-0.5 text-[10px] text-muted-foreground"
+								className="max-w-full wrap-break-word border px-1.5 py-0.5 text-[10px] text-muted-foreground"
 							>
 								{collectedShortcut}
 							</kbd>
@@ -202,13 +202,13 @@ export function RewardDetails({
 			</section>
 			{noteImage && (
 				<Modal
-					className="w-fit max-w-[calc(100vw_-_2rem)] items-center gap-0 p-0"
+					className="w-fit max-w-[calc(100vw-2rem)] items-center gap-0 p-0"
 					onClose={() => setNoteImage(null)}
 				>
 					<img
 						src={wutheringImageUrl(noteImage)}
 						alt=""
-						className="block h-auto w-auto max-h-[calc(100vh_-_2rem)] max-w-[calc(100vw_-_2rem)] object-contain"
+						className="block size-auto  max-h-[calc(100vh-2rem)] max-w-[calc(100vw-2rem)] object-contain"
 						style={
 							noteSize
 								? {

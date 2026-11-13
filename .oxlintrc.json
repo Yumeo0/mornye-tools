@@ -1,0 +1,17 @@
+{
+	"$schema": "./node_modules/oxlint/configuration_schema.json",
+	"plugins": [],
+	"categories": {
+		"correctness": "off"
+	},
+	"jsPlugins": ["eslint-plugin-better-tailwindcss"],
+	"ignorePatterns": ["**/*.generated.*"],
+	"settings": {
+		"better-tailwindcss": {
+			"entryPoint": "src/index.css"
+		}
+	},
+	"rules": {
+		"better-tailwindcss/enforce-canonical-classes": "warn"
+	}
+}

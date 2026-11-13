@@ -8,7 +8,7 @@ import {
 	statSync,
 	unlinkSync,
 } from "node:fs";
-import { dirname, join, resolve, sep } from "node:path";
+import { basename, dirname, join, resolve, sep } from "node:path";
 import { buildAssetManifest } from "./build_asset_manifest";
 import { dataLog } from "./lib/data-log";
 import { rewriteJsonFile } from "./lib/json-file";
@@ -153,10 +153,7 @@ export async function copyAssets(): Promise<void> {
 		}
 		mkdirSync(dirname(output), { recursive: true });
 		// One-time migration can reuse the exact encoding already shipped by the app.
-		const filename = source
-			.split("/")
-			.at(-1)!
-			.replace(/\.png$/, ".webp");
+		const filename = basename(source).replace(/\.png$/, ".webp");
 		const legacy =
 			url.startsWith("/images/maps/") && !url.includes("/regions/")
 				? join(

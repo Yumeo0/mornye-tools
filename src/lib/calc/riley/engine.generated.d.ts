@@ -2,14 +2,22 @@ import type {
 	CharacterPanelRequest,
 	CharacterPanelResult,
 } from "../../characterPanel";
-import type { CalculatorCatalog, Scenario, SimulationResult } from "../types";
+import type {
+	CalculatorCatalog,
+	PlaybackScenario,
+	PlaybackSimulationResult,
+	ResolvedScenario,
+	Scenario,
+	SimulationResult,
+} from "../types";
 export function getCatalog(): CalculatorCatalog;
+export function evaluate(scenario: PlaybackScenario): PlaybackSimulationResult;
 export function evaluate(scenario: Scenario): SimulationResult;
 export function evaluateFast(scenario: Scenario): SimulationResult;
-export function resolveRotationStats(
-	scenario: Scenario,
+export function resolveRotationStats<T extends Scenario>(
+	scenario: T,
 	targetId?: number,
-): Scenario;
+): ResolvedScenario<T>;
 export function characterPanel(
 	input: CharacterPanelRequest,
 ): CharacterPanelResult;

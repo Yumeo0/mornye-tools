@@ -237,7 +237,7 @@ export function InventoryTab() {
 			>
 				<ul
 					aria-label="Currencies"
-					className="flex shrink-0 flex-wrap items-center gap-x-5 gap-y-2 border-b bg-background px-2 py-2"
+					className="flex shrink-0 flex-wrap items-center gap-x-5 gap-y-2 border-b bg-background p-2 "
 				>
 					{currencies.map((item) => (
 						<li

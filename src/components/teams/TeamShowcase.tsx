@@ -104,7 +104,7 @@ export function TeamMember({
 				)}
 				<div className="absolute inset-x-0 bottom-0 h-4 bg-linear-to-t from-card to-transparent" />
 			</div>
-			<div className="relative mx-auto flex w-full min-w-0 max-w-128 flex-col gap-2.5 px-3 pb-5">
+			<div className="relative mx-auto flex w-full min-w-0 max-w-lg flex-col gap-2.5 px-3 pb-5">
 				{!compact && (
 					<div className="h-14">
 						{weapon && (
@@ -119,7 +119,7 @@ export function TeamMember({
 				)}
 				<h3
 					className={cn(
-						"min-h-12 min-w-0 content-end leading-tight font-semibold tracking-tight [overflow-wrap:anywhere]",
+						"min-h-12 min-w-0 content-end leading-tight font-semibold tracking-tight wrap-anywhere",
 						compact ? "text-base" : "text-lg @min-[1000px]/teams:text-xl",
 						!roleId && "text-muted-foreground",
 					)}
@@ -220,7 +220,7 @@ export function TeamShowcase({
 			)}
 			<header className="relative z-10 col-start-1 row-start-1 flex flex-wrap items-start justify-between gap-3 self-start p-3">
 				<div className="flex min-w-0 items-center gap-3 border bg-card/90 px-3 py-2 shadow-sm backdrop-blur-sm">
-					<h2 className="text-lg leading-tight font-semibold tracking-tight [overflow-wrap:anywhere]">
+					<h2 className="text-lg/tight  font-semibold tracking-tight wrap-anywhere">
 						{teamName(team)}
 					</h2>
 					{team.isCurrent && <Badge variant="primary">Current team</Badge>}

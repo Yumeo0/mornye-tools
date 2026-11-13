@@ -172,8 +172,8 @@ export function CharacterDetail({
 							className="absolute -right-8 -bottom-16 size-80 -rotate-12 object-contain opacity-[0.04]"
 						/>
 					)}
-					<div className="absolute top-0 bottom-0 left-8 w-px bg-border" />
-					<div className="absolute top-0 bottom-0 left-10 w-px bg-border/40" />
+					<div className="absolute inset-y-0  left-8 w-px bg-border" />
+					<div className="absolute inset-y-0  left-10 w-px bg-border/40" />
 				</div>
 
 				{/* Clip artwork at the card edges, preserving the portrait column's center. */}
@@ -234,7 +234,7 @@ export function CharacterDetail({
 								</span>
 							)}
 						</div>
-						<h2 className="text-3xl leading-tight font-bold tracking-tight @min-[800px]/character-detail:text-5xl">
+						<h2 className="text-3xl/tight  font-bold tracking-tight @min-[800px]/character-detail:text-5xl">
 							{character.name}
 						</h2>
 					</div>
@@ -261,7 +261,7 @@ export function CharacterDetail({
 								className="absolute -top-5 -left-6 size-28 object-contain drop-shadow-xl"
 							/>
 							<div className="flex min-w-0 flex-col gap-1.5">
-								<p className="text-xs font-medium [overflow-wrap:anywhere]">
+								<p className="text-xs font-medium wrap-anywhere">
 									{account.weapon.name ?? "Equipped weapon"}
 								</p>
 								<div className="flex gap-2">

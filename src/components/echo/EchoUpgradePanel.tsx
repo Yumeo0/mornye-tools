@@ -202,7 +202,10 @@ export function EchoUpgradePanel({
 							</p>
 						)}
 						{batch.error && (
-							<p role="alert" className="break-words text-xs text-destructive">
+							<p
+								role="alert"
+								className="wrap-break-word text-xs text-destructive"
+							>
 								{batch.error}
 							</p>
 						)}

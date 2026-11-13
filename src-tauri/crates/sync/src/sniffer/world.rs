@@ -437,7 +437,6 @@ mod tests {
                         tree_inc_id: 99,
                         node_id: 25,
                         status: 4,
-                        ..Default::default()
                     },
                 ),
                 &mut snapshot,
@@ -475,7 +474,6 @@ mod tests {
                             tree_inc_id: tree,
                             node_id: node,
                             status,
-                            ..Default::default()
                         },
                     ),
                     &mut snapshot,

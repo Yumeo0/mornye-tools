@@ -39,9 +39,13 @@ export function castConcerto(snapshot: {
 	concertoBefore?: number;
 	adds?: readonly { background?: boolean; gains: readonly number[] }[];
 }): number | undefined {
-	if (!Number.isFinite(snapshot.concertoBefore)) return;
+	if (
+		snapshot.concertoBefore === undefined ||
+		!Number.isFinite(snapshot.concertoBefore)
+	)
+		return;
 	return (
-		snapshot.concertoBefore! +
+		snapshot.concertoBefore +
 		(snapshot.adds ?? []).reduce(
 			(total, add) => total + (add.background ? (add.gains[1] ?? 0) : 0),
 			0,
@@ -84,8 +88,10 @@ export function conditionProblems(
 					? `>= ${minimum}`
 					: `<= ${maximum}`;
 		const current =
-			bar === 1 && Number.isFinite(concertoAtCast)
-				? ` (current: ${number(concertoAtCast! * scale(bar))})`
+			bar === 1 &&
+			concertoAtCast !== undefined &&
+			Number.isFinite(concertoAtCast)
+				? ` (current: ${number(concertoAtCast * scale(bar))})`
 				: "";
 		reasons.push(`Requires: ${labels[bar]} ${condition}${current}`);
 	}

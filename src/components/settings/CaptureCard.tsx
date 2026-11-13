@@ -69,7 +69,7 @@ export function CaptureCard() {
 					{metrics.map(([label, value]) => (
 						<div key={label} className="min-w-0">
 							<dt className="text-muted-foreground">{label}</dt>
-							<dd className="break-words tabular-nums">
+							<dd className="wrap-break-word tabular-nums">
 								{status ? value : "—"}
 							</dd>
 						</div>
@@ -92,9 +92,9 @@ export function CaptureCard() {
 					<section
 						aria-label="Capture log"
 						tabIndex={0}
-						className="max-h-60 overflow-auto whitespace-pre-wrap break-words bg-muted/50 p-3 font-mono text-xs text-muted-foreground"
+						className="max-h-60 overflow-auto whitespace-pre-wrap wrap-break-word bg-muted/50 p-3 font-mono text-xs text-muted-foreground"
 					>
-						<pre className="whitespace-pre-wrap break-words">
+						<pre className="whitespace-pre-wrap wrap-break-word">
 							{status?.log.length
 								? status.log.slice(-40).reverse().join("\n")
 								: "No capture events yet. Waiting for the game…"}

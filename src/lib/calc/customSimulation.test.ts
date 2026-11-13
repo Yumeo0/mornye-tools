@@ -1,4 +1,5 @@
 import { expect, test } from "bun:test";
+import { required } from "@/lib/required";
 import { makeFixture } from "../../../calculator/fixture";
 import {
 	baseRotationActions,
@@ -15,25 +16,29 @@ import {
 	resolveRotationStats,
 } from "./riley/engine.generated.js";
 import { searchInventory } from "./search";
-import type { Scenario } from "./types";
+import type { PlaybackScenario, Scenario } from "./types";
 
 function phrolovaFixture() {
 	const catalog = getCatalog();
-	const profile = catalog.teams.find(
-		(t) =>
-			!t.errors.length &&
-			t.members.map((m) => m.name).join("/") === "Phrolova/Shorekeeper/Lucilla",
-	)!;
-	const kits = profile.members.map(
-		(m) =>
-			catalog.rotationKits!.find(
+	const profile = required(
+		catalog.teams.find(
+			(t) =>
+				!t.errors.length &&
+				t.members.map((m) => m.name).join("/") ===
+					"Phrolova/Shorekeeper/Lucilla",
+		),
+	);
+	const kits = profile.members.map((m) =>
+		required(
+			catalog.rotationKits.find(
 				(k) =>
 					k.member.loadoutId === m.loadoutId &&
 					k.member.mainEcho.engineId === m.mainEcho.engineId,
-			)!,
+			),
+		),
 	);
 	const rotation = seedRotation(kits);
-	const scenario: Scenario = {
+	const scenario = {
 		profileId: `custom:${rotation.id}`,
 		rotation,
 		cycles: 1,
@@ -45,7 +50,7 @@ function phrolovaFixture() {
 			echoSource: "rotation",
 			echoes: [],
 		})),
-	};
+	} satisfies Scenario;
 	return { kits, scenario: resolveRotationStats(scenario) };
 }
 
@@ -54,23 +59,25 @@ test("equivalent Phrolova Intro entries preserve state-dependent playback and da
 	const kit = kits[0];
 	const intros = baseRotationActions(kit).filter((a) => a.kind === "Intro");
 	const baseline = evaluate({ ...scenario, capturePlayback: true });
-	const steps = flattenRotation(scenario.rotation!.nodes).filter(
+	const steps = flattenRotation(scenario.rotation.nodes).filter(
 		(n) =>
 			n.kind === "action" &&
 			kit.actions.find((a) => a.id === n.actionId)?.kind === "Intro",
 	);
 	expect(steps.length).toBeGreaterThan(0);
 	expect(
-		baseline.playback!.some((e) => e.name.includes("Suite of Immortality")),
+		baseline.playback.some((e) => e.name.includes("Suite of Immortality")),
 	).toBe(true);
 	for (const intro of intros) {
-		let nodes = scenario.rotation!.nodes;
+		let nodes = scenario.rotation.nodes;
 		for (const step of steps) {
 			if (step.kind !== "action") continue;
-			const current = kit.actions.find((a) => a.id === step.actionId)!;
-			const replacement = kit.actions.find(
-				(a) => a.baseId === intro.id && a.variant === current.variant,
-			)!;
+			const current = required(kit.actions.find((a) => a.id === step.actionId));
+			const replacement = required(
+				kit.actions.find(
+					(a) => a.baseId === intro.id && a.variant === current.variant,
+				),
+			);
 			nodes = updateRotationNode(nodes, step.id, (n) => ({
 				...n,
 				actionId: replacement.id,
@@ -79,7 +86,7 @@ test("equivalent Phrolova Intro entries preserve state-dependent playback and da
 		expect(
 			evaluate({
 				...scenario,
-				rotation: { ...scenario.rotation!, nodes },
+				rotation: { ...scenario.rotation, nodes },
 				capturePlayback: true,
 			}),
 		).toEqual(baseline);
@@ -90,11 +97,11 @@ test("Phrolova playback includes engine-generated Hecate attacks without changin
 	const { scenario, kits } = phrolovaFixture();
 	const before = JSON.stringify(scenario);
 	const result = evaluate({ ...scenario, capturePlayback: true });
-	const events = result.playback!;
+	const events = result.playback;
 	const phrolova = kits[0].member.characterId;
-	const liberation = events.find(
-		(e) => e.characterId === phrolova && e.kind === "Liberation",
-	)!;
+	const liberation = required(
+		events.find((e) => e.characterId === phrolova && e.kind === "Liberation"),
+	);
 	const hecate = events.filter((e) => e.automatic && e.name.includes("Hecate"));
 	expect(hecate.length).toBeGreaterThan(0);
 	expect(hecate.some((e) => e.name.startsWith("Basic - Hecate"))).toBe(true);
@@ -127,13 +134,13 @@ test("Phrolova playback includes engine-generated Hecate attacks without changin
 	expect(result.teamDamage).toBe(unlinked.teamDamage);
 	expect(result.duration).toBe(unlinked.duration);
 	expect(result.energy).toEqual(unlinked.energy);
-	const steps = flattenRotation(scenario.rotation!.nodes);
-	const failures = result.diagnosticDetails!.filter((issue) =>
+	const steps = flattenRotation(scenario.rotation.nodes);
+	const failures = result.diagnosticDetails.filter((issue) =>
 		issue.message.includes("Requires: Concerto"),
 	);
 	expect(failures.length).toBeGreaterThan(0);
 	for (const issue of failures) {
-		const step = steps.find((n) => n.id === issue.nodeId)!;
+		const step = required(steps.find((n) => n.id === issue.nodeId));
 		expect(step).toBeDefined();
 		expect(step.kind).toBe("action");
 		if (step.kind === "action")
@@ -142,25 +149,29 @@ test("Phrolova playback includes engine-generated Hecate attacks without changin
 			);
 	}
 	expect(
-		result.diagnosticDetails!.find((issue) => issue.message.includes("% ER"))
+		result.diagnosticDetails.find((issue) => issue.message.includes("% ER"))
 			?.nodeId,
 	).toBeUndefined();
 	expect(JSON.stringify(scenario)).toBe(before);
 	expect(customRotationSchema.parse(scenario.rotation)).toEqual(
-		scenario.rotation!,
+		scenario.rotation,
 	);
 
 	// Newly generated endings execute the actual engine form, rather than just changing a label.
-	const basic = baseRotationActions(kits[0]).find(
-		(a) => a.kind === "Basic" && a.name.endsWith(" 2"),
-	)!;
-	const instant = kits[0].actions.find(
-		(a) => a.baseId === basic.id && a.variant === "instant dodge",
-	)!;
-	const single = (actionId: string): Scenario => ({
+	const basic = required(
+		baseRotationActions(kits[0]).find(
+			(a) => a.kind === "Basic" && a.name.endsWith(" 2"),
+		),
+	);
+	const instant = required(
+		kits[0].actions.find(
+			(a) => a.baseId === basic.id && a.variant === "instant dodge",
+		),
+	);
+	const single = (actionId: string): PlaybackScenario => ({
 		...scenario,
 		rotation: {
-			...scenario.rotation!,
+			...scenario.rotation,
 			nodes: [
 				{ id: "basic", kind: "action", characterId: phrolova, actionId },
 				...kits.slice(1).map((k) => ({
@@ -177,10 +188,12 @@ test("Phrolova playback includes engine-generated Hecate attacks without changin
 	const cut = evaluate(single(instant.id));
 	expect(normal.teamDamage).toBeGreaterThan(cut.teamDamage);
 	expect(normal.duration).toBeGreaterThan(cut.duration);
-	expect(cut.playback!.some((e) => e.kind === "Dodge")).toBe(true);
-	const invalid = baseRotationActions(kits[0]).find(
-		(a) => a.kind === "Basic" && a.name.endsWith(" 1"),
-	)!;
+	expect(cut.playback.some((e) => e.kind === "Dodge")).toBe(true);
+	const invalid = required(
+		baseRotationActions(kits[0]).find(
+			(a) => a.kind === "Basic" && a.name.endsWith(" 1"),
+		),
+	);
 	try {
 		evaluate(single(invalid.id));
 		throw new Error("Expected the swap-in chain check to fail");
@@ -196,41 +209,46 @@ test("Phrolova playback includes engine-generated Hecate attacks without changin
 function fixture() {
 	const catalog = getCatalog();
 	const fixture = makeFixture(catalog, 10);
-	const kits = fixture.profile.members.map(
-		(m) =>
-			catalog.rotationKits!.find(
+	const kits = fixture.profile.members.map((m) =>
+		required(
+			catalog.rotationKits.find(
 				(k) =>
 					k.member.loadoutId === m.loadoutId &&
 					k.member.mainEcho.engineId === m.mainEcho.engineId,
-			)!,
+			),
+		),
 	);
 	const rotation = seedRotation(kits, "Custom Jiyan");
-	const scenario: Scenario = {
+	const scenario = {
 		...fixture.scenario,
 		profileId: `custom:${rotation.id}`,
 		rotation,
-	};
+	} satisfies Scenario;
 	return { ...fixture, kits, rotation, scenario };
 }
 
 test("selected Basic stages run their real hits, timing and endings", () => {
 	const { scenario, kits } = phrolovaFixture();
 	const kit = kits[0];
-	const basic = rotationPaletteActions(kit).find(
-		(a) => a.stages?.name === "Basic - Movement of Life and Death",
-	)!;
+	const basic = required(
+		rotationPaletteActions(kit).find(
+			(a) => a.stages?.name === "Basic - Movement of Life and Death",
+		),
+	);
 	const options = rotationStageOptions(kit, basic);
 	const stageId = (label: string) =>
-		options.find((o) => o.label === label)!.value;
-	const forte = kit.actions.find(
-		(a) => a.name.startsWith("Forte Basic") && a.variant === "instant dodge",
-	)!;
+		required(options.find((o) => o.label === label)).value;
+	const forte = required(
+		kit.actions.find(
+			(a) => a.name.startsWith("Forte Basic") && a.variant === "instant dodge",
+		),
+	);
 	const run = (ids: string[]) =>
 		evaluate({
 			...scenario,
 			capturePlayback: true,
 			rotation: {
-				...scenario.rotation!,
+				...scenario.rotation,
 				nodes: [
 					...[stageId("2"), stageId("3"), forte.id, ...ids].map(
 						(actionId, i) => ({
@@ -255,54 +273,63 @@ test("selected Basic stages run their real hits, timing and endings", () => {
 	expect(pair.duration).toBe(separate.duration);
 	expect(pair.energy).toEqual(separate.energy);
 	expect(
-		pair.playback!.filter(
+		pair.playback.filter(
 			(e) => e.name === "Basic - Movement of Life and Death 1",
 		),
 	).toHaveLength(1);
 	expect(
-		pair.playback!.filter(
+		pair.playback.filter(
 			(e) => e.name === "Basic - Movement of Life and Death 3",
 		),
 	).toHaveLength(1);
 	const full = run([stageId("1 → 2 → 3")]);
 	expect(full.teamDamage).toBeGreaterThan(pair.teamDamage);
 	expect(
-		full.playback!.filter(
+		full.playback.filter(
 			(e) => e.name === "Basic - Movement of Life and Death 3",
 		),
 	).toHaveLength(2);
-	const cut = kit.actions.find(
-		(a) => a.baseId === stageId("1 → 2") && a.variant === "instant dodge",
-	)!;
+	const cut = required(
+		kit.actions.find(
+			(a) => a.baseId === stageId("1 → 2") && a.variant === "instant dodge",
+		),
+	);
 	const dodged = run([cut.id]);
 	expect(dodged.teamDamage).toBeLessThan(pair.teamDamage);
-	expect(dodged.playback!.filter((e) => e.kind === "Dodge")).toHaveLength(
-		pair.playback!.filter((e) => e.kind === "Dodge").length + 1,
+	expect(dodged.playback.filter((e) => e.kind === "Dodge")).toHaveLength(
+		pair.playback.filter((e) => e.kind === "Dodge").length + 1,
 	);
 });
 
 test("Camellya reports Ephemeral's Concerto threshold and the specific missing mode buff", () => {
 	const catalog = getCatalog();
-	const profile = catalog.teams.find(
-		(team) =>
-			!team.errors.length &&
-			team.members.some((member) => member.name === "Camellya"),
-	)!;
-	const kits = profile.members.map(
-		(m) =>
-			catalog.rotationKits!.find(
+	const profile = required(
+		catalog.teams.find(
+			(team) =>
+				!team.errors.length &&
+				team.members.some((member) => member.name === "Camellya"),
+		),
+	);
+	const kits = profile.members.map((m) =>
+		required(
+			catalog.rotationKits.find(
 				(kit) =>
 					kit.member.loadoutId === m.loadoutId &&
 					kit.member.mainEcho.engineId === m.mainEcho.engineId,
-			)!,
+			),
+		),
 	);
-	const camellya = kits.find((kit) => kit.member.name === "Camellya")!;
-	const ephemeral = baseRotationActions(camellya).find(
-		(action) => action.name === "Forte Skill - Ephemeral",
-	)!;
-	const blossom = baseRotationActions(camellya).find(
-		(action) => action.name === "Skill - Crimson Blossom",
-	)!;
+	const camellya = required(kits.find((kit) => kit.member.name === "Camellya"));
+	const ephemeral = required(
+		baseRotationActions(camellya).find(
+			(action) => action.name === "Forte Skill - Ephemeral",
+		),
+	);
+	const blossom = required(
+		baseRotationActions(camellya).find(
+			(action) => action.name === "Skill - Crimson Blossom",
+		),
+	);
 	const rotation = seedRotation(kits);
 	let inserted = false;
 	rotation.nodes = flattenRotation(rotation.nodes).flatMap((node) => {
@@ -313,7 +340,7 @@ test("Camellya reports Ephemeral's Concerto threshold and the specific missing m
 		}
 		return [node];
 	});
-	const scenario: Scenario = {
+	const scenario = {
 		profileId: `custom:${rotation.id}`,
 		rotation,
 		cycles: 1,
@@ -326,22 +353,20 @@ test("Camellya reports Ephemeral's Concerto threshold and the specific missing m
 			echoSource: "rotation",
 			echoes: [],
 		})),
-	};
+	} satisfies Scenario;
 	const result = evaluate(resolveRotationStats(scenario));
 	expect(
-		result.diagnosticDetails!.find(
-			(issue) => issue.nodeId === "early-ephemeral",
-		)?.message,
+		result.diagnosticDetails.find((issue) => issue.nodeId === "early-ephemeral")
+			?.message,
 	).toBe(
 		"Camellya: Forte Skill - Ephemeral — Requires: Concerto >= 100 (current: -40).",
 	);
 	expect(
-		result.diagnosticDetails!.find(
-			(issue) => issue.nodeId === "early-ephemeral",
-		)?.summary,
+		result.diagnosticDetails.find((issue) => issue.nodeId === "early-ephemeral")
+			?.summary,
 	).toBe("Requires: Concerto >= 100 (current: -40)");
 	expect(
-		result.diagnosticDetails!.some(
+		result.diagnosticDetails.some(
 			(issue) => issue.summary === "Requires: Concerto >= 100 (current: 30)",
 		),
 	).toBe(true);
@@ -388,7 +413,7 @@ test("custom rotations simulate explicit actions and loops without mutating buil
 
 test("fatal rotation errors retain the exact authored node, including nested loops", () => {
 	const f = fixture();
-	const intro = f.kits[0].actions.find((a) => a.kind === "Intro")!;
+	const intro = required(f.kits[0].actions.find((a) => a.kind === "Intro"));
 	try {
 		evaluate({
 			...f.scenario,
@@ -422,7 +447,7 @@ test("fatal rotation errors retain the exact authored node, including nested loo
 });
 test("custom programs reject free Intros, misplaced Outros and echo mismatches", () => {
 	const f = fixture();
-	const intro = f.kits[0].actions.find((a) => a.kind === "Intro")!;
+	const intro = required(f.kits[0].actions.find((a) => a.kind === "Intro"));
 	expect(() =>
 		evaluate({
 			...f.scenario,
@@ -440,9 +465,12 @@ test("custom programs reject free Intros, misplaced Outros and echo mismatches",
 			},
 		}),
 	).toThrow("Intro must follow");
-	const otherEcho = f.kits[0].actions.find(
-		(a) => a.mainEchoId && a.mainEchoId !== f.kits[0].member.mainEcho.engineId,
-	)!;
+	const otherEcho = required(
+		f.kits[0].actions.find(
+			(a) =>
+				a.mainEchoId && a.mainEchoId !== f.kits[0].member.mainEcho.engineId,
+		),
+	);
 	expect(() =>
 		evaluate({
 			...f.scenario,
@@ -460,7 +488,7 @@ test("custom programs reject free Intros, misplaced Outros and echo mismatches",
 			},
 		}),
 	).toThrow("main echo");
-	const outro = f.kits[0].actions.find((a) => a.kind === "Outro")!;
+	const outro = required(f.kits[0].actions.find((a) => a.kind === "Outro"));
 	expect(() =>
 		evaluate({
 			...f.scenario,

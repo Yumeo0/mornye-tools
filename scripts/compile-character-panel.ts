@@ -109,11 +109,11 @@ export async function compileCharacterPanel() {
 	const fetterById = new Map(fetters.map((f) => [f.Id, f]));
 	const output: CharacterPanelData = {
 		roles: Object.fromEntries(
-			roles
-				.filter((r) => !r.IsTrial && baseById.has(r.PropertyId))
-				.map((r) => {
-					const base = baseById.get(r.PropertyId)!;
-					return [
+			roles.flatMap((r) => {
+				const base = baseById.get(r.PropertyId);
+				if (r.IsTrial || !base) return [];
+				return [
+					[
 						r.Id,
 						{
 							base: [base.Atk, base.LifeMax, base.Def],
@@ -128,8 +128,9 @@ export async function compileCharacterPanel() {
 									.map((n) => [n.NodeIndex, props(n.Property)]),
 							),
 						},
-					];
-				}),
+					],
+				];
+			}),
 		),
 		roleGrowth: Object.fromEntries(
 			growth.map((g) => [

@@ -656,7 +656,7 @@ mod tests {
                 &echo(12, 0),
                 5,
                 &inventory,
-                &[feed.clone()],
+                std::slice::from_ref(&feed),
                 &HashSet::new(),
             )
             .unwrap();
@@ -671,7 +671,14 @@ mod tests {
                 sub_props: vec![(1, 630)],
                 ..echo(12, 17)
             };
-            let next = plan(&updated, 17, &inventory, &[feed.clone()], &HashSet::new()).unwrap();
+            let next = plan(
+                &updated,
+                17,
+                &inventory,
+                std::slice::from_ref(&feed),
+                &HashSet::new(),
+            )
+            .unwrap();
             assert_eq!(next.result_level, 17);
             assert_eq!(next.exp, 0);
             assert_eq!(next.identify_count, 1);
@@ -687,7 +694,14 @@ mod tests {
         };
         let mut target = echo(12, 0);
         target.item_id = 60000012; // 2-star echo, maximum +10.
-        let p = plan(&target, 5, &inventory(), &[feed.clone()], &HashSet::new()).unwrap();
+        let p = plan(
+            &target,
+            5,
+            &inventory(),
+            std::slice::from_ref(&feed),
+            &HashSet::new(),
+        )
+        .unwrap();
         assert_eq!(p.result_level, 10);
         assert_eq!(p.echo_materials[0].count, 1);
         assert!(p.materials.is_empty());

@@ -635,7 +635,7 @@ mod tests {
         let mut updates = 0;
         while let Some(packet) = reader.next_packet() {
             let packet = packet.unwrap();
-            if let Ok(packets) = sniffer.receive_packet(packet.data.to_vec()) {
+            if let Ok(packets) = sniffer.receive_packet(&packet.data) {
                 for p in packets {
                     if let spectrum::Packet::GamePacket(Ok(gp)) = p {
                         if PositionTracker::handles(gp.msg_id) {

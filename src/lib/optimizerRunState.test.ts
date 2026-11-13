@@ -8,7 +8,12 @@ import {
 	inventoryRevision,
 	optimizerInventoryRevision,
 } from "./calc/translate";
-import type { CalcEcho, Scenario, SearchUpdate } from "./calc/types";
+import type {
+	CalcEcho,
+	Scenario,
+	SearchUpdate,
+	SimulationResult,
+} from "./calc/types";
 import {
 	matchingOptimizerRun,
 	optimizerRunSelectionKey,
@@ -18,7 +23,9 @@ import {
 } from "./optimizerRunState";
 import { createPersistentState, restoreFilterState } from "./persistentState";
 
-const input: Parameters<typeof optimizerRunSelectionKey>[0] = {
+const input: Parameters<typeof optimizerRunSelectionKey>[0] & {
+	scenario: Scenario;
+} = {
 	catalogRevision: "calculator-revision",
 	revision: "account-inventory-revision",
 	scenario: { profileId: "rotation", members: [], cycles: 4 },
@@ -32,7 +39,9 @@ const context = {
 	profileId: "account-a",
 	roleId: 1406,
 };
-function fixture(): SavedOptimizerRun {
+function fixture(): SavedOptimizerRun & {
+	update: SearchUpdate & { baselineEvaluation: SimulationResult };
+} {
 	const stats = {
 		atk: 2100,
 		hp: 17000,
@@ -295,10 +304,12 @@ test("hides results for changed inventory, settings, engine, account, or target"
 	for (const patch of [
 		{ catalogRevision: "new-engine" },
 		{ revision: "new-inventory" },
-		{ scenario: { ...input.scenario!, profileId: "another-rotation" } },
+		{
+			scenario: { ...input.scenario, profileId: "another-rotation" },
+		},
 		{
 			scenario: {
-				...input.scenario!,
+				...input.scenario,
 				members: [
 					{
 						characterId: 1406,
@@ -333,9 +344,9 @@ test("preserves baseline diagnostics, impossible ER, empty results, and expansio
 	const saved = fixture();
 	saved.update.results = [];
 	saved.update.baseline = null;
-	saved.update.baselineEvaluation!.feasible = false;
-	saved.update.baselineEvaluation!.energy[0].required = Infinity;
-	saved.update.baselineEvaluation!.energy[0].feasible = false;
+	saved.update.baselineEvaluation.feasible = false;
+	saved.update.baselineEvaluation.energy[0].required = Infinity;
+	saved.update.baselineEvaluation.energy[0].feasible = false;
 	saved.update.baselineError = "Cannot execute the equipped baseline.";
 	saved.error = "No feasible build found.";
 	saved.expandedIndex = "baseline";

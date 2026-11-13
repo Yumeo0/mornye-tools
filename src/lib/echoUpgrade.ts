@@ -126,11 +126,13 @@ export function requestEchoUpgrade(
 	materialPolicy: EchoMaterialPolicy = DEFAULT_UPGRADE_OPTIONS.materials,
 ) {
 	return invoke<EchoUpgradePlan>("dangerous_echo_upgrade", {
-		profileId,
-		incrId,
-		targetLevel,
-		approved,
-		protectedIds,
-		materialPolicy,
+		request: {
+			profileId,
+			incrId,
+			targetLevel,
+			approved,
+			protectedIds,
+			materialPolicy,
+		},
 	});
 }

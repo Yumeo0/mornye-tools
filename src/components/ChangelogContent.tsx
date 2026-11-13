@@ -4,7 +4,7 @@ import { Separator } from "@/components/ui/separator";
 /** Release notes are text, headings, and lists; remote HTML/images never render. */
 export function ChangelogContent({ body }: { body: string }) {
 	return (
-		<article className="text-sm leading-7 wrap-anywhere text-muted-foreground [&>p:first-child]:text-foreground">
+		<article className="text-sm/7  wrap-anywhere text-muted-foreground [&>p:first-child]:text-foreground">
 			<Markdown
 				skipHtml
 				unwrapDisallowed

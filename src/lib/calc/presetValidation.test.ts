@@ -1,4 +1,5 @@
 import { expect, test } from "bun:test";
+import { required } from "@/lib/required";
 import {
 	evaluate,
 	getCatalog,
@@ -50,11 +51,11 @@ for (const characterId of [1404, 1410, 1413]) {
 			),
 		).toBe(true);
 		const wrongMain = structuredClone(scenario);
-		const member = wrongMain.members.find(
-			(m) => m.characterId === characterId,
-		)!;
+		const member = required(
+			wrongMain.members.find((m) => m.characterId === characterId),
+		);
 		// An invalid theoretical echo choice is still rejected before a run.
-		member.rotationStats!.echoIndex = -1;
+		required(member.rotationStats).echoIndex = -1;
 		expect(() => evaluate(wrongMain)).toThrow("invalid rotation stat template");
 	});
 }
@@ -83,17 +84,21 @@ for (const suffix of [
 				Math.max(energy.required, energy.kitMinimum),
 			);
 		}
-		const target = result.energy.find(
-			(e) => e.characterId === 1501 || e.characterId === 1404,
-		)!;
+		const target = required(
+			result.energy.find(
+				(e) => e.characterId === 1501 || e.characterId === 1404,
+			),
+		);
 		expect(target.actual).toBeGreaterThan(127.6);
 	});
 }
 
 test("only known Lily model gaps yield marked preset estimates; custom and unrelated failures stay invalid", () => {
-	const profile = getCatalog().teams.find((p) =>
-		p.members.some((m) => m.characterId === 1512),
-	)!;
+	const profile = required(
+		getCatalog().teams.find((p) =>
+			p.members.some((m) => m.characterId === 1512),
+		),
+	);
 	const result = evaluate(resolveRotationStats(referenceScenario(profile)));
 	expect(result.feasible).toBe(false);
 	expect(

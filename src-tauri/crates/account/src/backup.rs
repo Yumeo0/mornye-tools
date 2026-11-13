@@ -535,10 +535,10 @@ mod tests {
         serde_json::from_str(FIXTURE).unwrap()
     }
     fn account() -> AccountSnapshot {
-        let mut account = AccountSnapshot::default();
-        account.profile =
-            Some(serde_json::from_value(fixture()["map"]["profile"].clone()).unwrap());
-        account
+        AccountSnapshot {
+            profile: Some(serde_json::from_value(fixture()["map"]["profile"].clone()).unwrap()),
+            ..Default::default()
+        }
     }
 
     #[test]

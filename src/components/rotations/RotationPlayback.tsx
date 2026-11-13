@@ -161,7 +161,7 @@ export function RotationPlayback({
 												)}
 											</div>
 											<p
-												className="whitespace-normal break-words text-sm"
+												className="whitespace-normal wrap-break-word text-sm"
 												title={entry.name}
 											>
 												{label.name}

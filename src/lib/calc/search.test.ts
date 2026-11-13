@@ -1,4 +1,5 @@
 import { expect, test } from "bun:test";
+import { required } from "@/lib/required";
 import { makeFixture } from "../../../calculator/fixture";
 import { evaluate, getCatalog } from "./riley/engine.generated.js";
 import { isLegalBuild, searchInventory } from "./search";
@@ -41,7 +42,7 @@ test("small exact search preserves required main type and can leave an infeasibl
 	for (const r of a.results)
 		expect(
 			isLegalBuild(
-				r.uids.map((u) => byUid.get(u)!),
+				r.uids.map((u) => required(byUid.get(u))),
 				input.mainTypeId,
 			),
 		).toBe(true);

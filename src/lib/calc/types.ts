@@ -71,7 +71,7 @@ export interface CalculatorCatalog {
 	revision: string;
 	teams: TeamProfile[];
 	sets: number[];
-	rotationKits?: RotationKit[];
+	rotationKits: RotationKit[];
 }
 export interface MemberBuild {
 	characterId: number;
@@ -80,9 +80,20 @@ export interface MemberBuild {
 	weaponRank: number;
 	/** Rotation stats are theoretical and never reserve or equip inventory. */
 	echoSource?: "equipped" | "rotation";
-	rotationStats?: { echoIndex: number; mainstatIndex: number; erRolls: number };
+	rotationStats?: RotationStats;
 	echoes: CalcEcho[];
 }
+export interface RotationStats {
+	echoIndex: number;
+	mainstatIndex: number;
+	erRolls: number;
+}
+/** Simulation accepts only theoretical builds whose template has been resolved. */
+export type ResolvedMemberBuild = MemberBuild &
+	(
+		| { echoSource: "rotation"; rotationStats: RotationStats }
+		| { echoSource?: "equipped" }
+	);
 export interface Scenario {
 	profileId: string;
 	members: MemberBuild[];
@@ -92,6 +103,13 @@ export interface Scenario {
 	/** Builder-only report; inventory searches do not capture playback. */
 	capturePlayback?: boolean;
 }
+export type ResolvedScenario<T extends Scenario = Scenario> = Omit<
+	T,
+	"members"
+> & {
+	members: ResolvedMemberBuild[];
+};
+export type PlaybackScenario = Scenario & { capturePlayback: true };
 export type Objective =
 	| { kind: "memberDamage"; characterId: number }
 	| { kind: "teamDamage" };
@@ -136,6 +154,10 @@ export interface SimulationResult {
 	stats: Record<number, OptResultStats>;
 	playback?: RotationPlaybackEntry[];
 }
+export type PlaybackSimulationResult = SimulationResult & {
+	diagnosticDetails: RotationDiagnostic[];
+	playback: RotationPlaybackEntry[];
+};
 export interface RotationDiagnostic {
 	message: string;
 	nodeId?: string;

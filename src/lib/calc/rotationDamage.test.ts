@@ -1,5 +1,6 @@
 import { expect, test } from "bun:test";
 import { customRotationProfile, seedRotation } from "@/lib/customRotations";
+import { required } from "@/lib/required";
 import {
 	evaluate,
 	getCatalog,
@@ -200,7 +201,9 @@ test("reference scores restore from disk and progressive scores are saved togeth
 		rememberRotationDamage("next", { damage: 23456, stats: optimalStats });
 		rememberRotationDamage("another", { damage: 34567 });
 		await written.promise;
-		expect(JSON.parse(disk.get("optimizer.customRotationDamage.v2")!)).toEqual({
+		expect(
+			JSON.parse(required(disk.get("optimizer.customRotationDamage.v2"))),
+		).toEqual({
 			previous: { damage: 12345 },
 			invalid: { damage: null, error: "Requires ER" },
 			next: { damage: 23456, stats: optimalStats },

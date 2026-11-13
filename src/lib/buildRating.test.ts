@@ -1,10 +1,13 @@
 import { expect, test } from "bun:test";
+import { required } from "@/lib/required";
 import { type Echo, type StatKey, statPropLines } from "./account";
 import { buildRating } from "./buildRating";
 import { echoesByMonsterId } from "./catalog";
 import { type CharacterInfo, calculateRating, mainStatForEcho } from "./rating";
 
-const species = [...echoesByMonsterId.values()].find((e) => e.echo_cost === 1)!;
+const species = required(
+	[...echoesByMonsterId.values()].find((e) => e.echo_cost === 1),
+);
 const character: CharacterInfo = {
 	character_id: 1,
 	character_name: "Test",
@@ -27,8 +30,8 @@ const prop = (key: StatKey, value: number) => ({
 const echoes: Echo[] = Array.from({ length: 5 }, (_, i) => ({
 	incrId: i + 1,
 	itemId: species.echo_id,
-	monsterId: species.monster_id!,
-	setId: species.echo_sets[0]!.id,
+	monsterId: species.monster_id,
+	setId: species.echo_sets[0].id,
 	level: 25,
 	funcValue: 0,
 	stackCount: 1,
@@ -53,13 +56,13 @@ test("total RV sums every piece immediately against the fixed 500% maximum", () 
 
 test("incomplete builds and unsuitable mains keep the same 500% maximum", () => {
 	const pieces = [
-		{ ...echoes[0]!, mainProps: [prop("hpPercent", 18)] },
+		{ ...echoes[0], mainProps: [prop("hpPercent", 18)] },
 		...echoes.slice(1),
 	];
 	const pieceRating = calculateRating(
 		character,
-		statPropLines(echoes[0]!.subProps),
-		mainStatForEcho(echoes[0]!),
+		statPropLines(echoes[0].subProps),
+		mainStatForEcho(echoes[0]),
 	);
 	expect(buildRating(character, pieces)).toEqual({
 		total: pieceRating * 4,

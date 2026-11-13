@@ -104,16 +104,11 @@ export const QUEST_STATUS_ORDER: QuestStatus[] = [
  * completed variant.
  */
 export const QUEST_STATUS_ICONS: Record<QuestStatus, string> = {
-	available:
-		"/icons/map/task-02-3.webp",
-	active:
-		"/icons/map/task-02-3.webp",
-	locked:
-		"/icons/map/task-01-3.webp",
-	completed:
-		"/icons/map/task-06.webp",
-	unknown:
-		"/icons/map/task-02-3.webp",
+	available: "/icons/map/task-02-3.webp",
+	active: "/icons/map/task-02-3.webp",
+	locked: "/icons/map/task-01-3.webp",
+	completed: "/icons/map/task-06.webp",
+	unknown: "/icons/map/task-02-3.webp",
 };
 
 export interface QuestMarker {

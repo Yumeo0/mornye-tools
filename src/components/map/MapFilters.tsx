@@ -384,7 +384,7 @@ export function MapFilters({
 						return (
 							<div
 								key={entry.id}
-								className="flex items-center gap-2 border-b border-t pl-2.5 text-[10px] tracking-[.1em] text-muted-foreground"
+								className="flex items-center gap-2 border-y  pl-2.5 text-[10px] tracking-widest text-muted-foreground"
 							>
 								<input
 									type="checkbox"

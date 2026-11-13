@@ -6,6 +6,7 @@ import type {
 	CalculatorCatalog,
 	Scenario,
 } from "../src/lib/calc/types";
+import { required } from "../src/lib/required";
 
 export function makeFixture(
 	catalog: CalculatorCatalog,
@@ -16,7 +17,7 @@ export function makeFixture(
 	const profile = catalog.teams.find(
 		(t) =>
 			t.members.map((m) => m.name).join("/") === "Verina/Mortefi/Jiyan" &&
-			t.members[1]!.mainEcho.name === "Impermanence Heron",
+			t.members[1].mainEcho.name === "Impermanence Heron",
 	);
 	if (!profile) throw new Error("Pinned Jiyan fixture profile is unavailable");
 	const prop = (key: StatKey, value: number): EchoProp => ({
@@ -28,7 +29,7 @@ export function makeFixture(
 	let random = seed >>> 0;
 	const pick = (values: number[]) => {
 		random = (Math.imul(random, 1664525) + 1013904223) >>> 0;
-		return values[Math.floor((random / 4294967296) * values.length)]!;
+		return values[Math.floor((random / 4294967296) * values.length)];
 	};
 	const speciesFor = (set: number, cost: number) => [
 		...new Map(
@@ -52,14 +53,16 @@ export function makeFixture(
 		return [0, 1, 2, 3, 4].map((slot) => {
 			const species =
 				slot === 0
-					? echoes.find((e) => e.monster_id === member.mainEcho.typeId)!
+					? required(
+							echoes.find((e) => e.monster_id === member.mainEcho.typeId),
+						)
 					: slot < 3
-						? three[slot - 1]!
-						: one[slot - 3]!;
+						? three[slot - 1]
+						: one[slot - 3];
 			const same = echoes.filter(
 				(e) => e.echo_name === species.echo_name && e.monster_id != null,
 			);
-			const typeId = Math.min(...same.map((e) => e.monster_id!));
+			const typeId = Math.min(...same.map((e) => required(e.monster_id)));
 			const main =
 				slot === 0
 					? prop("critRate", 22)
@@ -94,7 +97,7 @@ export function makeFixture(
 	const fixed = profile.members.map((m) => buildEchoes(m, -1));
 	const inventory: CalcEcho[] = [];
 	for (let i = 0; i < Math.ceil(count / 5); i++)
-		inventory.push(...buildEchoes(profile.members[targetIndex]!, i));
+		inventory.push(...buildEchoes(profile.members[targetIndex], i));
 	const scenario: Scenario = {
 		profileId: profile.id,
 		cycles: 4,
@@ -108,7 +111,7 @@ export function makeFixture(
 						? 21030015
 						: 21050024,
 			weaponRank: 1,
-			echoes: fixed[i]!,
+			echoes: fixed[i],
 		})),
 	};
 	return { scenario, inventory: inventory.slice(0, count), profile };

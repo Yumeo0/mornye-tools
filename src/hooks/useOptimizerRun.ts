@@ -154,18 +154,13 @@ export function useOptimizerRun(
 					: previous,
 			);
 	};
+	const target = team.profile?.members.find(
+		(member) => member.characterId === team.targetId,
+	);
 	const pool = useMemo(
 		() =>
-			team.profile && team.targetId
-				? selectCandidates(
-						snapshot,
-						team.profile,
-						team.members,
-						team.targetId,
-						filters,
-					)
-				: null,
-		[snapshot, team.profile, team.members, team.targetId, filters],
+			target ? selectCandidates(snapshot, target, team.members, filters) : null,
+		[snapshot, target, team.members, filters],
 	);
 	const errors = [...team.errors];
 	if (team.profile)
@@ -178,7 +173,11 @@ export function useOptimizerRun(
 					);
 			}
 	const canRun =
-		!!scenario && !errors.length && !!pool?.mainCount && pool.pool.length >= 5;
+		!!scenario &&
+		!!target &&
+		!errors.length &&
+		!!pool?.mainCount &&
+		pool.pool.length >= 5;
 	// biome-ignore lint/correctness/useExhaustiveDependencies: Every scenario/filter revision invalidates an in-flight run, even if no other effect input changes.
 	useEffect(() => {
 		generation.current++;
@@ -236,7 +235,7 @@ export function useOptimizerRun(
 		}
 	}, [context, selectionKey, liveUpdate, liveRunError, setSavedRun]);
 	const handleRun = () => {
-		if (!canRun || !scenario || !pool) return;
+		if (!canRun || !scenario || !pool || !target) return;
 		const key = selectionKey;
 		const token = ++generation.current;
 		setRunning(true);
@@ -260,9 +259,7 @@ export function useOptimizerRun(
 						? { kind: "teamDamage" }
 						: { kind: "memberDamage", characterId: team.targetId },
 				inventory: pool.pool,
-				mainTypeId: team.profile!.members.find(
-					(m) => m.characterId === team.targetId,
-				)!.mainEcho.typeId,
+				mainTypeId: target.mainEcho.typeId,
 				resultsLimit: preferences.resultsLimit,
 				budget: 1500,
 			},

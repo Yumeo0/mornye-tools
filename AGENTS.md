@@ -1,8 +1,9 @@
 # AGENTS.md
 
 Wuthering Waves desktop companion: Tauri v2 (Rust) + React 19/TypeScript (Vite)
-+ Tailwind v4. The Rust backend passively sniffs the game's UDP traffic and
-drives the in-game overlay window.
+
+- Tailwind v4. The Rust backend passively sniffs the game's UDP traffic and
+  drives the in-game overlay window.
 
 ## Setup gotchas
 

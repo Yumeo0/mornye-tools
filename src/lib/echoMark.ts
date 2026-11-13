@@ -5,12 +5,9 @@ import { canUpgradeEcho } from "./echoUpgrade";
 
 export type EchoMark = "none" | "locked" | "discarded";
 export const ECHO_MARK_ICONS = {
-	locked:
-		"/icons/echo-marks/locked.webp",
-	unlocked:
-		"/icons/echo-marks/unlocked.webp",
-	discarded:
-		"/icons/echo-marks/discarded.webp",
+	locked: "/icons/echo-marks/locked.webp",
+	unlocked: "/icons/echo-marks/unlocked.webp",
+	discarded: "/icons/echo-marks/discarded.webp",
 };
 
 export function echoMark(echo: Echo): EchoMark {

@@ -1,5 +1,5 @@
 import { existsSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 import assetAliases from "../../src/configs/asset_aliases.json";
 import { assetUrl, mapAssetUrls } from "../../src/lib/assets";
 import type { MapCatalog } from "../../src/lib/map/types";
@@ -54,10 +54,7 @@ export function prepareMapCatalog(
 		reward.filterIcon ??=
 			previousIcons.get(reward.key) ??
 			(reward.itemId && reward.icon.startsWith("/wuwa-assets/")
-				? `/map/icons/gg/${reward.icon
-						.split("/")
-						.at(-1)!
-						.replace(/\.webp$/, ".png")}`
+				? `/map/icons/gg/${basename(reward.icon).replace(/\.webp$/, ".png")}`
 				: reward.icon);
 	}
 	const published = mapAssetUrls(catalog);
@@ -111,10 +108,7 @@ export function assetSources(): Map<string, string[]> {
 		if (source.includes("/UiWorldMap/") && /Tiles_/.test(source)) {
 			for (const kind of ["tiles", "tiles-low"]) {
 				const tileUrl = assetUrl(
-					`/map/${kind}/${absolute
-						.split(/[\\/]/)
-						.at(-1)!
-						.replace(/\.png$/, ".webp")}`,
+					`/map/${kind}/${basename(absolute).replace(/\.png$/, ".webp")}`,
 					false,
 				);
 				index.set(tileUrl, [...(index.get(tileUrl) ?? []), source]);

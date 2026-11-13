@@ -40,7 +40,7 @@ export function OptimizerFilterRow({
 	countsHint?: string;
 }) {
 	return (
-		<div className="flex min-w-0 flex-col gap-5 [&_[data-slot=filter-label]]:text-[11px] [&_[data-slot=filter-label]]:leading-4 [&_[data-slot=filter-label]]:font-medium">
+		<div className="flex min-w-0 flex-col gap-5 **:data-[slot=filter-label]:text-[11px]/4  **:data-[slot=filter-label]:font-medium">
 			<FieldGroup className="gap-6">
 				<FieldSet className="min-w-0 gap-3">
 					<FieldLegend className="mb-1 font-semibold leading-5">
@@ -142,7 +142,7 @@ export function OptimizerFilterRow({
 			<div className="flex flex-col items-start gap-2">
 				{counts && (
 					<div
-						className="text-[11px] leading-5 text-muted-foreground tabular-nums"
+						className="text-[11px]/5  text-muted-foreground tabular-nums"
 						title={countsHint}
 					>
 						<p>

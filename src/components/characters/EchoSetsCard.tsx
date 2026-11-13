@@ -108,7 +108,7 @@ export function EchoSetsCard({ guide }: { guide: RoleBuild }) {
 								<div
 									key={`${slot.cost}-${slot.index}`}
 									className={cn(
-										"relative flex min-h-14 items-center gap-2 border bg-muted/30 px-3 py-3",
+										"relative flex min-h-14 items-center gap-2 border bg-muted/30 p-3 ",
 										!slot.half && "col-span-2",
 									)}
 								>

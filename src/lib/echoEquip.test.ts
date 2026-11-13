@@ -53,7 +53,7 @@ const status: DangerousStatus = {
 const uids = echoes.map((echo) => `incr:${echo.incrId}`);
 
 test("unequipping requires the connected profile and the captured echo's current slot", () => {
-	const echo = echoes[0]!;
+	const echo = echoes[0];
 	expect(echoUnequipError(snapshot, status, echo)).toBeNull();
 	for (const connection of [
 		null,

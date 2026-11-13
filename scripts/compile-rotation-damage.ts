@@ -7,6 +7,7 @@ import type {
 } from "../src/lib/calc/rotationDamage";
 import { bundledRotationDamageSchema } from "../src/lib/calc/rotationDamageSchema";
 import type { TeamProfile } from "../src/lib/calc/types";
+import { required } from "../src/lib/required";
 import { dataLog } from "./lib/data-log";
 
 const root = join(import.meta.dirname, "..");
@@ -104,7 +105,9 @@ export async function calculateRotationScores(
 		for (const worker of workers) worker.terminate();
 	}
 	// Worker completion order must not churn the checked-in JSON.
-	return Object.fromEntries(profiles.map((p) => [p.id, scores.get(p.id)!]));
+	return Object.fromEntries(
+		profiles.map((p) => [p.id, required(scores.get(p.id))]),
+	);
 }
 
 export async function compileRotationDamage() {

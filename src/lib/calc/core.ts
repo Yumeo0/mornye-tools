@@ -21,11 +21,16 @@ export function ensureCoreReady(): Promise<CalculatorCatalog> {
 	if (pending) return pending;
 	pending = new Promise<CalculatorCatalog>((resolve, reject) => {
 		const worker = new SimulationWorker();
-		worker.onmessage = (event) => {
+		worker.onmessage = (
+			event: MessageEvent<
+				| { kind: "catalog"; value: CalculatorCatalog }
+				| { kind: "error"; message: string }
+			>,
+		) => {
 			worker.terminate();
 			if (event.data.kind === "catalog") {
 				catalog = event.data.value;
-				resolve(catalog!);
+				resolve(event.data.value);
 			} else {
 				pending = null;
 				reject(new Error(event.data.message));

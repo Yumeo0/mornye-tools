@@ -230,7 +230,7 @@ export function RotationFlow({
 								{turnStart && character && turnId && (
 									<Button
 										variant="ghost"
-										className="mb-2 h-auto w-full justify-start gap-2 border-y bg-muted/40 px-2 py-2"
+										className="mb-2 h-auto w-full justify-start gap-2 border-y bg-muted/40 p-2 "
 										aria-label={`${folded ? "Expand" : "Collapse"} ${character.character_name} turn`}
 										aria-expanded={!folded}
 										onClick={() =>
@@ -374,7 +374,7 @@ export function RotationFlow({
 															</Badge>
 															{character?.preview && <PreviewBadge />}
 														</span>
-														<span className="max-w-full whitespace-normal break-words text-xs">
+														<span className="max-w-full whitespace-normal wrap-break-word text-xs">
 															{node.kind === "wait"
 																? `${node.seconds}s`
 																: (label?.name ?? "Action unavailable")}

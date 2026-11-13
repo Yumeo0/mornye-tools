@@ -78,7 +78,7 @@ export function ChainNodes({
 							"inline-flex shrink-0 items-center justify-center rounded-full bg-card ring-1 ring-border",
 							!position && "aspect-square w-full",
 							position &&
-								"absolute size-9 shrink-0 -translate-x-1/2 -translate-y-1/2 rounded-full bg-card ring-1 ring-border",
+								"absolute size-9 shrink-0 -translate-1/2  rounded-full bg-card ring-1 ring-border",
 						)}
 						style={{
 							left: position ? `${(position.x / 96) * 100}%` : undefined,

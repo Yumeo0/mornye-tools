@@ -1,6 +1,7 @@
 import { expect, test } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
 import { BuildStats } from "@/components/characters/BuildStats";
+import { required } from "@/lib/required";
 import { makeFixture } from "../../calculator/fixture";
 import {
 	characterPanel,
@@ -85,7 +86,7 @@ test("character and optimizer panels agree at level 90, including passive bonuse
 			},
 			echoes: member.echoes.map((e, slot) => ({
 				incrId: slot + 1,
-				itemId: echoesByMonsterId.get(e.typeId)!.echo_id,
+				itemId: required(echoesByMonsterId.get(e.typeId)).echo_id,
 				monsterId: e.typeId,
 				setId: e.setId,
 				level: e.level,
@@ -98,29 +99,28 @@ test("character and optimizer panels agree at level 90, including passive bonuse
 			})),
 		};
 		const panel = characterPanel(request);
-		const expected = result.stats[member.characterId]!;
+		const expected = result.stats[member.characterId];
 		expect(panel.notes).toEqual([]);
 		for (const key of ["atk", "hp", "def", "er", "cr", "cd"] as const)
 			expect(panel.stats[key]).toBeCloseTo(expected[key], 5);
 		for (const [key, value] of Object.entries(expected.bonuses ?? {}))
 			expect(
 				panel.stats.bonuses?.[key as keyof typeof expected.bonuses],
-			).toBeCloseTo(value!, 5);
+			).toBeCloseTo(required(value), 5);
 	}
 	const target = structuredClone(scenario);
-	expect(result.stats[target.members[2]!.characterId]!.bonuses?.heavyAtk).toBe(
+	expect(result.stats[target.members[2].characterId].bonuses?.heavyAtk).toBe(
 		12,
 	);
-	target.members[2]!.echoes[1]!.substats.push({
+	target.members[2].echoes[1].substats.push({
 		key: "heavyAtk",
 		propId: 0,
 		raw: 1160,
 		value: 11.6,
 	});
-	const stats = evaluate(target).stats[target.members[2]!.characterId]!;
+	const stats = evaluate(target).stats[target.members[2].characterId];
 	expect(stats.bonuses?.heavyAtk).toBeCloseTo(
-		(result.stats[target.members[2]!.characterId]!.bonuses?.heavyAtk ?? 0) +
-			11.6,
+		(result.stats[target.members[2].characterId].bonuses?.heavyAtk ?? 0) + 11.6,
 	);
 	const html = renderToStaticMarkup(<BuildStats stats={stats} />);
 	expect(html).toContain("Heavy Attack DMG Bonus");

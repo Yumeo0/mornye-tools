@@ -72,12 +72,12 @@ function AchievementRow({
 		entry && entry.finishedAt > 0 ? new Date(entry.finishedAt * 1000) : null;
 	return (
 		<article
-			className="grid gap-x-6 gap-y-1 border-b bg-card px-3 py-3 md:grid-cols-[minmax(12rem,0.65fr)_minmax(0,1fr)_auto]"
+			className="grid gap-x-6 gap-y-1 border-b bg-card p-3  md:grid-cols-[minmax(12rem,0.65fr)_minmax(0,1fr)_auto]"
 			aria-label={achievement.name}
 			title={`#${achievement.id}${achievement.hidden ? " · Hidden achievement" : ""}`}
 		>
-			<h3 className="text-sm font-medium leading-snug">{achievement.name}</h3>
-			<p className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
+			<h3 className="text-sm/snug font-medium ">{achievement.name}</h3>
+			<p className="whitespace-pre-line text-sm/relaxed  text-muted-foreground">
 				{achievement.description}
 			</p>
 			{(finished || hasProgress) && (
@@ -385,7 +385,7 @@ export function AchievementsTab({ active }: { active: boolean }) {
 							onClick={() => selectCategory("all")}
 							count={countText(total, snapshot != null)}
 						>
-							<span className="min-w-0 flex-1 whitespace-normal break-words font-medium">
+							<span className="min-w-0 flex-1 whitespace-normal wrap-break-word font-medium">
 								All achievements
 							</span>
 						</NavButton>
@@ -412,7 +412,7 @@ export function AchievementsTab({ active }: { active: boolean }) {
 												alt=""
 												className="size-6 shrink-0 object-contain"
 											/>
-											<span className="min-w-0 flex-1 whitespace-normal break-words font-medium">
+											<span className="min-w-0 flex-1 whitespace-normal wrap-break-word font-medium">
 												{entry.name}
 											</span>
 										</NavButton>
@@ -441,7 +441,7 @@ export function AchievementsTab({ active }: { active: boolean }) {
 															}}
 															count={countText(groupCounts, snapshot != null)}
 														>
-															<span className="min-w-0 flex-1 whitespace-normal break-words">
+															<span className="min-w-0 flex-1 whitespace-normal wrap-break-word">
 																{subCategoryName(group, entry.name)}
 															</span>
 														</NavButton>

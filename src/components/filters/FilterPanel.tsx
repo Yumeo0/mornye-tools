@@ -107,7 +107,9 @@ export function FilterPanel({
 									onClick={filter.onRemove}
 									className="h-auto max-w-full whitespace-normal text-left"
 								>
-									<span className="min-w-0 break-words">{filter.label}</span>
+									<span className="min-w-0 wrap-break-word">
+										{filter.label}
+									</span>
 									<span aria-hidden="true">×</span>
 								</Button>
 							))}

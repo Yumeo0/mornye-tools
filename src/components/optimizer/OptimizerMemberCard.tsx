@@ -99,7 +99,7 @@ export function OptimizerMemberCard({
 					value={String(member.characterId)}
 					aria-label={`Optimize ${member.name}, ${member.variant}, main echo ${member.mainEcho.name}`}
 					title={`${member.variant} · Slot 1: ${member.mainEcho.name}`}
-					className="col-span-2 col-start-1 row-span-2 row-start-1 h-full w-full min-w-0 focus:z-auto focus-visible:z-auto"
+					className="col-span-2 col-start-1 row-span-2 row-start-1 size-full  min-w-0 focus:z-auto focus-visible:z-auto"
 				/>
 				<RotationMemberArt
 					member={member}
@@ -238,10 +238,10 @@ export function OptimizerMemberCard({
 											key={label}
 											title={`${label}: ${Number(value).toFixed(1)}%`}
 										>
-											<dt className="text-[9px] leading-3 text-muted-foreground">
+											<dt className="text-[9px]/3  text-muted-foreground">
 												{label}
 											</dt>
-											<dd className="text-[10px] leading-4">
+											<dd className="text-[10px]/4 ">
 												{Number(value).toFixed(0)}%
 											</dd>
 										</div>

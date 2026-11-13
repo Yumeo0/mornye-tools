@@ -100,7 +100,7 @@ function EchoThumb({
 			{marker && (
 				<span
 					className={cn(
-						"absolute -bottom-0.5 -right-0.5 flex min-w-3 items-center justify-center bg-primary px-0.5 text-[9px] font-semibold leading-3 text-primary-foreground",
+						"absolute -bottom-0.5 -right-0.5 flex min-w-3 items-center justify-center bg-primary px-0.5 text-[9px]/3 font-semibold  text-primary-foreground",
 						change === "removed" &&
 							"bg-popover text-destructive ring-1 ring-destructive/70",
 					)}
@@ -234,7 +234,7 @@ export function ResultRow({
 						<span className="w-16 shrink-0" />
 					)}
 					{result.stats && (
-						<span className="order-last basis-full min-w-0 @min-[1040px]/results:order-none @min-[1040px]/results:flex-1 @min-[1040px]/results:basis-0">
+						<span className="order-last basis-full min-w-0 @min-[1040px]/results:order-0 @min-[1040px]/results:flex-1 @min-[1040px]/results:basis-0">
 							<StatChips stats={result.stats} totalRv={rating?.total} />
 						</span>
 					)}

@@ -176,7 +176,7 @@ export function MapProgressImport({
 		>
 			<DialogContent
 				showCloseButton={false}
-				className="flex flex-col gap-0 overflow-hidden border bg-card p-0 text-card-foreground shadow-2xl sm:max-w-[40rem]"
+				className="flex flex-col gap-0 overflow-hidden border bg-card p-0 text-card-foreground shadow-2xl sm:max-w-160"
 			>
 				<header className="flex shrink-0 items-start justify-between gap-4 p-5">
 					<div className="flex min-w-0 flex-col gap-1">

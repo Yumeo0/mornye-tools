@@ -71,7 +71,7 @@ export function ObtainedThrough({
 						return (
 							<div
 								key={`requirement:${source.step}`}
-								className="flex items-start gap-2 p-2 text-xs leading-relaxed"
+								className="flex items-start gap-2 p-2 text-xs/relaxed "
 							>
 								<span className="shrink-0 text-muted-foreground">
 									{source.step + 1}.
@@ -85,9 +85,7 @@ export function ObtainedThrough({
 						<>
 							<img
 								src={
-									quest?.icon ??
-									challenge?.icon ??
-									"/icons/map/task-01.webp"
+									quest?.icon ?? challenge?.icon ?? "/icons/map/task-01.webp"
 								}
 								alt=""
 								className={cn(

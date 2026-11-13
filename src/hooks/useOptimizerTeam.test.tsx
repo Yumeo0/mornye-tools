@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { type AccountSnapshot, EMPTY_ACCOUNT } from "@/lib/account";
 import { getCatalog } from "@/lib/calc/riley/engine.generated.js";
 import { optimizerSetupKey } from "@/lib/optimizerSetup";
+import { required } from "@/lib/required";
 import { makeFixture } from "../../calculator/fixture";
 import { useOptimizerTeam } from "./useOptimizerTeam";
 
@@ -21,8 +22,8 @@ function Harness() {
 			skills: [],
 		})),
 	};
-	const support = profile.members.find((m) => !m.mainDps)!;
-	const another = catalog.teams.find((p) => p.id !== profile.id)!;
+	const support = required(profile.members.find((m) => !m.mainDps));
+	const another = required(catalog.teams.find((p) => p.id !== profile.id));
 	const team = useOptimizerTeam(snapshot, catalog);
 	const [step, setStep] = useState(0);
 	switch (step) {
@@ -135,11 +136,13 @@ test("load rotation before choosing a target; retain setup across remounts and i
 	try {
 		expect(renderToStaticMarkup(<Harness />)).toContain("complete");
 		await written.promise;
-		const saved = JSON.parse(disk.get(`filters.${optimizerSetupKey(null)}`)!);
+		const saved = JSON.parse(
+			required(disk.get(`filters.${optimizerSetupKey(null)}`)),
+		);
 		const catalog = getCatalog();
 		const { profile } = makeFixture(catalog);
-		const another = catalog.teams.find((p) => p.id !== profile.id)!;
-		const support = profile.members.find((m) => !m.mainDps)!;
+		const another = required(catalog.teams.find((p) => p.id !== profile.id));
+		const support = required(profile.members.find((m) => !m.mainDps));
 		expect(saved.profileId).toBe(another.id);
 		expect(saved.targetId).toBe(0);
 		expect(saved.mode).toBe("team");
@@ -181,7 +184,9 @@ test("load rotation before choosing a target; retain setup across remounts and i
 		await unownedWritten.promise;
 		expect(
 			JSON.parse(
-				disk.get(`filters.${optimizerSetupKey(unownedSnapshot.profile.id)}`)!,
+				required(
+					disk.get(`filters.${optimizerSetupKey(unownedSnapshot.profile.id)}`),
+				),
 			).targetId,
 		).toBe(1404);
 	} finally {

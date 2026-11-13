@@ -51,7 +51,10 @@ export async function searchInventory(
 		string,
 		{ value: number; result: SimulationResult | null }
 	>();
-	const ranked = new Map<string, OptResultEntry>();
+	// Keep the selected echoes with their score so validation never has to
+	// reconstruct a candidate through a second, partial UID lookup.
+	type RankedBuild = { entry: OptResultEntry; echoes: CalcEcho[] };
+	const ranked = new Map<string, RankedBuild>();
 	const verified = new Set<string>();
 	let baseline: OptResultEntry | null = null,
 		baselineEvaluation: SimulationResult | null = null,
@@ -63,7 +66,7 @@ export async function searchInventory(
 	const snapshot = (verifiedOnly = true): SearchUpdate => ({
 		results: [...ranked.entries()]
 			.filter(([key]) => !verifiedOnly || verified.has(key))
-			.map(([, value]) => value)
+			.map(([, value]) => value.entry)
 			.sort(
 				(a, b) =>
 					b.damage - a.damage ||
@@ -122,13 +125,19 @@ export async function searchInventory(
 			: -1 -
 				deficit -
 				result.diagnostics.filter((d) => !d.includes("% ER")).length * 1000;
-		if (result.feasible && combo.every((e) => byUid.has(e.uid))) {
+		const inventoryCombo = result.feasible
+			? combo.map((echo) => byUid.get(echo.uid))
+			: [];
+		if (result.feasible && inventoryCombo.every((echo) => echo !== undefined)) {
 			if (!validate) verified.add(key);
 			ranked.set(key, {
-				uids: combo.map((e) => e.uid),
-				damage: value,
-				stats: result.stats[request.targetId] ?? null,
-				energy: result.energy,
+				echoes: inventoryCombo,
+				entry: {
+					uids: combo.map((e) => e.uid),
+					damage: value,
+					stats: result.stats[request.targetId] ?? null,
+					energy: result.energy,
+				},
 			});
 			// Keep the bounded provisional frontier until validation. Dropping
 			// lower candidates here could lose every feasible fallback when a
@@ -155,23 +164,25 @@ export async function searchInventory(
 	} else if (target.echoes.length)
 		baselineError =
 			"Equipped baseline needs five legal echoes with the rotation's required main echo in slot one.";
-	const accept = (entry: OptResultEntry) => {
+	const accept = ({ entry, echoes }: RankedBuild) => {
 		const key = optimizerBuildKey(entry.uids);
 		if (verified.has(key) || !validate) return;
-		const combo = entry.uids.map((uid) => byUid.get(uid)!);
 		try {
 			const checked = validate({
 				...request.scenario,
 				members: request.scenario.members.map((m) =>
-					m.characterId === request.targetId ? { ...m, echoes: combo } : m,
+					m.characterId === request.targetId ? { ...m, echoes } : m,
 				),
 			});
 			if (checked.feasible) {
 				ranked.set(key, {
-					...entry,
-					damage: objectiveScore(checked, request.objective),
-					energy: checked.energy,
-					stats: checked.stats[request.targetId] ?? null,
+					echoes,
+					entry: {
+						...entry,
+						damage: objectiveScore(checked, request.objective),
+						energy: checked.energy,
+						stats: checked.stats[request.targetId] ?? null,
+					},
 				});
 				verified.add(key);
 			} else {
@@ -184,7 +195,13 @@ export async function searchInventory(
 	};
 	const yieldIfNeeded = async () => {
 		if (performance.now() - lastYield >= 40) {
-			const best = snapshot(false).results[0];
+			const best = [...ranked.values()].sort(
+				(a, b) =>
+					b.entry.damage - a.entry.damage ||
+					optimizerBuildKey(a.entry.uids).localeCompare(
+						optimizerBuildKey(b.entry.uids),
+					),
+			)[0];
 			if (best) accept(best);
 			onUpdate(snapshot());
 			await new Promise((r) => setTimeout(r, 0));
@@ -310,12 +327,12 @@ export async function searchInventory(
 		}
 	}
 	let accepted = 0;
-	for (const entry of [...ranked.values()].sort(
-		(a, b) => b.damage - a.damage,
+	for (const build of [...ranked.values()].sort(
+		(a, b) => b.entry.damage - a.entry.damage,
 	)) {
 		if (aborted()) break;
-		accept(entry);
-		if (verified.has(optimizerBuildKey(entry.uids))) accepted++;
+		accept(build);
+		if (verified.has(optimizerBuildKey(build.entry.uids))) accepted++;
 		await yieldIfNeeded();
 		if (accepted >= request.resultsLimit) break;
 	}

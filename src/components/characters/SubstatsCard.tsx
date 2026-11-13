@@ -75,7 +75,7 @@ export function SubstatsCard({
 				<CardTitle>Substat priority</CardTitle>
 			</CardHeader>
 			<CardContent>
-				<ol className="relative flex flex-col gap-2 before:absolute before:top-3 before:bottom-3 before:left-2.5 before:w-px before:bg-border">
+				<ol className="relative flex flex-col gap-2 before:absolute before:inset-y-3  before:left-2.5 before:w-px before:bg-border">
 					{tiers.map((tier, tierIndex) => (
 						<li
 							key={tier.map((stat) => stat.code).join("=")}

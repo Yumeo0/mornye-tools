@@ -143,7 +143,7 @@ export function RotationTeamCard({
 											alt={member.mainEcho.name}
 											className="size-8 shrink-0 object-contain bg-muted/50"
 										/>
-										<span className="min-w-0 text-xs leading-snug">
+										<span className="min-w-0 text-xs/snug ">
 											{shortRotationVariant(member.variant) ||
 												member.mainEcho.name}
 										</span>

@@ -56,7 +56,7 @@ export function QuestMarkers({
 						onClick={() => onSelect(group)}
 						style={{ left: x, top: y }}
 						className={cn(
-							"pointer-events-auto absolute grid size-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring",
+							"pointer-events-auto absolute grid size-8 -translate-1/2  place-items-center rounded-full outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring",
 							group.some((entry) => entry.quest.id === selected) &&
 								"scale-125 drop-shadow-[0_0_4px_#fff]",
 							marker.status === "unknown" && "opacity-70",

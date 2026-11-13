@@ -33,7 +33,7 @@ export function CharacterCard({
 				<img
 					src={character.image}
 					alt={character.name}
-					className={`absolute inset-0 h-full w-full object-cover ${
+					className={`absolute inset-0 size-full  object-cover ${
 						account || character.preview ? "" : "grayscale opacity-70"
 					}`}
 				/>

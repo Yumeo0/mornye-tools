@@ -114,13 +114,17 @@ export const charactersById = new Map(
 );
 
 /** Echo species by monster id, every possible sonata set merged in. */
-export const echoesByMonsterId = new Map<number, CatalogEcho>();
+export const echoesByMonsterId = new Map<
+	number,
+	CatalogEcho & { monster_id: number }
+>();
 for (const echo of echoData as CatalogEcho[]) {
 	if (echo.monster_id == null) continue;
 	const existing = echoesByMonsterId.get(echo.monster_id);
 	if (!existing) {
 		echoesByMonsterId.set(echo.monster_id, {
 			...echo,
+			monster_id: echo.monster_id,
 			echo_sets: [...(echo.echo_sets ?? [])],
 		});
 		continue;

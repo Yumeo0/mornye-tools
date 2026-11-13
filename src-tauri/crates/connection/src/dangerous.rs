@@ -1149,10 +1149,10 @@ pub fn dangerous_connect(
                                     let mut profiles = account.store.lock().map_err(|_| "Account store is unavailable.")?;
                                     let store = profiles.get_mut(&profile_id).ok_or("The connected account profile is unavailable.")?;
                                     if matches!(&command.operation, SessionOperation::SwitchTeam(_)) {
-                                        confirm_team_switch(&store.snapshot(), team)?;
+                                        confirm_team_switch(store.snapshot(), team)?;
                                     } else {
                                         // CurRole/IsCurrent are server-managed context, not editor inputs.
-                                        confirm_team_edit(&store.snapshot(), team.id, &team.name, &team.role_ids)?;
+                                        confirm_team_edit(store.snapshot(), team.id, &team.name, &team.role_ids)?;
                                     }
                                 }
                             }
@@ -1193,20 +1193,34 @@ pub fn dangerous_connect(
     Ok(state.service.inner.lock().status())
 }
 
-/// A single worker owns the socket. IPC only queues a typed, bounded operation;
-/// the webview cannot submit arbitrary game requests or choose an ingestion target.
-#[tauri::command]
-pub async fn dangerous_echo_upgrade(
-    window: WebviewWindow,
-    state: State<'_, DangerousState>,
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct EchoUpgradeRequest {
     profile_id: String,
     incr_id: i32,
     target_level: i32,
     protected_ids: Vec<i32>,
     approved: Option<mornye_game_client::echo_upgrade::UpgradePlan>,
     material_policy: mornye_game_client::echo_upgrade::MaterialPolicy,
+}
+
+/// A single worker owns the socket. IPC only queues a typed, bounded operation;
+/// the webview cannot submit arbitrary game requests or choose an ingestion target.
+#[tauri::command]
+pub async fn dangerous_echo_upgrade(
+    window: WebviewWindow,
+    state: State<'_, DangerousState>,
+    request: EchoUpgradeRequest,
 ) -> Result<mornye_game_client::echo_upgrade::UpgradePlan, String> {
     main_window(&window)?;
+    let EchoUpgradeRequest {
+        profile_id,
+        incr_id,
+        target_level,
+        protected_ids,
+        approved,
+        material_policy,
+    } = request;
     if protected_ids.len() > 10000 || !protected_ids.contains(&incr_id) {
         return Err("The selected echo must be protected from use as upgrade material.".into());
     }

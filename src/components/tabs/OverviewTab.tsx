@@ -156,7 +156,7 @@ export function ProfileOverview({
 									<CardAction className="max-w-48">
 										<Badge
 											variant="outline"
-											className="max-w-full whitespace-normal break-words"
+											className="max-w-full whitespace-normal wrap-break-word"
 										>
 											<HugeiconsIcon
 												icon={Globe02Icon}
@@ -184,7 +184,7 @@ export function ProfileOverview({
 								</Avatar>
 								<div className="flex min-w-0 flex-1 flex-col gap-5">
 									<div className="flex flex-wrap items-center justify-between gap-3">
-										<h2 className="min-w-0 break-words text-3xl font-semibold tracking-tight">
+										<h2 className="min-w-0 wrap-break-word text-3xl font-semibold tracking-tight">
 											{name}
 										</h2>
 										<PrivateUid
@@ -192,7 +192,7 @@ export function ProfileOverview({
 											uid={uid}
 										/>
 									</div>
-									<p className="max-w-xl whitespace-pre-wrap break-words text-sm leading-relaxed text-muted-foreground">
+									<p className="max-w-xl whitespace-pre-wrap wrap-break-word text-sm/relaxed  text-muted-foreground">
 										{player?.signature?.trim() || "No signature captured yet."}
 									</p>
 									<dl className="flex flex-wrap gap-8">

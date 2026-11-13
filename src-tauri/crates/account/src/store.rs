@@ -777,7 +777,7 @@ mod tests {
         assert_eq!(store.snapshot().echoes[0].incr_id, 10);
         assert_eq!(store.snapshot().echoes[0].stack_count, 6);
         // The dead override went away with the echo.
-        assert!(store.overrides.echoes.get("11").is_none());
+        assert!(!store.overrides.echoes.contains_key("11"));
         // Unknown and manual echoes are never dropped through this path.
         assert!(!store.remove_merged_echo(99));
         let added = store.add_manual_echo(echo(0, 60000325));

@@ -16,6 +16,10 @@
 			"!node_modules",
 			"!src-tauri/target",
 			"!src-tauri/crates/spectrum",
+			"!src-tauri/protocol",
+			"!docs/benchmarks/browser-results.json",
+			"!**/*.generated.*",
+			"!src/configs/{asset_aliases,character_*,echo_*,ghzs_thgl_mapping,inventory_*,map_icons,map_rules,preview_data,profile_portraits,progression,rotation_damage,spine_portraits,weapon_data}.json",
 			"!samples"
 		]
 	},

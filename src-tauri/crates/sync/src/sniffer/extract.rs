@@ -428,12 +428,10 @@ pub fn apply_packet(
         }
         PHANTOM_ITEM_REMOVE_NOTIFY => {
             if let Some(msg) = parse_msg::<pb::PhantomItemRemoveNotify>(&mut errors, gp) {
-                let changed = msg
-                    .phantom_item_incr_id_list
-                    .iter()
-                    .fold(false, |changed, id| {
-                        store.remove_merged_echo(i64::from(*id)) || changed
-                    });
+                let mut changed = false;
+                for id in &msg.phantom_item_incr_id_list {
+                    changed |= store.remove_merged_echo(i64::from(*id));
+                }
                 if changed {
                     sections.push("echoes");
                 }
@@ -919,6 +917,8 @@ fn apply_echo_operation<'a>(
     changed
 }
 
+type EchoStackSplit = (Echo, Option<Echo>);
+
 /// Shared shape of `PhantomLevelUpResponse` / `PhantomPolishResponse`: apply
 /// the stack operations that came with the response, then upsert the operated
 /// item. `UpdateInfo` is the authoritative post-operation state while the
@@ -938,7 +938,7 @@ fn apply_update_with_split<'a>(
     update_info: Option<&pb::PhantomItem>,
     split: Option<&'a pb::PhantomStackSplitInfo>,
     merges: impl Iterator<Item = &'a pb::PhantomStackMergeInfo>,
-) -> (bool, Vec<Echo>, Option<(Echo, Option<Echo>)>) {
+) -> (bool, Vec<Echo>, Option<EchoStackSplit>) {
     let merges: Vec<&pb::PhantomStackMergeInfo> = merges.collect();
     let consumed_by_merge = update_info.is_some_and(|item| {
         merges.iter().any(|merge| {

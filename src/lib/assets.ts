@@ -8,10 +8,7 @@ const slug = (name: string) =>
 		.replace(/-+/g, "-")
 		.toLowerCase();
 const stem = (path: string) =>
-	path
-		.split("/")
-		.at(-1)!
-		.replace(/\.[^.]+$/, "");
+	path.slice(path.lastIndexOf("/") + 1).replace(/\.[^.]+$/, "");
 const clean = (name: string) =>
 	slug(name.replace(/^(?:T_|SP_)/, "").replace(/_UI$/, ""));
 
@@ -153,7 +150,8 @@ export function assetUrl(path: string, resolveAlias = true): string {
 		else if (name === "SP_IconInventoryLike")
 			url = icon("echo-marks", "discarded");
 		else {
-			const folder = path.split("/").at(-2)!;
+			const parent = path.slice(0, path.lastIndexOf("/"));
+			const folder = parent.slice(parent.lastIndexOf("/") + 1);
 			url = image(
 				`items/${slug(folder.replace(/^Icon/, ""))}`,
 				clean(name.replace(/^T_Icon/, "")),

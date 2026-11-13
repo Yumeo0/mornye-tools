@@ -120,8 +120,10 @@ pub fn account_import_backup(
         return Err("The import destination changed. Review the file again.".into());
     }
     // Validate the selected parts before creating any new profile.
-    let mut base = mornye_account::model::AccountSnapshot::default();
-    base.profile = Some(review.profile.clone());
+    let base = mornye_account::model::AccountSnapshot {
+        profile: Some(review.profile.clone()),
+        ..Default::default()
+    };
     backup.merge(&base, &parts)?;
     let target_id = if review.new_profile {
         profiles.ensure(

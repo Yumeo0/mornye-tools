@@ -30,7 +30,7 @@ export function QuestDetails({
 	return (
 		<aside
 			aria-label="Side quest details"
-			className="absolute right-3 top-3 flex max-h-[calc(100%_-_1.5rem)] w-80 flex-col gap-3 overflow-y-auto border bg-background/95 p-4 shadow-xl max-[1000px]:w-60"
+			className="absolute right-3 top-3 flex max-h-[calc(100%-1.5rem)] w-80 flex-col gap-3 overflow-y-auto border bg-background/95 p-4 shadow-xl max-[1000px]:w-60"
 		>
 			<div className="flex items-start justify-between gap-2">
 				<div className="flex min-w-0 flex-col gap-2">
@@ -80,7 +80,7 @@ export function QuestDetails({
 				</Select>
 			)}
 			{quest.description && (
-				<p className="whitespace-pre-line text-xs leading-relaxed text-muted-foreground">
+				<p className="whitespace-pre-line text-xs/relaxed  text-muted-foreground">
 					{quest.description}
 				</p>
 			)}

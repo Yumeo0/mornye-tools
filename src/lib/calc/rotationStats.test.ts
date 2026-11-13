@@ -2,6 +2,7 @@ import { expect, test } from "bun:test";
 import { EMPTY_OPTIMIZER_FILTERS } from "@/components/optimizer/optimizerOptions";
 import echoData from "@/configs/echo_data.json";
 import { EMPTY_ACCOUNT } from "@/lib/account";
+import { required } from "@/lib/required";
 import { makeFixture } from "../../../calculator/fixture";
 import { selectCandidates } from "./optimizer";
 import {
@@ -27,7 +28,8 @@ for (const targetIndex of [0, 2]) {
 			...EMPTY_ACCOUNT,
 			echoes: inventory.map((e, i) => ({
 				incrId: i + 1,
-				itemId: echoData.find((s) => s.monster_id === e.typeId)!.echo_id,
+				itemId: required(echoData.find((s) => s.monster_id === e.typeId))
+					.echo_id,
 				monsterId: e.typeId,
 				setId: e.setId,
 				level: e.level,
@@ -43,9 +45,8 @@ for (const targetIndex of [0, 2]) {
 		expect(builds.errors).toEqual([]);
 		const pool = selectCandidates(
 			snapshot,
-			profile,
+			target,
 			builds.members,
-			target.characterId,
 			EMPTY_OPTIMIZER_FILTERS,
 		);
 		expect(pool.pool).toHaveLength(5);
@@ -139,9 +140,15 @@ test("reference builds are fixed, isolated, and independent of target equipment"
 	const resolved = resolveRotationStats(scenario, 1404);
 	const result = evaluate(resolved);
 	expect(result.feasible).toBe(true);
-	expect(resolved.members[2]).toEqual(scenario.members[2]);
+	expect(scenario.members[2]).toEqual(resolved.members[2]);
 	expect(resolved.members[0].rotationStats).toBeDefined();
 	expect(result.energy.every((e) => e.feasible)).toBe(true);
+	const reordered = resolveRotationStats(
+		{ ...scenario, members: [...scenario.members].reverse() },
+		1404,
+	);
+	expect(reordered.members).toEqual([...resolved.members].reverse());
+	expect(evaluate(reordered)).toEqual(result);
 	const changed = structuredClone(scenario);
 	changed.members[2].echoes = [];
 	expect(resolveRotationStats(changed, 1404).members.slice(0, 2)).toEqual(
@@ -153,9 +160,9 @@ test("reference builds are fixed, isolated, and independent of target equipment"
 		for (const stat of [...echo.mainStats, ...echo.substats])
 			if (stat.key === "energyRegen") stat.value = 0;
 	const failed = evaluate(short);
-	expect(failed.energy.find((e) => e.characterId === 1404)!.feasible).toBe(
-		false,
-	);
+	expect(
+		required(failed.energy.find((e) => e.characterId === 1404)).feasible,
+	).toBe(false);
 	expect(failed.stats[resolved.members[0].characterId]).toEqual(
 		result.stats[resolved.members[0].characterId],
 	);
@@ -165,18 +172,20 @@ test("reference builds are fixed, isolated, and independent of target equipment"
 
 function phrolovaFixture() {
 	const catalog = getCatalog();
-	const profile = catalog.teams.find(
-		(t) =>
-			!t.errors.length &&
-			t.members.map((m) => m.name).join("/") ===
-				"Phrolova/Shorekeeper/Lucilla" &&
-			t.members[0].loadoutId === 16081 &&
-			t.members[1].mainEcho.name === "Fallacy of No Return" &&
-			t.members[2].mainEcho.name === "Bell-Borne Geochelone",
-	)!;
-	const main = echoData.find(
-		(e) => e.monster_id === profile.members[0].mainEcho.typeId,
-	)!;
+	const profile = required(
+		catalog.teams.find(
+			(t) =>
+				!t.errors.length &&
+				t.members.map((m) => m.name).join("/") ===
+					"Phrolova/Shorekeeper/Lucilla" &&
+				t.members[0].loadoutId === 16081 &&
+				t.members[1].mainEcho.name === "Fallacy of No Return" &&
+				t.members[2].mainEcho.name === "Bell-Borne Geochelone",
+		),
+	);
+	const main = required(
+		echoData.find((e) => e.monster_id === profile.members[0].mainEcho.typeId),
+	);
 	// Legal, actual-stat 43311 target gear. Only the teammates are theoretical.
 	const seed = makeFixture(catalog).scenario.members[2].echoes;
 	const ofCost = (cost: number) => [
@@ -203,7 +212,7 @@ function phrolovaFixture() {
 					.filter(
 						(d) => d.echo_name === species.echo_name && d.monster_id != null,
 					)
-					.map((d) => d.monster_id!),
+					.map((d) => required(d.monster_id)),
 			),
 			name: species.echo_name,
 			setId: 19,
@@ -234,7 +243,7 @@ test("Phrolova searches owned echoes with Shorekeeper and Lucilla on rotation st
 	expect(simulation.diagnostics).toEqual([]);
 	expect(simulation.feasible).toBe(true);
 	expect(
-		simulation.energy.find((e) => e.characterId === 1505)!.actual,
+		required(simulation.energy.find((e) => e.characterId === 1505)).actual,
 	).toBeGreaterThanOrEqual(240);
 	const result = await searchInventory(
 		{
@@ -253,7 +262,7 @@ test("Phrolova searches owned echoes with Shorekeeper and Lucilla on rotation st
 	);
 	expect(result.results).toHaveLength(1);
 	expect(result.results[0].uids).toEqual(echoes.map((e) => e.uid));
-	expect(result.baseline!.damage).toBe(result.results[0].damage);
+	expect(required(result.baseline).damage).toBe(result.results[0].damage);
 	const invalid = structuredClone(resolved);
 	invalid.members[0].echoSource = "rotation";
 	expect(() => resolveRotationStats(invalid, 1608)).toThrow("owned echoes");

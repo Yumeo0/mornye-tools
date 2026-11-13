@@ -2,6 +2,7 @@ import { expect, test } from "bun:test";
 import { EMPTY_OPTIMIZER_FILTERS } from "@/components/optimizer/optimizerOptions";
 import echoData from "@/configs/echo_data.json";
 import { type Echo, EMPTY_ACCOUNT } from "@/lib/account";
+import { required } from "@/lib/required";
 import { makeFixture } from "../../../calculator/fixture";
 import { selectCandidates } from "./optimizer";
 import { getCatalog } from "./riley/engine.generated.js";
@@ -12,7 +13,7 @@ test("pool truncation retains required main copies and respects filters and team
 		const e = fixture.inventory[main ? 0 : 3];
 		return {
 			incrId: index,
-			itemId: echoData.find((d) => d.monster_id === e.typeId)!.echo_id,
+			itemId: required(echoData.find((d) => d.monster_id === e.typeId)).echo_id,
 			monsterId: e.typeId,
 			setId: e.setId,
 			level: 25,
@@ -35,9 +36,8 @@ test("pool truncation retains required main copies and respects filters and team
 	fixture.scenario.members[0].echoes[0].uid = "incr:900";
 	const selected = selectCandidates(
 		snapshot,
-		fixture.profile,
+		fixture.profile.members[2],
 		fixture.scenario.members,
-		1404,
 		EMPTY_OPTIMIZER_FILTERS,
 	);
 	expect(selected.truncated).toBe(true);
@@ -49,18 +49,16 @@ test("pool truncation retains required main copies and respects filters and team
 	fixture.scenario.members[0].echoSource = "rotation";
 	const theoretical = selectCandidates(
 		snapshot,
-		fixture.profile,
+		fixture.profile.members[2],
 		fixture.scenario.members,
-		1404,
 		EMPTY_OPTIMIZER_FILTERS,
 	);
 	expect(theoretical.mainCount).toBe(2);
 	expect(theoretical.pool.some((e) => e.uid === "incr:900")).toBe(true);
 	const filtered = selectCandidates(
 		snapshot,
-		fixture.profile,
+		fixture.profile.members[2],
 		fixture.scenario.members,
-		1404,
 		{ ...EMPTY_OPTIMIZER_FILTERS, mainStats: ["energyRegen"] },
 	);
 	expect(filtered.mainCount).toBe(0);

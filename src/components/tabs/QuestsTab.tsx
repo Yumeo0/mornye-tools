@@ -91,9 +91,7 @@ function QuestRow({
 	const heading = (
 		<>
 			<img src={quest.icon} alt="" className="size-8 shrink-0 object-contain" />
-			<h3 className="min-w-0 flex-1 text-sm font-medium leading-snug">
-				{quest.name}
-			</h3>
+			<h3 className="min-w-0 flex-1 text-sm/snug font-medium ">{quest.name}</h3>
 		</>
 	);
 	return (
@@ -112,7 +110,7 @@ function QuestRow({
 				)}
 				{hasDescription && (
 					<CollapsibleContent>
-						<p className="whitespace-pre-line pb-3 pl-14 pr-4 text-sm leading-relaxed text-muted-foreground">
+						<p className="whitespace-pre-line pb-3 pl-14 pr-4 text-sm/relaxed  text-muted-foreground">
 							{quest.description}
 						</p>
 					</CollapsibleContent>

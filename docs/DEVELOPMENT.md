@@ -22,8 +22,31 @@ If installation fails because a submodule is missing, initialize it and rerun.
 From the repository root:
 
 ```sh
+bun run check        # Biome checks + Tailwind canonical-class warnings
+bun run lint         # Biome lint + Tailwind canonical-class warnings
+bun run format       # Format with Biome, then print Tailwind warnings
+bun run format:check # Check formatting without writing, then print Tailwind warnings
 bun test ./src ./scripts --timeout 15000
 bun run build
+```
+
+These commands run the Tailwind check even if Biome reports errors. Pass file or
+directory paths to limit either check, for example `bun run lint src/components`.
+Tailwind suggestions are warnings and do not fail the command; Biome errors and
+checker failures still produce a nonzero exit code.
+
+Biome skips generated game-data tables, calculator bundles, protocol snapshots,
+and recorded benchmark results. Refresh these through their generating scripts.
+
+The Tailwind check uses `better-tailwindcss/enforce-canonical-classes` through
+Oxlint, with the app's `src/index.css` theme. It uses the same canonicalization
+as VS Code's `tailwindCSS.lint.suggestCanonicalClasses`, including suggestions
+such as `[overflow-wrap:anywhere]` → `wrap-anywhere`. Biome remains responsible
+for formatting and other lint rules. To run or autofix just the Tailwind rule:
+
+```sh
+bun run lint:tailwind
+bun run lint:tailwind --fix
 ```
 
 Run desktop Rust checks **from `src-tauri/`** so Cargo loads the pinned-protocol
@@ -98,16 +121,16 @@ The dialog renders Markdown headings, lists and emphasis. Bundled entries from
 
 ## Architecture
 
-| Area | Entry points |
-| --- | --- |
-| Desktop wiring | `src-tauri/src/lib.rs` |
-| Game client: login, transport, upgrades | `src-tauri/crates/game-client/` |
-| Account models and persistence | `src-tauri/crates/account/` |
-| Passive capture and shared ingestion | `src-tauri/crates/sync/` |
-| Active connection and credentials | `src-tauri/crates/connection/` |
-| Overlay, window capture and OCR | `src-tauri/crates/overlay/` |
-| Main window and tabs | `src/pages/MainWindow.tsx`, `src/components/tabs/` |
-| Calculator and ratings | `src/lib/calc/`, `src/lib/rating.ts` |
+| Area                                    | Entry points                                       |
+| --------------------------------------- | -------------------------------------------------- |
+| Desktop wiring                          | `src-tauri/src/lib.rs`                             |
+| Game client: login, transport, upgrades | `src-tauri/crates/game-client/`                    |
+| Account models and persistence          | `src-tauri/crates/account/`                        |
+| Passive capture and shared ingestion    | `src-tauri/crates/sync/`                           |
+| Active connection and credentials       | `src-tauri/crates/connection/`                     |
+| Overlay, window capture and OCR         | `src-tauri/crates/overlay/`                        |
+| Main window and tabs                    | `src/pages/MainWindow.tsx`, `src/components/tabs/` |
+| Calculator and ratings                  | `src/lib/calc/`, `src/lib/rating.ts`               |
 
 Rust crates share `src-tauri/Cargo.lock` and `src-tauri/target/`.
 A change rebuilds its crate and dependents; the desktop app still needs relinking.
@@ -203,13 +226,13 @@ require Tauri.
 Do not edit vendored/generated code or submodule contents:
 `src-tauri/crates/spectrum/`, `wuwa_calc/`, and `data/` checkouts.
 
-| Task | Command |
-| --- | --- |
-| Update all game data, assets and named protocols | `bun run update:data` |
-| Rebuild from the currently pinned checkouts | `bun scripts/compile_all_data.ts` |
-| Republish referenced images after changing asset paths | `bun scripts/copy_assets.ts` |
-| Refresh Tethys builds and team presets | `bun scripts/compile_build_guides.ts` |
-| Refresh community map icons / GHZS matching lookup | `bun run map:icons` / `bun run map:ghzs-mapping` |
+| Task                                                   | Command                                          |
+| ------------------------------------------------------ | ------------------------------------------------ |
+| Update all game data, assets and named protocols       | `bun run update:data`                            |
+| Rebuild from the currently pinned checkouts            | `bun scripts/compile_all_data.ts`                |
+| Republish referenced images after changing asset paths | `bun scripts/copy_assets.ts`                     |
+| Refresh Tethys builds and team presets                 | `bun scripts/compile_build_guides.ts`            |
+| Refresh community map icons / GHZS matching lookup     | `bun run map:icons` / `bun run map:ghzs-mapping` |
 
 The data pipeline reports numbered stages, timings, and output totals. Add
 `--verbose` (`bun run update:data --verbose` or

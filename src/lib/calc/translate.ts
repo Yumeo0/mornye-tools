@@ -20,9 +20,8 @@ const normalize = (s: string) =>
 		.toLowerCase()
 		.replace(/[^a-z0-9]/g, "");
 const types = new Map<string, number>();
-for (const e of echoesByMonsterId.values()) {
+for (const [id, e] of echoesByMonsterId) {
 	const key = normalize(e.echo_name);
-	const id = e.monster_id!;
 	types.set(key, Math.min(types.get(key) ?? id, id));
 }
 export function toEchoInstance(echo: Echo): {
@@ -30,7 +29,9 @@ export function toEchoInstance(echo: Echo): {
 	error?: string;
 } {
 	const def = echoesByMonsterId.get(echo.monsterId);
+	const typeId = def && types.get(normalize(def.echo_name));
 	if (
+		typeId === undefined ||
 		!def?.echo_cost ||
 		!echo.mainProps.length ||
 		!def.echo_sets.some((s) => s.id === echo.setId)
@@ -51,7 +52,7 @@ export function toEchoInstance(echo: Echo): {
 	return {
 		instance: {
 			uid: `incr:${echo.incrId}`,
-			typeId: types.get(normalize(def.echo_name))!,
+			typeId,
 			name: def.echo_name,
 			cost: def.echo_cost,
 			setId: echo.setId,

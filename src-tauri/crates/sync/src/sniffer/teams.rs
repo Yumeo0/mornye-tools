@@ -543,7 +543,7 @@ mod tests {
         let mut notifications = 0;
         while let Some(record) = reader.next_packet() {
             let record = record.unwrap();
-            let Ok(packets) = transport.receive_packet(record.data.to_vec()) else {
+            let Ok(packets) = transport.receive_packet(&record.data) else {
                 continue;
             };
             for packet in packets {

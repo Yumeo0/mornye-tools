@@ -81,9 +81,7 @@ export function SuggestedTeamCard({
 			</CardHeader>
 			<CardContent className="flex flex-col gap-3">
 				{team.profile.customRotation && (
-					<p className="text-xs [overflow-wrap:anywhere]">
-						{team.profile.label}
-					</p>
+					<p className="text-xs wrap-anywhere">{team.profile.label}</p>
 				)}
 				<div className="grid grid-cols-3 gap-3">
 					{team.profile.members.map((member) => (

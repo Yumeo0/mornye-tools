@@ -723,7 +723,7 @@ export function RotationBuilderTab({
 														<span className="truncate">· {action.variant}</span>
 													)}
 												</span>
-												<span className="whitespace-normal break-words">
+												<span className="whitespace-normal wrap-break-word">
 													{
 														splitRotationActionName(
 															rotationActionName(action),

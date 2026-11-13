@@ -1,5 +1,6 @@
 import { expect, test } from "bun:test";
 import echoData from "@/configs/echo_data.json";
+import { required } from "@/lib/required";
 import { makeFixture } from "../../../calculator/fixture";
 import {
 	evaluate,
@@ -41,17 +42,16 @@ test("exact inventory stats, hit ownership, fast/validated scores, and state iso
 	expect(objectiveScore(a, { kind: "teamDamage" })).toBeGreaterThan(
 		objectiveScore(a, { kind: "memberDamage", characterId: 1404 }),
 	);
-	const target = scenario.members.find((m) => m.characterId === 1404)!;
+	const target = required(scenario.members.find((m) => m.characterId === 1404));
 	const held =
 		100 +
 		target.echoes
 			.flatMap((e) => [...e.mainStats, ...e.substats])
 			.filter((p) => p.key === "energyRegen")
 			.reduce((n, p) => n + p.value, 0);
-	expect(a.energy.find((e) => e.characterId === 1404)!.actual).toBeCloseTo(
-		held,
-		8,
-	);
+	expect(
+		required(a.energy.find((e) => e.characterId === 1404)).actual,
+	).toBeCloseTo(held, 8);
 	const changed = structuredClone(scenario);
 	changed.members[2].echoes[1].substats[0].value += 1;
 	evaluate(changed);
@@ -91,11 +91,13 @@ test("mapped main echoes pass equipment validation despite upstream name differe
 	const catalog = getCatalog();
 	const { scenario: fixture } = makeFixture(catalog);
 	for (const mainId of [6000199, 6000225, 6000201, 6000121]) {
-		const profile = catalog.teams.find(
-			(team) =>
-				!team.errors.length &&
-				team.members.some((m) => m.mainEcho.engineId === mainId),
-		)!;
+		const profile = required(
+			catalog.teams.find(
+				(team) =>
+					!team.errors.length &&
+					team.members.some((m) => m.mainEcho.engineId === mainId),
+			),
+		);
 		const scenario: Scenario = {
 			profileId: "custom:mapped-main",
 			cycles: 1,
@@ -126,21 +128,24 @@ test("mapped main echoes pass equipment validation despite upstream name differe
 						? {
 								typeId: m.mainEcho.typeId,
 								name: m.mainEcho.name,
-								setId: echoData.find((e) => e.monster_id === m.mainEcho.typeId)!
-									.echo_sets[0].id,
+								setId: required(
+									echoData.find((e) => e.monster_id === m.mainEcho.typeId),
+								).echo_sets[0].id,
 							}
 						: {}),
 				})),
 			})),
 		};
-		const member = profile.members.find((m) => m.mainEcho.engineId === mainId)!;
+		const member = required(
+			profile.members.find((m) => m.mainEcho.engineId === mainId),
+		);
 		expect(
 			evaluateFast(scenario).stats[member.characterId].atk,
 		).toBeGreaterThan(0);
 		const wrong = structuredClone(scenario);
-		wrong.members.find(
-			(m) => m.characterId === member.characterId,
-		)!.echoes[0].typeId = -1;
+		required(
+			wrong.members.find((m) => m.characterId === member.characterId),
+		).echoes[0].typeId = -1;
 		expect(() => evaluateFast(wrong)).toThrow("slot one");
 	}
 });

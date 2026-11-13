@@ -48,7 +48,10 @@ bun run build            # Build frontend (TypeScript check + Vite)
 bun tauri build          # Full production build
 
 # Format/Lint
-bunx @biomejs/biome check --write  # Format and fix with Biome
+bun run check            # Biome checks + Tailwind canonical-class warnings
+bun run lint             # Lint with Biome + Tailwind canonical-class warnings
+bun run format           # Format with Biome + print Tailwind warnings
+bun run lint:tailwind --fix # Apply Tailwind canonical-class fixes
 ```
 
 ### Debugging
@@ -92,6 +95,7 @@ All UI components in [src/components/ui/](../src/components/ui/).
 ### Path Aliases
 
 Configured in [vite.config.ts](../vite.config.ts) and [components.json](../components.json):
+
 - `@/` → `src/`
 - Import components: `@/components/ui/button`
 
@@ -112,8 +116,8 @@ fn my_command(arg: &str) -> String {
 Call from frontend:
 
 ```ts
-import { invoke } from '@tauri-apps/api/core';
-await invoke('my_command', { arg: 'value' });
+import { invoke } from "@tauri-apps/api/core";
+await invoke("my_command", { arg: "value" });
 ```
 
 ## Key Files

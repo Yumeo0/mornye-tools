@@ -44,12 +44,12 @@ cargo run -p mornye-game-client -- --discover
 cargo run -p mornye-game-client -- --list-servers
 ```
 
-| Option | Use |
-| --- | --- |
-| `--game-dir <path>` | Choose a custom or ambiguous installation |
-| `--server <region-or-id>` | Override the config's region for a real run |
+| Option                        | Use                                                      |
+| ----------------------------- | -------------------------------------------------------- |
+| `--game-dir <path>`           | Choose a custom or ambiguous installation                |
+| `--server <region-or-id>`     | Override the config's region for a real run              |
 | `--bootstrap-url <https-url>` | Override the public server catalogue after a game update |
-| `--out <path>` | Choose a new inventory export path |
+| `--out <path>`                | Choose a new inventory export path                       |
 
 App/resource versions and SDK settings come from the installation. If discovery
 fails after an update, run the updated game once to refresh its logs.

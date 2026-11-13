@@ -191,6 +191,44 @@ impl Sniffer {
     }
 }
 
+fn first_push_sequence(mut segments: &[u8]) -> Option<u32> {
+    while segments.len() >= 24 {
+        if segments[4] == 81 {
+            return Some(kcp::get_sn(segments));
+        }
+        let length = u32::from_le_bytes(segments[20..24].try_into().unwrap()) as usize;
+        segments = segments.get(24..)?.get(length..)?;
+    }
+    None
+}
+
+fn packet_error(message: String) -> spectrum::game::GamePacketError {
+    io::Error::new(io::ErrorKind::InvalidData, message).into()
+}
+
+fn trace_handshake(payload: &[u8]) -> bool {
+    payload.len() == 39
+        && payload[1..3] == [0, 32]
+        && payload[3..35].iter().all(u8::is_ascii_hexdigit)
+        && crc32fast::hash(&payload[..35]) == u32::from_le_bytes(payload[35..].try_into().unwrap())
+}
+
+/// Capture paths explicitly supply Ethernet. Do not guess framing from the
+/// destination MAC's high nibble: MACs starting with 4/6 look like IP versions.
+pub(super) fn udp_payload(frame: &[u8]) -> Result<(bool, &[u8]), NetworkPacketError> {
+    let packet = SlicedPacket::from_ethernet(frame)?;
+    let Some(TransportSlice::Udp(udp)) = packet.transport else {
+        return Err(NetworkPacketError::TransportLayerNotUdp);
+    };
+    if super::live::in_default_ranges(udp.source_port()) {
+        Ok((true, udp.payload()))
+    } else if super::live::in_default_ranges(udp.destination_port()) {
+        Ok((false, udp.payload()))
+    } else {
+        Err(NetworkPacketError::IncorrectPorts)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -501,43 +539,5 @@ mod tests {
             sniffer.receive_packet(ethernet(&data, false)),
             Err(SnifferError::Kcp(KcpError::CrcMismatch { .. }))
         ));
-    }
-}
-
-fn first_push_sequence(mut segments: &[u8]) -> Option<u32> {
-    while segments.len() >= 24 {
-        if segments[4] == 81 {
-            return Some(kcp::get_sn(segments));
-        }
-        let length = u32::from_le_bytes(segments[20..24].try_into().unwrap()) as usize;
-        segments = segments.get(24..)?.get(length..)?;
-    }
-    None
-}
-
-fn packet_error(message: String) -> spectrum::game::GamePacketError {
-    io::Error::new(io::ErrorKind::InvalidData, message).into()
-}
-
-fn trace_handshake(payload: &[u8]) -> bool {
-    payload.len() == 39
-        && payload[1..3] == [0, 32]
-        && payload[3..35].iter().all(u8::is_ascii_hexdigit)
-        && crc32fast::hash(&payload[..35]) == u32::from_le_bytes(payload[35..].try_into().unwrap())
-}
-
-/// Capture paths explicitly supply Ethernet. Do not guess framing from the
-/// destination MAC's high nibble: MACs starting with 4/6 look like IP versions.
-pub(super) fn udp_payload(frame: &[u8]) -> Result<(bool, &[u8]), NetworkPacketError> {
-    let packet = SlicedPacket::from_ethernet(frame)?;
-    let Some(TransportSlice::Udp(udp)) = packet.transport else {
-        return Err(NetworkPacketError::TransportLayerNotUdp);
-    };
-    if super::live::in_default_ranges(udp.source_port()) {
-        Ok((true, udp.payload()))
-    } else if super::live::in_default_ranges(udp.destination_port()) {
-        Ok((false, udp.payload()))
-    } else {
-        Err(NetworkPacketError::IncorrectPorts)
     }
 }

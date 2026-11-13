@@ -86,17 +86,20 @@ export function splitRotationActionName(name: string, kind: string) {
 }
 
 export function rotationStageOptions(kit: RotationKit, action: RotationAction) {
-	if (!action.stages) return [];
+	const stages = action.stages;
+	if (!stages) return [];
 	return baseRotationActions(kit)
-		.filter((a) => a.stages?.familyId === action.stages!.familyId)
-		.toSorted((a, b) =>
-			a
-				.stages!.parts.join(" → ")
-				.localeCompare(b.stages!.parts.join(" → "), undefined, {
-					numeric: true,
-				}),
+		.flatMap((candidate) =>
+			candidate.stages?.familyId === stages.familyId
+				? [{ action: candidate, parts: candidate.stages.parts }]
+				: [],
 		)
-		.map((stage) => {
+		.toSorted((a, b) =>
+			a.parts.join(" → ").localeCompare(b.parts.join(" → "), undefined, {
+				numeric: true,
+			}),
+		)
+		.map(({ action: stage, parts }) => {
 			const forms = kit.actions.filter((a) => a.baseId === stage.id);
 			// Keep the current exact legacy ID, or match its ending on the new sequence.
 			const selected =
@@ -105,7 +108,10 @@ export function rotationStageOptions(kit: RotationKit, action: RotationAction) {
 					: action.variant
 						? (forms.find((a) => a.variant === action.variant) ?? stage)
 						: stage;
-			return { value: selected.id, label: stage.stages!.parts.join(" → ") };
+			return {
+				value: selected.id,
+				label: parts.join(" → "),
+			};
 		});
 }
 export function rotationEndingOptions(
@@ -164,7 +170,7 @@ export function rotationKits(
 	catalog: CalculatorCatalog,
 ): RotationKit[] {
 	return rotation.members.flatMap((m) => {
-		const kit = catalog.rotationKits?.find(
+		const kit = catalog.rotationKits.find(
 			(k) =>
 				k.member.loadoutId === m.loadoutId &&
 				k.member.mainEcho.engineId === m.mainEchoId,
@@ -175,7 +181,10 @@ export function rotationKits(
 export function customRotationProfile(
 	rotation: CustomRotation,
 	catalog: CalculatorCatalog,
-): TeamProfile {
+): TeamProfile & {
+	customRotation: CustomRotation;
+	diagnosticDetails: RotationDiagnostic[];
+} {
 	const kits = rotationKits(rotation, catalog);
 	const issues: RotationDiagnostic[] = [];
 	const report = (message: string, nodeId?: string) =>

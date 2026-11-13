@@ -3,16 +3,15 @@ import { optimizerPoolFilters } from "@/components/optimizer/optimizerOptions";
 import { type AccountSnapshot, echoCount } from "@/lib/account";
 import { supportEchoScore, supportGuideFor } from "./supportGuide";
 import { aliasRoleId, toEchoInstance } from "./translate";
-import type { CalcEcho, MemberBuild, TeamProfile } from "./types";
+import type { CalcEcho, MemberBuild, TeamMemberProfile } from "./types";
 
 export function selectCandidates(
 	snapshot: AccountSnapshot,
-	profile: TeamProfile,
+	descriptor: TeamMemberProfile,
 	members: MemberBuild[],
-	targetId: number,
 	filters: OptimizerFilters,
 ) {
-	const descriptor = profile.members.find((m) => m.characterId === targetId)!;
+	const targetId = descriptor.characterId;
 	const errors: string[] = [];
 	const reserved = new Set(
 		members

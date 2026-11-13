@@ -27,14 +27,22 @@ await Bun.write(
 	CharacterPanelRequest,
 	CharacterPanelResult,
 } from "../../characterPanel";
-import type { CalculatorCatalog, Scenario, SimulationResult } from "../types";
+import type {
+	CalculatorCatalog,
+	PlaybackScenario,
+	PlaybackSimulationResult,
+	ResolvedScenario,
+	Scenario,
+	SimulationResult,
+} from "../types";
 export function getCatalog(): CalculatorCatalog;
+export function evaluate(scenario: PlaybackScenario): PlaybackSimulationResult;
 export function evaluate(scenario: Scenario): SimulationResult;
 export function evaluateFast(scenario: Scenario): SimulationResult;
-export function resolveRotationStats(
-	scenario: Scenario,
+export function resolveRotationStats<T extends Scenario>(
+	scenario: T,
 	targetId?: number,
-): Scenario;
+): ResolvedScenario<T>;
 export function characterPanel(
 	input: CharacterPanelRequest,
 ): CharacterPanelResult;
@@ -44,7 +52,7 @@ export function characterPanel(
 // Stable across checkout line endings. Reference-score caches also depend on
 // the app's scoring assumptions, not just the pinned upstream revision.
 const hasher = new Bun.CryptoHasher("sha256");
-hasher.update((await result.outputs[0]!.text()).replaceAll("\r\n", "\n"));
+hasher.update((await result.outputs[0].text()).replaceAll("\r\n", "\n"));
 hasher.update(
 	(
 		await Bun.file(join(root, "src/lib/calc/rotationDamage.ts")).text()

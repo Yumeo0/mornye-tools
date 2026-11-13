@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-13
+
 ### Added
 
 - **Changelog after updating.** The app automatically shows the new version's release notes after an update restarts it, and remembers when you dismiss them.

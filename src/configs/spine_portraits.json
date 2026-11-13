@@ -1,0 +1,652 @@
+{
+	"1102": {
+		"skeleton": "/spine/portraits/Portraits_Sanhua/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Sanhua/portrait.atlas",
+		"placement": {
+			"x": -30,
+			"y": -225,
+			"scale": 0.23999999463558197
+		},
+		"poster": "/spine/portraits/Portraits_Sanhua/first-frame-20b0e35f49f749db.webp"
+	},
+	"1103": {
+		"skeleton": "/spine/portraits/Portraits_Baizhi/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Baizhi/portrait.atlas",
+		"placement": {
+			"x": 0,
+			"y": -300,
+			"scale": 0.27000001072883606
+		},
+		"poster": "/spine/portraits/Portraits_Baizhi/first-frame-f49754553e32b081.webp"
+	},
+	"1104": {
+		"skeleton": "/spine/portraits/Portraits_Lingyang/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Lingyang/portrait.atlas",
+		"placement": {
+			"x": -10,
+			"y": -135,
+			"scale": 0.44999998807907104
+		},
+		"poster": "/spine/portraits/Portraits_Lingyang/first-frame-1e1f6d842c256c13.webp"
+	},
+	"1105": {
+		"skeleton": "/spine/portraits/Portraits_Zhezhi/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Zhezhi/portrait.atlas",
+		"placement": {
+			"x": 0,
+			"y": -360,
+			"scale": 0.33000001311302185
+		},
+		"poster": "/spine/portraits/Portraits_Zhezhi/first-frame-08ac8b08ea04a719.webp"
+	},
+	"1106": {
+		"skeleton": "/spine/portraits/Portraits_Youhu/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Youhu/portrait.atlas",
+		"placement": {
+			"x": 34,
+			"y": -235,
+			"scale": 0.1979999989271164
+		},
+		"poster": "/spine/portraits/Portraits_Youhu/first-frame-eed1f5a72305a4de.webp"
+	},
+	"1107": {
+		"skeleton": "/spine/portraits/Portraits_Kelaita/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Kelaita/portrait.atlas",
+		"placement": {
+			"x": 26,
+			"y": -215,
+			"scale": 0.2549999952316284
+		},
+		"poster": "/spine/portraits/Portraits_Kelaita/first-frame-b66e0611d9453e75.webp"
+	},
+	"1108": {
+		"skeleton": "/spine/portraits/Portraits_Feixue/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Feixue/portrait.atlas",
+		"placement": {
+			"x": -20,
+			"y": -160,
+			"scale": 0.23000000417232513
+		},
+		"poster": "/spine/portraits/Portraits_Feixue/first-frame-65d66447f2c4d9e4.webp"
+	},
+	"1109": {
+		"skeleton": "/spine/portraits/Portraits_LuoSeLa/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_LuoSeLa/portrait.atlas",
+		"placement": {
+			"x": 0,
+			"y": -165,
+			"scale": 0.23000000417232513
+		},
+		"poster": "/spine/portraits/Portraits_LuoSeLa/first-frame-2b576cbe6a52da47.webp"
+	},
+	"1110": {
+		"skeleton": "/spine/portraits/Portraits_Suisui/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Suisui/portrait.atlas",
+		"placement": {
+			"x": 0,
+			"y": -130,
+			"scale": 0.2199999988079071
+		},
+		"poster": "/spine/portraits/Portraits_Suisui/first-frame-fa79864f6da8b348.webp"
+	},
+	"1202": {
+		"skeleton": "/spine/portraits/Portraits_Chixia/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Chixia/portrait.atlas",
+		"placement": {
+			"x": 18,
+			"y": -277,
+			"scale": 0.2590000033378601
+		},
+		"poster": "/spine/portraits/Portraits_Chixia/first-frame-bf669bbe2b343244.webp"
+	},
+	"1203": {
+		"skeleton": "/spine/portraits/Portraits_Anke/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Anke/portrait.atlas",
+		"placement": {
+			"x": 0,
+			"y": -250,
+			"scale": 0.2199999988079071
+		},
+		"poster": "/spine/portraits/Portraits_Anke/first-frame-77a333627388bb58.webp"
+	},
+	"1204": {
+		"skeleton": "/spine/portraits/Portraits_Motefei/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Motefei/portrait.atlas",
+		"placement": {
+			"x": -10,
+			"y": -305,
+			"scale": 0.27000001072883606
+		},
+		"poster": "/spine/portraits/Portraits_Motefei/first-frame-bfd537173f75b977.webp"
+	},
+	"1205": {
+		"skeleton": "/spine/portraits/Portraits_Changli/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Changli/portrait.atlas",
+		"placement": {
+			"x": 0,
+			"y": -172,
+			"scale": 0.23999999463558197
+		},
+		"poster": "/spine/portraits/Portraits_Changli/first-frame-eab2d1027080a670.webp"
+	},
+	"1206": {
+		"skeleton": "/spine/portraits/Portraits_Bulante/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Bulante/portrait.atlas",
+		"placement": {
+			"x": 100,
+			"y": -400,
+			"scale": 0.30000001192092896
+		},
+		"poster": "/spine/portraits/Portraits_Bulante/first-frame-cf3955482388d7d9.webp"
+	},
+	"1207": {
+		"skeleton": "/spine/portraits/Portraits_Lupa/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Lupa/portrait.atlas",
+		"placement": {
+			"x": 118,
+			"y": -205,
+			"scale": 0.23000000417232513
+		},
+		"poster": "/spine/portraits/Portraits_Lupa/first-frame-9367966917da196f.webp"
+	},
+	"1208": {
+		"skeleton": "/spine/portraits/Portraits_Jiabeilina/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Jiabeilina/portrait.atlas",
+		"placement": {
+			"x": 10,
+			"y": -260,
+			"scale": 0.27000001072883606
+		},
+		"poster": "/spine/portraits/Portraits_Jiabeilina/first-frame-5e316f227e10aed9.webp"
+	},
+	"1209": {
+		"skeleton": "/spine/portraits/Portraits_Moning/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Moning/portrait.atlas",
+		"placement": {
+			"x": -20,
+			"y": -190,
+			"scale": 0.23999999463558197
+		},
+		"poster": "/spine/portraits/Portraits_Moning/first-frame-fd848760f9f95011.webp"
+	},
+	"1210": {
+		"skeleton": "/spine/portraits/Portraits_Aimisi/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Aimisi/portrait.atlas",
+		"placement": {
+			"x": 0,
+			"y": -195,
+			"scale": 0.23999999463558197
+		},
+		"poster": "/spine/portraits/Portraits_Aimisi/first-frame-aaee07a4a69dde03.webp"
+	},
+	"1211": {
+		"skeleton": "/spine/portraits/Portraits_Daniya/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Daniya/portrait.atlas",
+		"placement": {
+			"x": 10,
+			"y": -220,
+			"scale": 0.25
+		},
+		"poster": "/spine/portraits/Portraits_Daniya/first-frame-1d340f17edc46f58.webp"
+	},
+	"1212": {
+		"skeleton": "/spine/portraits/Portraits_Jingran/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Jingran/portrait.atlas",
+		"placement": {
+			"x": 30,
+			"y": -130,
+			"scale": 0.23000000417232513
+		},
+		"poster": "/spine/portraits/Portraits_Jingran/first-frame-03f8756fc0401481.webp"
+	},
+	"1301": {
+		"skeleton": "/spine/portraits/Portraits_Kakaluo/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Kakaluo/portrait.atlas",
+		"placement": {
+			"x": -30,
+			"y": -190,
+			"scale": 0.2800000011920929
+		},
+		"poster": "/spine/portraits/Portraits_Kakaluo/first-frame-60b3ee678ad0ff21.webp"
+	},
+	"1302": {
+		"skeleton": "/spine/portraits/Portraits_Yinlin/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Yinlin/portrait.atlas",
+		"placement": {
+			"x": -40,
+			"y": -290,
+			"scale": 0.25999999046325684
+		},
+		"poster": "/spine/portraits/Portraits_Yinlin/first-frame-f0f905c90a28388d.webp"
+	},
+	"1303": {
+		"skeleton": "/spine/portraits/Portraits_Yuanwu/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Yuanwu/portrait.atlas",
+		"placement": {
+			"x": -29,
+			"y": -340,
+			"scale": 0.2800000011920929
+		},
+		"poster": "/spine/portraits/Portraits_Yuanwu/first-frame-0ef14e24cd6261ab.webp"
+	},
+	"1304": {
+		"skeleton": "/spine/portraits/Portraits_Jinxi/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Jinxi/portrait.atlas",
+		"placement": {
+			"x": -10,
+			"y": -170,
+			"scale": 0.23999999463558197
+		},
+		"poster": "/spine/portraits/Portraits_Jinxi/first-frame-a2139758cca89f7b.webp"
+	},
+	"1305": {
+		"skeleton": "/spine/portraits/Portraits_Xiangliyao/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Xiangliyao/portrait.atlas",
+		"placement": {
+			"x": -20,
+			"y": -332,
+			"scale": 0.2919999957084656
+		},
+		"poster": "/spine/portraits/Portraits_Xiangliyao/first-frame-67e4312130e1e729.webp"
+	},
+	"1306": {
+		"skeleton": "/spine/portraits/Portraits_Aogusita/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Aogusita/portrait.atlas",
+		"placement": {
+			"x": -20,
+			"y": -170,
+			"scale": 0.25699999928474426
+		},
+		"poster": "/spine/portraits/Portraits_Aogusita/first-frame-554086731c38eca3.webp"
+	},
+	"1307": {
+		"skeleton": "/spine/portraits/Portraits_Buling/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Buling/portrait.atlas",
+		"placement": {
+			"x": -40,
+			"y": -190,
+			"scale": 0.23999999463558197
+		},
+		"poster": "/spine/portraits/Portraits_Buling/first-frame-a1e5615ede5949b1.webp"
+	},
+	"1308": {
+		"skeleton": "/spine/portraits/Portraits_Rebecca/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Rebecca/portrait.atlas",
+		"placement": {
+			"x": 0,
+			"y": -180,
+			"scale": 0.2199999988079071
+		},
+		"poster": "/spine/portraits/Portraits_Rebecca/first-frame-ee8fbece42748e75.webp"
+	},
+	"1309": {
+		"skeleton": "/spine/portraits/Portraits_Male/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Male/portrait.atlas",
+		"placement": {
+			"x": -75,
+			"y": -365,
+			"scale": 0.25
+		},
+		"poster": "/spine/portraits/Portraits_Male/first-frame-e9821858c82a6e47.webp"
+	},
+	"1310": {
+		"skeleton": "/spine/portraits/Portraits_Female/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Female/portrait.atlas",
+		"placement": {
+			"x": -37,
+			"y": -270,
+			"scale": 0.25
+		},
+		"poster": "/spine/portraits/Portraits_Female/first-frame-6d6519b95514260a.webp"
+	},
+	"1311": {
+		"skeleton": "/spine/portraits/Portraits_Xin/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Xin/portrait.atlas",
+		"placement": {
+			"x": 0,
+			"y": -130,
+			"scale": 0.2199999988079071
+		},
+		"poster": "/spine/portraits/Portraits_Xin/first-frame-cfe4cdbfd7b679b0.webp"
+	},
+	"1312": {
+		"skeleton": "/spine/portraits/Portraits_Suoming/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Suoming/portrait.atlas",
+		"placement": {
+			"x": 0,
+			"y": -230,
+			"scale": 0.2199999988079071
+		},
+		"poster": "/spine/portraits/Portraits_Suoming/first-frame-52e76cdc3a3e9162.webp"
+	},
+	"1402": {
+		"skeleton": "/spine/portraits/Portraits_Yangyang/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Yangyang/portrait.atlas",
+		"placement": {
+			"x": 0,
+			"y": -172,
+			"scale": 0.23999999463558197
+		},
+		"poster": "/spine/portraits/Portraits_Yangyang/first-frame-e1f624af1c38d904.webp"
+	},
+	"1403": {
+		"skeleton": "/spine/portraits/Portraits_Qiushui/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Qiushui/portrait.atlas",
+		"placement": {
+			"x": 20,
+			"y": -390,
+			"scale": 0.30000001192092896
+		},
+		"poster": "/spine/portraits/Portraits_Qiushui/first-frame-83579b07e16f5e2d.webp"
+	},
+	"1404": {
+		"skeleton": "/spine/portraits/Portraits_Jiyan/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Jiyan/portrait.atlas",
+		"placement": {
+			"x": -70,
+			"y": -335,
+			"scale": 0.2849999964237213
+		},
+		"poster": "/spine/portraits/Portraits_Jiyan/first-frame-8adea4a3fdfe40d7.webp"
+	},
+	"1405": {
+		"skeleton": "/spine/portraits/Portraits_Jianxin/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Jianxin/portrait.atlas",
+		"placement": {
+			"x": 0,
+			"y": -285,
+			"scale": 0.6100000143051147
+		},
+		"poster": "/spine/portraits/Portraits_Jianxin/first-frame-ff606f975040f7ff.webp"
+	},
+	"1406": {
+		"skeleton": "/spine/portraits/Portraits_Male/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Male/portrait.atlas",
+		"placement": {
+			"x": -75,
+			"y": -365,
+			"scale": 0.25
+		},
+		"poster": "/spine/portraits/Portraits_Male/first-frame-e9821858c82a6e47.webp"
+	},
+	"1407": {
+		"skeleton": "/spine/portraits/Portraits_Xiakong/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Xiakong/portrait.atlas",
+		"placement": {
+			"x": -6,
+			"y": -370,
+			"scale": 0.2800000011920929
+		},
+		"poster": "/spine/portraits/Portraits_Xiakong/first-frame-1ce45c392507335c.webp"
+	},
+	"1408": {
+		"skeleton": "/spine/portraits/Portraits_Female/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Female/portrait.atlas",
+		"placement": {
+			"x": -37,
+			"y": -270,
+			"scale": 0.25
+		},
+		"poster": "/spine/portraits/Portraits_Female/first-frame-6d6519b95514260a.webp"
+	},
+	"1409": {
+		"skeleton": "/spine/portraits/Portraits_Katixiya/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Katixiya/portrait.atlas",
+		"placement": {
+			"x": 20,
+			"y": -310,
+			"scale": 0.23999999463558197
+		},
+		"poster": "/spine/portraits/Portraits_Katixiya/first-frame-92bac191fd7d3826.webp"
+	},
+	"1410": {
+		"skeleton": "/spine/portraits/Portraits_Younuo/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Younuo/portrait.atlas",
+		"placement": {
+			"x": 4,
+			"y": -223,
+			"scale": 0.2720000147819519
+		},
+		"poster": "/spine/portraits/Portraits_Younuo/first-frame-94c818dd487ba8b4.webp"
+	},
+	"1411": {
+		"skeleton": "/spine/portraits/Portraits_Qiuyuan/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Qiuyuan/portrait.atlas",
+		"placement": {
+			"x": -15,
+			"y": -200,
+			"scale": 0.2549999952316284
+		},
+		"poster": "/spine/portraits/Portraits_Qiuyuan/first-frame-d8a05fbf49c4dfce.webp"
+	},
+	"1412": {
+		"skeleton": "/spine/portraits/Portraits_Xigelika/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Xigelika/portrait.atlas",
+		"placement": {
+			"x": 0,
+			"y": -172,
+			"scale": 0.23999999463558197
+		},
+		"poster": "/spine/portraits/Portraits_Xigelika/first-frame-63dcb30727606908.webp"
+	},
+	"1413": {
+		"skeleton": "/spine/portraits/Portraits_Qingxiao/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Qingxiao/portrait.atlas",
+		"placement": {
+			"x": 0,
+			"y": -130,
+			"scale": 0.2199999988079071
+		},
+		"poster": "/spine/portraits/Portraits_Qingxiao/first-frame-56207f7efeea78db.webp"
+	},
+	"1501": {
+		"skeleton": "/spine/portraits/Portraits_Male/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Male/portrait.atlas",
+		"placement": {
+			"x": -66,
+			"y": -365,
+			"scale": 0.25
+		},
+		"poster": "/spine/portraits/Portraits_Male/first-frame-b2d4bc2ade22f692.webp"
+	},
+	"1502": {
+		"skeleton": "/spine/portraits/Portraits_Female/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Female/portrait.atlas",
+		"placement": {
+			"x": -37,
+			"y": -270,
+			"scale": 0.25
+		},
+		"poster": "/spine/portraits/Portraits_Female/first-frame-6d6519b95514260a.webp"
+	},
+	"1503": {
+		"skeleton": "/spine/portraits/Portraits_Weilinai/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Weilinai/portrait.atlas",
+		"placement": {
+			"x": -20,
+			"y": -242,
+			"scale": 0.44999998807907104
+		},
+		"poster": "/spine/portraits/Portraits_Weilinai/first-frame-b8e6fef19bc713cb.webp"
+	},
+	"1504": {
+		"skeleton": "/spine/portraits/Portraits_Dengdeng/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Dengdeng/portrait.atlas",
+		"placement": {
+			"x": -20,
+			"y": -296,
+			"scale": 0.28999999165534973
+		},
+		"poster": "/spine/portraits/Portraits_Dengdeng/first-frame-74262e75803beaee.webp"
+	},
+	"1505": {
+		"skeleton": "/spine/portraits/Portraits_Shouanren/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Shouanren/portrait.atlas",
+		"placement": {
+			"x": -15,
+			"y": -320,
+			"scale": 0.30000001192092896
+		},
+		"poster": "/spine/portraits/Portraits_Shouanren/first-frame-4fc8d084a2b287d4.webp"
+	},
+	"1506": {
+		"skeleton": "/spine/portraits/Portraits_Feibi/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Feibi/portrait.atlas",
+		"placement": {
+			"x": 13,
+			"y": -265,
+			"scale": 0.2750000059604645
+		},
+		"poster": "/spine/portraits/Portraits_Feibi/first-frame-abcba4abbac68d68.webp"
+	},
+	"1507": {
+		"skeleton": "/spine/portraits/Portraits_Zanni/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Zanni/portrait.atlas",
+		"placement": {
+			"x": 80,
+			"y": -370,
+			"scale": 0.30000001192092896
+		},
+		"poster": "/spine/portraits/Portraits_Zanni/first-frame-83fd603dd03dfed2.webp"
+	},
+	"1508": {
+		"skeleton": "/spine/portraits/Portraits_Qianxiao/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Qianxiao/portrait.atlas",
+		"placement": {
+			"x": 8,
+			"y": -235,
+			"scale": 0.27300000190734863
+		},
+		"poster": "/spine/portraits/Portraits_Qianxiao/first-frame-bd6a85b6bbd8df1a.webp"
+	},
+	"1509": {
+		"skeleton": "/spine/portraits/Portraits_Linnai/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Linnai/portrait.atlas",
+		"placement": {
+			"x": -20,
+			"y": -172,
+			"scale": 0.23999999463558197
+		},
+		"poster": "/spine/portraits/Portraits_Linnai/first-frame-f2a2738d8ae3d5ae.webp"
+	},
+	"1510": {
+		"skeleton": "/spine/portraits/Portraits_Luhesi/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Luhesi/portrait.atlas",
+		"placement": {
+			"x": 0,
+			"y": -170,
+			"scale": 0.23499999940395355
+		},
+		"poster": "/spine/portraits/Portraits_Luhesi/first-frame-82a442f0cea375a5.webp"
+	},
+	"1511": {
+		"skeleton": "/spine/portraits/Portraits_Lucy/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Lucy/portrait.atlas",
+		"placement": {
+			"x": 0,
+			"y": -160,
+			"scale": 0.2199999988079071
+		},
+		"poster": "/spine/portraits/Portraits_Lucy/first-frame-b656200112e4609d.webp"
+	},
+	"1512": {
+		"skeleton": "/spine/portraits/Portraits_Lili/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Lili/portrait.atlas",
+		"placement": {
+			"x": 0,
+			"y": -160,
+			"scale": 0.2199999988079071
+		},
+		"poster": "/spine/portraits/Portraits_Lili/first-frame-36db865d97f88398.webp"
+	},
+	"1601": {
+		"skeleton": "/spine/portraits/Portraits_Taoqi/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Taoqi/portrait.atlas",
+		"placement": {
+			"x": -30,
+			"y": -242,
+			"scale": 0.23999999463558197
+		},
+		"poster": "/spine/portraits/Portraits_Taoqi/first-frame-b1745d9aa5c62535.webp"
+	},
+	"1602": {
+		"skeleton": "/spine/portraits/Portraits_Danjin/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Danjin/portrait.atlas",
+		"placement": {
+			"x": -40,
+			"y": -240,
+			"scale": 0.25
+		},
+		"poster": "/spine/portraits/Portraits_Danjin/first-frame-ea83bd23e77c9cb0.webp"
+	},
+	"1603": {
+		"skeleton": "/spine/portraits/Portraits_Chun/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Chun/portrait.atlas",
+		"placement": {
+			"x": 10,
+			"y": -150,
+			"scale": 0.23999999463558197
+		},
+		"poster": "/spine/portraits/Portraits_Chun/first-frame-6b2ce3b31e100395.webp"
+	},
+	"1604": {
+		"skeleton": "/spine/portraits/Portraits_Female/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Female/portrait.atlas",
+		"placement": {
+			"x": -37,
+			"y": -270,
+			"scale": 0.25
+		},
+		"poster": "/spine/portraits/Portraits_Female/first-frame-6d6519b95514260a.webp"
+	},
+	"1605": {
+		"skeleton": "/spine/portraits/Portraits_Male/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Male/portrait.atlas",
+		"placement": {
+			"x": -75,
+			"y": -365,
+			"scale": 0.25
+		},
+		"poster": "/spine/portraits/Portraits_Male/first-frame-e9821858c82a6e47.webp"
+	},
+	"1606": {
+		"skeleton": "/spine/portraits/Portraits_Luokeke/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Luokeke/portrait.atlas",
+		"placement": {
+			"x": -21,
+			"y": -205,
+			"scale": 0.24500000476837158
+		},
+		"poster": "/spine/portraits/Portraits_Luokeke/first-frame-a00409fe83981d19.webp"
+	},
+	"1607": {
+		"skeleton": "/spine/portraits/Portraits_Kanteleila/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Kanteleila/portrait.atlas",
+		"placement": {
+			"x": -40,
+			"y": -315,
+			"scale": 0.25
+		},
+		"poster": "/spine/portraits/Portraits_Kanteleila/first-frame-b49593a295971d07.webp"
+	},
+	"1608": {
+		"skeleton": "/spine/portraits/Portraits_Fuluoluo/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Fuluoluo/portrait.atlas",
+		"placement": {
+			"x": 59,
+			"y": -335,
+			"scale": 0.2800000011920929
+		},
+		"poster": "/spine/portraits/Portraits_Fuluoluo/first-frame-fc87843cfb71cdfb.webp"
+	},
+	"1610": {
+		"skeleton": "/spine/portraits/Portraits_Xuanling/portrait.skel",
+		"atlas": "/spine/portraits/Portraits_Xuanling/portrait.atlas",
+		"placement": {
+			"x": 0,
+			"y": -130,
+			"scale": 0.20999999344348907
+		},
+		"poster": "/spine/portraits/Portraits_Xuanling/first-frame-4f15efe27089d563.webp"
+	}
+}

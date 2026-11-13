@@ -349,6 +349,14 @@
 			"url": "/icons/navigation/quests.webp"
 		},
 		{
+			"source": "UI/UIResources/Common/Atlas/TabIcon/SP_IconActivityLoop.png",
+			"url": "/icons/navigation/rotations.webp"
+		},
+		{
+			"source": "UI/UIResources/UiFunc/Atlas/SP_FuncIconTeam.png",
+			"url": "/icons/navigation/teams.webp"
+		},
+		{
 			"source": "UI/UIResources/Common/Image/ImgQuality/T_QualityBlue.png",
 			"url": "/icons/quality/blue.webp"
 		},
@@ -13116,6 +13124,8 @@
 		"/icons/navigation/map.webp",
 		"/icons/navigation/optimizer.webp",
 		"/icons/navigation/quests.webp",
+		"/icons/navigation/rotations.webp",
+		"/icons/navigation/teams.webp",
 		"/icons/navigation/weapons.webp",
 		"/icons/quality/blue.webp",
 		"/icons/quality/gold.webp",

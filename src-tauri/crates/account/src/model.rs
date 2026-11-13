@@ -258,6 +258,8 @@ pub struct SavedTeam {
     pub name: String,
     pub role_ids: Vec<i64>,
     #[serde(default)]
+    pub current_role: i32,
+    #[serde(default)]
     pub is_current: bool,
 }
 

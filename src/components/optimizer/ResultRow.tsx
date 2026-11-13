@@ -173,15 +173,7 @@ export function ResultRow({
 	const rating = useMemo(() => {
 		const pieces = result.uids.flatMap((uid) => echoByUid.get(uid) ?? []);
 		if (pieces.length !== result.uids.length) return null;
-		const energy = result.energy?.find(
-			(e) => e.characterId === ratingCharacter?.character_id,
-		);
-		return buildRating(
-			ratingCharacter,
-			pieces,
-			result.stats?.er,
-			energy ? Math.max(energy.required, energy.kitMinimum) : undefined,
-		);
+		return buildRating(ratingCharacter, pieces);
 	}, [result, echoByUid, ratingCharacter]);
 	const difference = optimizerEchoDifference(result.uids, equippedEchoes);
 	const hasChanges =

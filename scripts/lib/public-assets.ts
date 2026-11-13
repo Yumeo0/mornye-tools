@@ -85,7 +85,9 @@ export function assetSources(): Map<string, string[]> {
 			!/^(?:UI\/UIResources\/Common\/(?:Image|Atlas\/(?:TabIcon|WorldMapIcon))\/|UI\/UIResources\/Ui(?:WorldMap\/Image|Inventory\/Atlas)\/)/.test(
 				source,
 			) &&
-			source !== "UI/UIResources/UiFunc/Atlas/SP_FuncIconBag.png"
+			!/^UI\/UIResources\/UiFunc\/Atlas\/SP_FuncIcon(?:Bag|Team)\.png$/.test(
+				source,
+			)
 		)
 			continue;
 		if (source.includes("/IconElementAttri/")) continue; // Publish the 128px set glyph once.

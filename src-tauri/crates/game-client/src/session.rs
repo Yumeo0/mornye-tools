@@ -619,6 +619,39 @@ impl Session {
         Ok(())
     }
 
+    pub fn synchronize_teams(&mut self) -> Result<()> {
+        self.request(
+            "GetFormationDataRequest",
+            "GetFormationDataResponse",
+            &self.schema.message("GetFormationDataRequest", &json!({}))?,
+        )?;
+        Ok(())
+    }
+
+    /// Send the formation update once and check its status. The response need not
+    /// echo a full formation; callers confirm it through refreshed account packets.
+    pub fn update_team(&mut self, team: &crate::teams::TeamUpdate) -> Result<()> {
+        team.validate()?;
+        self.request(
+            "UpdateFormationRequest",
+            "UpdateFormationResponse",
+            &self
+                .schema
+                .message("UpdateFormationRequest", &team.fields())?,
+        )?;
+        Ok(())
+    }
+
+    /// The current client selects a team by updating its full formation, rather
+    /// than sending the legacy FormationSwitchCurrentRequest.
+    pub fn switch_team(&mut self, team: &crate::teams::TeamUpdate) -> Result<()> {
+        ensure!(
+            team.is_current,
+            "A team switch must select the requested formation"
+        );
+        self.update_team(team)
+    }
+
     pub fn synchronize_echo_inventory(&mut self) -> Result<()> {
         self.inventory.ensure_valid()?;
         for (request, response) in [
@@ -831,6 +864,14 @@ mod tests {
 
     #[derive(Clone, Copy, PartialEq)]
     enum Scenario {
+        Team {
+            switch: bool,
+            error: bool,
+            respond: bool,
+            confirm: bool,
+            ack_only: bool,
+            exception: bool,
+        },
         Success,
         RejectedLogin,
         WrongPlayer,
@@ -1110,6 +1151,30 @@ mod tests {
                 ));
             }
         }
+        if let Scenario::Team {
+            error,
+            confirm,
+            ack_only,
+            ..
+        } = scenario
+        {
+            steps.truncate(3);
+            let formation = json!({"FormationId":2,"Name":"Tower","RoleIds":if confirm {vec![1505,1503]} else {vec![1503,1505]},"CurRole":1503,"IsCurrent":true});
+            steps.push((
+                "UpdateFormationRequest",
+                "UpdateFormationResponse",
+                if ack_only {
+                    json!({"ErrorCode":if error {200099} else {0}})
+                } else {
+                    json!({"ErrorCode":if error {200099} else {0},"Formation":formation})
+                },
+            ));
+            steps.push((
+                "GetFormationDataRequest",
+                "GetFormationDataResponse",
+                json!({}),
+            ));
+        }
         if let Scenario::Equip { error, split, .. } = scenario {
             steps.truncate(3);
             steps.push(("PhantomItemRequest", "PhantomItemResponse", json!({
@@ -1338,6 +1403,46 @@ mod tests {
                 connection.send(4, 0, schema.id(name)?, &notify.encode_to_vec())?;
                 if matches!(scenario, Scenario::WrongPlayer | Scenario::WrongBasicInfo) {
                     return Ok(heartbeat_count);
+                }
+            } else if *name == "UpdateFormationRequest" {
+                let Scenario::Team {
+                    switch,
+                    respond,
+                    exception,
+                    ..
+                } = scenario
+                else {
+                    bail!("unexpected team edit");
+                };
+                let mut fields = serde_json::to_value(&request)?;
+                // Protobuf omits the default false flag for an inactive team edit.
+                ensure!(
+                    fields["Formations"][0]["IsCurrent"]
+                        .as_bool()
+                        .unwrap_or(false)
+                        == switch,
+                    "only a team switch should select the formation"
+                );
+                fields["Formations"][0]
+                    .as_object_mut()
+                    .context("missing formation")?
+                    .remove("IsCurrent");
+                ensure!(
+                    fields["Formations"]
+                        == json!([{"FormationId":2,"Name":"Tower","RoleIds":[1505,1503],"CurRole":1503}]),
+                    "team updates must preserve the ID, name, member order and active role"
+                );
+                if respond {
+                    if exception {
+                        connection.send_test_frame(&[11, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])?;
+                    } else {
+                        connection.send(
+                            2,
+                            rpc,
+                            schema.id(response)?,
+                            &schema.message(response, json)?.encode_to_vec(),
+                        )?;
+                    }
                 }
             } else if *name == "PhantomAutoPutRequest" {
                 let fields = serde_json::to_value(&request)?;
@@ -1703,6 +1808,78 @@ mod tests {
             }
             session.disconnect();
             server.join().unwrap().unwrap();
+        }
+    }
+
+    #[test]
+    fn team_edits_and_switches_use_formation_updates_and_never_retry_mutations() {
+        for switch in [false, true] {
+            for (error, respond, confirm, ack_only, exception) in [
+                (false, true, true, false, false),
+                (true, true, true, false, false),
+                (false, true, false, false, false),
+                (false, false, true, false, false),
+                (false, true, true, true, false),
+                (true, true, true, true, false),
+                (false, true, true, false, true),
+            ] {
+                let socket = UdpSocket::bind("127.0.0.1:0").unwrap();
+                let config = fixture(socket.local_addr().unwrap().to_string());
+                let server = thread::spawn(move || {
+                    serve(
+                        socket,
+                        Scenario::Team {
+                            switch,
+                            error,
+                            respond,
+                            confirm,
+                            ack_only,
+                            exception,
+                        },
+                    )
+                });
+                let mut session = connect_recording(
+                    &config,
+                    &Schema::load().unwrap(),
+                    Arc::new(AtomicBool::new(false)),
+                    &[crate::message_id::UpdateFormationResponse],
+                )
+                .unwrap();
+                let mut team = crate::teams::TeamUpdate {
+                    id: 2,
+                    name: "Tower".into(),
+                    role_ids: vec![1505, 1503],
+                    current_role: 1503,
+                    is_current: false,
+                };
+                let result = if switch {
+                    // Reject an invalid switch before sending any mutation.
+                    assert!(session.switch_team(&team).is_err());
+                    team.is_current = true;
+                    session.switch_team(&team)
+                } else {
+                    session.update_team(&team)
+                };
+                if exception {
+                    let error = format!("{:#}", result.unwrap_err());
+                    assert!(
+                        error.contains("RPC exception (frame 3, length 14)"),
+                        "{error}"
+                    );
+                    assert!(error.contains("will not be retried"), "{error}");
+                } else if error {
+                    assert!(result.unwrap_err().to_string().contains("code 200099"));
+                } else if !respond {
+                    assert!(result.unwrap_err().to_string().contains("timed out"));
+                } else {
+                    result.unwrap();
+                    assert_eq!(session.drain_packets().len(), 1);
+                }
+                // Reconcile even after a rejected or lost mutation; never resend it.
+                session.synchronize_teams().unwrap();
+                session.disconnect();
+                server.join().unwrap().unwrap();
+            }
         }
     }
 

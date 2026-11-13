@@ -138,3 +138,21 @@ test("captured weapon levels scale their ATK and ER independently of the resonat
 			.stats,
 	).toMatchObject({ atk: 364, er: 151.84 });
 });
+
+test("pending stats reserve the full labeled grid with zero values", () => {
+	const loading = renderToStaticMarkup(<BuildStats stats={null} />);
+	const ready = renderToStaticMarkup(
+		<BuildStats stats={characterPanel(input).stats} />,
+	);
+	const labels = (html: string) =>
+		[...html.matchAll(/<dt[^>]*>(.*?)<\/dt>/g)].map((match) => match[1]);
+	expect(labels(loading)).toEqual(labels(ready));
+	expect(labels(loading)).toHaveLength(23);
+	expect(loading).toContain('aria-busy="true"');
+	const values = (html: string) =>
+		[...html.matchAll(/<dd[^>]*>(.*?)<\/dd>/g)].map((match) => match[1]);
+	expect(values(loading).slice(0, 3)).toEqual(["0", "0", "0"]);
+	expect(values(loading).slice(3)).toEqual(Array(20).fill("0%"));
+	expect(values(ready).slice(6)).toEqual(Array(17).fill("0%"));
+	expect(ready).toContain('aria-busy="false"');
+});

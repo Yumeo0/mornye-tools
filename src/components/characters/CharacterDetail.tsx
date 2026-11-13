@@ -3,6 +3,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { useMemo, useState } from "react";
 import { BuildRollValue, BuildStats } from "@/components/characters/BuildStats";
 import { ChainNodes } from "@/components/characters/ChainNodes";
+import { CharacterArtwork } from "@/components/characters/CharacterArtwork";
 import { EchoSetsCard } from "@/components/characters/EchoSetsCard";
 import { SubstatsCard } from "@/components/characters/SubstatsCard";
 import { EchoCard } from "@/components/echo/EchoCard";
@@ -98,8 +99,8 @@ export function CharacterDetail({
 		[guide, firstRolePriority, character],
 	);
 	const rating = useMemo(
-		() => buildRating(ratingCharacter, echoes, panel.value?.stats.er),
-		[ratingCharacter, echoes, panel.value],
+		() => buildRating(ratingCharacter, echoes),
+		[ratingCharacter, echoes],
 	);
 
 	const echoRollValue = (echo: Echo): number | null =>
@@ -175,30 +176,33 @@ export function CharacterDetail({
 					<div className="absolute top-0 bottom-0 left-10 w-px bg-border/40" />
 				</div>
 
-				<div className="relative min-h-56 self-stretch overflow-hidden @min-[640px]/character-detail:min-h-72">
-					{/* Keep the artwork and chain arch in the same portrait-sized coordinate space. */}
-					<div className="absolute inset-y-0 left-1/2 w-[305px] -translate-x-1/2 @min-[640px]/character-detail:w-[377px]">
-						{character.image && (
-							<img
-								src={character.image}
-								alt={character.name}
-								className="pointer-events-none absolute -top-20 left-0 h-[420px] w-full max-w-none object-contain drop-shadow-2xl @min-[640px]/character-detail:h-[520px]"
-							/>
-						)}
+				{/* Clip artwork at the card edges, preserving the portrait column's center. */}
+				<div className="pointer-events-none absolute inset-x-0 top-0 h-56 overflow-hidden @min-[640px]/character-detail:bottom-0 @min-[640px]/character-detail:h-auto">
+					<CharacterArtwork
+						characterId={character.id}
+						image={character.image}
+						name={character.name}
+						className="absolute -top-2 left-1/2 h-[420px] w-[516px] -translate-x-1/2 drop-shadow-2xl @min-[640px]/character-detail:left-[21.25%] @min-[640px]/character-detail:h-[520px] @min-[640px]/character-detail:w-[640px]"
+					/>
+					<div className="absolute inset-x-0 bottom-0 h-4 bg-linear-to-t from-card to-transparent" />
+				</div>
+
+				<div className="relative min-h-56 self-stretch @min-[640px]/character-detail:min-h-72">
+					{/* Keep sequence controls in their original coordinate space. */}
+					<div className="absolute inset-y-0 left-1/2 w-full max-w-[305px] -translate-x-1/2 @min-[640px]/character-detail:max-w-[377px]">
 						{account && (
 							<ChainNodes
 								chain={account.chain}
 								icons={character.chainIcons ?? []}
 								layout="arc"
-								className="absolute top-[calc(50%)] left-[85%] h-44 w-20 -translate-y-1/2 @min-[640px]/character-detail:h-56"
+								className="absolute top-1/2 right-0 h-44 w-20 -translate-y-1/2 @min-[640px]/character-detail:h-56"
 							/>
 						)}
 					</div>
-					<div className="pointer-events-none absolute inset-x-0 bottom-0 h-4 bg-linear-to-t from-card to-transparent" />
 				</div>
 
 				<div className="relative flex min-w-0 flex-col justify-center gap-4 px-6 pt-2 pb-8 @min-[640px]/character-detail:pt-12 @min-[640px]/character-detail:pr-8 @min-[640px]/character-detail:pb-6">
-					<div className="flex flex-col gap-2">
+					<div className="relative isolate flex w-fit max-w-full flex-col gap-2 before:absolute before:-inset-x-3 before:-inset-y-2 before:-z-10 before:bg-card/65 before:backdrop-blur-sm">
 						<div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
 							{character.elementIcon && (
 								<span className="flex items-center gap-1.5">
@@ -236,7 +240,7 @@ export function CharacterDetail({
 					</div>
 
 					{account && (
-						<div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+						<div className="relative isolate flex w-fit flex-wrap items-center gap-x-5 gap-y-3 before:absolute before:-inset-x-3 before:-inset-y-1 before:-z-10 before:bg-card/65 before:backdrop-blur-sm">
 							<div
 								className="flex items-baseline gap-1.5"
 								title="Resonator level"
@@ -312,13 +316,13 @@ export function CharacterDetail({
 								<CardTitle>Character stats</CardTitle>
 							</CardHeader>
 							<CardContent className="@container/build-stats">
-								{panel.value ? (
+								{panelInput && !panel.error ? (
 									<>
 										<BuildStats
-											stats={panel.value.stats}
+											stats={panel.value?.stats ?? null}
 											preferredStats={ratingCharacter?.stats}
 										/>
-										{panel.value.notes.map((note) => (
+										{panel.value?.notes.map((note) => (
 											<p
 												key={note}
 												className="mt-3 text-xs text-muted-foreground"
@@ -330,9 +334,7 @@ export function CharacterDetail({
 								) : (
 									<p className="text-xs text-muted-foreground">
 										{panel.error ??
-											(panelInput
-												? "Calculating stats…"
-												: "Capture this Resonator's level and equipment to show stats.")}
+											"Capture this Resonator's level and equipment to show stats."}
 									</p>
 								)}
 							</CardContent>

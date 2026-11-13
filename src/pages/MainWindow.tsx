@@ -1,4 +1,4 @@
-import { DashboardSquare01Icon, RepeatIcon } from "@hugeicons/core-free-icons";
+import { DashboardSquare01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { isTauri } from "@tauri-apps/api/core";
 import { getAllWindows, getCurrentWindow } from "@tauri-apps/api/window";
@@ -18,6 +18,7 @@ import { AccountProfileSelector } from "@/components/AccountProfileSelector";
 import { CaptureStatus } from "@/components/CaptureStatus";
 import { GameVersionBanner } from "@/components/GameVersionWarning";
 import { MapImportController } from "@/components/map/MapImportController";
+import { PostUpdateChangelog } from "@/components/PostUpdateChangelog";
 import {
 	DangerousConnectButton,
 	DangerousFeaturesPrompt,
@@ -33,6 +34,7 @@ import { OverviewTab } from "@/components/tabs/OverviewTab";
 import { QuestsTab } from "@/components/tabs/QuestsTab";
 import { RotationBuilderTab } from "@/components/tabs/RotationBuilderTab";
 import { SettingsTab } from "@/components/tabs/SettingsTab";
+import { TeamsTab } from "@/components/tabs/TeamsTab";
 import { WeaponsTab } from "@/components/tabs/WeaponsTab";
 import { UpdateBanner } from "@/components/UpdateBanner";
 import { Button } from "@/components/ui/button";
@@ -94,6 +96,7 @@ const NAV_GROUPS = [
 				title: "Echoes",
 				icon: "/icons/navigation/echoes.webp",
 			},
+			{ value: "teams", title: "Teams", icon: "/icons/navigation/teams.webp" },
 			{
 				value: "weapons",
 				title: "Weapons",
@@ -127,7 +130,7 @@ const NAV_GROUPS = [
 			{
 				value: "rotations",
 				title: "Rotations",
-				icon: "/icons/navigation/optimizer.webp",
+				icon: "/icons/navigation/rotations.webp",
 			},
 			{ value: "map", title: "Map", icon: "/icons/navigation/map.webp" },
 			{
@@ -295,6 +298,7 @@ export default function MainWindow() {
 			content: <OverviewTab active={tab === "overview"} onNavigate={setTab} />,
 		},
 		{ value: "characters", content: <CharactersTab /> },
+		{ value: "teams", content: <TeamsTab /> },
 		{ value: "echoes", content: <EchoesTab /> },
 		{ value: "echo-upgrader", content: <EchoUpgraderTab /> },
 		{ value: "weapons", content: <WeaponsTab /> },
@@ -405,21 +409,14 @@ export default function MainWindow() {
 										title={item.title}
 										sidebarOpen={sidebarOpen}
 										icon={
-											item.value === "rotations" ? (
-												<HugeiconsIcon
-													icon={RepeatIcon}
-													className="size-6 shrink-0"
-												/>
-											) : (
-												<img
-													src={item.icon}
-													alt=""
-													className={cn(
-														"shrink-0 object-contain",
-														sidebarOpen ? "size-7" : "size-6",
-													)}
-												/>
-											)
+											<img
+												src={item.icon}
+												alt=""
+												className={cn(
+													"shrink-0 object-contain",
+													sidebarOpen ? "size-7" : "size-6",
+												)}
+											/>
 										}
 									/>
 								))}
@@ -474,6 +471,7 @@ export default function MainWindow() {
 				onOpenChange={setImportOpen}
 			/>
 			<UpdateBanner />
+			<PostUpdateChangelog />
 			<DangerousFeaturesPrompt />
 			<SnifferErrorToasts />
 			<Toaster />

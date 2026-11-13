@@ -10,6 +10,7 @@ pub mod echo_upgrade;
 mod live_inventory;
 pub mod schema;
 pub mod session;
+pub mod teams;
 mod wire;
 
 /// Packet IDs generated from the pinned protocol checkout at build time.

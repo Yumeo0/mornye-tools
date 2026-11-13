@@ -5,6 +5,7 @@ import { describe, expect, spyOn, test } from "bun:test";
 
 import type { Update } from "@tauri-apps/plugin-updater";
 import { loadReleaseNotes } from "@/lib/releaseNotes";
+import { updateChangelog } from "@/lib/updateChangelog";
 import {
 	dismissUpdateBanner,
 	downloadPercent,
@@ -15,7 +16,11 @@ import {
 
 /** A stand-in for the plugin's update handle (only the fields we read). */
 function fakeUpdate(version: string): Update {
-	return { version, close: async () => {} } as unknown as Update;
+	return {
+		version,
+		currentVersion: "0.3.6",
+		close: async () => {},
+	} as unknown as Update;
 }
 
 describe("downloadPercent", () => {
@@ -52,7 +57,7 @@ describe("available update", () => {
 		expect(readUpdateState().update).toBeNull();
 	});
 
-	test("saves changelog notes before the installer can exit the app", async () => {
+	test("saves changelog notes and the old version before the installer can exit the app", async () => {
 		const notes = {
 			version: "9.9.11",
 			body: "## Changes\n- A new feature",
@@ -60,6 +65,7 @@ describe("available update", () => {
 		};
 		const failure = new Error("Fixture stops before installation");
 		let downloads = 0;
+		const recorded = spyOn(updateChangelog, "acknowledge").mockResolvedValue();
 		const update = {
 			...fakeUpdate(notes.version),
 			...notes,
@@ -67,6 +73,7 @@ describe("available update", () => {
 				downloads++;
 				// No changelog was opened first, and no network request is needed.
 				expect(await loadReleaseNotes(notes.version)).toEqual(notes);
+				expect(recorded).toHaveBeenCalledWith(update.currentVersion);
 				throw failure;
 			},
 		} as unknown as Update;
@@ -79,6 +86,35 @@ describe("available update", () => {
 			expect(readUpdateState().update).toBe(update);
 		} finally {
 			setAvailableUpdate(null);
+			recorded.mockRestore();
+			log.mockRestore();
+		}
+	});
+
+	test("a version-tracking write failure does not prevent installation", async () => {
+		const recorded = spyOn(updateChangelog, "acknowledge").mockRejectedValue(
+			new Error("Disk unavailable"),
+		);
+		const warn = spyOn(console, "warn").mockImplementation(() => {});
+		const log = spyOn(console, "error").mockImplementation(() => {});
+		let downloads = 0;
+		setAvailableUpdate({
+			...fakeUpdate("9.9.12"),
+			downloadAndInstall: async () => {
+				downloads++;
+				throw new Error("Fixture stops before installation");
+			},
+		} as unknown as Update);
+		try {
+			await expect(installAvailableUpdate()).rejects.toThrow(
+				"Fixture stops before installation",
+			);
+			expect(downloads).toBe(1);
+			expect(warn).toHaveBeenCalled();
+		} finally {
+			setAvailableUpdate(null);
+			recorded.mockRestore();
+			warn.mockRestore();
 			log.mockRestore();
 		}
 	});

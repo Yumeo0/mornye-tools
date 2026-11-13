@@ -38,13 +38,19 @@ export function ChangelogDialog({
 	release,
 	label = "View changelog",
 	size = "default",
+	open: controlledOpen,
+	onOpenChange,
 }: {
 	release: ReleaseNotes;
 	label?: string;
 	size?: "default" | "sm";
+	/** Controlled dialogs open automatically and omit the manual trigger. */
+	open?: boolean;
+	onOpenChange?: (open: boolean) => void;
 }) {
 	const { version, body, date } = preferredReleaseNotes(release);
-	const [open, setOpen] = useState(false);
+	const [triggerOpen, setTriggerOpen] = useState(false);
+	const open = controlledOpen ?? triggerOpen;
 	const [state, setState] = useState<NotesState>({ status: "loading" });
 	const [attempt, setAttempt] = useState(0);
 	const [linkError, setLinkError] = useState(false);
@@ -100,10 +106,18 @@ export function ChangelogDialog({
 	}
 
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger render={<Button variant="outline" size={size} />}>
-				{label}
-			</DialogTrigger>
+		<Dialog
+			open={open}
+			onOpenChange={(next) => {
+				setTriggerOpen(next);
+				onOpenChange?.(next);
+			}}
+		>
+			{controlledOpen === undefined && (
+				<DialogTrigger render={<Button variant="outline" size={size} />}>
+					{label}
+				</DialogTrigger>
+			)}
 			<DialogContent className="flex max-h-[80vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl">
 				<DialogHeader className="gap-2 border-b px-6 py-5 pr-10">
 					<Badge variant="outline">Version {version}</Badge>

@@ -118,6 +118,7 @@ export interface SavedTeam {
 	id: number;
 	name: string;
 	roleIds: number[];
+	currentRole?: number;
 	isCurrent: boolean;
 }
 
@@ -130,7 +131,7 @@ export interface AccountSnapshot {
 	weapons: Weapon[];
 	echoes: Echo[];
 	inventory?: { id: number; count: number }[];
-	/** Saved in-game formations, captured passively by the sniffer. */
+	/** Saved in-game formations from passive capture or an active session. */
 	teams?: SavedTeam[];
 	exploration?: ExplorationSnapshot;
 	progression?: ProgressionSnapshot;

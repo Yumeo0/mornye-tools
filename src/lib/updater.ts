@@ -12,6 +12,7 @@ import { relaunch } from "@tauri-apps/plugin-process";
 import { check, type Update } from "@tauri-apps/plugin-updater";
 import { useSyncExternalStore } from "react";
 import { cacheReleaseNotes } from "./releaseNotes";
+import { updateChangelog } from "./updateChangelog";
 
 /**
  * Whether the in-app updater can run here. It is a desktop-only plugin: in the
@@ -170,6 +171,11 @@ export async function installAvailableUpdate(): Promise<void> {
 		// the installed version's changelog remains readable offline afterward.
 		await cacheReleaseNotes(update).catch((error) => {
 			console.warn("[updater] couldn't save release notes:", error);
+		});
+		// Persist the old version before Windows can exit this process. A failed
+		// installation still starts the same version and must not announce an update.
+		await updateChangelog.acknowledge(update.currentVersion).catch((error) => {
+			console.warn("[updater] couldn't record the pre-update version:", error);
 		});
 		await downloadAndInstall(update, (progress) => setState({ progress }));
 	} catch (error) {

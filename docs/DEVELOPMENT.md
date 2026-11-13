@@ -85,6 +85,11 @@ secret `TAURI_SIGNING_PRIVATE_KEY` (local copy: `~/.tauri/mornye-tools.key`).
 Downloads in the README use stable, versionless installer aliases.
 
 The update banner and Settings → Updates offer a changelog before installing.
+After an update restarts the app, the main window automatically opens the
+installed version's changelog once, remembering dismissal across launches. Fresh
+installations establish a version baseline without showing the dialog. The updater
+records the previous version before installation, including when the Windows
+installer restarts the app itself; failed installs do not announce an update.
 Settings also keeps a changelog button for the installed version. Notes come
 from the update manifest or the matching GitHub release tag and are cached in
 `settings.json` before installation so they remain available offline afterward.
@@ -277,6 +282,26 @@ Icons live in `public/icons/`, artwork in
 metadata in `public/map/`. The asset publisher deduplicates images and prunes
 unused files; regenerate rather than hand-renaming outputs.
 
+Character details load Spine 4.1 formation portraits on demand by character ID.
+`bun scripts/publish_spine.ts` reads `data/wuwa-assets/SPINE.json`, publishes base
+portraits in `public/spine/portraits/`, and generates
+`src/configs/spine_portraits.json`. It also runs as part of `copy_assets.ts` and
+`update:data`. Atlas pages use WebP at their original dimensions; skeletons stay
+binary. Shared Rover models retain every character ID; costumes and gacha scenes
+are not included in this portrait bundle. The publisher matches each character's
+base skin in `roleskin.json` and includes its `SpineParam` X/Y offsets and scale.
+The player uses a shared formation coordinate system, so wide accessories do not
+shrink characters and widening the canvas preserves their zoom. The reusable
+`CharacterArtwork` component uses the idle animation's first frame while loading,
+on failure, and with reduced motion, and pauses playback offscreen or in hidden
+windows. The publisher bakes transparent 1280×1040 WebP frames with the same player
+and framing, reusing images for shared models with identical placement. Changed
+assets, placement, or renderer code invalidate the image cache. Rendering new
+frames requires Chrome or Edge (or `SPINE_BROWSER_PATH` pointing to a Chromium
+executable); unchanged frames need no browser. The pinned official Spine runtime's
+license is included in `public/spine/LICENSE.txt`; its Spine Editor licensing terms
+apply to integration and distribution.
+
 To publish missing inventory artwork from a local extractor output without
 changing the asset checkout, run
 `bun scripts/publish_inventory_icons.ts .cache/inventory-game-assets 7`, then
@@ -287,7 +312,7 @@ to process all inventory items. Missing artwork is reported by item ID.
 To extract fresh map artwork from an installed game (requires .NET):
 
 ```powershell
-dotnet run --project data/wuwa-assets/tools/wuwa-extract -- --quiet
+dotnet run --project data/wuwa-assets/tools/wuwa-extract -- --maps --quiet
 # Custom installation: add --paks 'D:\Wuthering Waves\Client'
 bun scripts/compile-map-data.ts
 bun scripts/copy_assets.ts

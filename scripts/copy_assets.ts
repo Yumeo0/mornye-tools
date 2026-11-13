@@ -23,6 +23,7 @@ import {
 	root,
 	sourceFile,
 } from "./lib/public-assets";
+import { publishSpine } from "./publish_spine";
 import { updateVersionField } from "./version_manifest";
 
 export async function syncAssetsVersion(): Promise<void> {
@@ -296,6 +297,7 @@ export async function copyAssets(): Promise<void> {
 			unlinkSync(publicPath(entry.name));
 			removed++;
 		}
+	await publishSpine();
 	await syncAssetsVersion();
 	dataLog.info(
 		`Published ${urls.length} images (${encoded} encoded); consolidated ${Object.keys(aliases).length} duplicates; removed ${removed} stale/legacy files.`,

@@ -68,6 +68,7 @@ impl TeamCapture {
                         changed |= store.upsert_team(SavedTeam {
                             id: formation.formation_id,
                             name: formation.name,
+                            current_role: formation.cur_role,
                             role_ids: formation
                                 .role_infos
                                 .iter()
@@ -121,7 +122,19 @@ impl TeamCapture {
                 let message = gp.parse_proto::<pb::FormationModifyResponse>()?;
                 if message.error_code == pb::ErrorCode::Success as i32 {
                     if let Some(formation) = message.formation.as_ref() {
-                        changed = store.upsert_team(legacy_team(formation));
+                        let mut team = legacy_team(formation);
+                        // Legacy replies omit metadata. Modern replies may
+                        // explicitly clear the name, so preserve it only here.
+                        if let Some(saved) = store
+                            .snapshot()
+                            .teams
+                            .iter()
+                            .find(|saved| saved.id == team.id)
+                        {
+                            team.name = saved.name.clone();
+                            team.current_role = saved.current_role;
+                        }
+                        changed = store.upsert_team(team);
                     }
                 }
             }
@@ -141,6 +154,7 @@ fn saved_team(formation: &pb::FightFormation) -> SavedTeam {
     SavedTeam {
         id: formation.formation_id,
         name: formation.name.clone(),
+        current_role: formation.cur_role,
         role_ids: formation.role_ids.iter().map(|id| i64::from(*id)).collect(),
         is_current: formation.is_current,
     }
@@ -150,6 +164,7 @@ fn legacy_team(formation: &pb::Formation) -> SavedTeam {
     SavedTeam {
         id: formation.id,
         name: String::new(),
+        current_role: 0,
         role_ids: formation.role.iter().map(|id| i64::from(*id)).collect(),
         is_current: formation.is_current,
     }
@@ -368,6 +383,57 @@ mod tests {
                 .unwrap()
                 .is_current
         );
+    }
+
+    #[test]
+    fn edited_teams_keep_order_active_role_and_allow_clearing_a_custom_name() {
+        let mut capture = TeamCapture::default();
+        let mut store = store("edit");
+        login(&mut capture, &mut store, 7);
+        capture
+            .apply(&notification(7, CAPTURED_ROLES), &mut store)
+            .unwrap();
+        for name in ["Tower", ""] {
+            assert!(capture
+                .apply(
+                    &packet(
+                        UPDATE_FORMATION_RESPONSE,
+                        pb::UpdateFormationResponse {
+                            formation: Some(pb::FightFormation {
+                                formation_id: 2,
+                                role_ids: vec![1505, 1503],
+                                cur_role: 1503,
+                                name: name.into(),
+                                is_current: true
+                            }),
+                            ..Default::default()
+                        }
+                    ),
+                    &mut store
+                )
+                .unwrap());
+            let team = &store.snapshot().teams[1];
+            assert_eq!(team.name, name);
+            assert_eq!(team.role_ids, vec![1505, 1503]);
+            assert_eq!(team.current_role, 1503);
+            assert!(team.is_current);
+            assert!(!store.snapshot().teams[0].is_current);
+        }
+        assert_eq!(store.snapshot().teams.len(), CAPTURED_ROLES.len());
+        capture
+            .apply(
+                &packet(
+                    FORMATION_SWITCH_CURRENT_RESPONSE,
+                    pb::FormationSwitchCurrentResponse {
+                        current_id: 3,
+                        ..Default::default()
+                    },
+                ),
+                &mut store,
+            )
+            .unwrap();
+        assert!(store.snapshot().teams[2].is_current);
+        assert!(!store.snapshot().teams[1].is_current);
     }
 
     #[test]

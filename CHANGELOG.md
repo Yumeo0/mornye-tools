@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+### Added
+
+- **Changelog after updating.** The app automatically shows the new version's release notes after an update restarts it, and remembers when you dismiss them.
+- **Teams page.** Browse synced in-game teams, rename them, change or reorder their members, and switch the active team while connected to your game account.
+- **Animated Resonator portraits.** Resonator details use animated character artwork, with matching first-frame images on team cards and when reduced motion is enabled.
+
+### Improved
+
+- **Faster, steadier build details.** Total RV appears immediately. Stats start at 0 or 0% while loading, keep their layout, and reuse cached results when reopening an unchanged build.
+
+### Fixed
+
+- Resonance Chain icons no longer clip at intermediate window widths.
+
 ## [0.3.6] - 2026-11-12
 
 ### Added

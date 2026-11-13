@@ -132,7 +132,7 @@ impl AccountStore {
         true
     }
 
-    pub fn upsert_team(&mut self, mut team: SavedTeam) -> bool {
+    pub fn upsert_team(&mut self, team: SavedTeam) -> bool {
         let before = self.snapshot.teams.clone();
         if team.is_current {
             for saved in &mut self.snapshot.teams {
@@ -145,10 +145,6 @@ impl AccountStore {
             .iter_mut()
             .find(|saved| saved.id == team.id)
         {
-            // Legacy messages omit names; keep the richer captured label.
-            if team.name.is_empty() {
-                team.name = saved.name.clone();
-            }
             *saved = team;
         } else {
             self.snapshot.teams.push(team);
@@ -618,6 +614,7 @@ mod tests {
             id: 1,
             name: "Tower".into(),
             role_ids: vec![1404, 1204, 1505],
+            current_role: 1404,
             is_current: true,
         };
         assert!(store.replace_teams(vec![team.clone()]));

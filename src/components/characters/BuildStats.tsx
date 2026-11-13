@@ -20,22 +20,34 @@ const elementStats: StatKey[] = [
 	"spectro",
 	"havoc",
 ];
-const percent = (value: number) => `${value.toFixed(1)}%`;
+const percent = (value: number) =>
+	value === 0 ? "0%" : `${value.toFixed(1)}%`;
 const panelStatName = (name: string) =>
 	normalizeStatName(name).replace(/%$/, "");
+const emptyStats: OptResultStats = {
+	hp: 0,
+	atk: 0,
+	def: 0,
+	er: 0,
+	cr: 0,
+	cd: 0,
+	bonuses: {},
+};
 
 /** Label/value rows stay readable at narrow widths and cover every panel bonus. */
 export function BuildStats({
-	stats,
+	stats: panelStats,
 	preferredStats,
 	showAttributes = true,
 	hideZeroBonuses = false,
 }: {
-	stats: OptResultStats;
+	stats: OptResultStats | null;
 	preferredStats?: CharacterInfo["stats"];
 	showAttributes?: boolean;
 	hideZeroBonuses?: boolean;
 }) {
+	const loading = panelStats === null;
+	const stats = panelStats ?? emptyStats;
 	const preferred = new Set(
 		preferredStats
 			? [
@@ -62,7 +74,10 @@ export function BuildStats({
 	}
 	const formatBonuses = (entries: [string, number][]): [string, string][] =>
 		entries
-			.filter(([, value]) => !hideZeroBonuses || Number(value.toFixed(1)) !== 0)
+			.filter(
+				([, value]) =>
+					loading || !hideZeroBonuses || Number(value.toFixed(1)) !== 0,
+			)
 			.map(([label, value]) => [label, percent(value)]);
 	if (stats.bonuses) {
 		const bonus = stats.bonuses;
@@ -100,6 +115,7 @@ export function BuildStats({
 	if (visibleGroups.length === 0) return null;
 	return (
 		<div
+			aria-busy={loading}
 			className={cn(
 				"grid gap-x-6 gap-y-4",
 				visibleGroups.length === 3 && "@min-[640px]/build-stats:grid-cols-3",
@@ -158,37 +174,16 @@ export function BuildStats({
 
 export function BuildRollValue({ rating }: { rating: BuildRating | null }) {
 	if (!rating) return null;
-	const completion =
-		rating.maximum !== null && rating.maximum > 0
-			? Math.min(100, (rating.total / rating.maximum) * 100)
-			: null;
+	const completion = Math.min(100, (rating.total / rating.maximum) * 100);
 	const color =
-		completion === null
-			? "var(--foreground)"
-			: completion >= 95
-				? "var(--color-amber-400)"
-				: ratingColor(completion);
-	const maximum =
-		rating.maximum !== null
-			? `${rating.maximum}%`
-			: rating.maximumEr !== null
-				? "Unreachable"
-				: "—";
-	const description = [
-		"Total echo RV / theoretical maximum with perfect substats, keeping main stats and weapon.",
-		`ER target ${percent(rating.requiredEr)}.`,
-		...(rating.maximum === null && rating.maximumEr !== null
-			? [`Perfect-roll ER limit ${percent(rating.maximumEr)}.`]
-			: []),
-	].join(" ");
+		completion >= 95 ? "var(--color-amber-400)" : ratingColor(completion);
+	const description =
+		"Total echo Roll Value / 500% maximum (five perfect echoes).";
 	return (
 		<dl className="flex w-fit items-baseline gap-2" title={description}>
 			<dt className="text-[10px] font-medium tracking-widest text-muted-foreground">
 				RV
-				<span className="sr-only">
-					{" "}
-					(Roll Value), total / ER-satisfied maximum
-				</span>
+				<span className="sr-only"> (Roll Value), total / 500% maximum</span>
 			</dt>
 			<dd className="flex items-baseline gap-2 whitespace-nowrap tabular-nums">
 				<span
@@ -196,7 +191,7 @@ export function BuildRollValue({ rating }: { rating: BuildRating | null }) {
 					style={{
 						color: `color-mix(in oklab, ${color} 82%, var(--foreground))`,
 						textShadow:
-							completion !== null && completion >= 85
+							completion >= 85
 								? "0 0 16px color-mix(in oklab, currentColor 30%, transparent)"
 								: undefined,
 					}}
@@ -206,7 +201,7 @@ export function BuildRollValue({ rating }: { rating: BuildRating | null }) {
 				</span>
 				<span className="text-sm text-muted-foreground/50">/</span>
 				<span className="text-sm font-medium text-muted-foreground">
-					{maximum}
+					{rating.maximum}%
 				</span>
 			</dd>
 		</dl>

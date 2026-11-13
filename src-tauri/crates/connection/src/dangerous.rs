@@ -170,16 +170,22 @@ struct Inner {
     generation: u64,
     cancelled: Arc<AtomicBool>,
     worker_active: bool,
-    echo_commands: Option<std::sync::mpsc::SyncSender<EchoCommand>>,
-    echo_busy: bool,
+    commands: Option<std::sync::mpsc::SyncSender<SessionCommand>>,
+    command_busy: bool,
 }
 
-struct EchoCommand {
+struct SessionCommand {
     profile_id: String,
-    operation: EchoOperation,
-    reply: std::sync::mpsc::Sender<Result<EchoResult, String>>,
+    operation: SessionOperation,
+    reply: std::sync::mpsc::Sender<Result<SessionResult, String>>,
 }
-enum EchoOperation {
+enum SessionOperation {
+    UpdateTeam {
+        expected: crate::account::model::SavedTeam,
+        name: String,
+        role_ids: Vec<i32>,
+    },
+    SwitchTeam(i32),
     Unequip(mornye_game_client::echo_equip::UnequipEcho),
     Equip {
         role_id: i32,
@@ -198,7 +204,7 @@ enum EchoOperation {
         mark: mornye_game_client::echo_mark::EchoMark,
     },
 }
-impl EchoOperation {
+impl SessionOperation {
     fn mutates(&self) -> bool {
         matches!(
             self,
@@ -209,10 +215,17 @@ impl EchoOperation {
                 | Self::Mark { .. }
                 | Self::Equip { .. }
                 | Self::Unequip(_)
+                | Self::UpdateTeam { .. }
+                | Self::SwitchTeam(_)
         )
     }
+
+    fn teams(&self) -> bool {
+        matches!(self, Self::UpdateTeam { .. } | Self::SwitchTeam(_))
+    }
 }
-enum EchoResult {
+enum SessionResult {
+    Team(mornye_game_client::teams::TeamUpdate),
     Unequip,
     Equip(Vec<i32>),
     Upgrade(mornye_game_client::echo_upgrade::UpgradePlan),
@@ -280,7 +293,7 @@ impl Inner {
         self.generation += 1;
         self.player_id = None;
         self.error = None;
-        self.echo_commands = None;
+        self.commands = None;
         self.discovered = None;
         if sign_out {
             self.login = None;
@@ -360,8 +373,8 @@ impl DangerousState {
                     generation: 0,
                     cancelled: Arc::new(AtomicBool::new(false)),
                     worker_active: false,
-                    echo_commands: None,
-                    echo_busy: false,
+                    commands: None,
+                    command_busy: false,
                 }),
             }),
         }
@@ -583,8 +596,8 @@ impl DangerousState {
     fn finish_connection(&self, generation: u64, result: Result<(), String>, expired: bool) {
         let mut inner = self.service.inner.lock();
         inner.worker_active = false;
-        inner.echo_commands = None;
-        inner.echo_busy = false;
+        inner.commands = None;
+        inner.command_busy = false;
         inner.player_id = None;
         if inner.generation == generation {
             if expired {
@@ -1013,7 +1026,7 @@ pub fn dangerous_connect(
                     &cancelled,
                 )?;
                 synchronized.map_err(|e| format!("{e:#}"))?;
-                let (echo_sender, echo_receiver) = std::sync::mpsc::sync_channel::<EchoCommand>(1);
+                let (sender, receiver) = std::sync::mpsc::sync_channel::<SessionCommand>(1);
                 {
                     let mut inner = service.service.inner.lock();
                     if inner.generation != generation || cancelled.load(Ordering::Relaxed) {
@@ -1021,22 +1034,51 @@ pub fn dangerous_connect(
                     }
                     inner.phase = Phase::Connected;
                     inner.player_id = Some(session.player_id());
-                    inner.echo_commands = Some(echo_sender);
+                    inner.commands = Some(sender);
                 }
                 let mut last_flush = std::time::Instant::now();
                 while !cancelled.load(Ordering::Relaxed) {
-                    if let Ok(command) = echo_receiver.try_recv() {
+                    if let Ok(command) = receiver.try_recv() {
                         let mutates = command.operation.mutates();
                         let operation = (|| -> Result<_, String> {
                             {
                                 let account = app.state::<AccountState>();
                                 let profiles = account.store.lock().map_err(|_| "Account store is unavailable.")?;
                                 if command.profile_id != profile_id || !profiles.is_selected(&profile_id) {
-                                    return Err("Select the connected account profile before changing an echo.".into());
+                                    return Err("Select the connected account profile before changing account data.".into());
                                 }
                             }
+                            if command.operation.teams() {
+                                session.synchronize_teams().map_err(|e| format!("{e:#}"))?;
+                                sync_packets(&app, &profile_id, &mut capture, &tables,
+                                    session.drain_packets(), &cancelled)?;
+                            }
                             match &command.operation {
-                                EchoOperation::Unequip(expected) => {
+                                SessionOperation::UpdateTeam { expected, name, role_ids } => {
+                                    let update = {
+                                        let account = app.state::<AccountState>();
+                                        let mut profiles = account.store.lock().map_err(|_| "Account store is unavailable.")?;
+                                        if !profiles.is_selected(&profile_id) {
+                                            return Err("Select the connected account profile before changing teams.".into());
+                                        }
+                                        let store = profiles.get_mut(&profile_id).ok_or("The connected account profile is unavailable.")?;
+                                        validate_team_edit(store.snapshot(), expected, name, role_ids)?
+                                    };
+                                    session.update_team(&update).map(|()| SessionResult::Team(update)).map_err(|e| format!("{e:#}"))
+                                }
+                                SessionOperation::SwitchTeam(id) => {
+                                    let update = {
+                                        let account = app.state::<AccountState>();
+                                        let mut profiles = account.store.lock().map_err(|_| "Account store is unavailable.")?;
+                                        if !profiles.is_selected(&profile_id) {
+                                            return Err("Select the connected account profile before changing teams.".into());
+                                        }
+                                        let store = profiles.get_mut(&profile_id).ok_or("The connected account profile is unavailable.")?;
+                                        validate_team_switch(store.snapshot(), *id)?
+                                    };
+                                    session.switch_team(&update).map(|()| SessionResult::Team(update)).map_err(|e| format!("{e:#}"))
+                                }
+                                SessionOperation::Unequip(expected) => {
                                     {
                                         let account = app.state::<AccountState>();
                                         let profiles = account.store.lock().map_err(|_| "Account store is unavailable.")?;
@@ -1051,9 +1093,9 @@ pub fn dangerous_connect(
                                             return Err("Choose an equipped captured echo from the connected profile.".into());
                                         }
                                     }
-                                    session.unequip_echo(expected).map(|()| EchoResult::Unequip).map_err(|e| format!("{e:#}"))
+                                    session.unequip_echo(expected).map(|()| SessionResult::Unequip).map_err(|e| format!("{e:#}"))
                                 }
-                                EchoOperation::Equip { role_id, echoes } => {
+                                SessionOperation::Equip { role_id, echoes } => {
                                     {
                                         let account = app.state::<AccountState>();
                                         let profiles = account.store.lock().map_err(|_| "Account store is unavailable.")?;
@@ -1066,9 +1108,9 @@ pub fn dangerous_connect(
                                             return Err("Choose an owned resonator and captured echoes from the connected profile.".into());
                                         }
                                     }
-                                    session.equip_echoes(*role_id, echoes).map(EchoResult::Equip).map_err(|e| format!("{e:#}"))
+                                    session.equip_echoes(*role_id, echoes).map(SessionResult::Equip).map_err(|e| format!("{e:#}"))
                                 }
-                                EchoOperation::Upgrade { incr_id, target_level, protected_ids, approved, material_policy } => {
+                                SessionOperation::Upgrade { incr_id, target_level, protected_ids, approved, material_policy } => {
                                     if let Some(approved) = approved {
                                         if approved.incr_id != *incr_id || approved.target_level != *target_level {
                                             return Err("Upgrade preview does not match the selected echo and target.".into());
@@ -1076,32 +1118,54 @@ pub fn dangerous_connect(
                                         session.upgrade_echo_with_policy(approved, protected_ids, material_policy)
                                     } else {
                                         session.plan_echo_upgrade_with_policy(*incr_id, *target_level, protected_ids, material_policy)
-                                    }.map(EchoResult::Upgrade).map_err(|e| format!("{e:#}"))
+                                    }.map(SessionResult::Upgrade).map_err(|e| format!("{e:#}"))
                                 }
-                                EchoOperation::Discard(expected) => session.discard_echo(expected)
-                                    .map(EchoResult::Discard).map_err(|e| format!("{e:#}")),
-                                EchoOperation::Mark { expected, mark } => session.mark_echo(expected, *mark)
-                                    .map(EchoResult::Mark).map_err(|e| format!("{e:#}")),
+                                SessionOperation::Discard(expected) => session.discard_echo(expected)
+                                    .map(SessionResult::Discard).map_err(|e| format!("{e:#}")),
+                                SessionOperation::Mark { expected, mark } => session.mark_echo(expected, *mark)
+                                    .map(SessionResult::Mark).map_err(|e| format!("{e:#}")),
                             }
                         })();
                         // Even rejected or interrupted operations may have received
                         // inventory updates. Persist them through the shared path.
                         let mut flushed = sync_packets(&app, &profile_id, &mut capture, &tables,
                             session.drain_packets(), &cancelled);
-                        let failed = operation.is_err() && mutates;
                         if mutates {
-                            let refreshed = session.synchronize_echo_inventory().map_err(|e| format!("{e:#}"));
+                            let refreshed = if command.operation.teams() {
+                                session.synchronize_teams()
+                            } else {
+                                session.synchronize_echo_inventory()
+                            }.map_err(|e| format!("{e:#}"));
                             let saved = sync_packets(&app, &profile_id, &mut capture, &tables,
                                 session.drain_packets(), &cancelled);
                             flushed = flushed.and(refreshed).and(saved);
                         }
+                        let operation = operation.and_then(|result| {
+                            if flushed.is_ok() {
+                                if let SessionResult::Team(team) = &result {
+                                    // Confirm after the server's ordered notifications and refresh
+                                    // have been applied through the shared converter.
+                                    let account = app.state::<AccountState>();
+                                    let mut profiles = account.store.lock().map_err(|_| "Account store is unavailable.")?;
+                                    let store = profiles.get_mut(&profile_id).ok_or("The connected account profile is unavailable.")?;
+                                    if matches!(&command.operation, SessionOperation::SwitchTeam(_)) {
+                                        confirm_team_switch(&store.snapshot(), team)?;
+                                    } else {
+                                        // CurRole/IsCurrent are server-managed context, not editor inputs.
+                                        confirm_team_edit(&store.snapshot(), team.id, &team.name, &team.role_ids)?;
+                                    }
+                                }
+                            }
+                            Ok(result)
+                        });
+                        let failed = operation.is_err() && mutates;
                         let connection_error = flushed.clone().err();
-                        service.service.inner.lock().echo_busy = false;
+                        service.service.inner.lock().command_busy = false;
                         let _ = command.reply.send(flushed.and(operation));
                         // A lost mutation response must never be retried on this
                         // connection. Reconciliation above is read-only.
                         if let Some(error) = connection_error { return Err(error); }
-                        if failed { return Err("Echo operation stopped. Check the refreshed inventory before reconnecting.".into()); }
+                        if failed { return Err("Account operation stopped. Check the refreshed data before reconnecting.".into()); }
                     }
                     session.keep_alive().map_err(|e| format!("{e:#}"))?;
                     if last_flush.elapsed() >= Duration::from_millis(250) {
@@ -1147,10 +1211,10 @@ pub async fn dangerous_echo_upgrade(
         return Err("The selected echo must be protected from use as upgrade material.".into());
     }
     material_policy.validate().map_err(|e| e.to_string())?;
-    match queue_echo_operation(
+    match queue_operation(
         state.inner(),
         profile_id,
-        EchoOperation::Upgrade {
+        SessionOperation::Upgrade {
             incr_id,
             target_level,
             protected_ids,
@@ -1160,7 +1224,7 @@ pub async fn dangerous_echo_upgrade(
     )
     .await?
     {
-        EchoResult::Upgrade(plan) => Ok(plan),
+        SessionResult::Upgrade(plan) => Ok(plan),
         _ => Err("Unexpected echo operation result.".into()),
     }
 }
@@ -1173,8 +1237,14 @@ pub async fn dangerous_echo_discard(
     expected: mornye_game_client::echo_upgrade::DiscardEcho,
 ) -> Result<mornye_game_client::echo_upgrade::DiscardResult, String> {
     main_window(&window)?;
-    match queue_echo_operation(state.inner(), profile_id, EchoOperation::Discard(expected)).await? {
-        EchoResult::Discard(result) => Ok(result),
+    match queue_operation(
+        state.inner(),
+        profile_id,
+        SessionOperation::Discard(expected),
+    )
+    .await?
+    {
+        SessionResult::Discard(result) => Ok(result),
         _ => Err("Unexpected echo operation result.".into()),
     }
 }
@@ -1188,14 +1258,14 @@ pub async fn dangerous_echo_mark(
     mark: mornye_game_client::echo_mark::EchoMark,
 ) -> Result<i32, String> {
     main_window(&window)?;
-    match queue_echo_operation(
+    match queue_operation(
         state.inner(),
         profile_id,
-        EchoOperation::Mark { expected, mark },
+        SessionOperation::Mark { expected, mark },
     )
     .await?
     {
-        EchoResult::Mark(value) => Ok(value),
+        SessionResult::Mark(value) => Ok(value),
         _ => Err("Unexpected echo operation result.".into()),
     }
 }
@@ -1211,14 +1281,14 @@ pub async fn dangerous_echo_equip(
     main_window(&window)?;
     mornye_game_client::echo_equip::validate(role_id, &echoes)
         .map_err(|error| error.to_string())?;
-    match queue_echo_operation(
+    match queue_operation(
         state.inner(),
         profile_id,
-        EchoOperation::Equip { role_id, echoes },
+        SessionOperation::Equip { role_id, echoes },
     )
     .await?
     {
-        EchoResult::Equip(ids) => Ok(ids),
+        SessionResult::Equip(ids) => Ok(ids),
         _ => Err("Unexpected echo operation result.".into()),
     }
 }
@@ -1232,48 +1302,211 @@ pub async fn dangerous_echo_unequip(
 ) -> Result<(), String> {
     main_window(&window)?;
     expected.validate().map_err(|error| error.to_string())?;
-    match queue_echo_operation(state.inner(), profile_id, EchoOperation::Unequip(expected)).await? {
-        EchoResult::Unequip => Ok(()),
+    match queue_operation(
+        state.inner(),
+        profile_id,
+        SessionOperation::Unequip(expected),
+    )
+    .await?
+    {
+        SessionResult::Unequip => Ok(()),
         _ => Err("Unexpected echo operation result.".into()),
     }
 }
 
-async fn queue_echo_operation(
+fn validate_team_edit(
+    snapshot: &crate::account::model::AccountSnapshot,
+    expected: &crate::account::model::SavedTeam,
+    name: &str,
+    role_ids: &[i32],
+) -> Result<mornye_game_client::teams::TeamUpdate, String> {
+    let current = snapshot
+        .teams
+        .iter()
+        .find(|team| team.id == expected.id)
+        .ok_or("Choose a synced team from the connected profile.")?;
+    if current != expected {
+        return Err("This team changed. Reopen the editor to use its latest composition.".into());
+    }
+    if role_ids.iter().any(|id| {
+        !snapshot
+            .resonators
+            .iter()
+            .any(|role| role.id == i64::from(*id))
+    }) {
+        return Err("Choose owned Resonators from the connected profile.".into());
+    }
+    let update = mornye_game_client::teams::TeamUpdate {
+        id: current.id,
+        name: name.to_owned(),
+        role_ids: role_ids.to_vec(),
+        current_role: if role_ids.contains(&current.current_role) {
+            current.current_role
+        } else {
+            role_ids.first().copied().unwrap_or_default()
+        },
+        is_current: current.is_current,
+    };
+    update.validate().map_err(|e| format!("{e:#}"))?;
+    Ok(update)
+}
+
+fn confirm_team_edit(
+    snapshot: &crate::account::model::AccountSnapshot,
+    id: i32,
+    name: &str,
+    role_ids: &[i32],
+) -> Result<(), String> {
+    if snapshot.teams.iter().any(|team| {
+        team.id == id
+            && team.name == name
+            && team
+                .role_ids
+                .iter()
+                .copied()
+                .eq(role_ids.iter().copied().map(i64::from))
+    }) {
+        Ok(())
+    } else {
+        Err("The server did not confirm the edited team; check the refreshed teams".into())
+    }
+}
+
+fn validate_team_switch(
+    snapshot: &crate::account::model::AccountSnapshot,
+    id: i32,
+) -> Result<mornye_game_client::teams::TeamUpdate, String> {
+    let team = snapshot
+        .teams
+        .iter()
+        .find(|team| team.id == id)
+        .ok_or("Choose a synced team from the connected profile.")?;
+    let role_ids = team
+        .role_ids
+        .iter()
+        .map(|id| i32::try_from(*id))
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|_| "The synced team has an invalid Resonator ID. Refresh the teams.")?;
+    let mut update = validate_team_edit(snapshot, team, &team.name, &role_ids)?;
+    // Like the game client, keep the active slot when selecting another team,
+    // falling back to its first member if that slot is unavailable.
+    let position = snapshot
+        .teams
+        .iter()
+        .find(|team| team.is_current)
+        .and_then(|team| {
+            team.role_ids
+                .iter()
+                .position(|id| *id == i64::from(team.current_role))
+        });
+    update.current_role = position
+        .and_then(|position| role_ids.get(position).copied())
+        .unwrap_or(role_ids[0]);
+    update.is_current = true;
+    Ok(update)
+}
+
+fn confirm_team_switch(
+    snapshot: &crate::account::model::AccountSnapshot,
+    expected: &mornye_game_client::teams::TeamUpdate,
+) -> Result<(), String> {
+    if snapshot.teams.iter().any(|team| {
+        team.id == expected.id
+            && team.is_current
+            && team
+                .role_ids
+                .iter()
+                .copied()
+                .eq(expected.role_ids.iter().copied().map(i64::from))
+    }) {
+        Ok(())
+    } else {
+        Err("The server did not confirm the active team; check the refreshed teams".into())
+    }
+}
+
+#[tauri::command]
+pub async fn dangerous_team_update(
+    window: WebviewWindow,
+    state: State<'_, DangerousState>,
+    profile_id: String,
+    expected: crate::account::model::SavedTeam,
+    name: String,
+    role_ids: Vec<i32>,
+) -> Result<(), String> {
+    main_window(&window)?;
+    match queue_operation(
+        state.inner(),
+        profile_id,
+        SessionOperation::UpdateTeam {
+            expected,
+            name,
+            role_ids,
+        },
+    )
+    .await?
+    {
+        SessionResult::Team(_) => Ok(()),
+        _ => Err("Unexpected team operation result.".into()),
+    }
+}
+
+#[tauri::command]
+pub async fn dangerous_team_switch(
+    window: WebviewWindow,
+    state: State<'_, DangerousState>,
+    profile_id: String,
+    team_id: i32,
+) -> Result<(), String> {
+    main_window(&window)?;
+    match queue_operation(
+        state.inner(),
+        profile_id,
+        SessionOperation::SwitchTeam(team_id),
+    )
+    .await?
+    {
+        SessionResult::Team(_) => Ok(()),
+        _ => Err("Unexpected team operation result.".into()),
+    }
+}
+
+async fn queue_operation(
     state: &DangerousState,
     profile_id: String,
-    operation: EchoOperation,
-) -> Result<EchoResult, String> {
+    operation: SessionOperation,
+) -> Result<SessionResult, String> {
     let receiver = {
         let mut inner = state.service.inner.lock();
         inner.enabled()?;
         if inner.phase != Phase::Connected {
-            return Err("Connect to the game before changing an echo.".into());
+            return Err("Connect to the game before changing account data.".into());
         }
-        if inner.echo_busy {
-            return Err("An echo operation is already running. Wait for it to finish.".into());
+        if inner.command_busy {
+            return Err("An account operation is already running. Wait for it to finish.".into());
         }
         let sender = inner
-            .echo_commands
+            .commands
             .as_ref()
             .ok_or("The active connection is unavailable.")?;
         let (reply, receiver) = std::sync::mpsc::channel();
         sender
-            .try_send(EchoCommand {
+            .try_send(SessionCommand {
                 profile_id,
                 operation,
                 reply,
             })
             .map_err(|_| "The active connection is busy or has closed.")?;
-        inner.echo_busy = true;
+        inner.command_busy = true;
         receiver
     };
     tauri::async_runtime::spawn_blocking(move || {
         receiver.recv().map_err(|_| {
-            "The connection closed. Refresh inventory before changing another echo.".to_string()
+            "The connection closed. Check the refreshed account data before making another change.".to_string()
         })?
     })
     .await
-    .map_err(|_| "The echo operation worker failed.".to_string())?
+    .map_err(|_| "The account operation worker failed.".to_string())?
 }
 
 fn sync_packets(
@@ -1345,6 +1578,198 @@ pub async fn dangerous_sign_out(
 mod tests {
     use super::*;
     use std::{collections::HashMap, sync::atomic::AtomicUsize};
+
+    #[test]
+    fn team_edits_revalidate_ownership_and_saved_state_and_preserve_the_active_role() {
+        use crate::account::model::{AccountSnapshot, Resonator, SavedTeam};
+        let team = SavedTeam {
+            id: 2,
+            name: "Tower".into(),
+            role_ids: vec![1503, 1505],
+            current_role: 1505,
+            is_current: true,
+        };
+        let snapshot = AccountSnapshot {
+            teams: vec![team.clone()],
+            resonators: [1503, 1505, 1404]
+                .into_iter()
+                .map(|id| Resonator {
+                    id,
+                    name: String::new(),
+                    level: 90,
+                    breakthrough: 6,
+                    chain: 0,
+                    skills: vec![],
+                })
+                .collect(),
+            ..Default::default()
+        };
+        let update = validate_team_edit(&snapshot, &team, "Renamed", &[1404, 1505, 1503]).unwrap();
+        assert_eq!(update.current_role, 1505);
+        assert_eq!(update.name, "Renamed");
+        assert!(update.is_current);
+        assert_eq!(
+            validate_team_edit(&snapshot, &team, "Tower", &[1404])
+                .unwrap()
+                .current_role,
+            1404
+        );
+        for ids in [vec![], vec![1503, 1503], vec![9999]] {
+            assert!(validate_team_edit(&snapshot, &team, "Tower", &ids).is_err());
+        }
+        let stale = SavedTeam {
+            name: "Old".into(),
+            ..team
+        };
+        assert!(validate_team_edit(&snapshot, &stale, "Tower", &[1503])
+            .unwrap_err()
+            .contains("changed"));
+    }
+
+    #[test]
+    fn team_switches_use_synced_members_and_the_current_active_slot() {
+        use crate::account::model::{AccountSnapshot, Resonator, SavedTeam};
+        let mut snapshot = AccountSnapshot {
+            teams: vec![
+                SavedTeam {
+                    id: 1,
+                    name: "Current".into(),
+                    role_ids: vec![1603, 1606, 1608],
+                    current_role: 1606,
+                    is_current: true,
+                },
+                SavedTeam {
+                    id: 2,
+                    name: "Tower".into(),
+                    role_ids: vec![1505, 1503],
+                    current_role: 1505,
+                    is_current: false,
+                },
+            ],
+            resonators: [1503, 1505, 1603, 1606, 1608]
+                .into_iter()
+                .map(|id| Resonator {
+                    id,
+                    name: String::new(),
+                    level: 90,
+                    breakthrough: 6,
+                    chain: 0,
+                    skills: vec![],
+                })
+                .collect(),
+            ..Default::default()
+        };
+        for (active, current_role, expected_role) in [
+            (true, 1606, 1503), // Preserve slot two, not the target's old CurRole.
+            (true, 1603, 1505),
+            (true, 1608, 1505), // Target has no third slot.
+            (true, 0, 1505),
+            (false, 1606, 1505),
+        ] {
+            snapshot.teams[0].is_current = active;
+            snapshot.teams[0].current_role = current_role;
+            let update = validate_team_switch(&snapshot, 2).unwrap();
+            assert_eq!(update.id, 2);
+            assert_eq!(update.name, "Tower");
+            assert_eq!(update.role_ids, [1505, 1503]);
+            assert_eq!(update.current_role, expected_role);
+            assert!(update.is_current);
+            assert!(update.validate().is_ok());
+        }
+        snapshot.teams[1].is_current = true;
+        snapshot.teams[1].current_role = 1503;
+        assert_eq!(
+            validate_team_switch(&snapshot, 2).unwrap().current_role,
+            1503
+        );
+        assert!(validate_team_switch(&snapshot, 3).is_err());
+        for roles in [
+            vec![],
+            vec![1503, 1503],
+            vec![1503, 1505, 1603, 1606],
+            vec![9999],
+            vec![-1503],
+            vec![(1_i64 << 32) + 1503],
+        ] {
+            snapshot.teams[1].role_ids = roles;
+            assert!(validate_team_switch(&snapshot, 2).is_err());
+        }
+    }
+
+    #[test]
+    fn refreshed_team_switch_confirmation_requires_the_selected_team_and_member_order() {
+        use crate::account::model::{AccountSnapshot, SavedTeam};
+        let expected = mornye_game_client::teams::TeamUpdate {
+            id: 2,
+            name: "Tower".into(),
+            role_ids: vec![1505, 1503],
+            current_role: 1503,
+            is_current: true,
+        };
+        for (id, roles, is_current, current_role, valid) in [
+            (2, vec![1505, 1503], true, 1503, true),
+            (2, vec![1505, 1503], true, 1505, true),
+            (2, vec![1505, 1503], false, 1503, false),
+            (1, vec![1505, 1503], true, 1503, false),
+            (2, vec![1503, 1505], true, 1503, false),
+            (2, vec![1505], true, 1505, false),
+            (2, vec![], true, 0, false),
+        ] {
+            let snapshot = AccountSnapshot {
+                teams: vec![SavedTeam {
+                    id,
+                    name: "Server name".into(),
+                    role_ids: roles,
+                    current_role,
+                    is_current,
+                }],
+                ..Default::default()
+            };
+            assert_eq!(confirm_team_switch(&snapshot, &expected).is_ok(), valid);
+        }
+        assert!(confirm_team_switch(&AccountSnapshot::default(), &expected).is_err());
+    }
+
+    #[test]
+    fn refreshed_team_confirmation_checks_edits_and_accepts_server_managed_metadata() {
+        use crate::account::model::{AccountSnapshot, SavedTeam};
+        for (id, name, roles, current_role, is_current, valid) in [
+            (2, "Tower", vec![1505, 1503], 1503, true, true),
+            (2, "Tower", vec![1505, 1503], 1505, false, true),
+            (2, "Tower", vec![1505, 1503], 0, false, true),
+            (1, "Tower", vec![1505, 1503], 1503, true, false),
+            (2, "Other", vec![1505, 1503], 1503, true, false),
+            (2, "Tower", vec![1503, 1505], 1503, true, false),
+            (2, "Tower", vec![1505], 1505, true, false),
+        ] {
+            let snapshot = AccountSnapshot {
+                teams: vec![SavedTeam {
+                    id,
+                    name: name.into(),
+                    role_ids: roles,
+                    current_role,
+                    is_current,
+                }],
+                ..Default::default()
+            };
+            assert_eq!(
+                confirm_team_edit(&snapshot, 2, "Tower", &[1505, 1503]).is_ok(),
+                valid
+            );
+        }
+        assert!(confirm_team_edit(&AccountSnapshot::default(), 2, "Tower", &[1505, 1503]).is_err());
+        let cleared_name = AccountSnapshot {
+            teams: vec![SavedTeam {
+                id: 2,
+                name: String::new(),
+                role_ids: vec![1505, 1503],
+                current_role: 0,
+                is_current: false,
+            }],
+            ..Default::default()
+        };
+        assert!(confirm_team_edit(&cleared_name, 2, "", &[1505, 1503]).is_ok());
+    }
 
     #[derive(Default)]
     struct MemoryVault {

@@ -18,6 +18,9 @@ const buttonVariants = cva(
 				destructive:
 					"bg-destructive/10 hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/20 text-destructive focus-visible:border-destructive/40 dark:hover:bg-destructive/30",
 				link: "text-primary underline-offset-4 hover:underline",
+				kofi: "bg-kofi text-kofi-foreground hover:bg-kofi/90 focus-visible:border-kofi focus-visible:ring-kofi/50",
+				patreon:
+					"bg-patreon text-patreon-foreground hover:bg-patreon/90 focus-visible:border-patreon focus-visible:ring-patreon/50",
 			},
 			size: {
 				default:

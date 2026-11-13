@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Modal dialogs no longer cover or block the title bar and window controls, including in smaller windows.
+
 ## [1.0.0] - 2026-11-13
 
 ### Added

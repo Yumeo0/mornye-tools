@@ -30,7 +30,7 @@ export function Modal({
 	return createPortal(
 		<div
 			data-slot="modal"
-			className="fixed inset-0 z-50 flex items-center justify-center p-4"
+			className="fixed inset-x-0 top-(--window-titlebar-height) bottom-0 z-50 flex items-center justify-center p-4"
 		>
 			<button
 				type="button"
@@ -41,7 +41,7 @@ export function Modal({
 			/>
 			<div
 				className={cn(
-					"bg-card text-card-foreground ring-foreground/20 relative flex w-full flex-col gap-3 p-4 shadow-2xl ring-1",
+					"bg-card text-card-foreground ring-foreground/20 relative flex min-h-0 max-h-full w-full flex-col gap-3 overflow-y-auto p-4 shadow-2xl ring-1",
 					className,
 				)}
 			>

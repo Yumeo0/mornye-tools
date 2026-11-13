@@ -121,7 +121,7 @@ export function EchoUpgradePickerDialog({
 				if (!open) onClose();
 			}}
 		>
-			<DialogContent className="flex h-[calc(100dvh-2rem)] min-h-0 w-[calc(100vw-2rem)] max-w-none flex-col sm:max-w-none">
+			<DialogContent className="flex h-full min-h-0 max-w-none flex-col sm:max-w-none">
 				<DialogHeader className="shrink-0 pr-7">
 					<DialogTitle>Select echoes</DialogTitle>
 					<DialogDescription>

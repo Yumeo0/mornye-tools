@@ -9,6 +9,11 @@
 
 :root {
 	color-scheme: light;
+	--window-titlebar-height: 2.25rem;
+	--kofi: #72a4f2;
+	--kofi-foreground: #fff;
+	--patreon: #ff424d;
+	--patreon-foreground: #fff;
 	--background: oklch(1 0 0);
 	--foreground: oklch(0.147 0.004 49.25);
 	--card: oklch(1 0 0);
@@ -79,6 +84,10 @@
 }
 
 @theme inline {
+	--color-kofi: var(--kofi);
+	--color-kofi-foreground: var(--kofi-foreground);
+	--color-patreon: var(--patreon);
+	--color-patreon-foreground: var(--patreon-foreground);
 	--font-sans: "IBM Plex Sans Variable", sans-serif;
 	--font-mono: "JetBrains Mono Variable", monospace;
 	--color-sidebar-ring: var(--sidebar-ring);

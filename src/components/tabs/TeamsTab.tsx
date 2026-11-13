@@ -76,7 +76,7 @@ function TeamEditor({
 			}}
 		>
 			<DialogContent
-				className="max-h-[90vh] overflow-y-auto sm:max-w-2xl"
+				className="max-h-[min(90vh,100%)] overflow-y-auto sm:max-w-2xl"
 				showCloseButton={!busy}
 			>
 				<DialogHeader>

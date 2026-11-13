@@ -3,6 +3,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { isTauri } from "@tauri-apps/api/core";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { lazy, Suspense, useEffect, useState } from "react";
+import { SupportLinks } from "@/components/SupportLinks";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
 import { preferredReleaseNotes } from "@/lib/changelog";
 import {
 	loadReleaseNotes,
@@ -118,7 +120,7 @@ export function ChangelogDialog({
 					{label}
 				</DialogTrigger>
 			)}
-			<DialogContent className="flex max-h-[80vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl">
+			<DialogContent className="flex max-h-[min(80vh,100%)] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl">
 				<DialogHeader className="gap-2 border-b px-6 py-5 pr-10">
 					<Badge variant="outline">Version {version}</Badge>
 					<DialogTitle>What's new in Mornye Tools</DialogTitle>
@@ -165,7 +167,12 @@ export function ChangelogDialog({
 						</AlertDescription>
 					</Alert>
 				)}
-				<DialogFooter className="border-t px-6 py-4" showCloseButton>
+				<Separator />
+				<div className="flex shrink-0 flex-wrap items-center justify-between gap-3 px-6 py-4">
+					<p className="text-xs text-muted-foreground">Support Mornye Tools</p>
+					<SupportLinks />
+				</div>
+				<DialogFooter className="shrink-0 border-t px-6 py-4" showCloseButton>
 					<Button variant="outline" onClick={() => void openRelease()}>
 						<HugeiconsIcon icon={ArrowUpRight01Icon} data-icon="inline-start" />
 						View on GitHub

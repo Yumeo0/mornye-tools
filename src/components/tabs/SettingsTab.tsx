@@ -19,6 +19,7 @@ import { OptimizerSettingsCard } from "@/components/settings/OptimizerSettingsCa
 import { OverlayToggleCard } from "@/components/settings/OverlayToggleCard";
 import { PcapImportPanel } from "@/components/settings/PcapImportPanel";
 import { ShortcutsCard } from "@/components/settings/ShortcutsCard";
+import { SupportCard } from "@/components/settings/SupportCard";
 import { UpdatesCard } from "@/components/settings/UpdatesCard";
 import { UpgradeAssistantCard } from "@/components/settings/UpgradeAssistantCard";
 import { Button } from "@/components/ui/button";
@@ -105,7 +106,10 @@ export function SettingsTab({
 						<OcrResolutionCard />
 						<ShortcutsCard />
 					</div>
-					<UpdatesCard />
+					<div className="flex flex-col gap-4">
+						<UpdatesCard />
+						<SupportCard />
+					</div>
 				</div>
 			</TabsContent>
 			<TabsContent

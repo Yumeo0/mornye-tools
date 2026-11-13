@@ -158,7 +158,7 @@ export function AddPlayerProfileDialog({
 				if (!open) close();
 			}}
 		>
-			<DialogContent className="max-h-[85dvh] overflow-y-auto sm:max-w-2xl">
+			<DialogContent className="max-h-[min(85dvh,100%)] overflow-y-auto sm:max-w-2xl">
 				<DialogHeader>
 					<DialogTitle>
 						{discovery
@@ -421,7 +421,7 @@ export function ManagePlayerProfilesDialog({
 				if (!open) onClose();
 			}}
 		>
-			<DialogContent className="flex max-h-[85dvh] flex-col sm:max-w-2xl">
+			<DialogContent className="flex max-h-[min(85dvh,100%)] flex-col sm:max-w-2xl">
 				<DialogHeader>
 					<DialogTitle>Manage player profiles</DialogTitle>
 					<DialogDescription>

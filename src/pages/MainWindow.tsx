@@ -57,10 +57,12 @@ import { checkForUpdateOnStartup, useUpdateState } from "@/lib/updater";
 import { cn } from "@/lib/utils";
 
 function WindowButton({
+	label,
 	onClick,
 	hoverClass,
 	children,
 }: {
+	label: string;
 	onClick: () => void;
 	hoverClass?: string;
 	children: ReactNode;
@@ -68,6 +70,8 @@ function WindowButton({
 	return (
 		<button
 			type="button"
+			aria-label={label}
+			title={label}
 			onClick={onClick}
 			className={`grid w-11 place-items-center text-muted-foreground transition-colors hover:bg-muted/70 hover:text-foreground ${hoverClass ?? ""}`}
 		>
@@ -169,10 +173,12 @@ function NavTab({
 function TitleBar() {
 	const win = isTauri() ? getCurrentWindow() : null;
 
+	// Stay above portaled popups and Base UI's invisible interaction backdrop.
 	return (
 		<div
 			data-tauri-drag-region
-			className="flex h-9 shrink-0 items-stretch select-none border-b bg-background"
+			data-slot="window-titlebar"
+			className="relative z-100 flex h-(--window-titlebar-height) shrink-0 items-stretch select-none border-b bg-background"
 		>
 			<span
 				data-tauri-drag-region
@@ -188,13 +194,17 @@ function TitleBar() {
 				Mornye Tools
 			</span>
 			<div data-tauri-drag-region className="flex-1" />
-			<WindowButton onClick={() => win?.minimize()}>
+			<WindowButton label="Minimize window" onClick={() => win?.minimize()}>
 				<Minus className="size-4" />
 			</WindowButton>
-			<WindowButton onClick={() => win?.toggleMaximize()}>
+			<WindowButton
+				label="Maximize or restore window"
+				onClick={() => win?.toggleMaximize()}
+			>
 				<Square className="size-3.5" />
 			</WindowButton>
 			<WindowButton
+				label="Close window"
 				onClick={() => win?.close()}
 				hoverClass="hover:bg-destructive hover:text-destructive-foreground"
 			>

@@ -83,7 +83,7 @@ export function RotationTeamDialog({
 				if (!open) onClose();
 			}}
 		>
-			<DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-4xl">
+			<DialogContent className="max-h-[min(90vh,100%)] overflow-y-auto sm:max-w-4xl">
 				<DialogHeader>
 					<DialogTitle>
 						{creating ? "Create rotation" : "Edit team"}

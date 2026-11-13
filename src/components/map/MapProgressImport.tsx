@@ -1,4 +1,3 @@
-import { Dialog } from "@base-ui/react/dialog";
 import {
 	ArrowLeft01Icon,
 	ArrowRight01Icon,
@@ -9,6 +8,12 @@ import { isTauri } from "@tauri-apps/api/core";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { VirtualGrid } from "@/components/VirtualGrid";
@@ -163,417 +168,411 @@ export function MapProgressImport({
 	const nextDisabled =
 		(step === 0 && !source) || (step === 3 && (!rows || loading));
 	return (
-		<Dialog.Root
+		<Dialog
 			open
 			onOpenChange={(open) => {
 				if (!open) close();
 			}}
 		>
-			<Dialog.Portal>
-				<Dialog.Backdrop className="fixed inset-0 bg-black/60" />
-				<Dialog.Popup className="fixed left-1/2 top-1/2 flex max-h-[calc(100dvh-2rem)] w-[min(40rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden border bg-card text-card-foreground shadow-2xl outline-none">
-					<header className="flex shrink-0 items-start justify-between gap-4 p-5">
-						<div className="flex min-w-0 flex-col gap-1">
-							<Dialog.Title className="text-base font-semibold">
-								Import map progress
-							</Dialog.Title>
-							<Dialog.Description className="text-xs text-muted-foreground">
-								Bring over the locations you have already marked.
-							</Dialog.Description>
-						</div>
-						<Button
-							variant="ghost"
-							size="icon-sm"
-							aria-label="Close import"
-							disabled={saving}
-							onClick={close}
+			<DialogContent
+				showCloseButton={false}
+				className="flex flex-col gap-0 overflow-hidden border bg-card p-0 text-card-foreground shadow-2xl sm:max-w-[40rem]"
+			>
+				<header className="flex shrink-0 items-start justify-between gap-4 p-5">
+					<div className="flex min-w-0 flex-col gap-1">
+						<DialogTitle className="text-base font-semibold">
+							Import map progress
+						</DialogTitle>
+						<DialogDescription className="text-xs text-muted-foreground">
+							Bring over the locations you have already marked.
+						</DialogDescription>
+					</div>
+					<Button
+						variant="ghost"
+						size="icon-sm"
+						aria-label="Close import"
+						disabled={saving}
+						onClick={close}
+					>
+						<HugeiconsIcon icon={Cancel01Icon} />
+					</Button>
+				</header>
+				<Separator />
+				{imported !== null ? (
+					<>
+						<div
+							role="status"
+							className="flex flex-col gap-3 overflow-y-auto p-5 py-8"
 						>
-							<HugeiconsIcon icon={Cancel01Icon} />
-						</Button>
-					</header>
-					<Separator />
-					{imported !== null ? (
-						<>
-							<div
-								role="status"
-								className="flex flex-col gap-3 overflow-y-auto p-5 py-8"
-							>
-								<h3 className="text-lg font-medium">
-									{imported.toLocaleString()}{" "}
-									{imported === 1 ? "location" : "locations"} imported
-								</h3>
-								<p className="text-sm text-muted-foreground">
-									Your existing progress is preserved. Enable a map section and
-									choose Collected to see your imported locations.
+							<h3 className="text-lg font-medium">
+								{imported.toLocaleString()}{" "}
+								{imported === 1 ? "location" : "locations"} imported
+							</h3>
+							<p className="text-sm text-muted-foreground">
+								Your existing progress is preserved. Enable a map section and
+								choose Collected to see your imported locations.
+							</p>
+						</div>
+						<Separator />
+						<footer className="flex shrink-0 justify-end p-4">
+							<Button onClick={onClose}>Done</Button>
+						</footer>
+					</>
+				) : (
+					<>
+						<div className="flex min-h-0 flex-col gap-5 overflow-y-auto p-5">
+							<div className="flex flex-col gap-2">
+								<p className="text-[10px] uppercase tracking-widest text-muted-foreground">
+									Step {step + 1} of {STEPS.length}
 								</p>
-							</div>
-							<Separator />
-							<footer className="flex shrink-0 justify-end p-4">
-								<Button onClick={onClose}>Done</Button>
-							</footer>
-						</>
-					) : (
-						<>
-							<div className="flex min-h-0 flex-col gap-5 overflow-y-auto p-5">
-								<div className="flex flex-col gap-2">
-									<p className="text-[10px] uppercase tracking-widest text-muted-foreground">
-										Step {step + 1} of {STEPS.length}
-									</p>
-									<h3
-										key={step}
-										ref={focusHeading}
-										tabIndex={-1}
-										className="text-lg font-medium outline-none"
-									>
-										{STEPS[step]}
-									</h3>
-								</div>
-								<section
+								<h3
 									key={step}
-									aria-label={STEPS[step]}
-									className="flex flex-col gap-4 text-sm"
+									ref={focusHeading}
+									tabIndex={-1}
+									className="text-lg font-medium outline-none"
 								>
-									{step === 0 && (
-										<>
-											<fieldset className="flex flex-col gap-3">
-												<legend className="mb-3 text-sm">
-													Which map did you use to track your progress?
-												</legend>
-												<label className="flex cursor-pointer items-center gap-3 border p-4 has-checked:border-primary has-checked:bg-muted/50">
-													<input
-														type="radio"
-														name="import-source"
-														value="ghzs"
-														checked={source === "ghzs"}
-														onChange={() => setSource("ghzs")}
-														className="accent-primary"
-													/>
-													<span className="flex flex-col gap-1">
-														<span className="font-medium">GHZS</span>
-														<span className="text-xs text-muted-foreground">
-															ghzs666.com · English Wuthering Waves map
-														</span>
+									{STEPS[step]}
+								</h3>
+							</div>
+							<section
+								key={step}
+								aria-label={STEPS[step]}
+								className="flex flex-col gap-4 text-sm"
+							>
+								{step === 0 && (
+									<>
+										<fieldset className="flex flex-col gap-3">
+											<legend className="mb-3 text-sm">
+												Which map did you use to track your progress?
+											</legend>
+											<label className="flex cursor-pointer items-center gap-3 border p-4 has-checked:border-primary has-checked:bg-muted/50">
+												<input
+													type="radio"
+													name="import-source"
+													value="ghzs"
+													checked={source === "ghzs"}
+													onChange={() => setSource("ghzs")}
+													className="accent-primary"
+												/>
+												<span className="flex flex-col gap-1">
+													<span className="font-medium">GHZS</span>
+													<span className="text-xs text-muted-foreground">
+														ghzs666.com · English Wuthering Waves map
 													</span>
-												</label>
-											</fieldset>
-											<p className="text-xs text-muted-foreground">
-												GHZS is currently the only supported map. You can skip
-												this and start fresh, or return anytime in Settings →
-												Import.
-											</p>
-										</>
-									)}
-									{step === 1 && (
-										<>
-											<p>
-												Open the English GHZS map in your browser and sign in
-												with the account you used to track your locations.
-											</p>
-											<Button
-												variant="outline"
-												className="self-start"
-												onClick={async () => {
-													setError(null);
-													try {
-														if (isTauri()) await openUrl(GHZS_URL);
-														else
-															window.open(
-																GHZS_URL,
-																"_blank",
-																"noopener,noreferrer",
-															);
-													} catch {
-														setError(
-															`Could not open your browser. Open ${GHZS_URL} manually, then choose Next.`,
-														);
-													}
-												}}
-											>
-												Open GHZS map
-												<HugeiconsIcon
-													icon={ArrowRight01Icon}
-													data-icon="inline-end"
-												/>
-											</Button>
-											<p className="text-xs text-muted-foreground">
-												Wait until your marked locations appear, then choose
-												Next.
-											</p>
-										</>
-									)}
-									{step === 2 && (
-										<>
-											<p>
-												Copy the script below, then run it on the GHZS page to
-												download your progress.
-											</p>
-											<Button
-												variant="outline"
-												className="self-start"
-												onClick={() => void copyScript()}
-											>
-												{copied ? "Script copied" : "Copy export script"}
-											</Button>
-											<p>
-												On the GHZS page, press{" "}
-												<kbd className="border px-1.5 py-0.5 text-xs">F12</kbd>{" "}
-												and open the <strong>Console</strong> tab. Paste the
-												script and press{" "}
-												<kbd className="border px-1.5 py-0.5 text-xs">
-													Enter
-												</kbd>
-												.
-											</p>
-											<p>
-												Wait for <strong>ghzs-progress.json</strong> to
-												download, then choose Next.
-											</p>
-											<p className="text-xs text-muted-foreground">
-												If the console reports an error, check that you are
-												signed in and your marks have loaded, then run the
-												script again.
-											</p>
-											<p className="text-xs text-muted-foreground">
-												The script reads your marks and the public map catalog.
-												It does not change your GHZS progress or export login
-												tokens.
-											</p>
-											<details className="text-xs text-muted-foreground">
-												<summary className="cursor-pointer py-1">
-													View export script
-												</summary>
-												<pre className="mt-2 max-h-44 overflow-auto border bg-background p-3 text-[10px]">
-													{exportScript}
-												</pre>
-											</details>
-										</>
-									)}
-									{step === 3 && (
-										<>
-											<p>
-												Choose the <strong>ghzs-progress.json</strong> file you
-												just downloaded.
-											</p>
-											{!catalog && (
-												<div className="flex flex-col gap-2">
-													<p
-														role={catalogError ? "alert" : "status"}
-														className="text-xs text-muted-foreground"
-													>
-														{catalogError ?? "Loading map data…"}
-													</p>
-													{catalogError && (
-														<Button
-															variant="outline"
-															className="self-start"
-															onClick={onRetry}
-														>
-															Retry
-														</Button>
-													)}
-												</div>
-											)}
-											<label htmlFor="ghzs-file" className="sr-only">
-												GHZS export file
+												</span>
 											</label>
-											<Input
-												id="ghzs-file"
-												type="file"
-												accept=".json,application/json"
-												disabled={!catalog}
-												onChange={(event) => {
-													const input = event.currentTarget;
-													const file = input.files?.[0];
-													if (file)
-														void readFile(file).finally(() => {
-															input.value = "";
-														});
-												}}
+										</fieldset>
+										<p className="text-xs text-muted-foreground">
+											GHZS is currently the only supported map. You can skip
+											this and start fresh, or return anytime in Settings →
+											Import.
+										</p>
+									</>
+								)}
+								{step === 1 && (
+									<>
+										<p>
+											Open the English GHZS map in your browser and sign in with
+											the account you used to track your locations.
+										</p>
+										<Button
+											variant="outline"
+											className="self-start"
+											onClick={async () => {
+												setError(null);
+												try {
+													if (isTauri()) await openUrl(GHZS_URL);
+													else
+														window.open(
+															GHZS_URL,
+															"_blank",
+															"noopener,noreferrer",
+														);
+												} catch {
+													setError(
+														`Could not open your browser. Open ${GHZS_URL} manually, then choose Next.`,
+													);
+												}
+											}}
+										>
+											Open GHZS map
+											<HugeiconsIcon
+												icon={ArrowRight01Icon}
+												data-icon="inline-end"
 											/>
-											<details className="text-xs text-muted-foreground">
-												<summary className="cursor-pointer py-1">
-													Or paste export JSON
-												</summary>
-												<textarea
-													aria-label="GHZS export JSON"
-													className="mt-2 h-24 w-full resize-y border bg-background p-2 text-xs text-foreground outline-none focus-visible:ring-1 focus-visible:ring-ring"
-													value={text}
-													onChange={(event) => {
-														reading.current++;
-														setLoading(false);
-														setText(event.target.value);
-														setRows(null);
-														setError(null);
-													}}
-												/>
-												<Button
-													variant="outline"
-													size="sm"
-													disabled={!text.trim() || loading || !catalog}
-													onClick={() => preview(text)}
-												>
-													Read export
-												</Button>
-											</details>
-											{loading && (
+										</Button>
+										<p className="text-xs text-muted-foreground">
+											Wait until your marked locations appear, then choose Next.
+										</p>
+									</>
+								)}
+								{step === 2 && (
+									<>
+										<p>
+											Copy the script below, then run it on the GHZS page to
+											download your progress.
+										</p>
+										<Button
+											variant="outline"
+											className="self-start"
+											onClick={() => void copyScript()}
+										>
+											{copied ? "Script copied" : "Copy export script"}
+										</Button>
+										<p>
+											On the GHZS page, press{" "}
+											<kbd className="border px-1.5 py-0.5 text-xs">F12</kbd>{" "}
+											and open the <strong>Console</strong> tab. Paste the
+											script and press{" "}
+											<kbd className="border px-1.5 py-0.5 text-xs">Enter</kbd>.
+										</p>
+										<p>
+											Wait for <strong>ghzs-progress.json</strong> to download,
+											then choose Next.
+										</p>
+										<p className="text-xs text-muted-foreground">
+											If the console reports an error, check that you are signed
+											in and your marks have loaded, then run the script again.
+										</p>
+										<p className="text-xs text-muted-foreground">
+											The script reads your marks and the public map catalog. It
+											does not change your GHZS progress or export login tokens.
+										</p>
+										<details className="text-xs text-muted-foreground">
+											<summary className="cursor-pointer py-1">
+												View export script
+											</summary>
+											<pre className="mt-2 max-h-44 overflow-auto border bg-background p-3 text-[10px]">
+												{exportScript}
+											</pre>
+										</details>
+									</>
+								)}
+								{step === 3 && (
+									<>
+										<p>
+											Choose the <strong>ghzs-progress.json</strong> file you
+											just downloaded.
+										</p>
+										{!catalog && (
+											<div className="flex flex-col gap-2">
 												<p
-													role="status"
+													role={catalogError ? "alert" : "status"}
 													className="text-xs text-muted-foreground"
 												>
-													Reading export…
+													{catalogError ?? "Loading map data…"}
 												</p>
-											)}
-											{rows && (
-												<p role="status" className="text-xs">
-													{rows.length.toLocaleString()} marked locations read.
-													Choose Next to review the matches.
-												</p>
-											)}
-										</>
-									)}
-									{step === 4 && rows && (
-										<>
-											<div className="flex flex-col gap-2">
-												<p className="text-xs">
-													{playerId > 0
-														? `Import into ${playerName || "game account"} · ${playerId}`
-														: "Connect a game account to save imported progress. You can review your export now."}
-												</p>
-												<p className="font-medium">
-													{selected.length.toLocaleString()} ready (
-													{linked.toLocaleString()} linked) ·{" "}
-													{existing.toLocaleString()} already collected ·{" "}
-													{(rows.length - matched).toLocaleString()} skipped
-												</p>
-												<p className="text-xs text-muted-foreground">
-													Each checked match also includes its directly linked
-													challenges or reward chests. Uncheck matches you do
-													not want to use. Your existing marks are preserved.
-												</p>
+												{catalogError && (
+													<Button
+														variant="outline"
+														className="self-start"
+														onClick={onRetry}
+													>
+														Retry
+													</Button>
+												)}
 											</div>
-											<VirtualGrid
-												items={rows}
-												columns={1}
-												gap={0}
-												estimateRowHeight={52}
-												getItemKey={rowKey}
-												className="h-56 shrink-0 overflow-y-auto border bg-background"
-												renderItem={(row) => {
-													const existing = alreadyCollected(row);
-													return (
-														<label className="flex items-center gap-3 border-b px-3 py-2 text-xs">
-															<input
-																type="checkbox"
-																aria-label={`Import ${row.reward ? itemLabel(row.reward) : row.category} ${row.id}`}
-																disabled={!row.reward || saving}
-																checked={Boolean(
-																	row.reward && !excluded.has(row.id),
-																)}
-																onChange={(event) => {
-																	const checked = event.target.checked;
-																	setExcluded((current) => {
-																		const next = new Set(current);
-																		if (checked) next.delete(row.id);
-																		else next.add(row.id);
-																		return next;
-																	});
-																}}
-																className="accent-primary"
-															/>
-															<span className="flex min-w-0 flex-1 flex-col gap-1">
-																<span className="truncate">
-																	{row.reward
-																		? itemLabel(row.reward)
-																		: row.category}
-																</span>
-																<span className="truncate text-[10px] text-muted-foreground">
-																	{row.reward?.area ?? row.map} ·{" "}
-																	{row.reason ??
-																		(existing
-																			? "Already collected"
-																			: row.distance === undefined
-																				? "Matched by ID"
-																				: `Matched · ${(row.distance / 100).toFixed(1)} m away`)}
-																</span>
-															</span>
-														</label>
-													);
+										)}
+										<label htmlFor="ghzs-file" className="sr-only">
+											GHZS export file
+										</label>
+										<Input
+											id="ghzs-file"
+											type="file"
+											accept=".json,application/json"
+											disabled={!catalog}
+											onChange={(event) => {
+												const input = event.currentTarget;
+												const file = input.files?.[0];
+												if (file)
+													void readFile(file).finally(() => {
+														input.value = "";
+													});
+											}}
+										/>
+										<details className="text-xs text-muted-foreground">
+											<summary className="cursor-pointer py-1">
+												Or paste export JSON
+											</summary>
+											<textarea
+												aria-label="GHZS export JSON"
+												className="mt-2 h-24 w-full resize-y border bg-background p-2 text-xs text-foreground outline-none focus-visible:ring-1 focus-visible:ring-ring"
+												value={text}
+												onChange={(event) => {
+													reading.current++;
+													setLoading(false);
+													setText(event.target.value);
+													setRows(null);
+													setError(null);
 												}}
 											/>
-											<details className="text-xs text-muted-foreground">
-												<summary className="cursor-pointer py-1">
-													About skipped locations
-												</summary>
-												<p className="mt-2">
-													Known IDs use an offline mapping; other markers need a
-													well separated match within 12 m. The Roya Frostlands
-													surface has no reliable alignment, and Vault
-													Underground floors without enough marked locations
-													cannot be aligned yet. Unsupported types and uncertain
-													locations are skipped.
-												</p>
-											</details>
-										</>
-									)}
-								</section>
-								{(error || (step === 4 && saveError)) && (
-									<p role="alert" className="text-xs text-destructive">
-										{(step === 4 && saveError) || error}
-									</p>
+											<Button
+												variant="outline"
+												size="sm"
+												disabled={!text.trim() || loading || !catalog}
+												onClick={() => preview(text)}
+											>
+												Read export
+											</Button>
+										</details>
+										{loading && (
+											<p
+												role="status"
+												className="text-xs text-muted-foreground"
+											>
+												Reading export…
+											</p>
+										)}
+										{rows && (
+											<p role="status" className="text-xs">
+												{rows.length.toLocaleString()} marked locations read.
+												Choose Next to review the matches.
+											</p>
+										)}
+									</>
 								)}
-							</div>
-							<Separator />
-							<footer className="flex shrink-0 items-center justify-between gap-3 p-4">
-								{step === 0 ? (
-									<Button variant="ghost" onClick={close}>
-										Not now
-									</Button>
-								) : (
-									<Button
-										variant="outline"
-										disabled={saving || loading}
-										onClick={() => go(step - 1)}
-									>
-										<HugeiconsIcon
-											icon={ArrowLeft01Icon}
-											data-icon="inline-start"
-										/>
-										Back
-									</Button>
-								)}
-								{step < STEPS.length - 1 ? (
-									<Button disabled={nextDisabled} onClick={() => go(step + 1)}>
-										Next
-										<HugeiconsIcon
-											icon={ArrowRight01Icon}
-											data-icon="inline-end"
-										/>
-									</Button>
-								) : selected.length === 0 ? (
-									<Button onClick={close}>Done</Button>
-								) : (
-									<Button
-										disabled={!ready || playerId <= 0 || saving}
-										onClick={async () => {
-											const count = selected.length;
-											setError(null);
-											if (await onImport(selected)) setImported(count);
-											else
-												setError(
-													"Progress could not be saved. Check the connected account and try again.",
+								{step === 4 && rows && (
+									<>
+										<div className="flex flex-col gap-2">
+											<p className="text-xs">
+												{playerId > 0
+													? `Import into ${playerName || "game account"} · ${playerId}`
+													: "Connect a game account to save imported progress. You can review your export now."}
+											</p>
+											<p className="font-medium">
+												{selected.length.toLocaleString()} ready (
+												{linked.toLocaleString()} linked) ·{" "}
+												{existing.toLocaleString()} already collected ·{" "}
+												{(rows.length - matched).toLocaleString()} skipped
+											</p>
+											<p className="text-xs text-muted-foreground">
+												Each checked match also includes its directly linked
+												challenges or reward chests. Uncheck matches you do not
+												want to use. Your existing marks are preserved.
+											</p>
+										</div>
+										<VirtualGrid
+											items={rows}
+											columns={1}
+											gap={0}
+											estimateRowHeight={52}
+											getItemKey={rowKey}
+											className="h-56 shrink-0 overflow-y-auto border bg-background"
+											renderItem={(row) => {
+												const existing = alreadyCollected(row);
+												return (
+													<label className="flex items-center gap-3 border-b px-3 py-2 text-xs">
+														<input
+															type="checkbox"
+															aria-label={`Import ${row.reward ? itemLabel(row.reward) : row.category} ${row.id}`}
+															disabled={!row.reward || saving}
+															checked={Boolean(
+																row.reward && !excluded.has(row.id),
+															)}
+															onChange={(event) => {
+																const checked = event.target.checked;
+																setExcluded((current) => {
+																	const next = new Set(current);
+																	if (checked) next.delete(row.id);
+																	else next.add(row.id);
+																	return next;
+																});
+															}}
+															className="accent-primary"
+														/>
+														<span className="flex min-w-0 flex-1 flex-col gap-1">
+															<span className="truncate">
+																{row.reward
+																	? itemLabel(row.reward)
+																	: row.category}
+															</span>
+															<span className="truncate text-[10px] text-muted-foreground">
+																{row.reward?.area ?? row.map} ·{" "}
+																{row.reason ??
+																	(existing
+																		? "Already collected"
+																		: row.distance === undefined
+																			? "Matched by ID"
+																			: `Matched · ${(row.distance / 100).toFixed(1)} m away`)}
+															</span>
+														</span>
+													</label>
 												);
-										}}
-									>
-										{saving
-											? "Importing…"
-											: `Import ${selected.length.toLocaleString()} ${selected.length === 1 ? "location" : "locations"}`}
-									</Button>
+											}}
+										/>
+										<details className="text-xs text-muted-foreground">
+											<summary className="cursor-pointer py-1">
+												About skipped locations
+											</summary>
+											<p className="mt-2">
+												Known IDs use an offline mapping; other markers need a
+												well separated match within 12 m. The Roya Frostlands
+												surface has no reliable alignment, and Vault Underground
+												floors without enough marked locations cannot be aligned
+												yet. Unsupported types and uncertain locations are
+												skipped.
+											</p>
+										</details>
+									</>
 								)}
-							</footer>
-						</>
-					)}
-				</Dialog.Popup>
-			</Dialog.Portal>
-		</Dialog.Root>
+							</section>
+							{(error || (step === 4 && saveError)) && (
+								<p role="alert" className="text-xs text-destructive">
+									{(step === 4 && saveError) || error}
+								</p>
+							)}
+						</div>
+						<Separator />
+						<footer className="flex shrink-0 items-center justify-between gap-3 p-4">
+							{step === 0 ? (
+								<Button variant="ghost" onClick={close}>
+									Not now
+								</Button>
+							) : (
+								<Button
+									variant="outline"
+									disabled={saving || loading}
+									onClick={() => go(step - 1)}
+								>
+									<HugeiconsIcon
+										icon={ArrowLeft01Icon}
+										data-icon="inline-start"
+									/>
+									Back
+								</Button>
+							)}
+							{step < STEPS.length - 1 ? (
+								<Button disabled={nextDisabled} onClick={() => go(step + 1)}>
+									Next
+									<HugeiconsIcon
+										icon={ArrowRight01Icon}
+										data-icon="inline-end"
+									/>
+								</Button>
+							) : selected.length === 0 ? (
+								<Button onClick={close}>Done</Button>
+							) : (
+								<Button
+									disabled={!ready || playerId <= 0 || saving}
+									onClick={async () => {
+										const count = selected.length;
+										setError(null);
+										if (await onImport(selected)) setImported(count);
+										else
+											setError(
+												"Progress could not be saved. Check the connected account and try again.",
+											);
+									}}
+								>
+									{saving
+										? "Importing…"
+										: `Import ${selected.length.toLocaleString()} ${selected.length === 1 ? "location" : "locations"}`}
+								</Button>
+							)}
+						</footer>
+					</>
+				)}
+			</DialogContent>
+		</Dialog>
 	);
 }

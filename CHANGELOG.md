@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-13
+
 ### Added
 
 - **Team suggestions.** Find the strongest combination of one to five teams from your owned Resonators, comparing pre-made and saved custom rotations by combined estimated damage. Each Resonator, including Rover across all elements, can appear in only one suggested team.

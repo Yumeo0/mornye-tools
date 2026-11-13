@@ -1,6 +1,6 @@
 import { InformationCircleIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import type { ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	Tooltip,
@@ -13,10 +13,12 @@ export function OptimizerInfo({
 	label,
 	children,
 	triggerContent,
+	size,
 }: {
 	label: string;
 	children: ReactNode;
 	triggerContent?: ReactNode;
+	size?: ComponentProps<typeof Button>["size"];
 }) {
 	return (
 		<TooltipProvider delay={150}>
@@ -25,7 +27,7 @@ export function OptimizerInfo({
 					render={
 						<Button
 							variant="ghost"
-							size={triggerContent ? "sm" : "icon-xs"}
+							size={size ?? (triggerContent ? "sm" : "icon-xs")}
 							aria-label={label}
 						/>
 					}

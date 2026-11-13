@@ -1,10 +1,16 @@
 import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { toast } from "sonner";
-import { FilterSelect } from "@/components/filters";
+import { FilterLayout, FilterSelect } from "@/components/filters";
 import { TeamMember, TeamShowcase } from "@/components/teams/TeamShowcase";
-import { Badge } from "@/components/ui/badge";
+import { TeamSuggestionsPanel } from "@/components/teams/TeamSuggestions";
+import {
+	Alert,
+	AlertAction,
+	AlertDescription,
+	AlertTitle,
+} from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -32,6 +38,11 @@ import {
 } from "@/lib/account";
 import { charactersById } from "@/lib/catalog";
 import { useDangerousFeatures } from "@/lib/dangerous";
+import {
+	ownedTeamRoleIds,
+	type SuggestedTeam,
+	type SuggestedTeamCount,
+} from "@/lib/teamSuggestions";
 import {
 	canEditTeams,
 	requestTeamSwitch,
@@ -205,13 +216,29 @@ export function TeamsTab() {
 	const profileId = snapshot.profile?.id;
 	const { status } = useDangerousFeatures();
 	const connected = canEditTeams(snapshot, status);
+	const suggestionsId = useId();
+	const savedTeamsRef = useRef<HTMLElement>(null);
+	const [suggestionsOpen, setSuggestionsOpen] = useState(false);
+	const [teamCount, setTeamCount] = useState<SuggestedTeamCount>(5);
+	const [replacing, setReplacing] = useState<{
+		profileId: string;
+		team: SuggestedTeam;
+	} | null>(null);
+	const replacement =
+		suggestionsOpen && connected && replacing?.profileId === profileId
+			? replacing?.team
+			: undefined;
+	useEffect(() => {
+		if (replacing && (!connected || replacing.profileId !== profileId))
+			setReplacing(null);
+	}, [connected, profileId, replacing]);
 	const [editing, setEditing] = useState<{
 		profileId: string;
 		team: SavedTeam;
 	} | null>(null);
 	const [pending, setPending] = useState<{
 		id: number;
-		action: "save" | "switch";
+		action: "save" | "switch" | "replace";
 	} | null>(null);
 	const running = useRef(false);
 	const teams = (snapshot.teams ?? []).toSorted((a, b) => a.id - b.id);
@@ -223,7 +250,7 @@ export function TeamsTab() {
 			: null;
 	const run = async (
 		team: SavedTeam,
-		action: "save" | "switch",
+		action: "save" | "switch" | "replace",
 		operation: () => Promise<void>,
 	) => {
 		if (!connected || running.current) return;
@@ -232,8 +259,13 @@ export function TeamsTab() {
 		try {
 			await operation();
 			if (action === "save") setEditing(null);
+			if (action === "replace") setReplacing(null);
 			toast.success(
-				action === "save" ? "Team saved in-game" : "Active team changed",
+				action === "replace"
+					? "Team replaced in-game"
+					: action === "save"
+						? "Team saved in-game"
+						: "Active team changed",
 			);
 		} catch (error) {
 			toast.error(
@@ -249,60 +281,131 @@ export function TeamsTab() {
 			setPending(null);
 		}
 	};
+	const replaceTeam = (team: SavedTeam) => {
+		if (!replacement || !profileId || !connected || running.current) return;
+		const roleIds = ownedTeamRoleIds(replacement.profile, snapshot);
+		const error = roleIds
+			? teamEditError(snapshot, team, roleIds)
+			: "The recommended Resonators are no longer available. Sync your characters and choose a recommendation again.";
+		if (error || !roleIds) {
+			toast.error(error);
+			return;
+		}
+		void run(team, "replace", () =>
+			requestTeamUpdate(profileId, team, team.name, roleIds),
+		);
+	};
 	return (
-		<div className="@container/teams flex min-h-0 flex-1 flex-col gap-3 px-4 sm:px-6">
-			{connected && (
-				<div className="flex shrink-0 items-center justify-end">
-					<Badge variant="primary">Live connection</Badge>
-				</div>
-			)}
-			{teams.length ? (
-				<VirtualGrid
-					items={teams}
-					columns={1}
-					gap={24}
-					estimateRowHeight={280}
-					getItemKey={(team) => team.id}
-					className="-mr-4 min-h-0 flex-1 overflow-y-auto pr-4 sm:-mr-6 sm:pr-6"
-					renderItem={(team) => (
-						<TeamShowcase
-							team={team}
-							snapshot={snapshot}
-							connected={connected}
-							busy={!!pending}
-							switching={pending?.id === team.id && pending.action === "switch"}
-							onEdit={() =>
-								profileId &&
-								setEditing({ profileId, team: structuredClone(team) })
-							}
-							onUse={() =>
-								profileId &&
-								void run(team, "switch", () =>
-									requestTeamSwitch(profileId, team.id),
-								)
-							}
-						/>
+		<>
+			<FilterLayout
+				filters={
+					<TeamSuggestionsPanel
+						id={suggestionsId}
+						expanded={suggestionsOpen}
+						onExpandedChange={(open) => {
+							setSuggestionsOpen(open);
+							setReplacing(null);
+						}}
+						snapshot={snapshot}
+						teamCount={teamCount}
+						onTeamCountChange={(count) => {
+							setTeamCount(count);
+							setReplacing(null);
+						}}
+						connected={connected}
+						busy={!!pending}
+						selectedId={replacement?.id}
+						onReplace={(team) => {
+							if (!connected || running.current || !profileId) return;
+							setReplacing({ profileId, team });
+							savedTeamsRef.current?.focus();
+						}}
+					/>
+				}
+			>
+				<section
+					ref={savedTeamsRef}
+					tabIndex={-1}
+					aria-label="Saved teams"
+					className="@container/teams flex min-h-0 min-w-0 flex-1 flex-col gap-3 outline-none"
+				>
+					{replacement && (
+						<Alert role="status">
+							<AlertTitle>Choose a team to replace</AlertTitle>
+							<AlertDescription>
+								Click a saved team to replace it in-game with{" "}
+								{replacement.profile.members
+									.map((member) => member.name)
+									.join(" · ")}
+								.
+							</AlertDescription>
+							<AlertAction>
+								<Button
+									variant="ghost"
+									size="sm"
+									disabled={!!pending}
+									onClick={() => setReplacing(null)}
+								>
+									Cancel
+								</Button>
+							</AlertAction>
+						</Alert>
 					)}
-				/>
-			) : (
-				<Empty className="flex-1 border border-dashed">
-					<EmptyHeader>
-						<EmptyMedia>
-							<img
-								src="/icons/navigation/teams.webp"
-								alt=""
-								className="size-12 opacity-60"
-							/>
-						</EmptyMedia>
-						<EmptyTitle>No teams synced yet</EmptyTitle>
-						<EmptyDescription>
-							Open the team setup screen in-game while account capture is
-							running, or connect to this profile's game account to sync saved
-							compositions.
-						</EmptyDescription>
-					</EmptyHeader>
-				</Empty>
-			)}
+					{teams.length ? (
+						<VirtualGrid
+							items={teams}
+							columns={1}
+							gap={24}
+							estimateRowHeight={280}
+							getItemKey={(team) => team.id}
+							className="min-h-0 flex-1 overflow-y-auto pr-2"
+							renderItem={(team) => (
+								<TeamShowcase
+									team={team}
+									snapshot={snapshot}
+									connected={connected}
+									busy={!!pending}
+									switching={
+										pending?.id === team.id && pending.action === "switch"
+									}
+									replacing={
+										pending?.id === team.id && pending.action === "replace"
+									}
+									onReplace={replacement ? () => replaceTeam(team) : undefined}
+									onEdit={() =>
+										profileId &&
+										setEditing({ profileId, team: structuredClone(team) })
+									}
+									onUse={() =>
+										profileId &&
+										void run(team, "switch", () =>
+											requestTeamSwitch(profileId, team.id),
+										)
+									}
+								/>
+							)}
+						/>
+					) : (
+						<Empty className="flex-1 border border-dashed">
+							<EmptyHeader>
+								<EmptyMedia>
+									<img
+										src="/icons/navigation/teams.webp"
+										alt=""
+										className="size-12 opacity-60"
+									/>
+								</EmptyMedia>
+								<EmptyTitle>No teams synced yet</EmptyTitle>
+								<EmptyDescription>
+									Open the team setup screen in-game while account capture is
+									running, or connect to this profile's game account to sync
+									saved compositions.
+								</EmptyDescription>
+							</EmptyHeader>
+						</Empty>
+					)}
+				</section>
+			</FilterLayout>
 			{editor && (
 				<TeamEditor
 					key={`${editor.profileId}:${editor.team.id}`}
@@ -318,6 +421,6 @@ export function TeamsTab() {
 					}
 				/>
 			)}
-		</div>
+		</>
 	);
 }

@@ -2,9 +2,23 @@
 
 ## [Unreleased]
 
+### Added
+
+- **Team suggestions.** Find the strongest combination of one to five teams from your owned Resonators, comparing pre-made and saved custom rotations by combined estimated damage. Each Resonator, including Rover across all elements, can appear in only one suggested team.
+- **Apply recommended teams.** While connected to your game account, choose a suggestion and a saved team to replace its members in-game.
+
+### Improved
+
+- **Clearer saved-team cards.** Larger Resonator portraits and rearranged team controls make equipped weapons, Resonance Chains, and current-team status easier to read.
+
 ### Fixed
 
 - Modal dialogs no longer cover or block the title bar and window controls, including in smaller windows.
+- Empty replies from the game no longer clear saved teams, unset the current team, or create a phantom "Team 0". Previously saved placeholder teams are removed automatically.
+
+### Good to know
+
+- Suggested-team damage uses your synced Resonance Chains, signature/default weapons, and optimized rotation stats. Equipped gear and character levels are not used in these estimates, and rotations that cannot model your chains are excluded.
 
 ## [1.0.0] - 2026-11-13
 

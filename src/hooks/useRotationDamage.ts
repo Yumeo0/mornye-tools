@@ -1,19 +1,24 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-	bundledRotationError,
-	bundledRotationScore,
-} from "@/lib/calc/bundledRotationDamage";
+import { bundledRotationError } from "@/lib/calc/bundledRotationDamage";
 import { scoreRotationProfiles } from "@/lib/calc/core";
 import {
-	cachedRotationDamage,
+	type RotationChains,
+	usesReferenceChains,
+} from "@/lib/calc/ownedRotationDamage";
+import {
 	loadRotationDamageCache,
 	rememberRotationDamage,
 	rotationDamageKey,
 	rotationReferenceRevision,
+	savedRotationDamage,
 } from "@/lib/calc/rotationDamageCache";
 import type { TeamProfile } from "@/lib/calc/types";
 
-export function useRotationDamage(profiles: TeamProfile[], enabled: boolean) {
+export function useRotationDamage(
+	profiles: TeamProfile[],
+	enabled: boolean,
+	chains?: RotationChains,
+) {
 	const revision = rotationReferenceRevision;
 	const [version, setVersion] = useState(0);
 	const [error, setError] = useState<string | null>(null);
@@ -22,18 +27,19 @@ export function useRotationDamage(profiles: TeamProfile[], enabled: boolean) {
 		() =>
 			new Map(
 				profiles.flatMap((p) => {
-					const score = p.customRotation
-						? cachedRotationDamage(rotationDamageKey(revision, p))
-						: bundledRotationScore(p, revision);
+					const score = savedRotationDamage(revision, p, chains);
 					return score ? [[p.id, score] as const] : [];
 				}),
 			),
-		[profiles, version, revision],
+		[profiles, version, revision, chains],
 	);
 	useEffect(() => {
 		if (!enabled) return;
 		setError(null);
-		if (!profiles.some((p) => p.customRotation)) return;
+		if (
+			!profiles.some((p) => p.customRotation || !usesReferenceChains(p, chains))
+		)
+			return;
 		let cancelled = false;
 		let cancel: (() => void) | undefined;
 		void loadRotationDamageCache().then(() => {
@@ -41,12 +47,12 @@ export function useRotationDamage(profiles: TeamProfile[], enabled: boolean) {
 			setVersion((v) => v + 1);
 			const pending = profiles.filter(
 				(p) =>
-					p.customRotation &&
-					!cachedRotationDamage(rotationDamageKey(revision, p)),
+					(p.customRotation || !usesReferenceChains(p, chains)) &&
+					!savedRotationDamage(revision, p, chains),
 			);
 			if (!pending.length) return;
 			const keys = new Map(
-				pending.map((p) => [p.id, rotationDamageKey(revision, p)]),
+				pending.map((p) => [p.id, rotationDamageKey(revision, p, chains)]),
 			);
 			cancel = scoreRotationProfiles(
 				pending,
@@ -57,15 +63,21 @@ export function useRotationDamage(profiles: TeamProfile[], enabled: boolean) {
 					setVersion((v) => v + 1);
 				},
 				setError,
+				chains,
 			);
 		});
 		return () => {
 			cancelled = true;
 			cancel?.();
 		};
-	}, [profiles, enabled]);
+	}, [profiles, enabled, chains]);
 	return {
 		damage,
-		error: enabled ? (bundledRotationError(profiles, revision) ?? error) : null,
+		error: enabled
+			? (bundledRotationError(
+					profiles.filter((p) => usesReferenceChains(p, chains)),
+					revision,
+				) ?? error)
+			: null,
 	};
 }

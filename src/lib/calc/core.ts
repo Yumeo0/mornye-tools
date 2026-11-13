@@ -1,3 +1,4 @@
+import type { RotationChains } from "./ownedRotationDamage";
 import type { RotationDamage } from "./rotationDamage";
 import SimulationWorker from "./simulation.worker?worker";
 import type {
@@ -92,6 +93,7 @@ export function scoreRotationProfiles(
 	profiles: TeamProfile[],
 	onScore: (id: string, score: RotationDamage) => void,
 	onError: (message: string) => void,
+	chains?: RotationChains,
 ): () => void {
 	const worker = new SimulationWorker();
 	worker.onmessage = (event) => {
@@ -106,6 +108,6 @@ export function scoreRotationProfiles(
 		worker.terminate();
 		onError(event.message);
 	};
-	worker.postMessage({ kind: "rotation-damage", profiles });
+	worker.postMessage({ kind: "rotation-damage", profiles, chains });
 	return () => worker.terminate();
 }

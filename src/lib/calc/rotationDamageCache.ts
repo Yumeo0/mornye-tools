@@ -1,6 +1,11 @@
 import { isTauri } from "@tauri-apps/api/core";
 import { z } from "zod";
 import { readSetting, writeSetting } from "@/lib/settings";
+import { bundledRotationScore } from "./bundledRotationDamage";
+import {
+	type RotationChains,
+	usesReferenceChains,
+} from "./ownedRotationDamage";
 import reference from "./riley/reference.generated.json";
 import type { RotationDamage } from "./rotationDamage";
 import { rotationDamageSchema } from "./rotationDamageSchema";
@@ -14,8 +19,37 @@ let loading: Promise<void> | undefined;
 let timer: ReturnType<typeof setTimeout> | undefined;
 let saving = Promise.resolve();
 
-export const rotationDamageKey = (revision: string, p: TeamProfile) =>
-	JSON.stringify([revision, p.id, p.customRotation]);
+export function rotationDamageKey(
+	revision: string,
+	p: TeamProfile,
+	chains?: RotationChains,
+) {
+	const key = [revision, p.id, p.customRotation];
+	// Keep reference scores compatible with existing cache entries. Only the
+	// team's own chains affect its score, regardless of account or roster order.
+	return JSON.stringify(
+		usesReferenceChains(p, chains)
+			? key
+			: [
+					...key,
+					"owned-chains-v1",
+					p.members.map((m) => [
+						m.characterId,
+						chains?.[m.characterId] ?? m.minSequence,
+					]),
+				],
+	);
+}
+
+export function savedRotationDamage(
+	revision: string,
+	profile: TeamProfile,
+	chains?: RotationChains,
+) {
+	return !profile.customRotation && usesReferenceChains(profile, chains)
+		? bundledRotationScore(profile, revision)
+		: cachedRotationDamage(rotationDamageKey(revision, profile, chains));
+}
 
 export function loadRotationDamageCache() {
 	loading ??= (async () => {

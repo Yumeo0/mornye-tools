@@ -1,12 +1,15 @@
 import type { CharacterPanelRequest } from "../characterPanel";
 import {
+	measureRotationDamageAtChains,
+	type RotationChains,
+} from "./ownedRotationDamage";
+import {
 	characterPanel,
 	evaluate,
 	evaluateFast,
 	getCatalog,
 	resolveRotationStats,
 } from "./riley/engine.generated.js";
-import { measureRotationDamage } from "./rotationDamage";
 import { searchInventory } from "./search";
 import type { Scenario, SearchRequest, TeamProfile } from "./types";
 
@@ -23,6 +26,7 @@ self.onmessage = async (
 		input?: Scenario | SearchRequest | CharacterPanelRequest;
 		targetId?: number;
 		profiles?: TeamProfile[];
+		chains?: RotationChains;
 	}>,
 ) => {
 	try {
@@ -48,7 +52,12 @@ self.onmessage = async (
 				self.postMessage({
 					kind: "rotation-damage",
 					id: profile.id,
-					value: measureRotationDamage(profile, resolveRotationStats, evaluate),
+					value: measureRotationDamageAtChains(
+						profile,
+						resolveRotationStats,
+						evaluate,
+						event.data.chains,
+					),
 				});
 			}
 			self.postMessage({ kind: "done" });

@@ -46,6 +46,8 @@ impl AccountStore {
             next_revision: 0,
         };
         store.snapshot.version = STORE_VERSION;
+        // Older builds saved empty formation acknowledgements as "Team 0".
+        store.snapshot.teams.retain(|team| team.id > 0);
         store.apply_overrides();
         store
     }
@@ -124,7 +126,14 @@ impl AccountStore {
     }
 
     /// A full formation response replaces the list, including deleted slots.
-    pub fn replace_teams(&mut self, teams: Vec<SavedTeam>) -> bool {
+    pub fn replace_teams(&mut self, mut teams: Vec<SavedTeam>) -> bool {
+        let had_formations = !teams.is_empty();
+        teams.retain(|team| team.id > 0);
+        // A response containing only default/placeholder messages is an ACK,
+        // not an authoritative empty list. Explicit empty snapshots still clear.
+        if had_formations && teams.is_empty() {
+            return false;
+        }
         if self.snapshot.teams == teams {
             return false;
         }
@@ -133,6 +142,11 @@ impl AccountStore {
     }
 
     pub fn upsert_team(&mut self, team: SavedTeam) -> bool {
+        // Success responses may contain a default formation instead of an echo
+        // of the edited team. Only positive IDs identify actual saved slots.
+        if team.id <= 0 {
+            return false;
+        }
         let before = self.snapshot.teams.clone();
         if team.is_current {
             for saved in &mut self.snapshot.teams {
@@ -153,6 +167,9 @@ impl AccountStore {
     }
 
     pub fn set_current_team(&mut self, id: i32) -> bool {
+        if id <= 0 {
+            return false;
+        }
         let mut changed = false;
         for team in &mut self.snapshot.teams {
             let current = team.id == id;
@@ -632,6 +649,82 @@ mod tests {
         assert!(loaded.snapshot().teams[0].is_current);
         assert!(loaded.replace_teams(vec![]));
         assert!(loaded.snapshot().teams.is_empty());
+    }
+
+    #[test]
+    fn saved_teams_ignore_placeholder_acknowledgements() {
+        let mut store = AccountStore::load(temp_dir("teams-placeholders"));
+        let team = SavedTeam {
+            id: 1,
+            name: "Tower".into(),
+            role_ids: vec![1404, 1204, 1505],
+            current_role: 1404,
+            is_current: true,
+        };
+        store.replace_teams(vec![team.clone()]);
+        for id in [0, -1] {
+            let placeholder = SavedTeam {
+                id,
+                name: String::new(),
+                role_ids: Vec::new(),
+                current_role: 0,
+                is_current: true,
+            };
+            assert!(!store.upsert_team(placeholder.clone()));
+            assert!(!store.replace_teams(vec![placeholder]));
+            assert!(!store.set_current_team(id));
+            assert_eq!(store.snapshot().teams, vec![team.clone()]);
+        }
+        // A genuinely empty full snapshot still clears deleted teams.
+        assert!(store.replace_teams(Vec::new()));
+        assert!(store.snapshot().teams.is_empty());
+    }
+
+    #[test]
+    fn saved_teams_full_refresh_keeps_real_empty_slots_but_discards_placeholders() {
+        let mut store = AccountStore::load(temp_dir("teams-empty-slots"));
+        let empty = SavedTeam {
+            id: 2,
+            name: String::new(),
+            role_ids: Vec::new(),
+            current_role: 0,
+            is_current: false,
+        };
+        assert!(store.replace_teams(vec![
+            SavedTeam {
+                id: 0,
+                ..empty.clone()
+            },
+            empty.clone(),
+        ]));
+        assert_eq!(store.snapshot().teams, vec![empty.clone()]);
+        assert!(store.upsert_team(SavedTeam { id: 3, ..empty }));
+        assert_eq!(store.snapshot().teams.len(), 2);
+    }
+
+    #[test]
+    fn saved_teams_load_removes_previously_persisted_placeholder_records() {
+        let dir = temp_dir("teams-old-placeholders");
+        let mut store = AccountStore::load(dir.clone());
+        let team = SavedTeam {
+            id: 2,
+            name: "Tower".into(),
+            role_ids: vec![1503, 1505],
+            current_role: 1503,
+            is_current: true,
+        };
+        store.snapshot.teams = vec![
+            SavedTeam {
+                id: 0,
+                name: String::new(),
+                role_ids: Vec::new(),
+                current_role: 0,
+                is_current: false,
+            },
+            team.clone(),
+        ];
+        store.save().unwrap();
+        assert_eq!(AccountStore::load(dir).snapshot().teams, vec![team]);
     }
 
     #[test]

@@ -437,6 +437,54 @@ mod tests {
     }
 
     #[test]
+    fn empty_successful_formation_payloads_do_not_create_team_zero_or_clear_teams() {
+        let mut capture = TeamCapture::default();
+        let mut store = store("placeholder-ack");
+        login(&mut capture, &mut store, 7);
+        capture
+            .apply(&notification(7, CAPTURED_ROLES), &mut store)
+            .unwrap();
+        let before = store.snapshot().teams.clone();
+        for acknowledgement in [
+            packet(
+                UPDATE_FORMATION_RESPONSE,
+                pb::UpdateFormationResponse {
+                    formation: Some(pb::FightFormation::default()),
+                    ..Default::default()
+                },
+            ),
+            packet(
+                FORMATION_MODIFY_RESPONSE,
+                pb::FormationModifyResponse {
+                    formation: Some(pb::Formation::default()),
+                    ..Default::default()
+                },
+            ),
+            packet(
+                GET_FORMATION_DATA_RESPONSE,
+                pb::GetFormationDataResponse {
+                    formations: vec![pb::FightFormation::default()],
+                    ..Default::default()
+                },
+            ),
+            packet(
+                FORMATION_RESPONSE,
+                pb::FormationResponse {
+                    formation: vec![pb::Formation::default()],
+                    ..Default::default()
+                },
+            ),
+            packet(
+                FORMATION_SWITCH_CURRENT_RESPONSE,
+                pb::FormationSwitchCurrentResponse::default(),
+            ),
+        ] {
+            assert!(!capture.apply(&acknowledgement, &mut store).unwrap());
+            assert_eq!(store.snapshot().teams, before);
+        }
+    }
+
+    #[test]
     fn failed_responses_do_not_overwrite_saved_teams() {
         let mut capture = TeamCapture::default();
         let mut store = store("failed");

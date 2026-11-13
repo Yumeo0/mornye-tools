@@ -48,7 +48,7 @@ export function TeamMember({
 			aria-label={roleId ? name : `Empty slot ${slot + 1}`}
 			className={cn(
 				"relative isolate flex min-w-0 flex-col justify-end",
-				compact ? "h-64" : "h-64 @min-[1000px]/teams:h-68",
+				compact ? "h-64" : "h-80 @min-[1000px]/teams:h-84",
 			)}
 		>
 			<div
@@ -63,11 +63,13 @@ export function TeamMember({
 					/>
 				)}
 				{character?.element_icon_round && (
-					<img
-						src={character.element_icon_round}
-						alt=""
-						className="absolute top-7 right-0 size-36 -rotate-12 object-contain opacity-[0.05]"
-					/>
+					<div className="absolute inset-y-0 left-1/2 w-full max-w-64 -translate-x-1/2">
+						<img
+							src={character.element_icon_round}
+							alt=""
+							className="absolute top-7 -left-16 size-42 -rotate-12 object-contain opacity-[0.05]"
+						/>
+					</div>
 				)}
 			</div>
 			<div
@@ -81,7 +83,7 @@ export function TeamMember({
 						loading="lazy"
 						draggable={false}
 						className={cn(
-							"absolute left-1/2 max-w-none -translate-x-1/2 object-contain drop-shadow-xl [mask-image:linear-gradient(to_bottom,black_68%,transparent_96%)]",
+							"absolute left-1/2 max-w-none -translate-x-1/2 translate-y-3 object-contain drop-shadow-xl",
 							poster
 								? compact
 									? "top-0 h-80 w-auto"
@@ -100,16 +102,21 @@ export function TeamMember({
 						{String(slot + 1).padStart(2, "0")}
 					</span>
 				)}
+				<div className="absolute inset-x-0 bottom-0 h-4 bg-linear-to-t from-card to-transparent" />
 			</div>
-			{weapon && !compact && (
-				<img
-					src={weaponIconUrl(weapon.itemId)}
-					alt=""
-					title={`${weaponName(weapon)} · Lv. ${weapon.level} · R${weapon.rank}`}
-					className="absolute top-[42%] right-1 size-14 -rotate-12 object-contain drop-shadow-lg"
-				/>
-			)}
-			<div className="relative flex min-w-0 flex-col gap-2.5 bg-linear-to-t from-card via-card/95 to-transparent px-3 pt-8 pb-5">
+			<div className="relative mx-auto flex w-full min-w-0 max-w-128 flex-col gap-2.5 px-3 pb-5">
+				{!compact && (
+					<div className="h-14">
+						{weapon && (
+							<img
+								src={weaponIconUrl(weapon.itemId)}
+								alt={weaponName(weapon)}
+								title={`${weaponName(weapon)} · Lv. ${weapon.level} · R${weapon.rank}`}
+								className="size-14 border bg-card/65 object-contain backdrop-blur-sm"
+							/>
+						)}
+					</div>
+				)}
 				<h3
 					className={cn(
 						"min-h-12 min-w-0 content-end leading-tight font-semibold tracking-tight [overflow-wrap:anywhere]",
@@ -117,17 +124,24 @@ export function TeamMember({
 						!roleId && "text-muted-foreground",
 					)}
 				>
-					{character?.element_icon_round && (
-						<img
-							src={character.element_icon_round}
-							alt={character.element}
-							title={character.element}
-							className="mr-1.5 inline-block size-5 object-contain align-[-0.15em]"
-						/>
-					)}
-					{roleId ? name : "Empty slot"}
+					<span className="inline-block max-w-full bg-card/65 px-2 py-1 backdrop-blur-sm">
+						{character?.element_icon_round && (
+							<img
+								src={character.element_icon_round}
+								alt={character.element}
+								title={character.element}
+								className="mr-1.5 inline-block size-5 object-contain align-[-0.15em]"
+							/>
+						)}
+						{roleId ? name : "Empty slot"}
+					</span>
 				</h3>
-				<div className="flex h-8 min-w-0 shrink-0 items-center gap-3">
+				<div
+					className={cn(
+						"flex h-8 w-fit min-w-0 max-w-full shrink-0 items-center gap-3",
+						owned && "bg-card/65 px-2 backdrop-blur-sm",
+					)}
+				>
 					{owned && (
 						<>
 							<div
@@ -173,6 +187,8 @@ export function TeamShowcase({
 	connected,
 	busy,
 	switching,
+	replacing = false,
+	onReplace,
 	onEdit,
 	onUse,
 }: {
@@ -181,15 +197,19 @@ export function TeamShowcase({
 	connected: boolean;
 	busy: boolean;
 	switching: boolean;
+	replacing?: boolean;
+	onReplace?: () => void;
 	onEdit: () => void;
 	onUse: () => void;
 }) {
+	const choosing = connected && !!onReplace;
 	return (
 		<article
 			aria-label={teamName(team)}
 			className={cn(
-				"relative isolate grid w-full min-w-0 border bg-card @min-[800px]/teams:grid-cols-[9rem_minmax(0,1fr)]",
+				"relative isolate grid w-full min-w-0 border bg-card",
 				team.isCurrent && "border-primary/40",
+				choosing && "border-primary/60 hover:border-primary",
 			)}
 		>
 			{team.isCurrent && (
@@ -198,57 +218,71 @@ export function TeamShowcase({
 					className="absolute inset-y-6 left-0 w-0.5 bg-primary"
 				/>
 			)}
-			<header className="relative flex flex-wrap items-center justify-between gap-4 px-5 pt-5 @min-[800px]/teams:flex-col @min-[800px]/teams:items-start @min-[800px]/teams:py-7 @min-[800px]/teams:pl-6">
-				<div className="flex min-w-0 flex-col items-start gap-3">
-					{team.isCurrent && <Badge variant="primary">Current team</Badge>}
-					<h2 className="text-2xl leading-tight font-semibold tracking-tight [overflow-wrap:anywhere]">
+			<header className="relative z-10 col-start-1 row-start-1 flex flex-wrap items-start justify-between gap-3 self-start p-3">
+				<div className="flex min-w-0 items-center gap-3 border bg-card/90 px-3 py-2 shadow-sm backdrop-blur-sm">
+					<h2 className="text-lg leading-tight font-semibold tracking-tight [overflow-wrap:anywhere]">
 						{teamName(team)}
 					</h2>
+					{team.isCurrent && <Badge variant="primary">Current team</Badge>}
 				</div>
-				<div className="flex flex-wrap gap-2 @min-[800px]/teams:w-full @min-[800px]/teams:flex-col @min-[800px]/teams:items-start">
-					{!team.isCurrent && (
-						<Tooltip disabled={connected}>
-							<TooltipTrigger
-								aria-description={!connected ? connectionHint : undefined}
-								render={
-									<Button
-										variant="secondary"
-										size="sm"
-										className="data-disabled:opacity-50"
-										disabled={!connected || busy || !team.roleIds.length}
-										focusableWhenDisabled={!connected}
-										onClick={onUse}
+				<div className="flex flex-wrap items-center gap-2 border bg-card/90 p-1.5 shadow-sm backdrop-blur-sm">
+					{choosing ? (
+						<Badge variant="primary">
+							{replacing ? "Replacing…" : "Click to replace"}
+						</Badge>
+					) : (
+						<>
+							{!team.isCurrent && (
+								<Tooltip disabled={connected}>
+									<TooltipTrigger
+										aria-description={!connected ? connectionHint : undefined}
+										render={
+											<Button
+												variant="secondary"
+												size="sm"
+												className="data-disabled:opacity-50"
+												disabled={!connected || busy || !team.roleIds.length}
+												focusableWhenDisabled={!connected}
+												onClick={onUse}
+											/>
+										}
+									>
+										{switching ? "Switching…" : "Use team"}
+										<HugeiconsIcon
+											icon={ArrowRight01Icon}
+											data-icon="inline-end"
+										/>
+									</TooltipTrigger>
+									<TooltipContent>{connectionHint}</TooltipContent>
+								</Tooltip>
+							)}
+							<Tooltip disabled={connected}>
+								<TooltipTrigger
+									aria-description={!connected ? connectionHint : undefined}
+									render={
+										<Button
+											variant="ghost"
+											size="sm"
+											className="data-disabled:opacity-50"
+											disabled={!connected || busy}
+											focusableWhenDisabled={!connected}
+											onClick={onEdit}
+										/>
+									}
+								>
+									<HugeiconsIcon
+										icon={PencilEdit02Icon}
+										data-icon="inline-start"
 									/>
-								}
-							>
-								{switching ? "Switching…" : "Use team"}
-								<HugeiconsIcon icon={ArrowRight01Icon} data-icon="inline-end" />
-							</TooltipTrigger>
-							<TooltipContent>{connectionHint}</TooltipContent>
-						</Tooltip>
+									Edit team
+								</TooltipTrigger>
+								<TooltipContent>{connectionHint}</TooltipContent>
+							</Tooltip>
+						</>
 					)}
-					<Tooltip disabled={connected}>
-						<TooltipTrigger
-							aria-description={!connected ? connectionHint : undefined}
-							render={
-								<Button
-									variant="ghost"
-									size="sm"
-									className="data-disabled:opacity-50"
-									disabled={!connected || busy}
-									focusableWhenDisabled={!connected}
-									onClick={onEdit}
-								/>
-							}
-						>
-							<HugeiconsIcon icon={PencilEdit02Icon} data-icon="inline-start" />
-							Edit team
-						</TooltipTrigger>
-						<TooltipContent>{connectionHint}</TooltipContent>
-					</Tooltip>
 				</div>
 			</header>
-			<div className="grid min-w-0 grid-cols-3">
+			<div className="col-start-1 row-start-1 grid min-w-0 grid-cols-3">
 				{[0, 1, 2].map((slot) => (
 					<TeamMember
 						key={slot}
@@ -258,6 +292,16 @@ export function TeamShowcase({
 					/>
 				))}
 			</div>
+			{choosing && (
+				<button
+					type="button"
+					aria-label={`Replace ${teamName(team)} with the recommended team`}
+					aria-busy={replacing}
+					disabled={busy}
+					onClick={onReplace}
+					className="absolute inset-0 z-20 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-wait"
+				/>
+			)}
 		</article>
 	);
 }
